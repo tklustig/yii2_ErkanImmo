@@ -23,6 +23,7 @@ class FrontendAsset extends BaseFrontendAsset {
         'css/style.css'
     ];
     public $js = [
+        'js/jquery/jquery-3.3.1.js',
         'js/jquery/jquery.js',
         'js/plugins.js',
         'js/menu.js',

@@ -140,13 +140,13 @@ FrontendAsset::register($this);
                                                 <li id="menu-item-1" class="menu-item menu-item-type-post_type menu-item-object-page">
                                                 </li>
                                                 <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                                    <a href="../contact/index.html"><span>Kontakt</span></a>
+                                                    <?= Html::a(Yii::t('app', 'Kontak'), ['/site/contact']) ?>
                                                 </li>
                                                 <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                                    <a href="index.html"><span>Angebote einsehen</span></a>
+                                                    <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/site/index']) ?>
                                                 </li>
                                                 <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                                    <a href="index.html"><span>Angebote erstellen(Passwort geschützt)</span></a>
+                                                    <?= Html::a(Yii::t('app', 'Angebote erstellen(Backend)'), ['/site/index']) ?>
                                                 </li>
                                             </ul>
                                         </nav>
@@ -275,8 +275,7 @@ FrontendAsset::register($this);
                                     <div style="text-align: center; margin: 50px 20%;">
                                         <h4 style="color: #9e7b4e;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4>
                                         <hr class="no_line" style="margin: 0 auto 15px;">
-                                        <p> Vom 1-Zimmer-Appartement für Studenten bis hin zu Luxus-Villas für gehobenere Ansprüche: Kanat Immobilien ist der ideale Vermittlungsmarkler.  <?= Html::a('Kontaktieren', '/site/contact', ['alt' => 'FileNotFound']) ?></a> Sie uns<p>
-                                            <?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?>
+                                        <p> Vom 1-Zimmer-Appartement für Studenten bis hin zu Luxus-Villas für gehobenere Ansprüche: Kanat Immobilien ist der ideale Vermittlungsmarkler.  <?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns<p>
                                     </div>
                                 </div>
                             </aside>
@@ -308,8 +307,6 @@ FrontendAsset::register($this);
             <ul class="social"></ul>
         </div>
         <div id="body_overlay"></div>
-
-
         <?php $this->endBody() ?>
     </body>
 </html>
