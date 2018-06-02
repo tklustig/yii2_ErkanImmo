@@ -3,11 +3,7 @@
 return [
     'aliases' =>
     [
-        '@mails' => '@app/mails',
         '@uploading' => '@app/uploadedfiles',
-        '@documents' => '@app/documents/',
-        '@pictures' => '@app/web/img',
-        '@emailanhang' => '@app/emailanhang/',
     ],
     'modules' => [
         'datecontrol' => [
