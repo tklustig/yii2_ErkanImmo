@@ -200,10 +200,10 @@ FrontendAsset::register($this);
                                                     <div class="image_frame scale-with-grid">
                                                         <div class="image_wrapper">
                                                             <div class="mask"></div>
-                                                            <?= Html::img('@web/img/pic1.jpg', ['alt' => 'some', 'class' => 'scale-with-grid wp-post-image', 'style' => 'width:960;height:700']); ?>
+                                                            <?= Html::img('@web/img/pic1.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid wp-post-image', 'style' => 'width:960;height:700']); ?>
                                                             <div class="image_links double">
                                                                 <div class="image_links double">
-                                                                    <?= Html::a('', Yii::getAlias('@web') . '/img/pic1.jpg', ['target' => '_blank', 'alt' => 'some', 'class' => 'icon-search']) ?>
+                                                                    <?= Html::a('', Yii::getAlias('@web') . '/img/pic1.jpg', ['target' => '_blank', 'alt' => 'PicNotFound', 'class' => 'icon-search']) ?>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -216,9 +216,9 @@ FrontendAsset::register($this);
                                                     <div class="image_frame scale-with-grid">
                                                         <div class="image_wrapper">
                                                             <div class="mask"></div>
-                                                            <?= Html::img('@web/img/pic2.jpg', ['alt' => 'some', 'class' => 'scale-with-grid wp-post-image', 'style' => 'width:960;height:700']); ?>
+                                                            <?= Html::img('@web/img/pic2.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid wp-post-image']); ?>
                                                             <div class="image_links double">
-                                                                <?= Html::a('', Yii::getAlias('@web') . '/img/pic2.jpg', ['target' => '_blank', 'alt' => 'some', 'class' => 'icon-search']) ?>
+                                                                <?= Html::a('', Yii::getAlias('@web') . '/img/pic2.jpg', ['target' => '_blank', 'alt' => 'PicNotFound', 'class' => 'icon-search']) ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -230,9 +230,9 @@ FrontendAsset::register($this);
                                                     <div class="image_frame scale-with-grid">
                                                         <div class="image_wrapper">
                                                             <div class="mask"></div>
-                                                            <?= Html::img('@web/img/pic3.jpg', ['alt' => 'some', 'class' => 'scale-with-grid wp-post-image', 'style' => 'width:960;height:700']); ?>
+                                                            <?= Html::img('@web/img/pic3.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid wp-post-image']); ?>
                                                             <div class="image_links double">
-                                                                <?= Html::a('', Yii::getAlias('@web') . '/img/pic2.jpg', ['target' => '_blank', 'alt' => 'some', 'class' => 'icon-search']) ?>
+                                                                <?= Html::a('', Yii::getAlias('@web') . '/img/pic2.jpg', ['target' => '_blank', 'alt' => 'PicNotFound', 'class' => 'icon-search']) ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -243,9 +243,9 @@ FrontendAsset::register($this);
                                                     <div class="image_frame scale-with-grid">
                                                         <div class="image_wrapper">
                                                             <div class="mask"></div>
-                                                            <?= Html::img('@web/img/pic4.jpg', ['alt' => 'some', 'class' => 'scale-with-grid wp-post-image', 'style' => 'width:960;height:700']); ?>
+                                                            <?= Html::img('@web/img/pic4.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid wp-post-image']); ?>
                                                             <div class="image_links double">
-                                                                <?= Html::a('', Yii::getAlias('@web') . '/img/pic4.jpg', ['target' => '_blank', 'alt' => 'some', 'class' => 'icon-search']) ?>
+                                                                <?= Html::a('', Yii::getAlias('@web') . '/img/pic4.jpg', ['target' => '_blank', 'alt' => 'PicNotFound', 'class' => 'icon-search']) ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -268,7 +268,7 @@ FrontendAsset::register($this);
                                     <div style="position: relative; margin-top: -100px; z-index: 1;">
                                         <div class="image_frame image_item no_link scale-with-grid aligncenter no_border" >
                                             <div class="image_wrapper">
-                                                <?= Html::img('@web/img/erkan_logo.jpg', ['alt' => 'some', 'class' => 'scale-with-grid', 'style' => 'width:250;height:1024']); ?>
+                                                <?= Html::img('@web/img/erkan_logo.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid', 'style' => 'width:350px;height:150px;']); ?>
                                             </div>
                                         </div>
                                     </div>
