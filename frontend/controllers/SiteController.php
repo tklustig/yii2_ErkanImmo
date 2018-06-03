@@ -13,6 +13,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use yii\base\DynamicModel;
 
 class SiteController extends Controller {
 
@@ -57,7 +58,15 @@ class SiteController extends Controller {
 
     public function actionIndex() {
         $this->layout = "main_kanat";
-        return $this->render('index');
+        $DynamicModel = new DynamicModel(['searching']);
+        $DynamicModel->addRule(['searching'], 'string');
+        if ($DynamicModel->load(Yii::$app->request->post())) {
+            print_r("Script in der Klasse " . get_class() . " angehalten");
+            die();
+        }
+        return $this->render('index', [
+                    'DynamicModel' => $DynamicModel,
+        ]);
     }
 
     public function actionLogin() {

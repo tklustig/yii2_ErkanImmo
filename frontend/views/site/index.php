@@ -1,8 +1,8 @@
 <?php
 
 use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
 ?>
-</head>
 <div id="Wrapper">
     <div id="Header_wrapper" >
         <header id="Header">
@@ -31,11 +31,15 @@ use yii\helpers\Html;
                                     <i class="icon-menu-fine"></i>
                                 </a>
                             </div>
-                            <form id="searchform" name="formular" action="" method="post">
-                                <div><br></div>
-                                <input type="text" class="field" name="s" placeholder="Suchbegriff eingeben">
-                                <input type="submit" value="Absenden">
-                            </form>
+                            <?php $form = ActiveForm::begin(['id' => 'start-form']); ?>
+                            <div><br></div>
+                            <?=
+                            $form->field($DynamicModel, 'searching')->textInput(['class' => 'field', 'placeholder' => 'Suchbegriff eingeben'])->label(false);
+                            ?>
+                            <div class="form-group">
+                                <?= Html::submitButton('Absenden', ['name' => 'start-button']) ?>
+                            </div>
+                            <?php ActiveForm::end(); ?>
                         </div>
                     </div>
                 </div>
