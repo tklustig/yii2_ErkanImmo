@@ -1,5 +1,4 @@
 <?php
-
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $model \frontend\models\SignupForm */
@@ -10,26 +9,32 @@ use yii\bootstrap\ActiveForm;
 $this->title = 'Signup';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="site-signup">
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="jumbotron">
+    <div class="container">
+        <div class="page-header"><h2><?= Html::encode($this->title) ?><small>
+                    <?= Html::a(Yii::t('app', 'zurück zum Login'), ['/site/login', 'class' => 'text-warning']) ?>
+                </small></h2></div>
 
-    <p>Please fill out the following fields to signup:</p>
+        <p>Folgende Felder werden für eine Registrierung benötigt</p>
 
-    <div class="row">
-        <div class="col-lg-5">
+        <div class="row">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
-
+            <div class="col-md-4">
                 <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
-
+            </div>
+            <div class="col-md-4">
                 <?= $form->field($model, 'email') ?>
-
+            </div>
+            <div class="col-md-4">
                 <?= $form->field($model, 'password')->passwordInput() ?>
-
-                <div class="form-group">
-                    <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
-                </div>
-
-            <?php ActiveForm::end(); ?>
+            </div>
         </div>
+
+        <div class="form-group">
+            <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+        </div>
+
+        <?php ActiveForm::end(); ?>
     </div>
 </div>
+

@@ -1,9 +1,7 @@
 <?php
+
 $params = array_merge(
-    require __DIR__ . '/../../common/config/params.php',
-    require __DIR__ . '/../../common/config/params-local.php',
-    require __DIR__ . '/params.php',
-    require __DIR__ . '/params-local.php'
+        require __DIR__ . '/../../common/config/params.php', require __DIR__ . '/../../common/config/params-local.php', require __DIR__ . '/params.php', require __DIR__ . '/params-local.php'
 );
 
 return [
@@ -36,14 +34,30 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
+            'class' => 'yii\web\UrlManager',
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
+            'showScriptName' => true,
+            'enableStrictParsing' => true,
             'rules' => [
+                '/' => 'site/index',
+                'login' => 'site/login',
+                'reset' => 'site/request-password-reset',
+                'about' => 'site/about',
+                'contact' => 'site/contact',
+                'logout' => 'site/logout',
+                'signup' => 'site/signup',
+                'pdf' => 'gridview/export/download',
+                '<controller:\w+>/<id:\d+>' => '<controller>/view',
+                '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<action:(contact|captcha)>' => 'site/<action>',
             ],
         ],
-        */
+        'urlManagerBackend' => [
+            'class' => 'yii\web\UrlManager',
+            'baseUrl' => '/yii2_KanatImmo/backend/web/index.php',
+        ],
     ],
     'params' => $params,
 ];

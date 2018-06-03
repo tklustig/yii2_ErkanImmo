@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\web\Session;
 use kartik\alert\Alert;
+
+$link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
 ?>
 
 <div id="Wrapper">
@@ -26,7 +28,7 @@ use kartik\alert\Alert;
                                             <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/site/index']) ?>
                                         </li>
                                         <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                            <?= Html::a(Yii::t('app', 'Angebote erstellen(Backend)'), ['/site/login']) ?>
+                                            <?= Html::a('Angebote erstellen(Backend)', $link, ['class' => 'fa fa-gear', 'title' => 'Switch to Backend']) ?>
                                         </li>
                                     </ul>
                                 </nav>
