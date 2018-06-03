@@ -88,7 +88,6 @@ class SiteController extends Controller {
             return $this->goBack();
         } else {
             $model->password = '';
-
             return $this->render('login', [
                         'model' => $model,
             ]);
@@ -109,12 +108,13 @@ class SiteController extends Controller {
         $this->layout = "main_kontakt";
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post())) {
+            print_r("Script in der Klasse " . get_class() . " angehalten");
+            die();
             if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
                 Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
             } else {
                 Yii::$app->session->setFlash('error', 'There was an error sending your message.');
             }
-
             return $this->refresh();
         } else {
             return $this->render('contact', [
@@ -158,7 +158,6 @@ class SiteController extends Controller {
                 Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
             }
         }
-
         return $this->render('requestPasswordResetToken', [
                     'model' => $model,
         ]);
