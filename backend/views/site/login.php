@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use yii\web\Session;
+use kartik\alert\Alert;
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
@@ -18,6 +20,26 @@ $fieldOptions2 = [
     'options' => ['class' => 'form-group has-feedback'],
     'inputTemplate' => "{input}<span class='glyphicon glyphicon-lock form-control-feedback'></span>"
 ];
+?>
+
+<?php
+//Hier werden alle Flashnachrichten ausgegeben
+$session = new Session();
+if (!empty($session->getAllFlashes())) {
+    foreach ($session->getAllFlashes() as $flash) {
+        foreach ($flash as $ausgabe) {
+            ?><?=
+            Alert::widget([
+                'type' => Alert::TYPE_SUCCESS,
+                'title' => 'Information',
+                'icon' => 'glyphicon glyphicon-exclamation-sign',
+                'body' => $ausgabe,
+                'showSeparator' => true,
+                'delay' => false
+            ]);
+        }
+    }
+}
 ?>
 
 <div class="login-box">
@@ -67,7 +89,6 @@ $fieldOptions2 = [
         </div>
         <!-- /.social-auth-links -->
         <?= Html::a('I forgot my password', ['site/request-password-reset']) ?>
-        <p><?= Html::a('Register a new membership', ['site/signup']) ?></p>
 
     </div>
     <!-- /.login-box-body -->

@@ -1,19 +1,16 @@
 
 <div id="test"></div>
-
 <div class="jumbotron">
-    <p> Outfit has been changed modifying CSS-File'\frontend\web\site.css'</p></font>
-    <h1>Test Page!</h1>
-    <h2>Test Programming experiences</h2>
+    <h1>Adminseite</h1>
 
-    <label class="lead">You have successfully created your Yii-powered application.</label>
+    <label class="lead">Diese Seite ist nur dem Administator der Seite zugänglich. Sie ist durch einen PasswortHash geschützt.
+        Das Passwort steht folglich nicht als Plaintext zur Verfügung.
+        Sollten sie ihre Logindaten verloren haben, können Sie neue anfordern, indem Sie auf der Loginseite 'I forgot my password' anklicken. Das Einspeisen von Immobilien lässt sich durch obiges Menu ansteuern</label>
 
 </div>
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\Html;
-use yii\base\ErrorException;
 
 \drmabuse\slick\SlickWidget::widget([
     'container' => '.single-item',
@@ -41,15 +38,6 @@ use yii\base\ErrorException;
         'slickGoTo' => 3,
     ]
 ]);
-
-$ordner = dirname(__DIR__) . "/marx.jpg";
-$ordner_ = dirname(__DIR__);
-$ordner_ = substr($ordner_, 25);
-$ordner__ = "/frontend/web/img/";
-if (file_exists($ordner))
-    echo"<p>Bilder exisiteren im Ordner $ordner<br></p>";
-else
-    echo "<p><font color='blue'>Bilder exisiteren nicht im Ordner $ordner_,sondern im Ordner $ordner__<br>Yii2-UrlManager:" . Url::to(['']) . "<br></p></font>";
 ?>
 <?php
 $this->title = 'My Yii Application';

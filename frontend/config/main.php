@@ -41,6 +41,7 @@ return [
             'enableStrictParsing' => true,
             'rules' => [
                 '/' => 'site/index',
+                'home' => 'site/index',
                 'about' => 'site/about',
                 'contact' => 'site/contact',
                 'logout' => 'site/logout',

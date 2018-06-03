@@ -6,6 +6,7 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\web\Session;
 use common\models\LoginForm;
 use backend\models\PasswordResetRequestForm;
 use backend\models\ResetPasswordForm;
@@ -86,6 +87,7 @@ class SiteController extends Controller {
     }
 
     public function actionSignup() {
+        $this->layout = "reset_main";
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
             if ($user = $model->signup()) {
@@ -102,14 +104,15 @@ class SiteController extends Controller {
     /* Regelt die Logik der Passwortrücksetzung- T1 */
 
     public function actionRequestPasswordReset() {
+        $session = new \yii\web\Session();
+        $this->layout = "reset_main";
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
-
-                return $this->goHome();
+                $session->addFlash('success', "Überprüfen Sie ihren Maileingang mit einem Mailclient. Die neuen Zugangsdaten sind dort vermerkt");
+                return $this->redirect('site/login');
             } else {
-                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
+                $session->addFlash('error', "Sorry, we are unable to reset password for the provided email address.");
             }
         }
         return $this->render('requestPasswordResetToken', [
@@ -143,8 +146,7 @@ class SiteController extends Controller {
      */
     public function actionLogout() {
         Yii::$app->user->logout();
-
-        return $this->goHome();
+        return $this->redirect(\Yii::$app->urlManagerFrontend->baseUrl . '/home');
     }
 
 }
