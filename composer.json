@@ -38,6 +38,7 @@
         "raoul2000/yii2-twbsmaxlength-widget": "*"
     },
     "require-dev": {
+        "mootensai/yii2-enhanced-gii": "dev-master",
         "yiisoft/yii2-debug": "~2.0.0",
         "yiisoft/yii2-gii": "~2.0.0",
         "yiisoft/yii2-faker": "~2.0.0",
