@@ -75,24 +75,6 @@ class SiteController extends Controller {
         ]);
     }
 
-    /* Regelt die Logik der Loginseite */
-
-    public function actionLogin() {
-        $this->layout = "main_login";
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        } else {
-            $model->password = '';
-            return $this->render('login', [
-                        'model' => $model,
-            ]);
-        }
-    }
-
     /* Regelt die Logik der Logoutseite */
 
     public function actionLogout() {
