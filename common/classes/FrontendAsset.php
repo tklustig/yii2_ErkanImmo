@@ -2,8 +2,6 @@
 
 namespace common\classes;
 
-//namespace common\wsl_components;
-
 use yii\web\AssetBundle as BaseFrontendAsset;
 
 /**

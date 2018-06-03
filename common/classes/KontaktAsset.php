@@ -1,16 +1,19 @@
 <?php
 
-namespace common\classes;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-//namespace common\wsl_components;
+namespace common\classes;
 
 use yii\web\AssetBundle as BaseFrontendAsset;
 
 /**
- * AdminLTEAsset.php
- * @author Thomas Kipp
- * @link http://tklustig.ddns.net
- * Diese Klasse implementiert den Zugriff auf diverse CSS und Jquery-Dateien,welche sich im Ordner ./web/. befinden
+ * Description of KontaktAsset
+ *
+ * @author tklustig
  */
 class KontaktAsset extends BaseFrontendAsset {
 
@@ -26,5 +29,3 @@ class KontaktAsset extends BaseFrontendAsset {
     ];
 
 }
-?>
-

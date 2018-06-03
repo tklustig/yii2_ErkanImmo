@@ -1,10 +1,12 @@
 <?php
 
 use yii\helpers\Html;
-use common\classes\KontaktAsset;
+
+//use common\classes\KontaktAsset;
 ?>
+
 <?php
-KontaktAsset::register($this);
+\common\classes\KontaktAsset::register($this);
 ?>
 
 <?php $this->beginPage() ?>
