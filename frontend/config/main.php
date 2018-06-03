@@ -41,12 +41,9 @@ return [
             'enableStrictParsing' => true,
             'rules' => [
                 '/' => 'site/index',
-                'login' => 'site/login',
-                'reset' => 'site/request-password-reset',
                 'about' => 'site/about',
                 'contact' => 'site/contact',
                 'logout' => 'site/logout',
-                'signup' => 'site/signup',
                 'pdf' => 'gridview/export/download',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',

@@ -4,7 +4,9 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\web\Session;
 use kartik\alert\Alert;
+?>
 
+<?php
 $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
 ?>
 

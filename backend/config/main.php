@@ -41,12 +41,16 @@ return [
             'enableStrictParsing' => false,
             'class' => 'yii\web\UrlManager',
             'rules' => [
-                'login' => 'site/login',
                 'home' => 'site/index',
+                'login' => 'site/login',
+                'reset' => 'site/request-password-reset',
+                'logout' => 'site/logout',
+                'signup' => 'site/signup',
                 'pdf' => 'gridview/export/download',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<action:(contact|captcha)>' => 'site/<action>',
             ],
         ],
         'urlManagerFrontend' => [
