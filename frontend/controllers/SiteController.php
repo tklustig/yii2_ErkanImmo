@@ -1,5 +1,11 @@
 <?php
 
+/*
+  Gemäß dem MCV-Prinzip für die Logik der Applikation zuständig
+  Klasse erstellt durch Gii
+  Methoden: ©by Thomas Kipp, Klein - Buchholzer - Kirchweg 25, 30659 Hannover, http://tklustig.ddns.net:1025, tklustig.thomas@gmail.com
+ */
+
 namespace frontend\controllers;
 
 use Yii;
@@ -56,6 +62,8 @@ class SiteController extends Controller {
         ];
     }
 
+    /* Regelt die Logik der Startseite */
+
     public function actionIndex() {
         $this->layout = "main_kanat";
         $DynamicModel = new DynamicModel(['searching']);
@@ -69,11 +77,12 @@ class SiteController extends Controller {
         ]);
     }
 
+    /* Regelt die Logik der Loginseite */
+
     public function actionLogin() {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
@@ -86,11 +95,15 @@ class SiteController extends Controller {
         }
     }
 
+    /* Regelt die Logik der Logoutseite */
+
     public function actionLogout() {
         Yii::$app->user->logout();
 
         return $this->goHome();
     }
+
+    /* Regelt die Logik der Kontaktseite */
 
     public function actionContact() {
         $this->layout = "main_kontakt";
@@ -110,9 +123,13 @@ class SiteController extends Controller {
         }
     }
 
+    /* Regelt die Logik der Impressumseite */
+
     public function actionAbout() {
         return $this->render('about');
     }
+
+    /* Regelt die Logik der Registrierung */
 
     public function actionSignup() {
         $model = new SignupForm();
@@ -123,11 +140,12 @@ class SiteController extends Controller {
                 }
             }
         }
-
         return $this->render('signup', [
                     'model' => $model,
         ]);
     }
+
+    /* Regelt die Logik der Passwortrücksetzung- T1 */
 
     public function actionRequestPasswordReset() {
         $model = new PasswordResetRequestForm();
@@ -146,6 +164,8 @@ class SiteController extends Controller {
         ]);
     }
 
+    /* Regelt die Logik der Passwortrücksetzung- T2 */
+
     public function actionResetPassword($token) {
         try {
             $model = new ResetPasswordForm($token);
@@ -158,7 +178,6 @@ class SiteController extends Controller {
 
             return $this->goHome();
         }
-
         return $this->render('resetPassword', [
                     'model' => $model,
         ]);
