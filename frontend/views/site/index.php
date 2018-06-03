@@ -1,53 +1,188 @@
 <?php
 
-/* @var $this yii\web\View */
-
-$this->title = 'My Yii Application';
+use yii\helpers\Html;
 ?>
-<div class="site-index">
-
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
+</head>
+<div id="Wrapper">
+    <div id="Header_wrapper" >
+        <header id="Header">
+            <div class="header_placeholder"></div>
+            <div id="Top_bar" class="loading">
+                <div class="container">
+                    <div class="column one">
+                        <div class="top_bar_left clearfix">
+                            <div class="menu_wrapper">
+                                <nav id="menu">
+                                    <ul id="menu-main-menu" class="menu menu-main">
+                                        <li id="menu-item-1" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                        </li>
+                                        <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                            <?= Html::a(Yii::t('app', 'Kontak'), ['/site/contact']) ?>
+                                        </li>
+                                        <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                            <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/site/index']) ?>
+                                        </li>
+                                        <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                            <?= Html::a(Yii::t('app', 'Angebote erstellen(Backend)'), ['/site/index']) ?>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <a class="responsive-menu-toggle " href="#">
+                                    <i class="icon-menu-fine"></i>
+                                </a>
+                            </div>
+                            <form id="searchform" name="formular" action="" method="post">
+                                <div><br></div>
+                                <input type="text" class="field" name="s" placeholder="Suchbegriff eingeben">
+                                <input type="submit" value="Absenden">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
     </div>
-
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
+    <div id="Content">
+        <div class="content_wrapper clearfix">
+            <div class="sections_group">
+                <div class="extra_content">
+                    <div class="section mcb-section" style="padding-top:180px;padding-bottom:0px; background-color:">
+                        <div class="section_wrapper mcb-section-inner">
+                            <div class="wrap mcb-wrap one  valign-top clearfix" style="">
+                                <div class="mcb-wrap-inner">
+                                    <div class="column mcb-column one column_column  column-margin-">
+                                        <div class="column_attr clearfix"  style="">
+                                            <h6 class="themecolor" style="text-transform: uppercase;">Startseite</h6>
+                                            <h2>Kanat Immobilien PG & Co.KG</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section the_content no_content">
+                        <div class="section_wrapper">
+                            <div class="the_content_wrapper">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section ">
+                    <div class="section_wrapper clearfix">
+                        <div class="column one column_portfolio">
+                            <div class="portfolio_wrapper isotope_wrapper">
+                                <ul class="portfolio_group lm_wrapper isotope grid col-2">
+                                    <li class="portfolio-item isotope-item  has-thumbnail">
+                                        <div class="portfolio-item-fw-bg" style="">
+                                            <div class="image_frame scale-with-grid">
+                                                <div class="image_wrapper">
+                                                    <div class="mask"></div>
+                                                    <?= Html::img('@web/img/pic1.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid wp-post-image', 'style' => 'width:960;height:700']); ?>
+                                                    <div class="image_links double">
+                                                        <div class="image_links double">
+                                                            <?= Html::a('', Yii::getAlias('@web') . '/img/pic1.jpg', ['target' => '_blank', 'alt' => 'PicNotFound', 'class' => 'icon-search']) ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="portfolio-item isotope-item  has-thumbnail">
+                                        <div class="portfolio-item-fw-bg" style="">
+                                            <div class="portfolio-item-fill"></div>
+                                            <div class="image_frame scale-with-grid">
+                                                <div class="image_wrapper">
+                                                    <div class="mask"></div>
+                                                    <?= Html::img('@web/img/pic2.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid wp-post-image']); ?>
+                                                    <div class="image_links double">
+                                                        <?= Html::a('', Yii::getAlias('@web') . '/img/pic2.jpg', ['target' => '_blank', 'alt' => 'PicNotFound', 'class' => 'icon-search']) ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="portfolio-item isotope-item  has-thumbnail">
+                                        <div class="portfolio-item-fw-bg" style="">
+                                            <div class="portfolio-item-fill"></div>
+                                            <div class="image_frame scale-with-grid">
+                                                <div class="image_wrapper">
+                                                    <div class="mask"></div>
+                                                    <?= Html::img('@web/img/pic3.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid wp-post-image']); ?>
+                                                    <div class="image_links double">
+                                                        <?= Html::a('', Yii::getAlias('@web') . '/img/pic2.jpg', ['target' => '_blank', 'alt' => 'PicNotFound', 'class' => 'icon-search']) ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </li>
+                                    <li class="portfolio-item isotope-item  has-thumbnail">
+                                        <div class="portfolio-item-fw-bg" style="">
+                                            <div class="portfolio-item-fill"></div>
+                                            <div class="image_frame scale-with-grid">
+                                                <div class="image_wrapper">
+                                                    <div class="mask"></div>
+                                                    <?= Html::img('@web/img/pic4.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid wp-post-image']); ?>
+                                                    <div class="image_links double">
+                                                        <?= Html::a('', Yii::getAlias('@web') . '/img/pic4.jpg', ['target' => '_blank', 'alt' => 'PicNotFound', 'class' => 'icon-search']) ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
     </div>
+    <footer id="Footer" class="clearfix">
+        <div class="widgets_wrapper" style="padding:0 0 30px;">
+            <div class="container">
+                <div class="column one">
+                    <aside id="text-2" class="widget widget_text">
+                        <div class="textwidget">
+                            <div style="position: relative; margin-top: -100px; z-index: 1;">
+                                <div class="image_frame image_item no_link scale-with-grid aligncenter no_border" >
+                                    <div class="image_wrapper">
+                                        <?= Html::img('@web/img/erkan_logo.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid', 'style' => 'width:350px;height:150px;']); ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="text-align: center; margin: 50px 20%;">
+                                <h4 style="color: #9e7b4e;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4>
+                                <hr class="no_line" style="margin: 0 auto 15px;">
+                                <p> Vom 1-Zimmer-Appartement für Studenten bis hin zu Luxus-Villas für gehobenere Ansprüche: Kanat Immobilien ist der ideale Vermittlungsmarkler.  <?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns<p>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+        <div class="footer_copy">
+            <div class="container">
+                <div class="column one">
+                    <div class="copyright"> &copy; 2018 Kanat Immobilien. All Rights Reserved.
+                    </div>
+                    <ul class="social"></ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 </div>
+<div id="Side_slide" class="right dark" data-width="250">
+    <div class="close-wrapper"><a href="#" class="close">
+            <i class="icon-cancel-fine">
+            </i>
+        </a>
+    </div>
+    <div class="extras">
+        <div class="extras-wrapper"></div>
+    </div>
+    <div class="lang-wrapper"></div>
+    <div class="menu_wrapper"></div>
+    <ul class="social"></ul>
+</div>
+<div id="body_overlay"></div>
+
+
