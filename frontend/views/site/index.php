@@ -26,7 +26,7 @@ use kartik\alert\Alert;
                                             <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/site/index']) ?>
                                         </li>
                                         <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                            <?= Html::a(Yii::t('app', 'Angebote erstellen(Backend)'), ['/site/index']) ?>
+                                            <?= Html::a(Yii::t('app', 'Angebote erstellen(Backend)'), ['/site/login']) ?>
                                         </li>
                                     </ul>
                                 </nav>

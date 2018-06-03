@@ -1,6 +1,10 @@
 <?php
 
 use yii\helpers\Html;
+use common\classes\AssetBundle;
+?>
+<?php
+AssetBundle::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!Doctype html> <!-- Definition des doctype-Modus -->
