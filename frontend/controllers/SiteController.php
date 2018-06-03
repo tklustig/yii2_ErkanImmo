@@ -14,6 +14,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\web\Session;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
@@ -69,7 +70,7 @@ class SiteController extends Controller {
         $DynamicModel = new DynamicModel(['searching']);
         $DynamicModel->addRule(['searching'], 'string');
         if ($DynamicModel->load(Yii::$app->request->post())) {
-            print_r("Script in der Klasse " . get_class() . " angehalten");
+            print_r("Script wurde in der Klasse " . get_class() . " angehalten");
             die();
         }
         return $this->render('index', [
@@ -105,17 +106,16 @@ class SiteController extends Controller {
     /* Regelt die Logik der Kontaktseite */
 
     public function actionContact() {
+        $session = new Session();
         $this->layout = "main_kontakt";
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post())) {
-            print_r("Script in der Klasse " . get_class() . " angehalten");
-            die();
             if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-                Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
+                $session->addFlash("warning", "Ihre Nachricht wurde weitergeleitet. Wir werden Sie schnellstmöglichst unter Ihrer Mailadresse $model->email kontaktieren!<br> Mit freundlichen Grüßen<br> Kanat Immobilien");
             } else {
-                Yii::$app->session->setFlash('error', 'There was an error sending your message.');
+                $session->addFlash("warning", "Ihre Nachricht konnte nicht weitergeleitet werden. Versuchen Sie es erneut!");
             }
-            return $this->refresh();
+            $this->redirect(["/site/index"]);
         } else {
             return $this->render('contact', [
                         'model' => $model,

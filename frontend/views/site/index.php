@@ -2,7 +2,10 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use yii\web\Session;
+use kartik\alert\Alert;
 ?>
+
 <div id="Wrapper">
     <div id="Header_wrapper" >
         <header id="Header">
@@ -17,7 +20,7 @@ use yii\bootstrap\ActiveForm;
                                         <li id="menu-item-1" class="menu-item menu-item-type-post_type menu-item-object-page">
                                         </li>
                                         <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                            <?= Html::a(Yii::t('app', 'Kontak'), ['/site/contact']) ?>
+                                            <?= Html::a(Yii::t('app', 'Kontakt'), ['/site/contact']) ?>
                                         </li>
                                         <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
                                             <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/site/index']) ?>
@@ -64,6 +67,25 @@ use yii\bootstrap\ActiveForm;
                             </div>
                         </div>
                     </div>
+                    <?php
+//Hier werden alle Flashnachrichten ausgegeben
+                    $session = new Session();
+                    if (!empty($session->getAllFlashes())) {
+                        foreach ($session->getAllFlashes() as $flash) {
+                            foreach ($flash as $ausgabe) {
+                                ?><?=
+                                Alert::widget([
+                                    'type' => Alert::TYPE_SUCCESS,
+                                    'title' => 'Information',
+                                    'icon' => 'glyphicon glyphicon-exclamation-sign',
+                                    'body' => $ausgabe,
+                                    'showSeparator' => true,
+                                    'delay' => false
+                                ]);
+                            }
+                        }
+                    }
+                    ?>
                     <div class="section the_content no_content">
                         <div class="section_wrapper">
                             <div class="the_content_wrapper">
