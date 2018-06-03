@@ -16,6 +16,11 @@ class AssetBundle extends \yii\web\AssetBundle {
     public $css = [
         'css/font-awesome.min.css',
     ];
+    public $depends = [
+        'yii\web\YiiAsset',
+        'yii\bootstrap\BootstrapAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
+    ];
 
     public function init() {
         parent::init();

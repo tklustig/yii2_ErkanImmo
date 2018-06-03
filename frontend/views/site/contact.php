@@ -20,6 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-lg-5">
             <?php $form = ActiveForm::begin(['id' => 'contact-form']); ?>
+            <?=
+            $form->errorSummary($model);
+            ?>
 
             <?= $form->field($model, 'name')->textInput(['autofocus' => true]) ?>
 
@@ -36,10 +39,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ?>
 
             <div class="form-group">
-<?= Html::submitButton('Submit', ['class' => 'btn btn-primary', 'name' => 'contact-button']) ?>
+                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary', 'name' => 'contact-button']) ?>
             </div>
 
-<?php ActiveForm::end(); ?>
+            <?php ActiveForm::end(); ?>
         </div>
     </div>
 
