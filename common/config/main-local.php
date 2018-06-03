@@ -31,10 +31,16 @@ return [
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'viewPath' => '@common/mail',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
-            'useFileTransport' => true,
+            'useFileTransport' => true, //set this property to false to send mails to real email addresses
+            //comment the following array to send mail using php's mail function
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.strato.de',
+                'username' => 't.kipp@eisvogel-online-software.de',
+                'password' => 'StrengGeheim',
+                'port' => '587',
+                'encryption' => 'tls',
+            ],
         ],
         'urlManager' => [
             'class' => 'yii\web\UrlManager',
@@ -58,7 +64,7 @@ return [
         ],
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=yii2_widget',
+            'dsn' => 'mysql:host=localhost;dbname=yii2_kanatimmo',
             'username' => 'root',
             'password' => '',
             'charset' => 'utf8',
