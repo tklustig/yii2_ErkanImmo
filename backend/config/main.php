@@ -55,7 +55,7 @@ return [
         ],
         'urlManagerFrontend' => [
             'class' => 'yii\web\UrlManager',
-            'baseUrl' => '/yii2_KanatImmo/frontend/web/index.php',
+            'baseUrl' => '/yii2_ErkanImmo/frontend/web/index.php',
         ],
     ],
     'params' => $params,
