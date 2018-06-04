@@ -6,8 +6,6 @@ use backend\assets\AppAsset;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
-use common\widgets\Alert;
 
 AppAsset::register($this);
 ?>
@@ -28,18 +26,25 @@ AppAsset::register($this);
         <div class="wrap">
             <?php
             NavBar::begin([
-                'brandLabel' => Yii::$app->name,
-                'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
                     'class' => 'navbar-inverse navbar-fixed-top',
                 ],
             ]);
             $menuItems = [
-                ['label' => 'Home', 'url' => ['/site/index'],
-                    'label' => 'Immobilien eingeben', 'url' => ['/site/index'],
-                ],
                 [
-                    'label' => 'neuen User anlegen', 'url' => ['/site/signup'],
+                    'label' => 'Admin',
+                    'items' => [
+                        ['label' => 'Neue Immobilie anlegen', 'url' => ['/site/index']],
+                        '<li class="divider"></li>',
+                        ['label' => 'Neuen Benutzer anlegen', 'url' => ['/site/signup']],
+                        '<li class="divider"></li>',
+                        ['label' => 'Benutzer löschen', 'url' => ['/site/deluser']],
+                        '<li class="divider"></li>',
+                        ['label' => 'Immobilie löschen', 'url' => ['/site/delimmo']],
+                        '<li class="divider"></li>',
+                        ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
+                        '<li class="divider"></li>',
+                    ],
                 ],
             ];
             if (Yii::$app->user->isGuest) {
@@ -61,12 +66,6 @@ AppAsset::register($this);
             ?>
 
             <div class="container">
-                <?=
-                Breadcrumbs::widget([
-                    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-                ])
-                ?>
-                <?= Alert::widget() ?>
                 <?= $content ?>
             </div>
         </div>
