@@ -12,10 +12,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="jumbotron">
     <div class="container">
         <div class="page-header"><h2><?= Html::encode($this->title) ?><small>
-                    <?= Html::a(Yii::t('app', 'zurück zum Login'), ['/site/login', 'class' => 'text-warning']) ?>
+                    <?= Html::a(Yii::t('app', 'zurück zur GridView'), ['/site/index', 'class' => 'text-warning']) ?>
                 </small></h2></div>
 
-        <p>Folgende Felder werden für eine Registrierung benötigt</p>
+        <p>Folgende Felder werden für eine Registrierung benötigt:</p>
 
         <div class="row">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
