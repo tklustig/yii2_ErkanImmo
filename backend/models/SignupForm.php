@@ -4,6 +4,7 @@ namespace backend\models;
 
 use yii\base\Model;
 use common\models\User;
+use kartik\password\StrengthValidator;
 
 /**
  * Signup form
@@ -33,8 +34,8 @@ class SignupForm extends Model {
             ['telefon', 'required'],
             ['telefon', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This number has already been taken'],
             ['telefon', 'string', 'min' => 5, 'max' => 255],
-            ['password', 'required'],
-            ['password', 'string', 'min' => 6],
+            [['password'], 'required'],
+            [['password'], StrengthValidator::className(), 'min' => 8, 'digit' => 1, 'special' => 1, 'lower' => 1, 'upper' => 1]
         ];
     }
 

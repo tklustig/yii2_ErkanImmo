@@ -8,6 +8,8 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\base\DynamicModel;
+use yii\web\Session;
+use kartik\widgets\Growl;
 use common\models\LoginForm;
 use common\models\User;
 use backend\models\PasswordResetRequestForm;
@@ -59,6 +61,26 @@ class SiteController extends Controller {
     /* Displays homepage. */
 
     public function actionIndex() {
+        if (Yii::$app->user->isGuest) {
+            $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+?><?=
+
+            Growl::widget([
+                'type' => Growl::TYPE_GROWL,
+                'title' => 'Warning',
+                'icon' => 'glyphicon glyphicon-ok-sign',
+                'body' => 'Da Sie offensichtlich den User gelöscht hatten, mit dem Sie sich eingeloggt haten, ist momentan kein User mehr angemeldet. Betätigen Sie bitte die Loginoption, rechts oben im Menu!',
+                'showSeparator' => true,
+                'delay' => 1500,
+                'pluginOptions' => [
+                    'showProgressbar' => true,
+                    'placement' => [
+                        'from' => 'top',
+                        'align' => 'center',
+                    ]
+                ]
+            ]);
+        }
         return $this->render('index');
     }
 
@@ -79,10 +101,12 @@ class SiteController extends Controller {
 
     public function actionSignup() {
         $this->layout = "reset_main";
+        $session = new Session();
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
             if ($user = $model->signup()) {
                 if (Yii::$app->getUser()->login($user)) {
+                    $session->addFlash('info', "Ein neuer Benutzer der Bezeichnung $model->username wurde soeben neu angelegt!");
                     return $this->goHome();
                 }
             }
@@ -95,8 +119,7 @@ class SiteController extends Controller {
     /* Regelt die Logik der Passwortrücksetzung- T1 */
 
     public function actionRequestPasswordReset() {
-        $session = new \yii\web\Session();
-        $this->layout = "reset_main";
+        $session = new Session();
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
@@ -141,16 +164,24 @@ class SiteController extends Controller {
 
     public function actionDeluser() {
         try {
+            $session = new Session();
+            $connection = \Yii::$app->db;
+            $record = $connection->createCommand('SELECT COUNT(id) FROM user');
+            $user_count = $record->queryScalar();
+            if ($user_count < 2) {
+                $session->addFlash("warning", "Sie würden sich ausperren, da nur ein User im System registriert ist. Legen Sie einen neuen Benuzer an, bevor Sie dieses Feature aufrufen!");
+                return $this->redirect(['/site/index']);
+            }
+            $session = new Session();
             $DynamicModel = new DynamicModel(['id_user']);
             $DynamicModel->addRule(['id_user'], 'integer');
             $DynamicModel->addRule(['id_user'], 'required');
-            $model = new User();
             if ($DynamicModel->load(Yii::$app->request->post())) {
-                die();
-                return $this->redirect(['view', 'id' => $model->id]);
+                $this->findModel_user($DynamicModel->id_user)->delete();
+                $session->addFlash('info', "Der User mit der Id $DynamicModel->id_user wurde soeben gelöscht. Sie können sich jetzt damit nicht mehr einloggen. ");
+                return $this->redirect(['/site/index']);
             } else {
                 return $this->render('_form_userdelete', [
-                            'model' => $model,
                             'DynamicModel' => $DynamicModel
                 ]);
             }

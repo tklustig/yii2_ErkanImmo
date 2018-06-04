@@ -1,17 +1,38 @@
+<?php
 
-<div id="test"></div>
+use kartik\alert\Alert;
+use yii\helpers\Html;
+use yii\web\Session;
+?>
+<div id="test">
+    <?php
+//Hier werden alle Flashnachrichten ausgegeben
+    $session = new Session();
+    if (!empty($session->getAllFlashes())) {
+        foreach ($session->getAllFlashes() as $flash) {
+            foreach ($flash as $ausgabe) {
+                ?><?=
+                Alert::widget([
+                    'type' => Alert::TYPE_SUCCESS,
+                    'title' => 'Information',
+                    'icon' => 'glyphicon glyphicon-exclamation-sign',
+                    'body' => $ausgabe,
+                    'showSeparator' => true,
+                    'delay' => false
+                ]);
+            }
+        }
+    }
+    ?>
+</div>
 <div class="jumbotron">
     <h1>Adminseite</h1>
 
     <label class="lead">Diese Seite ist nur dem Administator der Seite zugänglich. Sie ist durch einen PasswortHash geschützt.
         Das Passwort steht folglich nicht als Plaintext zur Verfügung.
         Sollten sie ihre Logindaten verloren haben, können Sie neue anfordern, indem Sie auf der Loginseite 'I forgot my password' anklicken. Das Einspeisen von Immobilien lässt sich durch obiges Menu ansteuern</label>
-
 </div>
 <?php
-
-use yii\helpers\Html;
-
 \drmabuse\slick\SlickWidget::widget([
     'container' => '.single-item',
     'settings' => [

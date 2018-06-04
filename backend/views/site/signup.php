@@ -5,6 +5,7 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use kartik\password\PasswordInput;
 
 $this->title = 'Signup';
 $this->params['breadcrumbs'][] = $this->title;
@@ -26,10 +27,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'email') ?>
             </div>
             <div class="col-md-3">
-                <?= $form->field($model, 'password')->passwordInput() ?>
+                <?= $form->field($model, 'telefon')->textInput() ?>
             </div>
             <div class="col-md-3">
-                <?= $form->field($model, 'telefon')->passwordInput() ?>
+                <?= $form->field($model, 'password')->widget(PasswordInput::classname(), []) ?>
             </div>
         </div>
 
