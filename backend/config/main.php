@@ -46,6 +46,7 @@ return [
                 'reset' => 'site/request-password-reset',
                 'logout' => 'site/logout',
                 'signup' => 'site/signup',
+                'delete_user' => 'site/userdel',
                 'pdf' => 'gridview/export/download',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',

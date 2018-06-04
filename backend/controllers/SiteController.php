@@ -6,20 +6,17 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use yii\web\Session;
+use yii\web\NotFoundHttpException;
+use yii\base\DynamicModel;
 use common\models\LoginForm;
+use common\models\User;
 use backend\models\PasswordResetRequestForm;
 use backend\models\ResetPasswordForm;
 use backend\models\SignupForm;
+use common\classes\error_handling;
 
-/**
- * Site controller
- */
 class SiteController extends Controller {
 
-    /**
-     * {@inheritdoc}
-     */
     public function behaviors() {
         return [
             'access' => [
@@ -59,20 +56,12 @@ class SiteController extends Controller {
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
+    /* Displays homepage. */
+
     public function actionIndex() {
         return $this->render('index');
     }
 
-    /**
-     * Login action.
-     *
-     * @return string
-     */
     public function actionLogin() {
         $this->layout = "main_login";
         $model = new LoginForm();
@@ -85,6 +74,8 @@ class SiteController extends Controller {
             ]);
         }
     }
+
+    /* Legt einen neuen User an */
 
     public function actionSignup() {
         $this->layout = "reset_main";
@@ -139,14 +130,46 @@ class SiteController extends Controller {
         ]);
     }
 
-    /**
-     * Logout action.
-     *
-     * @return string
-     */
+    /* Regelt das Ausloggen, indem es zum Frontend zurück rendert */
+
     public function actionLogout() {
         Yii::$app->user->logout();
         return $this->redirect(\Yii::$app->urlManagerFrontend->baseUrl . '/home');
+    }
+
+    /* Löscht einen User aus der Datenbank */
+
+    public function actionDeluser() {
+        try {
+            $DynamicModel = new DynamicModel(['id_user']);
+            $DynamicModel->addRule(['id_user'], 'integer');
+            $DynamicModel->addRule(['id_user'], 'required');
+            $model = new User();
+            if ($DynamicModel->load(Yii::$app->request->post())) {
+                die();
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                return $this->render('_form_userdelete', [
+                            'model' => $model,
+                            'DynamicModel' => $DynamicModel
+                ]);
+            }
+        } catch (\Exception $error) {
+            $go_back = "/site/index";
+            error_handling::error_without_id($error, $go_back);
+        }
+    }
+
+    protected function findModel_user($id) {
+        try {
+            $user = User::findOne($id); //findAll() gibt ein array aus Objekten zurück.findOne() gibt ein einzelnes Objekt zurück
+            if ($user != NULL)
+                return $user;
+            else
+                throw new NotFoundHttpException(Yii::t('app', 'Die Tabelle user konnte nicht geladen werden. Informieren Sie den Softwarehersteller'));
+        } catch (\Exception $e) {
+            throw new NotFoundHttpException(Yii::t('app', "$e"));
+        }
     }
 
 }
