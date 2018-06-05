@@ -14,8 +14,8 @@ AssetBundle::register($this);
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <title><?= Html::encode($this->title) ?></title>
         <style>
-            a {
-                color: #BDBDBD !important;
+            body{
+                background-color: #D8D8D8 !important;
             }
         </style>
         <?php $this->head() ?>

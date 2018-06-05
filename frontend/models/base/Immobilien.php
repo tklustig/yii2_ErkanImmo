@@ -13,6 +13,9 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $id_bild
  * @property string $bezeichnung
  * @property string $strasse
+ * @property integer $wohnflaeche
+ * @property integer $raeume
+ * @property string $geldbetrag
  * @property integer $l_plz_id
  * @property integer $l_stadt_id
  * @property integer $user_id
@@ -56,9 +59,10 @@ class Immobilien extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_bild', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
+            [['id_bild', 'wohnflaeche', 'raeume', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['bezeichnung'], 'string'],
-            [['strasse', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id'], 'required'],
+            [['strasse', 'wohnflaeche', 'raeume', 'geldbetrag', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id'], 'required'],
+            [['geldbetrag'], 'number'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
             [['strasse'], 'string', 'max' => 45]
         ];
@@ -82,6 +86,9 @@ class Immobilien extends \yii\db\ActiveRecord
             'id_bild' => Yii::t('app', 'Id Bild'),
             'bezeichnung' => Yii::t('app', 'Bezeichnung'),
             'strasse' => Yii::t('app', 'Strasse'),
+            'wohnflaeche' => Yii::t('app', 'Wohnflaeche'),
+            'raeume' => Yii::t('app', 'Raeume'),
+            'geldbetrag' => Yii::t('app', 'Geldbetrag'),
             'l_plz_id' => Yii::t('app', 'L Plz ID'),
             'l_stadt_id' => Yii::t('app', 'L Stadt ID'),
             'user_id' => Yii::t('app', 'User ID'),
