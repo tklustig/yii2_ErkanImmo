@@ -100,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         <li class="phone phone-1">
                                                             <span class="icon"><i class="icon-phone"></i></span>
                                                             <p>
-                                                                <a href="tel:+49(0)172-803458">+49 (0) 511 3458</a>
+                                                                <label>+49(0)511 3458</label>
                                                             </p>
                                                         </li>
                                                         <li class="mail">
@@ -108,9 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                                 <i class="icon-mail"></i>
                                                             </span>
                                                             <p>
-                                                                <a href="https://web.de/">
-                                                                    <span class="__cf_email__" data-cfemail="d2bcbda0b7a2beab92b7bca4b3a6bdfcb1bdbf">[erkan@web.de]</span>
-                                                                </a>
+                                                                <a href='mailto:erkan@web.de'>erkan@web.de</a>
                                                             </p>
                                                         </li>
                                                         <li class="www">

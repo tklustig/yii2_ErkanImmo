@@ -24,13 +24,16 @@ $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
                                         <li id="menu-item-1" class="menu-item menu-item-type-post_type menu-item-object-page">
                                         </li>
                                         <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                            <?= Html::a(Yii::t('app', 'Kontakt'), ['/site/contact']) ?>
-                                        </li>
-                                        <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
                                             <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/site/index']) ?>
                                         </li>
                                         <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
                                             <?= Html::a('Angebote erstellen(Backend)', $link, ['class' => 'fa fa-gear', 'title' => 'Switch to Backend']) ?>
+                                        </li>
+                                        <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                            <?= Html::a(Yii::t('app', 'Impressum'), ['/site/about']) ?>
+                                        </li>
+                                        <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                            <?= Html::a(Yii::t('app', 'Kontakt'), ['/site/contact']) ?>
                                         </li>
                                     </ul>
                                 </nav>
