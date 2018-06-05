@@ -4,7 +4,7 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\Immobilien */
+/* @var $model backend\models\Immobilien */
 
 $this->title = Yii::t('app', 'Save As New {modelClass}: ', [
     'modelClass' => 'Immobilien',
