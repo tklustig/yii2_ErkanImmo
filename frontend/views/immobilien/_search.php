@@ -79,9 +79,21 @@ use yii\widgets\ActiveForm;
         ],
     ]); */ ?>
 
-    <?php /* echo $form->field($model, 'angelegt_von')->textInput(['placeholder' => 'Angelegt Von']) */ ?>
+    <?php /* echo $form->field($model, 'angelegt_von')->widget(\kartik\widgets\Select2::classname(), [
+        'data' => \yii\helpers\ArrayHelper::map(\frontend\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
+        'options' => ['placeholder' => Yii::t('app', 'Choose User')],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+    ]); */ ?>
 
-    <?php /* echo $form->field($model, 'aktualisiert_von')->textInput(['placeholder' => 'Aktualisiert Von']) */ ?>
+    <?php /* echo $form->field($model, 'aktualisiert_von')->widget(\kartik\widgets\Select2::classname(), [
+        'data' => \yii\helpers\ArrayHelper::map(\frontend\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
+        'options' => ['placeholder' => Yii::t('app', 'Choose User')],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+    ]); */ ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>

@@ -26,6 +26,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'id_bild',
         'bezeichnung:ntext',
         'strasse',
+        'wohnflaeche',
+        'raeume',
+        'geldbetrag',
         'l_plz_id',
         [
                 'attribute' => 'lStadt.id',
@@ -41,8 +44,14 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         'angelegt_am',
         'aktualisiert_am',
-        'angelegt_von',
-        'aktualisiert_von',
+        [
+                'attribute' => 'angelegtVon.id',
+                'label' => Yii::t('app', 'Angelegt Von')
+            ],
+        [
+                'attribute' => 'aktualisiertVon.id',
+                'label' => Yii::t('app', 'Aktualisiert Von')
+            ],
     ];
     echo DetailView::widget([
         'model' => $model,
@@ -67,8 +76,14 @@ if($providerBesichtigungstermin->totalCount){
             ],
         'angelegt_am',
         'aktualisiert_am',
-        'angelegt_von',
-        'aktualisiert_von',
+        [
+                'attribute' => 'angelegtVon.id',
+                'label' => Yii::t('app', 'Angelegt Von')
+            ],
+        [
+                'attribute' => 'aktualisiertVon.id',
+                'label' => Yii::t('app', 'Aktualisiert Von')
+            ],
             ];
     echo Gridview::widget([
         'dataProvider' => $providerBesichtigungstermin,

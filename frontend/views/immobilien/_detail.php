@@ -41,8 +41,14 @@ use kartik\grid\GridView;
         ],
         'angelegt_am',
         'aktualisiert_am',
-        'angelegt_von',
-        'aktualisiert_von',
+        [
+            'attribute' => 'angelegtVon.id',
+            'label' => Yii::t('app', 'Angelegt Von'),
+        ],
+        [
+            'attribute' => 'aktualisiertVon.id',
+            'label' => Yii::t('app', 'Aktualisiert Von'),
+        ],
     ];
     echo DetailView::widget([
         'model' => $model,

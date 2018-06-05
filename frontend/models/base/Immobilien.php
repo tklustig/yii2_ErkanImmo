@@ -30,6 +30,8 @@ use yii\behaviors\BlameableBehavior;
  * @property \frontend\models\LArt $lArt
  * @property \frontend\models\User $user
  * @property \frontend\models\LStadt $lStadt
+ * @property \frontend\models\User $angelegtVon
+ * @property \frontend\models\User $aktualisiertVon
  * @property \frontend\models\Kundeimmobillie[] $kundeimmobillies
  */
 class Immobilien extends \yii\db\ActiveRecord
@@ -49,6 +51,8 @@ class Immobilien extends \yii\db\ActiveRecord
             'lArt',
             'user',
             'lStadt',
+            'angelegtVon',
+            'aktualisiertVon',
             'kundeimmobillies'
         ];
     }
@@ -138,6 +142,22 @@ class Immobilien extends \yii\db\ActiveRecord
     public function getLStadt()
     {
         return $this->hasOne(\frontend\models\LStadt::className(), ['id' => 'l_stadt_id']);
+    }
+        
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAngelegtVon()
+    {
+        return $this->hasOne(\frontend\models\User::className(), ['id' => 'angelegt_von']);
+    }
+        
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAktualisiertVon()
+    {
+        return $this->hasOne(\frontend\models\User::className(), ['id' => 'aktualisiert_von']);
     }
         
     /**

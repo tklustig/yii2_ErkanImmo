@@ -66,8 +66,14 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'angelegt_am',
         'aktualisiert_am',
-        'angelegt_von',
-        'aktualisiert_von',
+        [
+            'attribute' => 'angelegtVon.id',
+            'label' => Yii::t('app', 'Angelegt Von'),
+        ],
+        [
+            'attribute' => 'aktualisiertVon.id',
+            'label' => Yii::t('app', 'Aktualisiert Von'),
+        ],
     ];
     echo DetailView::widget([
         'model' => $model,
@@ -92,8 +98,14 @@ if($providerBesichtigungstermin->totalCount){
             ],
             'angelegt_am',
             'aktualisiert_am',
-            'angelegt_von',
-            'aktualisiert_von',
+            [
+                'attribute' => 'angelegtVon.id',
+                'label' => Yii::t('app', 'Angelegt Von')
+            ],
+            [
+                'attribute' => 'aktualisiertVon.id',
+                'label' => Yii::t('app', 'Aktualisiert Von')
+            ],
                 ];
     echo Gridview::widget([
         'dataProvider' => $providerBesichtigungstermin,
@@ -182,6 +194,46 @@ if($providerEDateianhang->totalCount){
     echo DetailView::widget([
         'model' => $model->lStadt,
         'attributes' => $gridColumnLStadt    ]);
+    ?>
+    <div class="row">
+        <h4>User<?= ' '. Html::encode($this->title) ?></h4>
+    </div>
+    <?php 
+    $gridColumnUser = [
+        ['attribute' => 'id', 'visible' => false],
+        'username',
+        'auth_key',
+        'password_hash',
+        'password_reset_token',
+        'email',
+        'telefon',
+        'status',
+        'created_at',
+        'updated_at',
+    ];
+    echo DetailView::widget([
+        'model' => $model->angelegtVon,
+        'attributes' => $gridColumnUser    ]);
+    ?>
+    <div class="row">
+        <h4>User<?= ' '. Html::encode($this->title) ?></h4>
+    </div>
+    <?php 
+    $gridColumnUser = [
+        ['attribute' => 'id', 'visible' => false],
+        'username',
+        'auth_key',
+        'password_hash',
+        'password_reset_token',
+        'email',
+        'telefon',
+        'status',
+        'created_at',
+        'updated_at',
+    ];
+    echo DetailView::widget([
+        'model' => $model->aktualisiertVon,
+        'attributes' => $gridColumnUser    ]);
     ?>
     
     <div class="row">

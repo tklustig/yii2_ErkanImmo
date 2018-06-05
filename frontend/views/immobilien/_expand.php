@@ -23,7 +23,7 @@ $items = [
             'row' => $model->eDateianhangs,
         ]),
     ],
-                        [
+                                [
         'label' => '<i class="glyphicon glyphicon-book"></i> '. Html::encode(Yii::t('app', 'Kundeimmobillie')),
         'content' => $this->render('_dataKundeimmobillie', [
             'model' => $model,

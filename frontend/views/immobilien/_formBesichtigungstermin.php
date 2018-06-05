@@ -81,8 +81,26 @@ echo TabularForm::widget([
                 ],
             ]
         ],
-        'angelegt_von' => ['type' => TabularForm::INPUT_TEXT],
-        'aktualisiert_von' => ['type' => TabularForm::INPUT_TEXT],
+        'angelegt_von' => [
+            'label' => 'User',
+            'type' => TabularForm::INPUT_WIDGET,
+            'widgetClass' => \kartik\widgets\Select2::className(),
+            'options' => [
+                'data' => \yii\helpers\ArrayHelper::map(\frontend\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
+                'options' => ['placeholder' => Yii::t('app', 'Choose User')],
+            ],
+            'columnOptions' => ['width' => '200px']
+        ],
+        'aktualisiert_von' => [
+            'label' => 'User',
+            'type' => TabularForm::INPUT_WIDGET,
+            'widgetClass' => \kartik\widgets\Select2::className(),
+            'options' => [
+                'data' => \yii\helpers\ArrayHelper::map(\frontend\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
+                'options' => ['placeholder' => Yii::t('app', 'Choose User')],
+            ],
+            'columnOptions' => ['width' => '200px']
+        ],
         'del' => [
             'type' => 'raw',
             'label' => '',
