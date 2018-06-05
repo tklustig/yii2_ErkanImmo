@@ -5,10 +5,10 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Immobilien;
+use frontend\models\Immobilien;
 
 /**
- * frontend\models\ImmobilienSearch represents the model behind the search form about `backend\models\Immobilien`.
+ * frontend\models\ImmobilienSearch represents the model behind the search form about `frontend\models\Immobilien`.
  */
  class ImmobilienSearch extends Immobilien
 {
