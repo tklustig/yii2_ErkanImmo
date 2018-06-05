@@ -184,7 +184,7 @@ $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
                             <div style="text-align: center; margin: 50px 20%;">
                                 <h4 style="color: #9e7b4e;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4>
                                 <hr class="no_line" style="margin: 0 auto 15px;">
-                                <p> Vom 1-Zimmer-Appartement für Studenten bis hin zu Luxus-Villas für gehobenere Ansprüche: Kanat Immobilien ist der ideale Vermittlungsmarkler.  <?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns, oder inspizieren Sie unsere <?= Html::a(Yii::t('app', 'Angebote'), ['/site/index']) ?> <p>
+                                <p> Vom 1-Zimmer-Appartement für Studenten bis hin zu Luxus-Villas für gehobenere Ansprüche:<br>Kanat Immobilien ist der ideale Vermittlungsmarkler.  <?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns, oder inspizieren Sie unsere <?= Html::a(Yii::t('app', 'Angebote'), ['/site/index']) ?> <p>
                             </div>
                         </div>
                     </aside>
