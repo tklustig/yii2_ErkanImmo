@@ -208,4 +208,14 @@ class ImmobilienController extends Controller {
         }
     }
 
+    public function actionTermin() {
+        ?>
+        <h3>
+            Diese Methode soll dem Interessenten die Möglichkeit geben, einen Termin mit dem jeweiligen Makler zu beantragen. Es wird folglich ein Formular gerendert, welches die entsprechenden Optionen anbietet. Noch ist das allerdings eine Baustelle
+        </h3><br>
+        <?php
+        print_r("Script in der Klasse " . get_class() . " angehalten");
+        die();
+    }
+
 }

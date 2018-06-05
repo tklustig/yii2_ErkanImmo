@@ -82,19 +82,19 @@ class Immobilien extends \yii\db\ActiveRecord {
     public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
-            'bezeichnung' => Yii::t('app', 'Bezeichnung'),
+            'bezeichnung' => Yii::t('app', 'Beschreibung'),
             'strasse' => Yii::t('app', 'Strasse'),
-            'wohnflaeche' => Yii::t('app', 'Wohnflaeche'),
-            'raeume' => Yii::t('app', 'Raeume'),
-            'geldbetrag' => Yii::t('app', 'Geldbetrag'),
-            'l_plz_id' => Yii::t('app', 'L Plz ID'),
-            'l_stadt_id' => Yii::t('app', 'L Stadt ID'),
-            'user_id' => Yii::t('app', 'User ID'),
-            'l_art_id' => Yii::t('app', 'L Art ID'),
-            'angelegt_am' => Yii::t('app', 'Angelegt Am'),
-            'aktualisiert_am' => Yii::t('app', 'Aktualisiert Am'),
-            'angelegt_von' => Yii::t('app', 'Angelegt Von'),
-            'aktualisiert_von' => Yii::t('app', 'Aktualisiert Von'),
+            'wohnflaeche' => Yii::t('app', 'Wohnfläche(m^2)'),
+            'raeume' => Yii::t('app', 'Räume'),
+            'geldbetrag' => Yii::t('app', 'Kosten(€)'),
+            'l_plz_id' => Yii::t('app', 'Plz'),
+            'l_stadt_id' => Yii::t('app', 'Stadt'),
+            'user_id' => Yii::t('app', 'User'),
+            'l_art_id' => Yii::t('app', 'Angebotsart'),
+            'angelegt_am' => Yii::t('app', 'angelegt am'),
+            'aktualisiert_am' => Yii::t('app', 'aktualisiert am'),
+            'angelegt_von' => Yii::t('app', 'angelegt von'),
+            'aktualisiert_von' => Yii::t('app', 'aktualisiert von'),
         ];
     }
 

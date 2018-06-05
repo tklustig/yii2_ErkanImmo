@@ -37,7 +37,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php
             $gridColumn = [
                 ['attribute' => 'id', 'visible' => false],
-                'id_bild',
                 'bezeichnung:html',
                 'strasse',
                 'wohnflaeche',
@@ -116,30 +115,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="row">
             <?php
-            if ($providerEDateianhang->totalCount) {
-                $gridColumnEDateianhang = [
-                    ['class' => 'yii\grid\SerialColumn'],
-                    ['attribute' => 'id', 'visible' => false],
-                    [
-                        'attribute' => 'user.id',
-                        'label' => Yii::t('app', 'User')
-                    ],
-                    [
-                        'attribute' => 'kunde.id',
-                        'label' => Yii::t('app', 'Kunde')
-                    ],
-                ];
-                echo Gridview::widget([
-                    'dataProvider' => $providerEDateianhang,
-                    'pjax' => true,
-                    'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container-e-dateianhang']],
-                    'panel' => [
-                        'type' => GridView::TYPE_PRIMARY,
-                        'heading' => '<span class="glyphicon glyphicon-book"></span> ' . Html::encode(Yii::t('app', 'E Dateianhang')),
-                    ],
-                    'columns' => $gridColumnEDateianhang
-                ]);
-            }
             ?>
 
         </div>

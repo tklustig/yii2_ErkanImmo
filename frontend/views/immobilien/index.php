@@ -21,12 +21,13 @@ $this->registerJs($search);
     <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-warning search-button']) ?>
+        <?= Html::a(Yii::t('app', 'Tiefergehende Suche'), '#', ['class' => 'btn btn-warning search-button']) ?>
     </p>
     <div class="search-form" style="display:none">
         <?= $this->render('_search', ['model' => $searchModel]); ?>
     </div>
     <?php
+    $dummy = 'id';
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
         [
@@ -41,10 +42,43 @@ $this->registerJs($search);
             'headerOptions' => ['class' => 'kartik-sheet-style'],
             'expandOneOnly' => true
         ],
+        [
+            /*
+              Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBewerberBild(model),welche
+              drei JOINs und eine dynamische WHERE-Klausel enthält,die auf den FK id_person von bewerber prüft. Das Bild liegt physikalisch auf dem Webspace,
+              dessen Zugriffspfade in der Datenbank in einer ganz bestimmten Reihenfolge hinterlegt sein müssen!
+             */
+            'attribute' => $dummy,
+            'label' => Yii::t('app', ''),
+            'format' => 'html', // sorgt dafür,dass das HTML im return gerendert wird
+            'vAlign' => 'middle',
+            'value' => function($model) {
+                $bmp = '/bmp/';
+                $tif = '/tif/';
+                $png = '/png/';
+                $psd = '/psd/';
+                $pcx = '/pcx/';
+                $gif = '/gif/';
+                $jpeg = '/jpeg/';
+                $jpg = '/jpg/';
+                $ico = '/ico/';
+                try {
+                    $bilder = \frontend\models\Dateianhang::GetBild($model);
+                    foreach ($bilder as $bild) {
+                        if (preg_match($bmp, $bild->dateiname) || preg_match($tif, $bild->dateiname) || preg_match($png, $bild->dateiname) || preg_match($psd, $bild->dateiname) || preg_match($pcx, $bild->dateiname) || preg_match($gif, $bild->dateiname) || preg_match($jpeg, $bild->dateiname) || preg_match($jpg, $bild->dateiname) || preg_match($ico, $bild->dateiname)) {
+                            $url = '@web/img/' . $bild->dateiname;
+                        }
+                    }
+                } catch (Exception $e) {
+                    return;
+                }
+                return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
+            }
+        ],
         ['attribute' => 'id', 'visible' => false],
         [
             'attribute' => 'l_stadt_id',
-            'label' => Yii::t('app', 'L Stadt'),
+            'label' => Yii::t('app', 'Stadt'),
             'value' => function($model) {
                 return $model->lStadt->stadt;
             },
@@ -53,13 +87,12 @@ $this->registerJs($search);
             'filterWidgetOptions' => [
                 'pluginOptions' => ['allowClear' => true],
             ],
-            'filterInputOptions' => ['placeholder' => 'L stadt', 'id' => 'grid-immobilien-search-l_stadt_id']
+            'filterInputOptions' => ['placeholder' => 'Stadt wählen', 'id' => 'grid-immobilien-search-l_stadt_id']
         ],
         'bezeichnung:html',
         'strasse',
         'wohnflaeche',
         'raeume',
-        'geldbetrag',
         // 'l_plz_id',
         /*
           [
@@ -76,8 +109,21 @@ $this->registerJs($search);
           'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-user_id']
           ], */
         [
+            'attribute' => 'geldbetrag',
+            'label' => Yii::t('app', 'Kosten'),
+            'value' => function($model) {
+                $betrag = number_format(
+                        $model->geldbetrag, // zu konvertierende zahl
+                        2, // Anzahl an Nochkommastellen
+                        ",", // Dezimaltrennzeichen
+                        "."    // 1000er-Trennzeichen
+                );
+                return $betrag;
+            },
+        ],
+        [
             'attribute' => 'l_art_id',
-            'label' => Yii::t('app', 'L Art'),
+            'label' => Yii::t('app', 'Art'),
             'value' => function($model) {
                 return $model->lArt->bezeichnung;
             },
@@ -86,9 +132,25 @@ $this->registerJs($search);
             'filterWidgetOptions' => [
                 'pluginOptions' => ['allowClear' => true],
             ],
-            'filterInputOptions' => ['placeholder' => 'L art', 'id' => 'grid-immobilien-search-l_art_id']
+            'filterInputOptions' => ['placeholder' => 'Immobilienart', 'id' => 'grid-immobilien-search-l_art_id']
         ],
-        'angelegt_am',
+        [
+            'attribute' => 'angelegt_am',
+            'label' => Yii::t('app', 'angelegt am'),
+            'format' => ['datetime', 'php:d-M-Y H:i:s'],
+            'contentOptions' => [
+                'style' => ['width' => '150px;']
+            ],
+            'hAlign' => 'center',
+            'value' => function($model) {
+                $angelegt_am = new DateTime($model->angelegt_am);
+                if ($model->angelegt_am) {
+                    return $angelegt_am;
+                } else {
+                    return NULL;
+                }
+            },
+        ],
         /*
           'aktualisiert_am',
           [
@@ -128,8 +190,21 @@ $this->registerJs($search);
 
          */
         [
+            'class' => 'kartik\grid\ActionColumn',
+            'dropdown' => true,
+            'headerOptions' => ['width' => '80'],
+            'vAlign' => 'top',
+            'header' => '',
+            'template' => '{termin}',
+            'buttons' => [
+                'termin' => function ($model, $id) {
+                    return Html::a('<span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span>', ['immobilien/termin', 'id' => $id->id], ['title' => 'Termin vereinbaren', 'data' => ['pjax' => '0']]);
+                },
+            ],
+        ],
+        [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{view}',
+            'template' => '{view}'
         ],
     ];
     Pjax::begin();

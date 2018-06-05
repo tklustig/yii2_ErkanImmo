@@ -22,17 +22,15 @@ use yii\behaviors\BlameableBehavior;
  * @property \frontend\models\EDateianhang $eDateianhang
  * @property \frontend\models\LDateianhangArt $lDateianhangArt
  */
-class Dateianhang extends \yii\db\ActiveRecord
-{
+class Dateianhang extends \yii\db\ActiveRecord {
+
     use \mootensai\relation\RelationTrait;
 
-
     /**
-    * This function helps \mootensai\relation\RelationTrait runs faster
-    * @return array relation names of this model
-    */
-    public function relationNames()
-    {
+     * This function helps \mootensai\relation\RelationTrait runs faster
+     * @return array relation names of this model
+     */
+    public function relationNames() {
         return [
             'eDateianhang',
             'lDateianhangArt'
@@ -42,8 +40,7 @@ class Dateianhang extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['dateiname', 'angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'required'],
             [['angelegt_am', 'aktualisert_am'], 'safe'],
@@ -55,16 +52,14 @@ class Dateianhang extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'dateianhang';
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
             'bezeichnung' => Yii::t('app', 'Bezeichnung'),
@@ -77,29 +72,26 @@ class Dateianhang extends \yii\db\ActiveRecord
             'e_dateianhang_id' => Yii::t('app', 'E Dateianhang ID'),
         ];
     }
-    
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEDateianhang()
-    {
+    public function getEDateianhang() {
         return $this->hasOne(\frontend\models\EDateianhang::className(), ['id' => 'e_dateianhang_id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLDateianhangArt()
-    {
+    public function getLDateianhangArt() {
         return $this->hasOne(\frontend\models\LDateianhangArt::className(), ['id' => 'l_dateianhang_art_id']);
     }
-    
+
     /**
      * @inheritdoc
      * @return array mixed
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
@@ -114,4 +106,16 @@ class Dateianhang extends \yii\db\ActiveRecord
             ],
         ];
     }
+
+    public static function GetBild($model) {
+        try {
+            return Dateianhang::find()
+                            ->leftJoin('e_dateianhang', 'dateianhang.e_dateianhang_id =e_dateianhang.id')
+                            ->leftJoin('immobilien', 'e_dateianhang.immobilien_id = immobilien.id')
+                            ->where(['e_dateianhang.immobilien_id' => $model::findOne([$model->id])->id])->all();
+        } catch (\Exception $error) {
+            return;
+        }
+    }
+
 }

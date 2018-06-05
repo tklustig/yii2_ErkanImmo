@@ -19,33 +19,33 @@ use kartik\grid\GridView;
         <?php
         $gridColumn = [
             ['attribute' => 'id', 'visible' => false],
-            'bezeichnung:ntext',
+            'bezeichnung:html',
             'strasse',
             'wohnflaeche',
             'raeume',
             'geldbetrag',
             'l_plz_id',
             [
-                'attribute' => 'lStadt.id',
-                'label' => Yii::t('app', 'L Stadt'),
+                'attribute' => 'lStadt.stadt',
+                'label' => Yii::t('app', 'Stadt'),
             ],
             [
-                'attribute' => 'user.id',
+                'attribute' => 'user.username',
                 'label' => Yii::t('app', 'User'),
             ],
             [
-                'attribute' => 'lArt.id',
-                'label' => Yii::t('app', 'L Art'),
+                'attribute' => 'lArt.bezeichnung',
+                'label' => Yii::t('app', 'Art'),
             ],
             'angelegt_am',
             'aktualisiert_am',
             [
-                'attribute' => 'angelegtVon.id',
-                'label' => Yii::t('app', 'Angelegt Von'),
+                'attribute' => 'angelegtVon.username',
+                'label' => Yii::t('app', 'angelegt von'),
             ],
             [
-                'attribute' => 'aktualisiertVon.id',
-                'label' => Yii::t('app', 'Aktualisiert Von'),
+                'attribute' => 'aktualisiertVon.username',
+                'label' => Yii::t('app', 'aktualisiert von'),
             ],
         ];
         echo DetailView::widget([
