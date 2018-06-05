@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                             <span class="wpcf7-form-control-wrap your-message">
                                                                 <?=
                                                                 $form->field($model, 'inhalt')->widget(\dosamigos\ckeditor\CKEditor::className(), [
-                                                                    'preset' => 'full', 'clientOptions' => ['height' => 200],
+                                                                    'clientOptions' => ['height' => 200, 'width' => 700],
                                                                 ])
                                                                 ?>
                                                             </span>
