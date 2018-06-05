@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="content_wrapper clearfix">
             <div class="sections_group">
                 <div class="entry-content" itemprop="mainContentOfPage">
-                    <div class="section mcb-section "style="padding-top:180px; padding-bottom:130px; background-color:#121315; background-image:url(../img/home_3d_sectionbg2.jpg); background-repeat:no-repeat; background-position:center top;-webkit-background-size:">
+                    <div class="section mcb-section "style="background-color:#121315; background-image:url(../img/smoke_men-wallpaper-1680x1050.jpg); background-repeat:no-repeat; background-position:center top;-webkit-background-size:">
                         <div class="section_wrapper mcb-section-inner">
                             <div class="wrap mcb-wrap one-second  valign-top clearfix" style="padding:0 4% 0 0 ">
                                 <div class="mcb-wrap-inner">
@@ -55,8 +55,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <div class="image_frame image_item no_link scale-with-grid aligncenter no_border" >
                                             <div class="image_wrapper">
                                                 <!-- stellt das große Bild dar -->
-
-                                                <?= Html::img('@web/img/home_3d_about4.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid', 'style' => 'width:530px;height:612px;']); ?>
                                             </div>
                                         </div>
                                     </div>

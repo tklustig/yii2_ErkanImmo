@@ -9,7 +9,6 @@ use kartik\alert\Alert;
 <?php
 $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
 ?>
-
 <div id="Wrapper">
     <div id="Header_wrapper" >
         <header id="Header">
