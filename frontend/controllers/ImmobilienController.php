@@ -12,10 +12,9 @@ use yii\filters\VerbFilter;
 /**
  * ImmobilienController implements the CRUD actions for Immobilien model.
  */
-class ImmobilienController extends Controller
-{
-    public function behaviors()
-    {
+class ImmobilienController extends Controller {
+
+    public function behaviors() {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -30,14 +29,13 @@ class ImmobilienController extends Controller
      * Lists all Immobilien models.
      * @return mixed
      */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $searchModel = new ImmobilienSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -50,9 +48,9 @@ class ImmobilienController extends Controller
      * @param integer $l_art_id
      * @return mixed
      */
-    public function actionView($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id)
-    {
-        $model = $this->findModel($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id);
+    public function actionView($id) {
+        $this->layout = 'main_immo';
+        $model = $this->findModel($id);
         $providerBesichtigungstermin = new \yii\data\ArrayDataProvider([
             'allModels' => $model->besichtigungstermins,
         ]);
@@ -63,10 +61,10 @@ class ImmobilienController extends Controller
             'allModels' => $model->kundeimmobillies,
         ]);
         return $this->render('view', [
-            'model' => $this->findModel($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id),
-            'providerBesichtigungstermin' => $providerBesichtigungstermin,
-            'providerEDateianhang' => $providerEDateianhang,
-            'providerKundeimmobillie' => $providerKundeimmobillie,
+                    'model' => $this->findModel($id),
+                    'providerBesichtigungstermin' => $providerBesichtigungstermin,
+                    'providerEDateianhang' => $providerEDateianhang,
+                    'providerKundeimmobillie' => $providerKundeimmobillie,
         ]);
     }
 
@@ -75,65 +73,20 @@ class ImmobilienController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
+    public function actionCreate() {
         $model = new Immobilien();
 
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
         } else {
             return $this->render('create', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
 
     /**
-     * Updates an existing Immobilien model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @param integer $l_plz_id
-     * @param integer $l_stadt_id
-     * @param integer $user_id
-     * @param integer $l_art_id
-     * @return mixed
-     */
-    public function actionUpdate($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id)
-    {
-        if (Yii::$app->request->post('_asnew') == '1') {
-            $model = new Immobilien();
-        }else{
-            $model = $this->findModel($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id);
-        }
-
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
-            return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Deletes an existing Immobilien model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @param integer $l_plz_id
-     * @param integer $l_stadt_id
-     * @param integer $user_id
-     * @param integer $l_art_id
-     * @return mixed
-     */
-    public function actionDelete($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id)
-    {
-        $this->findModel($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id)->deleteWithRelated();
-
-        return $this->redirect(['index']);
-    }
-    
-    /**
-     * 
+     *
      * Export Immobilien information into PDF format.
      * @param integer $id
      * @param integer $l_plz_id
@@ -180,30 +133,6 @@ class ImmobilienController extends Controller
     }
 
     /**
-    * Creates a new Immobilien model by another data,
-    * so user don't need to input all field from scratch.
-    * If creation is successful, the browser will be redirected to the 'view' page.
-    *
-    * @param mixed $id
-    * @return mixed
-    */
-    public function actionSaveAsNew($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id) {
-        $model = new Immobilien();
-
-        if (Yii::$app->request->post('_asnew') != '1') {
-            $model = $this->findModel($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id);
-        }
-    
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
-            return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
-        } else {
-            return $this->render('saveAsNew', [
-                'model' => $model,
-            ]);
-        }
-    }
-    
-    /**
      * Finds the Immobilien model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
@@ -214,72 +143,69 @@ class ImmobilienController extends Controller
      * @return Immobilien the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id)
-    {
-        if (($model = Immobilien::findOne(['id' => $id, 'l_plz_id' => $l_plz_id, 'l_stadt_id' => $l_stadt_id, 'user_id' => $user_id, 'l_art_id' => $l_art_id])) !== null) {
+    protected function findModel($id) {
+        if (($model = Immobilien::findOne(['id' => $id])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
-    
+
     /**
-    * Action to load a tabular form grid
-    * for Besichtigungstermin
-    * @author Yohanes Candrajaya <moo.tensai@gmail.com>
-    * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
-    *
-    * @return mixed
-    */
-    public function actionAddBesichtigungstermin()
-    {
+     * Action to load a tabular form grid
+     * for Besichtigungstermin
+     * @author Yohanes Candrajaya <moo.tensai@gmail.com>
+     * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
+     *
+     * @return mixed
+     */
+    public function actionAddBesichtigungstermin() {
         if (Yii::$app->request->isAjax) {
             $row = Yii::$app->request->post('Besichtigungstermin');
-            if((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
+            if ((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
                 $row[] = [];
             return $this->renderAjax('_formBesichtigungstermin', ['row' => $row]);
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
-    
+
     /**
-    * Action to load a tabular form grid
-    * for EDateianhang
-    * @author Yohanes Candrajaya <moo.tensai@gmail.com>
-    * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
-    *
-    * @return mixed
-    */
-    public function actionAddEDateianhang()
-    {
+     * Action to load a tabular form grid
+     * for EDateianhang
+     * @author Yohanes Candrajaya <moo.tensai@gmail.com>
+     * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
+     *
+     * @return mixed
+     */
+    public function actionAddEDateianhang() {
         if (Yii::$app->request->isAjax) {
             $row = Yii::$app->request->post('EDateianhang');
-            if((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
+            if ((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
                 $row[] = [];
             return $this->renderAjax('_formEDateianhang', ['row' => $row]);
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
-    
+
     /**
-    * Action to load a tabular form grid
-    * for Kundeimmobillie
-    * @author Yohanes Candrajaya <moo.tensai@gmail.com>
-    * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
-    *
-    * @return mixed
-    */
-    public function actionAddKundeimmobillie()
-    {
+     * Action to load a tabular form grid
+     * for Kundeimmobillie
+     * @author Yohanes Candrajaya <moo.tensai@gmail.com>
+     * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
+     *
+     * @return mixed
+     */
+    public function actionAddKundeimmobillie() {
         if (Yii::$app->request->isAjax) {
             $row = Yii::$app->request->post('Kundeimmobillie');
-            if((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
+            if ((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
                 $row[] = [];
             return $this->renderAjax('_formKundeimmobillie', ['row' => $row]);
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
+
 }
