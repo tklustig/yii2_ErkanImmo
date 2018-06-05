@@ -10,15 +10,14 @@ use frontend\models\Immobilien;
 /**
  * frontend\models\ImmobilienSearch represents the model behind the search form about `frontend\models\Immobilien`.
  */
- class ImmobilienSearch extends Immobilien
-{
+class ImmobilienSearch extends Immobilien {
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['id', 'id_bild', 'wohnflaeche', 'raeume', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
+            [['id', 'wohnflaeche', 'raeume', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['bezeichnung', 'strasse', 'angelegt_am', 'aktualisiert_am'], 'safe'],
             [['geldbetrag'], 'number'],
         ];
@@ -27,8 +26,7 @@ use frontend\models\Immobilien;
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -40,8 +38,7 @@ use frontend\models\Immobilien;
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = Immobilien::find();
 
         $dataProvider = new ActiveDataProvider([
@@ -58,7 +55,6 @@ use frontend\models\Immobilien;
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'id_bild' => $this->id_bild,
             'wohnflaeche' => $this->wohnflaeche,
             'raeume' => $this->raeume,
             'geldbetrag' => $this->geldbetrag,
@@ -73,8 +69,9 @@ use frontend\models\Immobilien;
         ]);
 
         $query->andFilterWhere(['like', 'bezeichnung', $this->bezeichnung])
-            ->andFilterWhere(['like', 'strasse', $this->strasse]);
+                ->andFilterWhere(['like', 'strasse', $this->strasse]);
 
         return $dataProvider;
     }
+
 }

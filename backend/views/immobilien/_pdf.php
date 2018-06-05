@@ -23,7 +23,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php 
     $gridColumn = [
         ['attribute' => 'id', 'visible' => false],
-        'id_bild',
         'bezeichnung:ntext',
         'strasse',
         'wohnflaeche',

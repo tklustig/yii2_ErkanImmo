@@ -41,8 +41,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id', ['template' => '{input}'])->textInput(['style' => 'display:none']); ?>
 
-    <?= $form->field($model, 'id_bild')->textInput(['placeholder' => 'Id Bild']) ?>
-
     <?= $form->field($model, 'bezeichnung')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'strasse')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>

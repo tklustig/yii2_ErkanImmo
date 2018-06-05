@@ -60,7 +60,7 @@ class Immobilien extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['id_bild', 'wohnflaeche', 'raeume', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
+            [['wohnflaeche', 'raeume', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['bezeichnung'], 'string'],
             [['strasse', 'wohnflaeche', 'raeume', 'geldbetrag', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id'], 'required'],
             [['geldbetrag'], 'number'],
@@ -82,7 +82,6 @@ class Immobilien extends \yii\db\ActiveRecord {
     public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
-            'id_bild' => Yii::t('app', 'Id Bild'),
             'bezeichnung' => Yii::t('app', 'Bezeichnung'),
             'strasse' => Yii::t('app', 'Strasse'),
             'wohnflaeche' => Yii::t('app', 'Wohnflaeche'),

@@ -6,7 +6,6 @@ use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Immobilien */
-
 ?>
 <div class="immobilien-view">
 
@@ -17,43 +16,42 @@ use kartik\grid\GridView;
     </div>
 
     <div class="row">
-<?php 
-    $gridColumn = [
-        ['attribute' => 'id', 'visible' => false],
-        'id_bild',
-        'bezeichnung:ntext',
-        'strasse',
-        'wohnflaeche',
-        'raeume',
-        'geldbetrag',
-        'l_plz_id',
-        [
-            'attribute' => 'lStadt.id',
-            'label' => Yii::t('app', 'L Stadt'),
-        ],
-        [
-            'attribute' => 'user.id',
-            'label' => Yii::t('app', 'User'),
-        ],
-        [
-            'attribute' => 'lArt.id',
-            'label' => Yii::t('app', 'L Art'),
-        ],
-        'angelegt_am',
-        'aktualisiert_am',
-        [
-            'attribute' => 'angelegtVon.id',
-            'label' => Yii::t('app', 'Angelegt Von'),
-        ],
-        [
-            'attribute' => 'aktualisiertVon.id',
-            'label' => Yii::t('app', 'Aktualisiert Von'),
-        ],
-    ];
-    echo DetailView::widget([
-        'model' => $model,
-        'attributes' => $gridColumn
-    ]); 
-?>
+        <?php
+        $gridColumn = [
+            ['attribute' => 'id', 'visible' => false],
+            'bezeichnung:ntext',
+            'strasse',
+            'wohnflaeche',
+            'raeume',
+            'geldbetrag',
+            'l_plz_id',
+            [
+                'attribute' => 'lStadt.id',
+                'label' => Yii::t('app', 'L Stadt'),
+            ],
+            [
+                'attribute' => 'user.id',
+                'label' => Yii::t('app', 'User'),
+            ],
+            [
+                'attribute' => 'lArt.id',
+                'label' => Yii::t('app', 'L Art'),
+            ],
+            'angelegt_am',
+            'aktualisiert_am',
+            [
+                'attribute' => 'angelegtVon.id',
+                'label' => Yii::t('app', 'Angelegt Von'),
+            ],
+            [
+                'attribute' => 'aktualisiertVon.id',
+                'label' => Yii::t('app', 'Aktualisiert Von'),
+            ],
+        ];
+        echo DetailView::widget([
+            'model' => $model,
+            'attributes' => $gridColumn
+        ]);
+        ?>
     </div>
 </div>

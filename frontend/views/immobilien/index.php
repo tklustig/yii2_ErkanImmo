@@ -42,7 +42,6 @@ $this->registerJs($search);
             'expandOneOnly' => true
         ],
         ['attribute' => 'id', 'visible' => false],
-        'id_bild',
         [
             'attribute' => 'l_stadt_id',
             'label' => Yii::t('app', 'L Stadt'),
