@@ -179,7 +179,7 @@ class SiteController extends Controller {
             $DynamicModel->addRule(['id_user'], 'required');
             if ($DynamicModel->load(Yii::$app->request->post())) {
                 $this->findModel_user($DynamicModel->id_user)->delete();
-                $session->addFlash('info', "Der User mit der Id $DynamicModel->id_user wurde soeben gelöscht. Sie können sich jetzt damit nicht mehr einloggen. ");
+                $session->addFlash('info', "Der User mit der Id $DynamicModel->id_user wurde soeben gelöscht. Sie können sich mit dessen Logindaten zukünftig nicht mehr einloggen.");
                 return $this->redirect(['/site/index']);
             } else {
                 return $this->render('_form_userdelete', [
