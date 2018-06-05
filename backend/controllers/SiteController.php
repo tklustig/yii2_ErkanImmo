@@ -119,6 +119,7 @@ class SiteController extends Controller {
     /* Regelt die Logik der Passwortrücksetzung- T1 */
 
     public function actionRequestPasswordReset() {
+        $this->layout = "reset_main";
         $session = new Session();
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {

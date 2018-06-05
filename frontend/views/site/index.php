@@ -109,7 +109,7 @@ $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
                                             <div class="image_frame scale-with-grid">
                                                 <div class="image_wrapper">
                                                     <div class="mask"></div>
-                                                    <?= Html::img('@web/img/pic1.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid wp-post-image', 'style' => 'width:960;height:700']); ?>
+                                                    <?= Html::img('@web/img/accept_all_you_see-wallpaper-1680x1050.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid wp-post-image', 'style' => 'width:960;height:700']); ?>
                                                     <div class="image_links double">
                                                         <div class="image_links double">
                                                             <?= Html::a('', Yii::getAlias('@web') . '/img/pic1.jpg', ['target' => '_blank', 'alt' => 'PicNotFound', 'class' => 'icon-search']) ?>
@@ -139,7 +139,7 @@ $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
                                             <div class="image_frame scale-with-grid">
                                                 <div class="image_wrapper">
                                                     <div class="mask"></div>
-                                                    <?= Html::img('@web/img/pic3.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid wp-post-image']); ?>
+                                                    <?= Html::img('@web/img/singapore_skyscrapers-wallpaper-1680x1050.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid wp-post-image']); ?>
                                                     <div class="image_links double">
                                                         <?= Html::a('', Yii::getAlias('@web') . '/img/pic2.jpg', ['target' => '_blank', 'alt' => 'PicNotFound', 'class' => 'icon-search']) ?>
                                                     </div>
@@ -184,7 +184,7 @@ $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
                             <div style="text-align: center; margin: 50px 20%;">
                                 <h4 style="color: #9e7b4e;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4>
                                 <hr class="no_line" style="margin: 0 auto 15px;">
-                                <p> Vom 1-Zimmer-Appartement für Studenten bis hin zu Luxus-Villas für gehobenere Ansprüche: Kanat Immobilien ist der ideale Vermittlungsmarkler.  <?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns<p>
+                                <p> Vom 1-Zimmer-Appartement für Studenten bis hin zu Luxus-Villas für gehobenere Ansprüche: Kanat Immobilien ist der ideale Vermittlungsmarkler.  <?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns, oder inspizieren Sie unsere <?= Html::a(Yii::t('app', 'Angebote'), ['/site/index']) ?> <p>
                             </div>
                         </div>
                     </aside>

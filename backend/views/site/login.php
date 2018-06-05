@@ -20,6 +20,7 @@ $fieldOptions2 = [
     'options' => ['class' => 'form-group has-feedback'],
     'inputTemplate' => "{input}<span class='glyphicon glyphicon-lock form-control-feedback'></span>"
 ];
+$link = \Yii::$app->urlManagerFrontend->baseUrl . '/home';
 ?>
 
 <?php
@@ -89,7 +90,7 @@ if (!empty($session->getAllFlashes())) {
         </div>
         <!-- /.social-auth-links -->
         <?= Html::a('I forgot my password', ['site/request-password-reset']) ?>
-
+        <br><a href='<?= $link ?>'> zurück zur GridView</a>
     </div>
     <!-- /.login-box-body -->
 </div><!-- /.login-box -->
