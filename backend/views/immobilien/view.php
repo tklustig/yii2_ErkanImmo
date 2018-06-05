@@ -48,6 +48,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'id_bild',
         'bezeichnung:ntext',
         'strasse',
+        'wohnflaeche',
+        'raeume',
+        'geldbetrag',
         'l_plz_id',
         [
             'attribute' => 'lStadt.id',

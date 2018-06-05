@@ -47,6 +47,12 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'strasse')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
 
+    <?= $form->field($model, 'wohnflaeche')->textInput(['placeholder' => 'Wohnflaeche']) ?>
+
+    <?= $form->field($model, 'raeume')->textInput(['placeholder' => 'Raeume']) ?>
+
+    <?= $form->field($model, 'geldbetrag')->textInput(['maxlength' => true, 'placeholder' => 'Geldbetrag']) ?>
+
     <?= $form->field($model, 'l_plz_id')->textInput(['placeholder' => 'L Plz']) ?>
 
     <?= $form->field($model, 'l_stadt_id')->widget(\kartik\widgets\Select2::classname(), [
