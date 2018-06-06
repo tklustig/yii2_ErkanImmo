@@ -33,17 +33,11 @@ use yii\behaviors\BlameableBehavior;
  * @property \backend\models\User $aktualisiertVon
  * @property \backend\models\Kundeimmobillie[] $kundeimmobillies
  */
-class Immobilien extends \yii\db\ActiveRecord
-{
+class Immobilien extends \yii\db\ActiveRecord {
+
     use \mootensai\relation\RelationTrait;
 
-
-    /**
-    * This function helps \mootensai\relation\RelationTrait runs faster
-    * @return array relation names of this model
-    */
-    public function relationNames()
-    {
+    public function relationNames() {
         return [
             'besichtigungstermins',
             'eDateianhangs',
@@ -59,12 +53,11 @@ class Immobilien extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
+            [['wohnflaeche', 'raeume', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['bezeichnung'], 'string'],
             [['strasse', 'wohnflaeche', 'raeume', 'geldbetrag', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id'], 'required'],
-            [['wohnflaeche', 'raeume', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['geldbetrag'], 'number'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
             [['strasse'], 'string', 'max' => 45]
@@ -74,104 +67,93 @@ class Immobilien extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'immobilien';
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
-            'bezeichnung' => Yii::t('app', 'Bezeichnung'),
+            'bezeichnung' => Yii::t('app', 'Beschreibung'),
             'strasse' => Yii::t('app', 'Strasse'),
-            'wohnflaeche' => Yii::t('app', 'Wohnflaeche'),
-            'raeume' => Yii::t('app', 'Raeume'),
-            'geldbetrag' => Yii::t('app', 'Geldbetrag'),
-            'l_plz_id' => Yii::t('app', 'L Plz ID'),
-            'l_stadt_id' => Yii::t('app', 'L Stadt ID'),
-            'user_id' => Yii::t('app', 'User ID'),
-            'l_art_id' => Yii::t('app', 'L Art ID'),
-            'angelegt_am' => Yii::t('app', 'Angelegt Am'),
-            'aktualisiert_am' => Yii::t('app', 'Aktualisiert Am'),
-            'angelegt_von' => Yii::t('app', 'Angelegt Von'),
-            'aktualisiert_von' => Yii::t('app', 'Aktualisiert Von'),
+            'wohnflaeche' => Yii::t('app', 'Wohnfläche(m^2)'),
+            'raeume' => Yii::t('app', 'Räume'),
+            'geldbetrag' => Yii::t('app', 'Kosten(€)'),
+            'l_plz_id' => Yii::t('app', 'Plz'),
+            'l_stadt_id' => Yii::t('app', 'Stadt'),
+            'user_id' => Yii::t('app', 'User'),
+            'l_art_id' => Yii::t('app', 'Angebotsart'),
+            'angelegt_am' => Yii::t('app', 'angelegt am'),
+            'aktualisiert_am' => Yii::t('app', 'aktualisiert am'),
+            'angelegt_von' => Yii::t('app', 'angelegt von'),
+            'aktualisiert_von' => Yii::t('app', 'aktualisiert von'),
         ];
     }
-    
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBesichtigungstermins()
-    {
-        return $this->hasMany(\backend\models\Besichtigungstermin::className(), ['Immobilien_id' => 'id']);
+    public function getBesichtigungstermins() {
+        return $this->hasMany(\frontend\models\Besichtigungstermin::className(), ['Immobilien_id' => 'id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEDateianhangs()
-    {
-        return $this->hasMany(\backend\models\EDateianhang::className(), ['immobilien_id' => 'id']);
+    public function getEDateianhangs() {
+        return $this->hasMany(\frontend\models\EDateianhang::className(), ['immobilien_id' => 'id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLArt()
-    {
-        return $this->hasOne(\backend\models\LArt::className(), ['id' => 'l_art_id']);
+    public function getLArt() {
+        return $this->hasOne(\frontend\models\LArt::className(), ['id' => 'l_art_id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUser()
-    {
-        return $this->hasOne(\backend\models\User::className(), ['id' => 'user_id']);
+    public function getUser() {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'user_id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLStadt()
-    {
-        return $this->hasOne(\backend\models\LStadt::className(), ['id' => 'l_stadt_id']);
+    public function getLStadt() {
+        return $this->hasOne(\frontend\models\LStadt::className(), ['id' => 'l_stadt_id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAngelegtVon()
-    {
-        return $this->hasOne(\backend\models\User::className(), ['id' => 'angelegt_von']);
+    public function getAngelegtVon() {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'angelegt_von']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAktualisiertVon()
-    {
-        return $this->hasOne(\backend\models\User::className(), ['id' => 'aktualisiert_von']);
+    public function getAktualisiertVon() {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getKundeimmobillies()
-    {
-        return $this->hasMany(\backend\models\Kundeimmobillie::className(), ['immobilien_id' => 'id']);
+    public function getKundeimmobillies() {
+        return $this->hasMany(\frontend\models\Kundeimmobillie::className(), ['immobilien_id' => 'id']);
     }
-    
+
     /**
      * @inheritdoc
      * @return array mixed
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
@@ -186,4 +168,5 @@ class Immobilien extends \yii\db\ActiveRecord
             ],
         ];
     }
+
 }

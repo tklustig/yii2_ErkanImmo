@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use common\classes\AdminLteAsset;
+use yii\bootstrap\NavBar;
+use yii\bootstrap\Nav;
 
 $js = <<<SCRIPT
 $(function () {
