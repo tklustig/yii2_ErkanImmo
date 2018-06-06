@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
 use kartik\widgets\FileInput;
+use kartik\slider\Slider;
 ?>
 
 <div class="immobilien-form">
@@ -35,16 +36,18 @@ use kartik\widgets\FileInput;
                         </div>
                         <div id="collapseOne" class="panel-collapse collapse in"> <!-- !weist der Column die JS-Id zu!-->
                             <div class="row">
-                                <div class="col-md-12">
-                                    <?=
-                                    /* 22.11.2017/tklustig/Initialisiert das Upload-Formular.Damit das multiple uploading klappt,muss die property als Array eingebunden werden
-                                      In Zeile 61 wird an eine statische URL zurück gerendert. Dass koennte irgendwann einmal eine Fehlerquelle darstellen und muss dann behoben werden
-                                     */
+                                <?php if ($model->isNewRecord) { ?>
+                                    <div class="col-md-12">
+                                        <?=
+                                        /* 22.11.2017/tklustig/Initialisiert das Upload-Formular.Damit das multiple uploading klappt,muss die property als Array eingebunden werden
+                                          In Zeile 61 wird an eine statische URL zurück gerendert. Dass koennte irgendwann einmal eine Fehlerquelle darstellen und muss dann behoben werden
+                                         */
 
-                                    $form->field($model_Dateianhang, 'attachement[]')->widget(FileInput::classname(), [
-                                        'options' => ['multiple' => true],
-                                        'pluginOptions' => ['allowedFileExtensions' => ['jpg', 'bmp', 'png', 'gif', 'docx', 'doc', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'pdf', 'txt', 'avi', 'mpeg', 'mp3', 'ico']],
-                                    ]);
+                                        $form->field($model_Dateianhang, 'attachement[]')->widget(FileInput::classname(), [
+                                            'options' => ['multiple' => true],
+                                            'pluginOptions' => ['allowedFileExtensions' => ['jpg', 'bmp', 'png', 'gif', 'docx', 'doc', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'pdf', 'txt', 'avi', 'mpeg', 'mp3', 'ico']],
+                                        ]);
+                                    }
                                     ?>
                                 </div><div class="col-md-12">
                                     <?=
@@ -56,26 +59,65 @@ use kartik\widgets\FileInput;
                                         ],
                                     ])->label(false);
                                     ?>
-                                </div><div class="col-md-12">
-                                    <?=
-                                    $form->field($model_Dateianhang, 'angelegt_am')->widget(\kartik\datecontrol\DateControl::classname(), [
-                                        'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-                                        'disabled' => true,
-                                    ]);
-                                    ?>
-                                </div><div class="col-md-12">
-
-                                    <?=
-                                    $form->field($model_Dateianhang, 'angelegt_von', ['addon' => [
-                                            'prepend' => ['content' => 'angelegt von']]])->widget(\kartik\widgets\Select2::classname(), [
-                                        'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->asArray()->all(), 'id', 'username'),
-                                        'pluginOptions' => [
-                                            'allowClear' => true,
-                                            'disabled' => true,
-                                        ],
-                                    ])->label(false);
-                                    ?>
                                 </div>
+                                <?php
+                                if ($model->isNewRecord) {
+                                    ?>
+                                    <div class="col-md-12">
+
+                                        <?=
+                                        $form->field($model_Dateianhang, 'angelegt_am', ['addon' => [
+                                                'prepend' => ['content' => 'angelegt am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                                            'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+                                            'disabled' => true,
+                                            'saveFormat' => 'php:Y-m-d H:i:s',
+                                            'ajaxConversion' => true,
+                                        ]);
+                                        ?>
+                                    </div><div class="col-md-12">
+
+
+                                        <?=
+                                        $form->field($model_Dateianhang, 'angelegt_von', ['addon' => [
+                                                'prepend' => ['content' => 'angelegt von']]])->widget(\kartik\widgets\Select2::classname(), [
+                                            'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
+                                            'pluginOptions' => [
+                                                'allowClear' => true
+                                            ],
+                                        ]);
+                                        ?>
+                                    </div>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <div class="col-md-12">
+
+                                        <?=
+                                        $form->field($model_Dateianhang, 'aktualisiert_von', ['addon' => [
+                                                'prepend' => ['content' => 'aktualisert von']]])->widget(\kartik\widgets\Select2::classname(), [
+                                            'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
+                                            'options' => ['placeholder' => Yii::t('app', 'Choose User')],
+                                            'pluginOptions' => [
+                                                'allowClear' => true
+                                            ],
+                                        ]);
+                                        ?>
+                                    </div>
+                                    <div class="col-md-12">
+
+                                        <?=
+                                        $form->field($model_Dateianhang, 'aktualisiert_am', ['addon' => [
+                                                'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                                            'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+                                            'disabled' => true,
+                                            'saveFormat' => 'php:Y-m-d H:i:s',
+                                            'ajaxConversion' => true,
+                                        ]);
+                                        ?>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -84,99 +126,166 @@ use kartik\widgets\FileInput;
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <?=
+                        $form->field($model, 'bezeichnung', ['addon' => [
+                                'prepend' => ['content' => 'Beschreibung der Immobilie']]])->textarea(['rows' => 6])
+                        ?>
+                    </div> <div class="col-md-12">
+
+                        <?=
+                        $form->field($model, 'strasse', ['addon' => [
+                                'prepend' => ['content' => 'Strasse']]])->textInput(['maxlength' => true, 'placeholder' => 'Strasse'])
+                        ?>
+                    </div> <div class="col-md-12">
+                        <b class="badge">Wohnfläche</b>
+                        <?=
+                        '<b class="badge">in Quadratmeter</b>' .
+                        $form->field($model, 'wohnflaeche')->widget(Slider::classname(), [
+                            'sliderColor' => Slider::TYPE_GREY,
+                            'handleColor' => Slider::TYPE_DANGER,
+                            'pluginOptions' => [
+                                'handle' => 'triangle',
+                                'tooltip' => 'always',
+                                'min' => 20,
+                                'max' => 600,
+                                'step' => 10
+                            ]
+                        ]);
+                        ?>
+                    </div> <div class="col-md-12">
+
+                        <b class="badge">Anzahl verfügbarer Zimmer</b>
+                        <?=
+                        $form->field($model, 'raeume')->widget(Slider::classname(), [
+                            'pluginOptions' => [
+                                'tooltip' => 'always',
+                                'min' => 1,
+                                'max' => 20,
+                                'step' => 1
+                            ]
+                        ]);
+                        ?>
+                    </div> <div class="col-md-12">
+
+                        <?=
+                        $form->field($model, 'geldbetrag', ['addon' => [
+                                'prepend' => ['content' => 'Kosten']]])->textInput(['placeholder' => 'Geben Sie hier ein, wieviel Geld Sie für die Immobilie wollen'])
+                        ?>
+                    </div> <div class="col-md-12">
+
+                        <?=
+                        $form->field($model, 'l_plz_id', ['addon' => [
+                                'prepend' => ['content' => 'PLZ']]])->widget(\kartik\widgets\Select2::classname(), [
+                            'data' => \yii\helpers\ArrayHelper::map(frontend\models\LPlz::find()->orderBy('id')->asArray()->all(), 'id', 'plz'),
+                            'options' => ['placeholder' => Yii::t('app', 'PLZ auswählen')],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]);
+                        ?>
+                    </div> <div class="col-md-12">
+
+                        <?=
+                        $form->field($model, 'l_stadt_id', ['addon' => [
+                                'prepend' => ['content' => 'Stadt']]])->widget(\kartik\widgets\Select2::classname(), [
+                            'data' => \yii\helpers\ArrayHelper::map(frontend\models\LStadt::find()->orderBy('id')->asArray()->all(), 'id', 'stadt'),
+                            'options' => ['placeholder' => Yii::t('app', 'Stadt wählen')],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]);
+                        ?>
+                    </div> <div class="col-md-12">
+
+                        <?=
+                        $form->field($model, 'user_id', ['addon' => [
+                                'prepend' => ['content' => 'Makler']]])->widget(\kartik\widgets\Select2::classname(), [
+                            'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
+                            'options' => ['placeholder' => Yii::t('app', 'Makler wählen')],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]);
+                        ?>
+                    </div> <div class="col-md-12">
+
+                        <?=
+                        $form->field($model, 'l_art_id', ['addon' => [
+                                'prepend' => ['content' => 'Typ']]])->widget(\kartik\widgets\Select2::classname(), [
+                            'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LArt::find()->orderBy('id')->asArray()->all(), 'id', 'bezeichnung'),
+                            'options' => ['placeholder' => Yii::t('app', 'Art des Objektes wählen')],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]);
+                        ?>
+                        <?php
+                        if ($model->isNewRecord) {
+                            ?>
+                        </div><div class="col-md-12">
+
+                            <?=
+                            $form->field($model, 'angelegt_am', ['addon' => [
+                                    'prepend' => ['content' => 'angelegt am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                                'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+                                'disabled' => true,
+                                'saveFormat' => 'php:Y-m-d H:i:s',
+                                'ajaxConversion' => true,
+                            ]);
+                            ?>
+                        </div><div class="col-md-12">
 
 
-    <?= $form->field($model, 'id', ['template' => '{input}'])->textInput(['style' => 'display:none']); ?>
+                            <?=
+                            $form->field($model, 'angelegt_von', ['addon' => [
+                                    'prepend' => ['content' => 'angelegt von']]])->widget(\kartik\widgets\Select2::classname(), [
+                                'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
+                                'pluginOptions' => [
+                                    'allowClear' => true
+                                ],
+                            ]);
+                            ?>
+                        </div>
+                        <?php
+                    } else {
+                        ?>
+                        <div class="col-md-12">
 
-    <?= $form->field($model, 'bezeichnung')->textarea(['rows' => 6]) ?>
+                            <?=
+                            $form->field($model, 'aktualisiert_von', ['addon' => [
+                                    'prepend' => ['content' => 'aktualisert von']]])->widget(\kartik\widgets\Select2::classname(), [
+                                'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
+                                'options' => ['placeholder' => Yii::t('app', 'Choose User')],
+                                'pluginOptions' => [
+                                    'allowClear' => true
+                                ],
+                            ]);
+                            ?>
+                        </div>
+                        <div class="col-md-12">
 
-    <?= $form->field($model, 'strasse')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
-
-    <?= $form->field($model, 'wohnflaeche')->textInput(['placeholder' => 'Wohnflaeche']) ?>
-
-    <?= $form->field($model, 'raeume')->textInput(['placeholder' => 'Raeume']) ?>
-
-    <?= $form->field($model, 'geldbetrag')->textInput(['maxlength' => true, 'placeholder' => 'Geldbetrag']) ?>
-
-    <?= $form->field($model, 'l_plz_id')->textInput(['placeholder' => 'L Plz']) ?>
-
-    <?=
-    $form->field($model, 'l_stadt_id')->widget(\kartik\widgets\Select2::classname(), [
-        'data' => \yii\helpers\ArrayHelper::map(frontend\models\LStadt::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-        'options' => ['placeholder' => Yii::t('app', 'Choose L stadt')],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]);
-    ?>
-
-    <?=
-    $form->field($model, 'user_id')->widget(\kartik\widgets\Select2::classname(), [
-        'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-        'options' => ['placeholder' => Yii::t('app', 'Choose User')],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]);
-    ?>
-
-    <?=
-    $form->field($model, 'l_art_id')->widget(\kartik\widgets\Select2::classname(), [
-        'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LArt::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-        'options' => ['placeholder' => Yii::t('app', 'Choose L art')],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]);
-    ?>
-
-    <?=
-    $form->field($model, 'angelegt_am')->widget(\kartik\datecontrol\DateControl::classname(), [
-        'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-        'saveFormat' => 'php:Y-m-d H:i:s',
-        'ajaxConversion' => true,
-        'options' => [
-            'pluginOptions' => [
-                'placeholder' => Yii::t('app', 'Choose Angelegt Am'),
-                'autoclose' => true,
-            ]
-        ],
-    ]);
-    ?>
-
-    <?=
-    $form->field($model, 'aktualisiert_am')->widget(\kartik\datecontrol\DateControl::classname(), [
-        'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-        'saveFormat' => 'php:Y-m-d H:i:s',
-        'ajaxConversion' => true,
-        'options' => [
-            'pluginOptions' => [
-                'placeholder' => Yii::t('app', 'Choose Aktualisiert Am'),
-                'autoclose' => true,
-            ]
-        ],
-    ]);
-    ?>
-
-    <?=
-    $form->field($model, 'angelegt_von')->widget(\kartik\widgets\Select2::classname(), [
-        'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-        'options' => ['placeholder' => Yii::t('app', 'Choose User')],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]);
-    ?>
-
-    <?=
-    $form->field($model, 'aktualisiert_von')->widget(\kartik\widgets\Select2::classname(), [
-        'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-        'options' => ['placeholder' => Yii::t('app', 'Choose User')],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]);
-    ?>
+                            <?=
+                            $form->field($model, 'aktualisiert_am', ['addon' => [
+                                    'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                                'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+                                'disabled' => true,
+                                'saveFormat' => 'php:Y-m-d H:i:s',
+                                'ajaxConversion' => true,
+                            ]);
+                            ?>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="form-group">
         <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
             <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
