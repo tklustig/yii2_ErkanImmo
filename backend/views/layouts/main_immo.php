@@ -1,28 +1,43 @@
 <?php
-/* @var $this \yii\web\View */
-/* @var $content string */
 
-use backend\assets\AppAsset;
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
+use common\classes\AdminLteAsset;
 
-AppAsset::register($this);
+$js = <<<SCRIPT
+$(function () {
+   $('body').tooltip({
+    selector: '[data-toggle="tooltip"]',
+        html:true
+    });
+});
+        $(function () {
+   $('body').popover({
+    selector: '[data-toggle="popover"]',
+        html:true
+    });
+});
+SCRIPT;
+// Register tooltip/popover initialization javascript
+$this->registerJs($js, \yii\web\view::POS_READY);
+AdminLteAsset::register($this);
+$this->beginPage()
 ?>
-<?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
     <head>
-        <meta charset="<?= Yii::$app->charset ?>">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta charset="<?= Yii::$app->charset ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <?= Html::csrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
-        <?php $this->head() ?>
+        <style>
+            body{
+                background-color: #D8D8D8 !important;
+            }
+        </style>
+        <?php $this->head(); ?>
     </head>
     <body>
-        <?php $this->beginBody() ?>
-
+        <?php $this->beginBody(); ?>
         <div class="wrap">
             <?php
             NavBar::begin([
@@ -67,11 +82,11 @@ AppAsset::register($this);
             NavBar::end();
             ?>
 
-            <div class="container">
+            <div class="container-fluid">
                 <?= $content ?>
             </div>
         </div>
-        <?php $this->endBody() ?>
+        <?php $this->endBody(); ?>
     </body>
 </html>
-<?php $this->endPage() ?>
+<?php $this->endPage(); ?>
