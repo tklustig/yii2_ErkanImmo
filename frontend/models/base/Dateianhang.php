@@ -6,30 +6,12 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 
-/**
- * This is the base model class for table "dateianhang".
- *
- * @property integer $id
- * @property string $bezeichnung
- * @property string $dateiname
- * @property string $angelegt_am
- * @property string $aktualisert_am
- * @property integer $angelegt_von
- * @property integer $aktualisiert_von
- * @property integer $l_dateianhang_art_id
- * @property integer $e_dateianhang_id
- *
- * @property \frontend\models\EDateianhang $eDateianhang
- * @property \frontend\models\LDateianhangArt $lDateianhangArt
- */
 class Dateianhang extends \yii\db\ActiveRecord {
 
     use \mootensai\relation\RelationTrait;
 
-    /**
-     * This function helps \mootensai\relation\RelationTrait runs faster
-     * @return array relation names of this model
-     */
+    public $attachement;
+
     public function relationNames() {
         return [
             'eDateianhang',
@@ -45,7 +27,8 @@ class Dateianhang extends \yii\db\ActiveRecord {
             [['dateiname', 'angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'required'],
             [['angelegt_am', 'aktualisert_am'], 'safe'],
             [['angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'integer'],
-            [['bezeichnung', 'dateiname'], 'string', 'max' => 255]
+            [['bezeichnung', 'dateiname'], 'string', 'max' => 255],
+            [['attachement'], 'file', 'skipOnEmpty' => true, 'maxSize' => 10 * 1024000, 'tooBig' => 'Maximal erlaubte Dateigröße:10 MByte', 'maxFiles' => 10],
         ];
     }
 

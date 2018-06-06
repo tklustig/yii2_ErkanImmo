@@ -8,20 +8,19 @@ use \frontend\models\base\Dateianhang as BaseDateianhang;
 /**
  * This is the model class for table "dateianhang".
  */
-class Dateianhang extends BaseDateianhang
-{
+class Dateianhang extends BaseDateianhang {
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
-        return array_replace_recursive(parent::rules(),
-	    [
+    public function rules() {
+        return array_replace_recursive(parent::rules(), [
             [['dateiname', 'angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'required'],
             [['angelegt_am', 'aktualisert_am'], 'safe'],
             [['angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'integer'],
-            [['bezeichnung', 'dateiname'], 'string', 'max' => 255]
+            [['bezeichnung', 'dateiname'], 'string', 'max' => 255],
+            [['attachement'], 'file', 'skipOnEmpty' => true, 'maxSize' => 10 * 1024000, 'tooBig' => 'Maximal erlaubte Dateigröße:10 MByte', 'maxFiles' => 10],
         ]);
     }
-	
+
 }
