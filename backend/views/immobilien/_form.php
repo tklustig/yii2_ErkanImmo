@@ -17,26 +17,36 @@ use kartik\slider\Slider;
     ]]);
     ?>
     <?= $form->errorSummary($model); ?>
+    <?php
+    if ($model->isNewRecord) {
+        $this->title = Yii::t('app', 'Create Immobilien');
+    } else {
+        $this->title = Yii::t('app', 'Update {modelClass}: ', [
+                    'modelClass' => 'Immobilien',
+                ]) . ' ' . $model->id;
+    }
+    ?>
+    <br><br><h1><?= Html::encode($this->title) ?></h1>
     <!-- Beginn des Anhangformulars-->
     <!-- START ACCORDION & CAROUSEL-->
     <!--  Defining global CSS rules-->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box-body">
-                <div class="box-group" id="accordion">
-                    <!--  End of Defining global CSS rules-->
-                    <!-- Beginn des Personenformulars-->
-                    <div class="panel box box-primary">
-                        <div class="box-header with-border">
-                            <h4 class="box-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                    Angaben zum Immobilienanhang
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseOne" class="panel-collapse collapse in"> <!-- !weist der Column die JS-Id zu!-->
-                            <div class="row">
-                                <?php if ($model->isNewRecord) { ?>
+    <?php if ($model->isNewRecord) { ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box-body">
+                    <div class="box-group" id="accordion">
+                        <!--  End of Defining global CSS rules-->
+                        <!-- Beginn des Personenformulars-->
+                        <div class="panel box box-primary">
+                            <div class="box-header with-border">
+                                <h4 class="box-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                        Angaben zum Immobilienanhang
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in"> <!-- !weist der Column die JS-Id zu!-->
+                                <div class="row">
                                     <div class="col-md-12">
                                         <?=
                                         /* 22.11.2017/tklustig/Initialisiert das Upload-Formular.Damit das multiple uploading klappt,muss die property als Array eingebunden werden
@@ -47,85 +57,88 @@ use kartik\slider\Slider;
                                             'options' => ['multiple' => true],
                                             'pluginOptions' => ['allowedFileExtensions' => ['jpg', 'bmp', 'png', 'gif', 'docx', 'doc', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'pdf', 'txt', 'avi', 'mpeg', 'mp3', 'ico']],
                                         ]);
+                                        ?>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <?=
+                                        $form->field($model_Dateianhang, 'l_dateianhang_art_id')->widget(\kartik\widgets\Select2::classname(), [
+                                            'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LDateianhangArt::find()->orderBy('id')->asArray()->all(), 'id', 'bezeichnung'),
+                                            'options' => ['placeholder' => Yii::t('app', 'Dateianhangsart')],
+                                            'pluginOptions' => [
+                                                'allowClear' => true
+                                            ],
+                                        ])->label(false);
+                                        ?>
+                                    </div>
+                                    <?php
+                                    if ($model->isNewRecord) {
+                                        ?>
+                                        <div class="col-md-12">
+
+                                            <?=
+                                            $form->field($model_Dateianhang, 'angelegt_am', ['addon' => [
+                                                    'prepend' => ['content' => 'angelegt am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                                                'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+                                                'disabled' => true,
+                                                'saveFormat' => 'php:Y-m-d H:i:s',
+                                                'ajaxConversion' => true,
+                                            ]);
+                                            ?>
+                                        </div><div class="col-md-12">
+
+
+                                            <?=
+                                            $form->field($model_Dateianhang, 'angelegt_von', ['addon' => [
+                                                    'prepend' => ['content' => 'angelegt von']]])->widget(\kartik\widgets\Select2::classname(), [
+                                                'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
+                                                'pluginOptions' => [
+                                                    'allowClear' => true
+                                                ],
+                                            ]);
+                                            ?>
+                                        </div>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <div class="col-md-12">
+
+                                            <?=
+                                            $form->field($model_Dateianhang, 'aktualisiert_von', ['addon' => [
+                                                    'prepend' => ['content' => 'aktualisiert von']]])->widget(\kartik\widgets\Select2::classname(), [
+                                                'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
+                                                'options' => ['placeholder' => Yii::t('app', 'Choose User')],
+                                                'pluginOptions' => [
+                                                    'allowClear' => true
+                                                ],
+                                            ]);
+                                            ?>
+                                        </div>
+                                        <div class="col-md-12">
+
+                                            <?=
+                                            $form->field($model_Dateianhang, 'aktualisert_am', ['addon' => [
+                                                    'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                                                'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+                                                'disabled' => true,
+                                                'saveFormat' => 'php:Y-m-d H:i:s',
+                                                'ajaxConversion' => true,
+                                            ]);
+                                            ?>
+                                        </div>
+                                        <?php
                                     }
                                     ?>
-                                </div><div class="col-md-12">
-                                    <?=
-                                    $form->field($model_Dateianhang, 'l_dateianhang_art_id')->widget(\kartik\widgets\Select2::classname(), [
-                                        'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LDateianhangArt::find()->orderBy('id')->asArray()->all(), 'id', 'bezeichnung'),
-                                        'options' => ['placeholder' => Yii::t('app', 'Dateianhangsart')],
-                                        'pluginOptions' => [
-                                            'allowClear' => true
-                                        ],
-                                    ])->label(false);
-                                    ?>
                                 </div>
-                                <?php
-                                if ($model->isNewRecord) {
-                                    ?>
-                                    <div class="col-md-12">
-
-                                        <?=
-                                        $form->field($model_Dateianhang, 'angelegt_am', ['addon' => [
-                                                'prepend' => ['content' => 'angelegt am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
-                                            'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-                                            'disabled' => true,
-                                            'saveFormat' => 'php:Y-m-d H:i:s',
-                                            'ajaxConversion' => true,
-                                        ]);
-                                        ?>
-                                    </div><div class="col-md-12">
-
-
-                                        <?=
-                                        $form->field($model_Dateianhang, 'angelegt_von', ['addon' => [
-                                                'prepend' => ['content' => 'angelegt von']]])->widget(\kartik\widgets\Select2::classname(), [
-                                            'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
-                                            'pluginOptions' => [
-                                                'allowClear' => true
-                                            ],
-                                        ]);
-                                        ?>
-                                    </div>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <div class="col-md-12">
-
-                                        <?=
-                                        $form->field($model_Dateianhang, 'aktualisiert_von', ['addon' => [
-                                                'prepend' => ['content' => 'aktualisert von']]])->widget(\kartik\widgets\Select2::classname(), [
-                                            'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-                                            'options' => ['placeholder' => Yii::t('app', 'Choose User')],
-                                            'pluginOptions' => [
-                                                'allowClear' => true
-                                            ],
-                                        ]);
-                                        ?>
-                                    </div>
-                                    <div class="col-md-12">
-
-                                        <?=
-                                        $form->field($model_Dateianhang, 'aktualisiert_am', ['addon' => [
-                                                'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
-                                            'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-                                            'disabled' => true,
-                                            'saveFormat' => 'php:Y-m-d H:i:s',
-                                            'ajaxConversion' => true,
-                                        ]);
-                                        ?>
-                                    </div>
-                                    <?php
-                                }
-                                ?>
                             </div>
                         </div>
+                        <!--  Ending global CSS rules-->
                     </div>
-                    <!--  Ending global CSS rules-->
                 </div>
             </div>
         </div>
-    </div>
+        <?php
+    }
+    ?>
     <div class="row">
         <div class="col-md-12">
             <div class="box-body">
@@ -224,10 +237,11 @@ use kartik\slider\Slider;
                             ],
                         ]);
                         ?>
-                        <?php
-                        if ($model->isNewRecord) {
-                            ?>
-                        </div><div class="col-md-12">
+                    </div>
+                    <?php
+                    if ($model->isNewRecord) {
+                        ?>
+                        <div class="col-md-12">
 
                             <?=
                             $form->field($model, 'angelegt_am', ['addon' => [

@@ -8,7 +8,6 @@ use backend\models\ImmobilienSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use kartik\widgets\FileInput;
 
 /**
  * ImmobilienController implements the CRUD actions for Immobilien model.
@@ -90,11 +89,13 @@ class ImmobilienController extends Controller {
      * @param integer $l_art_id
      * @return mixed
      */
-    public function actionUpdate($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id) {
+    public function actionUpdate($id) {
+        $this->layout = "main_immo";
+        $model_Dateianhang = new \frontend\models\Dateianhang();
         if (Yii::$app->request->post('_asnew') == '1') {
             $model = new Immobilien();
         } else {
-            $model = $this->findModel($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id);
+            $model = $this->findModel($id);
         }
 
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
@@ -102,6 +103,7 @@ class ImmobilienController extends Controller {
         } else {
             return $this->render('update', [
                         'model' => $model,
+                        'model_Dateianhang' => $model_Dateianhang
             ]);
         }
     }

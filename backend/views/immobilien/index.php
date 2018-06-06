@@ -204,7 +204,12 @@ $this->registerJs($search);
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{view}'
+            'template' => '{save-as-new} <br> {view} <br> {update} <br> {delete}',
+            'buttons' => [
+                'save-as-new' => function ($url) {
+                    return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Duplizieren']);
+                },
+            ],
         ],
     ];
     Pjax::begin();

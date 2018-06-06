@@ -37,6 +37,8 @@ AssetBundle::register($this);
                         [
                             'label' => 'Admin',
                             'items' => [
+                                ['label' => 'zur Backendübersicht', 'url' => ['/site/index']],
+                                '<li class="divider"></li>',
                                 ['label' => 'Neue Immobilie anlegen', 'url' => ['/immobilien/create']],
                                 '<li class="divider"></li>',
                                 ['label' => 'Immobilien aufrufen', 'url' => ['/immobilien/index']],
@@ -44,8 +46,6 @@ AssetBundle::register($this);
                                 ['label' => 'Neuen Benutzer anlegen', 'url' => ['/site/signup']],
                                 '<li class="divider"></li>',
                                 ['label' => 'Benutzer löschen', 'url' => ['/site/deluser']],
-                                '<li class="divider"></li>',
-                                ['label' => 'Immobilie löschen', 'url' => ['/site/delimmo']],
                                 '<li class="divider"></li>',
                                 ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
                                 '<li class="divider"></li>',
