@@ -9,136 +9,136 @@ use kartik\alert\Alert;
 <?php
 $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
 ?>
-<div id="Wrapper">
-    <div id="Header_wrapper" >
-        <header id="Header">
-            <div class="header_placeholder"></div>
-            <div id="Top_bar" class="loading">
-                <div class="container">
-                    <div class="column one">
-                        <div class="top_bar_left clearfix">
-                            <div class="menu_wrapper">
-                                <nav id="menu">
-                                    <ul id="menu-main-menu" class="menu menu-main">
-                                        <li id="menu-item-1" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                        </li>
-                                        <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                            <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/immobilien/index']) ?>
-                                        </li>
-                                        <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                            <?= Html::a('Angebote erstellen(Backend)', $link, ['class' => 'fa fa-gear', 'title' => 'Switch to Backend']) ?>
-                                        </li>
-                                        <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                            <?= Html::a(Yii::t('app', 'Impressum'), ['/site/about']) ?>
-                                        </li>
-                                        <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                            <?= Html::a(Yii::t('app', 'Kontakt'), ['/site/contact']) ?>
-                                        </li>
-                                    </ul>
-                                </nav>
-                                <a class="responsive-menu-toggle " href="#">
-                                    <i class="icon-menu-fine"></i>
-                                </a>
+<div id="Header_wrapper" >
+    <header id="Header">
+        <div class="header_placeholder"></div>
+        <div id="Top_bar" class="loading">
+            <div class="container">
+                <div class="column one">
+                    <div class="top_bar_left clearfix">
+                        <div class="menu_wrapper">
+                            <nav id="menu">
+                                <ul id="menu-main-menu" class="menu menu-main">
+                                    <li id="menu-item-1" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                    </li>
+                                    <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                        <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/immobilien/index']) ?>
+                                    </li>
+                                    <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                        <?= Html::a('Angebote erstellen(Backend)', $link, ['class' => 'fa fa-gear', 'title' => 'Switch to Backend']) ?>
+                                    </li>
+                                    <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                        <?= Html::a(Yii::t('app', 'Impressum'), ['/site/about']) ?>
+                                    </li>
+                                    <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                        <?= Html::a(Yii::t('app', 'Kontakt'), ['/site/contact']) ?>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <a class="responsive-menu-toggle " href="#">
+                                <i class="icon-menu-fine"></i>
+                            </a>
+                        </div>
+                        <?php $form = ActiveForm::begin(['id' => 'start-form']); ?>
+                        <div><br></div>
+                        <?=
+                        $form->field($DynamicModel, 'searching')->textInput(['class' => 'field', 'placeholder' => 'Suchbegriff eingeben'])->label(false);
+                        ?>
+                        <div class="form-group">
+                            <?= Html::submitButton('Absenden', ['name' => 'start-button']) ?>
+                        </div>
+                        <?php ActiveForm::end(); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</div>
+
+<div class="content_wrapper clearfix">
+    <div class="sections_group">
+        <div class="extra_content">
+            <div class="section mcb-section" style="background-image:url(../img/accept_all_you_see-wallpaper-1680x1050.jpg); background-repeat:no-repeat; background-position:center top;-webkit-background-size:">
+                <div class="section_wrapper mcb-section-inner">
+                    <div class="wrap mcb-wrap one  valign-top clearfix" style="">
+                        <div class="mcb-wrap-inner">
+                            <div class="column mcb-column one column_column  column-margin-">
+                                <div class="column_attr clearfix"  style="">
+                                    <h6 class="themecolor" style="text-transform: uppercase;">Startseite</h6>
+                                    <h2>Kanat Immobilien PG & Co.KG</h2>
+
+                                    <?php
+//Hier werden alle Flashnachrichten ausgegeben
+                                    $session = new Session();
+                                    if (!empty($session->getAllFlashes())) {
+                                        foreach ($session->getAllFlashes() as $flash) {
+                                            foreach ($flash as $ausgabe) {
+                                                ?><?=
+                                                Alert::widget([
+                                                    'type' => Alert::TYPE_SUCCESS,
+                                                    'title' => 'Information',
+                                                    'icon' => 'glyphicon glyphicon-exclamation-sign',
+                                                    'body' => $ausgabe,
+                                                    'showSeparator' => true,
+                                                    'delay' => false
+                                                ]);
+                                            }
+                                        }
+                                    }
+                                    ?>
+
+                                </div>
                             </div>
-                            <?php $form = ActiveForm::begin(['id' => 'start-form']); ?>
-                            <div><br></div>
-                            <?=
-                            $form->field($DynamicModel, 'searching')->textInput(['class' => 'field', 'placeholder' => 'Suchbegriff eingeben'])->label(false);
-                            ?>
-                            <div class="form-group">
-                                <?= Html::submitButton('Absenden', ['name' => 'start-button']) ?>
+                        </div>
+                    </div>
+
+                    <div class="widgets_wrapper" style="padding:0 0 0px;">
+                        <div class="container">
+                            <div class="column one">
+                                <aside id="text-2" class="widget widget_text">
+                                    <div class="textwidget">
+                                        <div style="position: relative; margin-top: -100px; z-index: 1;">
+                                            <div class="image_frame image_item no_link scale-with-grid aligncenter no_border" >
+                                                <div class="image_wrapper">
+                                                    <?= Html::img('@web/img/erkan_logo.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid', 'style' => 'width:350px;height:150px;']); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="text-align: center; margin: 7% 20%;">
+                                            <h4 style="color: #9e7b4e;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4></div>
+                                        <div style="text-align: left; margin: 7% 26%;">
+                                            <p style="color:blue;"> Vom 1-Zimmer-Appartement für Studenten bis hin zu<br>Luxus-Villas für gehobenere Ansprüche:<br>Kanat Immobilien ist der ideale Vermittlungsmarkler.<br><?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns, oder inspizieren Sie unsere <?= Html::a(Yii::t('app', 'Angebote'), ['/immobilien/index']) ?> <p>
+                                        </div>
+                                    </div>
+                                </aside>
                             </div>
-                            <?php ActiveForm::end(); ?>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin: 13% 26%;" class="column">
+                        <div class="copyright"> &copy; 2018 Kanat Immobilien. All Rights Reserved.
                         </div>
                     </div>
                 </div>
             </div>
-        </header>
+        </div>
     </div>
-    <div id="Content">
-        <div class="content_wrapper clearfix">
-            <div class="sections_group">
-                <div class="extra_content">
-                    <div class="section mcb-section" style="background-image:url(../img/smoke_men-wallpaper-1680x1050.jpg); background-repeat:no-repeat; background-position:center top;-webkit-background-size:">
-                        <div class="section_wrapper mcb-section-inner">
-                            <div class="wrap mcb-wrap one  valign-top clearfix" style="">
-                                <div class="mcb-wrap-inner">
-                                    <div class="column mcb-column one column_column  column-margin-">
-                                        <div class="column_attr clearfix"  style="">
-                                            <h6 class="themecolor" style="text-transform: uppercase;">Startseite</h6>
-                                            <h2>Kanat Immobilien PG & Co.KG</h2>
 
-                                            <?php
-//Hier werden alle Flashnachrichten ausgegeben
-                                            $session = new Session();
-                                            if (!empty($session->getAllFlashes())) {
-                                                foreach ($session->getAllFlashes() as $flash) {
-                                                    foreach ($flash as $ausgabe) {
-                                                        ?><?=
-                                                        Alert::widget([
-                                                            'type' => Alert::TYPE_SUCCESS,
-                                                            'title' => 'Information',
-                                                            'icon' => 'glyphicon glyphicon-exclamation-sign',
-                                                            'body' => $ausgabe,
-                                                            'showSeparator' => true,
-                                                            'delay' => false
-                                                        ]);
-                                                    }
-                                                }
-                                            }
-                                            ?>
 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div class="widgets_wrapper" style="padding:0 0 30px;">
-                                <div class="container">
-                                    <div class="column one">
-                                        <aside id="text-2" class="widget widget_text">
-                                            <div class="textwidget">
-                                                <div style="position: relative; margin-top: -100px; z-index: 1;">
-                                                    <div class="image_frame image_item no_link scale-with-grid aligncenter no_border" >
-                                                        <div class="image_wrapper">
-                                                            <?= Html::img('@web/img/erkan_logo.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid', 'style' => 'width:350px;height:150px;']); ?>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div style="text-align: center; margin: 50px 20%;">
-                                                    <h4 style="color: #9e7b4e;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4>
-                                                    <hr class="no_line" style="margin: 0 auto 15px;">
-                                                    <p> Vom 1-Zimmer-Appartement für Studenten bis hin zu Luxus-Villas für gehobenere Ansprüche:<br>Kanat Immobilien ist der ideale Vermittlungsmarkler.  <?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns, oder inspizieren Sie unsere <?= Html::a(Yii::t('app', 'Angebote'), ['/site/index']) ?> <p>
-                                                </div>
-                                            </div>
-                                        </aside>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="footer_copy">
-                                <div class="container">
-                                    <div class="column one">
-                                        <div class="copyright"> &copy; 2018 Kanat Immobilien. All Rights Reserved.
-                                        </div>
-                                        <ul class="social"></ul>
-                                    </div>
-                                </div>
-                            </div>
 
-                        </div>
-                        <div id="Side_slide" class="right dark" data-width="250">
-                            <div class="close-wrapper"><a href="#" class="close">
-                                    <i class="icon-cancel-fine">
-                                    </i>
-                                </a>
-                            </div>
-                            <div class="extras">
-                                <div class="extras-wrapper"></div>
-                            </div>
-                            <div class="lang-wrapper"></div>
-                            <div class="menu_wrapper"></div>
-                            <ul class="social"></ul>
-                        </div>
-                        <div id="body_overlay"></div>
+    <div id="Side_slide" class="right dark" data-width="250">
+        <div class="close-wrapper"><a href="#" class="close">
+                <i class="icon-cancel-fine">
+                </i>
+            </a>
+        </div>
+        <div class="extras">
+            <div class="extras-wrapper"></div>
+        </div>
+        <div class="lang-wrapper"></div>
+        <div class="menu_wrapper"></div>
+        <ul class="social"></ul>
+    </div>
+    <div id="body_overlay"></div>
 
 
