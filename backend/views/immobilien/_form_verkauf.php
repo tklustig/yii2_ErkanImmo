@@ -61,7 +61,7 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                                         ]);
                                         ?>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <?=
                                         $form->field($model_Dateianhang, 'l_dateianhang_art_id')->widget(\kartik\widgets\Select2::classname(), [
                                             'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LDateianhangArt::find()->orderBy('id')->asArray()->all(), 'id', 'bezeichnung'),
@@ -75,7 +75,7 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                                     <?php
                                     if ($model->isNewRecord) {
                                         ?>
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
 
                                             <?=
                                             $form->field($model_Dateianhang, 'angelegt_am', ['addon' => [
@@ -86,36 +86,11 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                                                 'ajaxConversion' => true,
                                             ]);
                                             ?>
-                                        </div><div class="col-md-12">
-
-
-                                            <?=
-                                            $form->field($model_Dateianhang, 'angelegt_von', ['addon' => [
-                                                    'prepend' => ['content' => 'angelegt von']]])->widget(\kartik\widgets\Select2::classname(), [
-                                                'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
-                                                'pluginOptions' => [
-                                                    'allowClear' => true
-                                                ],
-                                            ]);
-                                            ?>
                                         </div>
                                         <?php
                                     } else {
                                         ?>
-                                        <div class="col-md-12">
-
-                                            <?=
-                                            $form->field($model_Dateianhang, 'aktualisiert_von', ['addon' => [
-                                                    'prepend' => ['content' => 'aktualisiert von']]])->widget(\kartik\widgets\Select2::classname(), [
-                                                'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-                                                'options' => ['placeholder' => Yii::t('app', 'Choose User')],
-                                                'pluginOptions' => [
-                                                    'allowClear' => true
-                                                ],
-                                            ]);
-                                            ?>
-                                        </div>
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
 
                                             <?=
                                             $form->field($model_Dateianhang, 'aktualisert_am', ['addon' => [
@@ -233,7 +208,7 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                     <div class="col-md-6">
                         <?=
                         $form->field($model, 'geldbetrag', ['addon' => [
-                                'prepend' => ['content' => 'Kosten']]])->textInput(['placeholder' => 'Geben Sie hier ein, wieviel Geld Sie für die Immobilie wollen'])
+                                'prepend' => ['content' => 'Kosten'], 'append' => ['content' => '€']]])->textInput(['placeholder' => 'Geben Sie hier ein, wieviel Geld Sie für die Immobilie wollen'])
                         ?>
                     </div>
                     <div class="col-md-6">
@@ -276,12 +251,14 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                                 'ajaxConversion' => true,
                             ]);
                             ?>
-                        </div><div class="col-md-4">
+                        </div>
+                        <div class="col-md-4">
                             <?=
                             $form->field($model, 'angelegt_von', ['addon' => [
                                     'prepend' => ['content' => 'angelegt von'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\widgets\Select2::classname(), [
                                 'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
                                 'disabled' => true,
+                                'id' => 'id_X'
                             ]);
                             ?>
                         </div>
@@ -317,15 +294,16 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
             </div>
         </div>
     </div>
-    <div class="form-group">
-        <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
-            <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-        <?php endif; ?>
-        <?php if (Yii::$app->controller->action->id != 'create'): ?>
-            <?= Html::submitButton(Yii::t('app', 'Save As New'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
-        <?php endif; ?>
-        <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer, ['class' => 'btn btn-danger']) ?>
-    </div>
-    <?php ActiveForm::end(); ?>
+</div>
+<div class="form-group">
+    <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Erzeugen') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    <?php endif; ?>
+    <?php if (Yii::$app->controller->action->id != 'create'): ?>
+        <?= Html::submitButton(Yii::t('app', 'Duplizieren'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
+    <?php endif; ?>
+    <?= Html::a(Yii::t('app', 'Abbruch'), Yii::$app->request->referrer, ['class' => 'btn btn-danger']) ?>
+</div>
+<?php ActiveForm::end(); ?>
 </div>
 

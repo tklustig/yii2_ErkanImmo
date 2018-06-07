@@ -61,7 +61,7 @@ class ImmobilienController extends Controller {
 
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             $valid = $model->validate();
-            $isValid = $model_Dateianhang->validate();
+            $isValid = $model_Dateianhang->validate() && $valid;
             if ($isValid) {
                 return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
             } else {
