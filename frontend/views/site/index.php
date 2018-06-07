@@ -53,7 +53,10 @@ $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
         </div>
     </header>
 </div>
-<div class="section mcb-section" style="background-image:url(../img/accept_all_you_see-wallpaper-1680x1050.jpg); background-repeat:no-repeat; background-position:center top;-webkit-background-size:">
+<?php
+$url = Yii::getAlias("@web") . '/img/';
+?>
+<div class="section mcb-section" style="background:url(<?= $url ?>accept_all_you_see-wallpaper-1680x1050.jpg); background-repeat:no-repeat; background-position:center top;-webkit-background-size:">
     <div class="section_wrapper mcb-section-inner">
         <div class="wrap mcb-wrap one  valign-top clearfix" style="">
             <div class="column mcb-column one column_column  column-margin-">
