@@ -8,6 +8,7 @@ use backend\models\ImmobilienSearch;
 use yii\web\Controller;
 use yii\base\DynamicModel;
 use yii\web\NotFoundHttpException;
+use yii\web\NotAcceptableHttpException;
 use yii\filters\VerbFilter;
 
 class ImmobilienController extends Controller {
@@ -59,7 +60,24 @@ class ImmobilienController extends Controller {
         $model = new Immobilien();
 
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
-            return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
+            $valid = $model->validate();
+            $isValid = $model_Dateianhang->validate();
+            if ($isValid) {
+                return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
+            } else {
+                $error_model = $model->getErrors();
+                $error_anhang = $model_Dateianhang->getErrors();
+                foreach ($error_model as $values) {
+                    foreach ($values as $ausgabe) {
+                        throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
+                    }
+                }
+                foreach ($error_anhang as $values) {
+                    foreach ($values as $ausgabe) {
+                        throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
+                    }
+                }
+            }
         } else {
             if ($id == 1) {
                 return $this->render('_form_vermieten', [

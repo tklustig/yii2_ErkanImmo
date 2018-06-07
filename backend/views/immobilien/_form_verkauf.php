@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\form\ActiveForm;
 use kartik\widgets\FileInput;
 use kartik\slider\Slider;
+use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
 ?>
 
 <div class="immobilien-form">
@@ -19,14 +20,15 @@ use kartik\slider\Slider;
     <?= $form->errorSummary($model); ?>
     <?php
     if ($model->isNewRecord) {
-        $this->title = Yii::t('app', 'Create Immobilien');
+        $this->title = Yii::t('app', 'Immobilie anlegen');
     } else {
-        $this->title = Yii::t('app', 'Update {modelClass}: ', [
+        $this->title = Yii::t('app', 'Aktualisiere {modelClass}: ', [
                     'modelClass' => 'Immobilien',
                 ]) . ' ' . $model->id;
     }
     ?>
-    <br><br><h1><?= Html::encode($this->title) ?></h1>
+    <br><br>
+    <center><h1><?= Html::encode($this->title) ?></h1></center>
     <!-- Beginn des Anhangformulars-->
     <!-- START ACCORDION & CAROUSEL-->
     <!--  Defining global CSS rules-->
@@ -145,53 +147,13 @@ use kartik\slider\Slider;
                 <div class="row">
                     <div class="col-md-12">
                         <?=
-                        $form->field($model, 'bezeichnung')->widget(\dosamigos\ckeditor\CKEditor::className(), [
+                        $form->field($model, 'bezeichnung', ['addon' => [
+                                'prepend' => ['content' => 'Immobilien-Beschreibung']]])->widget(\dosamigos\ckeditor\CKEditor::className(), [
                             'preset' => 'full', 'clientOptions' => ['height' => 200],
                         ])
                         ?>
-                    </div> <div class="col-md-12">
-
-                        <?=
-                        $form->field($model, 'strasse', ['addon' => [
-                                'prepend' => ['content' => 'Strasse']]])->textInput(['maxlength' => true, 'placeholder' => 'Bitte die Strasse eingeben'])
-                        ?>
-                    </div> <div class="col-md-12">
-                        <b class="badge">Wohnfläche</b>
-                        <?=
-                        '<b class="badge">in Quadratmeter</b>' .
-                        $form->field($model, 'wohnflaeche')->widget(Slider::classname(), [
-                            'sliderColor' => Slider::TYPE_GREY,
-                            'handleColor' => Slider::TYPE_DANGER,
-                            'pluginOptions' => [
-                                'handle' => 'triangle',
-                                'tooltip' => 'always',
-                                'min' => 20,
-                                'max' => 600,
-                                'step' => 10
-                            ]
-                        ]);
-                        ?>
-                    </div> <div class="col-md-12">
-
-                        <b class="badge">Anzahl verfügbarer Zimmer</b>
-                        <?=
-                        $form->field($model, 'raeume')->widget(Slider::classname(), [
-                            'pluginOptions' => [
-                                'tooltip' => 'always',
-                                'min' => 1,
-                                'max' => 20,
-                                'step' => 1
-                            ]
-                        ]);
-                        ?>
-                    </div> <div class="col-md-12">
-
-                        <?=
-                        $form->field($model, 'geldbetrag', ['addon' => [
-                                'prepend' => ['content' => 'Kosten']]])->textInput(['placeholder' => 'Geben Sie hier ein, wieviel Geld Sie für die Immobilie wollen'])
-                        ?>
-                    </div> <div class="col-md-12">
-
+                    </div>
+                    <div class="col-md-4">
                         <?=
                         $form->field($model, 'l_plz_id', ['addon' => [
                                 'prepend' => ['content' => 'PLZ']]])->widget(\kartik\widgets\Select2::classname(), [
@@ -202,7 +164,7 @@ use kartik\slider\Slider;
                             ],
                         ]);
                         ?>
-                    </div> <div class="col-md-12">
+                    </div> <div class="col-md-4">
 
                         <?=
                         $form->field($model, 'l_stadt_id', ['addon' => [
@@ -214,8 +176,81 @@ use kartik\slider\Slider;
                             ],
                         ]);
                         ?>
-                    </div> <div class="col-md-12">
+                    </div>
+                    <div class="col-md-4">
+                        <?=
+                        $form->field($model, 'strasse', ['addon' => [
+                                'prepend' => ['content' => 'Strasse']]])->textInput(['maxlength' => true, 'placeholder' => 'Bitte die Strasse und Hausnummer eingeben'])
+                        ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?=
+                        $form->field($model, 'l_heizungsart_id', ['addon' => [
+                                'prepend' => ['content' => 'Heizungsart']]])->widget(\kartik\widgets\Select2::classname(), [
+                            'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LHeizungsart::find()->orderBy('id')->asArray()->all(), 'id', 'bezeichnung'),
+                            'options' => ['placeholder' => Yii::t('app', 'Bitte hier die Befeuerung eingeben')],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]);
+                        ?>
+                    </div>
+                    <div class="col-md-6">
+                        <b class="badge">Anzahl verfügbarer Zimmer</b>
+                        <?=
+                        $form->field($model, 'raeume')->widget(Slider::classname(), [
+                            'pluginOptions' => [
+                                'tooltip' => 'always',
+                                'min' => 1,
+                                'max' => 20,
+                                'step' => 1
+                            ]
+                        ]);
+                        ?>
+                    </div>
+                    <div class="col-md-6">
 
+                        <?=
+                                $form->field($model, 'wohnflaeche', ['addon' => [
+                                        'prepend' => ['content' => 'Wohnfläche']]])->widget(TwbsMaxlength::className())
+                                ->textInput(['maxlength' => true, 'placeholder' => 'Bitte die maximale Nutzfläche']);
+                        ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?=
+                                $form->field($model, 'k_grundstuecksgroesse', ['addon' => [
+                                        'prepend' => ['content' => 'Grundstücksgrösse']]])->widget(TwbsMaxlength::className())
+                                ->textInput(['maxlength' => true, 'placeholder' => 'Bitte die maximale Grundstücksgrösse']);
+                        ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?=
+                                $form->field($model, 'k_provision', ['addon' => [
+                                        'prepend' => ['content' => 'Provision'], 'append' => ['content' => 'in Prozent']]])->widget(TwbsMaxlength::className())
+                                ->textInput(['maxlength' => true, 'placeholder' => 'Bitte den Provisionssatz eingeben']);
+                        ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?=
+                        $form->field($model, 'geldbetrag', ['addon' => [
+                                'prepend' => ['content' => 'Kosten']]])->textInput(['placeholder' => 'Geben Sie hier ein, wieviel Geld Sie für die Immobilie wollen'])
+                        ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?=
+                        $form->field($model, 'balkon_vorhanden')->widget(\kartik\checkbox\CheckboxX::classname(), [
+                            'autoLabel' => true
+                        ])->label(false);
+                        ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?=
+                        $form->field($model, 'fahrstuhl_vorhanden')->widget(\kartik\checkbox\CheckboxX::classname(), [
+                            'autoLabel' => true
+                        ])->label(false);
+                        ?>
+                    </div>
+                    <div class="col-md-4">
                         <?=
                         $form->field($model, 'user_id', ['addon' => [
                                 'prepend' => ['content' => 'Makler']]])->widget(\kartik\widgets\Select2::classname(), [
@@ -226,24 +261,12 @@ use kartik\slider\Slider;
                             ],
                         ]);
                         ?>
-                    </div> <div class="col-md-12">
-
-                        <?=
-                        $form->field($model, 'l_art_id', ['addon' => [
-                                'prepend' => ['content' => 'Typ']]])->widget(\kartik\widgets\Select2::classname(), [
-                            'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LArt::find()->orderBy('id')->asArray()->all(), 'id', 'bezeichnung'),
-                            'options' => ['placeholder' => Yii::t('app', 'Art des Objektes wählen')],
-                            'pluginOptions' => [
-                                'allowClear' => true
-                            ],
-                        ]);
-                        ?>
                     </div>
+                    <!-- l_art_id wird als Parameter übergeben-->
                     <?php
                     if ($model->isNewRecord) {
                         ?>
-                        <div class="col-md-12">
-
+                        <div class="col-md-4">
                             <?=
                             $form->field($model, 'angelegt_am', ['addon' => [
                                     'prepend' => ['content' => 'angelegt am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
@@ -253,37 +276,30 @@ use kartik\slider\Slider;
                                 'ajaxConversion' => true,
                             ]);
                             ?>
-                        </div><div class="col-md-12">
-
-
+                        </div><div class="col-md-4">
                             <?=
                             $form->field($model, 'angelegt_von', ['addon' => [
-                                    'prepend' => ['content' => 'angelegt von']]])->widget(\kartik\widgets\Select2::classname(), [
+                                    'prepend' => ['content' => 'angelegt von'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\widgets\Select2::classname(), [
                                 'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
-                                'pluginOptions' => [
-                                    'allowClear' => true
-                                ],
+                                'disabled' => true,
                             ]);
                             ?>
                         </div>
                         <?php
                     } else {
                         ?>
-                        <div class="col-md-12">
+                        <div class="col-md-4">
 
                             <?=
                             $form->field($model, 'aktualisiert_von', ['addon' => [
-                                    'prepend' => ['content' => 'aktualisert von']]])->widget(\kartik\widgets\Select2::classname(), [
+                                    'prepend' => ['content' => 'aktualisert von'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\widgets\Select2::classname(), [
                                 'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
                                 'options' => ['placeholder' => Yii::t('app', 'Choose User')],
-                                'pluginOptions' => [
-                                    'allowClear' => true
-                                ],
+                                'disabled' => true,
                             ]);
                             ?>
                         </div>
-                        <div class="col-md-12">
-
+                        <div class="col-md-4">
                             <?=
                             $form->field($model, 'aktualisiert_am', ['addon' => [
                                     'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
@@ -310,8 +326,6 @@ use kartik\slider\Slider;
         <?php endif; ?>
         <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer, ['class' => 'btn btn-danger']) ?>
     </div>
-
     <?php ActiveForm::end(); ?>
-
 </div>
 
