@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <div class="column mcb-column one column_column  column-margin-">
                                         <div class="column_attr clearfix" style="">
                                             <div class='impressum'><h2>Impressum</h2>
-                                                <?= Html::a(Yii::t('app', 'zurück zur GridView'), ['/site/index']) ?>
+                                                <?= Html::a(Yii::t('app', 'zurück zur Übersicht'), ['/site/index']) ?>
                                                 <p>Angaben gemäß § 5 TMG</p><p>Kanat Immobilien <br>
                                                     Lerchengasse 12<br>
                                                     30511 Saarstedt <br>

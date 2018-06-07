@@ -202,10 +202,6 @@ $this->registerJs($search);
                 },
             ],
         ],
-        [
-            'class' => 'yii\grid\ActionColumn',
-            'template' => '{view}'
-        ],
     ];
     Pjax::begin();
     ?>
