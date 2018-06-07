@@ -314,3 +314,4 @@ use kartik\slider\Slider;
     <?php ActiveForm::end(); ?>
 
 </div>
+

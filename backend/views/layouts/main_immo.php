@@ -51,7 +51,7 @@ $this->beginPage()
                 [
                     'label' => 'Admin',
                     'items' => [
-                        ['label' => 'Neue Immobilie anlegen', 'url' => ['/immobilien/create']],
+                        ['label' => 'Neue Immobilie anlegen', 'url' => ['/immobilien/decide']],
                         '<li class="divider"></li>',
                         ['label' => 'Immobilien aufrufen', 'url' => ['/immobilien/index']],
                         '<li class="divider"></li>',

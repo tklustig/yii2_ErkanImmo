@@ -6,12 +6,10 @@ use Yii;
 use backend\models\Immobilien;
 use backend\models\ImmobilienSearch;
 use yii\web\Controller;
+use yii\base\DynamicModel;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-/**
- * ImmobilienController implements the CRUD actions for Immobilien model.
- */
 class ImmobilienController extends Controller {
 
     public function behaviors() {
@@ -25,10 +23,6 @@ class ImmobilienController extends Controller {
         ];
     }
 
-    /**
-     * Lists all Immobilien models.
-     * @return mixed
-     */
     public function actionIndex() {
         $searchModel = new ImmobilienSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -59,12 +53,7 @@ class ImmobilienController extends Controller {
         ]);
     }
 
-    /**
-     * Creates a new Immobilien model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate() {
+    public function actionCreate($id) {
         $this->layout = "main_immo";
         $model_Dateianhang = new \frontend\models\Dateianhang();
         $model = new Immobilien();
@@ -72,23 +61,20 @@ class ImmobilienController extends Controller {
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
         } else {
-            return $this->render('create', [
-                        'model' => $model,
-                        'model_Dateianhang' => $model_Dateianhang
-            ]);
+            if ($id == 1) {
+                return $this->render('_form_vermieten', [
+                            'model' => $model,
+                            'model_Dateianhang' => $model_Dateianhang
+                ]);
+            } else if ($id == 2) {
+                return $this->render('_form_verkauf', [
+                            'model' => $model,
+                            'model_Dateianhang' => $model_Dateianhang
+                ]);
+            }
         }
     }
 
-    /**
-     * Updates an existing Immobilien model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @param integer $l_plz_id
-     * @param integer $l_stadt_id
-     * @param integer $user_id
-     * @param integer $l_art_id
-     * @return mixed
-     */
     public function actionUpdate($id) {
         $this->layout = "main_immo";
         $model_Dateianhang = new \frontend\models\Dateianhang();
@@ -108,32 +94,12 @@ class ImmobilienController extends Controller {
         }
     }
 
-    /**
-     * Deletes an existing Immobilien model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @param integer $l_plz_id
-     * @param integer $l_stadt_id
-     * @param integer $user_id
-     * @param integer $l_art_id
-     * @return mixed
-     */
     public function actionDelete($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id) {
         $this->findModel($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id)->deleteWithRelated();
 
         return $this->redirect(['index']);
     }
 
-    /**
-     *
-     * Export Immobilien information into PDF format.
-     * @param integer $id
-     * @param integer $l_plz_id
-     * @param integer $l_stadt_id
-     * @param integer $user_id
-     * @param integer $l_art_id
-     * @return mixed
-     */
     public function actionPdf($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id) {
         $model = $this->findModel($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id);
         $providerBesichtigungstermin = new \yii\data\ArrayDataProvider([
@@ -171,14 +137,6 @@ class ImmobilienController extends Controller {
         return $pdf->render();
     }
 
-    /**
-     * Creates a new Immobilien model by another data,
-     * so user don't need to input all field from scratch.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     *
-     * @param mixed $id
-     * @return mixed
-     */
     public function actionSaveAsNew($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id) {
         $model = new Immobilien();
 
@@ -214,13 +172,18 @@ class ImmobilienController extends Controller {
     }
 
     public function actionDecide() {
-        ?>
-        <h3>
-            Diese Methode soll dem Interessenten die Möglichkeit geben, einen Termin mit dem jeweiligen Makler zu beantragen. Es wird folglich ein Formular gerendert, welches die entsprechenden Optionen anbietet. Noch ist das allerdings eine Baustelle
-        </h3><br>
-        <?php
-        print_r("Script in der Klasse " . get_class() . " angehalten");
-        die();
+        $this->layout = 'main_immo';
+        $DynamicModel = new DynamicModel(['art']);
+        $DynamicModel->addRule(['art'], 'integer');
+        $DynamicModel->addRule(['art'], 'required');
+
+        if ($DynamicModel->load(Yii::$app->request->post())) {
+            $this->redirect(['/immobilien/create', 'id' => $DynamicModel->art]);
+        } else {
+            return $this->render('_form_decision', [
+                        'DynamicModel' => $DynamicModel,
+            ]);
+        }
     }
 
 }
