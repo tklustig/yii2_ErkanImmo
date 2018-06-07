@@ -2,7 +2,6 @@
 
 namespace common\classes;
 
-use yii\base\Exception;
 use yii\web\AssetBundle as BaseAdminLteAsset;
 
 class AdminLteAsset extends BaseAdminLteAsset {

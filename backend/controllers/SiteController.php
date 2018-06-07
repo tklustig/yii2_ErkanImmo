@@ -101,6 +101,10 @@ class SiteController extends Controller {
 
     public function actionSignup() {
         $this->layout = "reset_main";
+        $modelUser = User::find()->all();
+        foreach ($modelUser as $user) {
+            $telefon = $user->telefon;
+        }
         $session = new Session();
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
@@ -113,6 +117,7 @@ class SiteController extends Controller {
         }
         return $this->render('signup', [
                     'model' => $model,
+                    'telefon' => $telefon
         ]);
     }
 

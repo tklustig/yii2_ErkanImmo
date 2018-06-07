@@ -21,13 +21,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="row">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
             <div class="col-md-3">
-                <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+                <?= $form->field($model, 'username')->textInput(['placeholder' => 'neuen Benutzernamen eingeben']) ?>
             </div>
             <div class="col-md-3">
-                <?= $form->field($model, 'email') ?>
+                <?= $form->field($model, 'email')->textInput(['placeholder' => 'neue Mailadresse eingeben']) ?>
             </div>
             <div class="col-md-3">
-                <?= $form->field($model, 'telefon')->textInput() ?>
+                <?= $form->field($model, 'telefon')->textInput(['value' => $telefon])->hint('Bitte ändern') ?>
             </div>
             <div class="col-md-3">
                 <?= $form->field($model, 'password')->widget(PasswordInput::classname(), []) ?>

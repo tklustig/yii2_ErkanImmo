@@ -145,14 +145,15 @@ use kartik\slider\Slider;
                 <div class="row">
                     <div class="col-md-12">
                         <?=
-                        $form->field($model, 'bezeichnung', ['addon' => [
-                                'prepend' => ['content' => 'Beschreibung der Immobilie']]])->textarea(['rows' => 6])
+                        $form->field($model, 'bezeichnung')->widget(\dosamigos\ckeditor\CKEditor::className(), [
+                            'preset' => 'full', 'clientOptions' => ['height' => 200],
+                        ])
                         ?>
                     </div> <div class="col-md-12">
 
                         <?=
                         $form->field($model, 'strasse', ['addon' => [
-                                'prepend' => ['content' => 'Strasse']]])->textInput(['maxlength' => true, 'placeholder' => 'Strasse'])
+                                'prepend' => ['content' => 'Strasse']]])->textInput(['maxlength' => true, 'placeholder' => 'Bitte die Strasse eingeben'])
                         ?>
                     </div> <div class="col-md-12">
                         <b class="badge">Wohnfläche</b>
