@@ -39,7 +39,7 @@ AssetBundle::register($this);
                             'items' => [
                                 ['label' => 'zur Backendübersicht', 'url' => ['/site/index']],
                                 '<li class="divider"></li>',
-                                ['label' => 'Neue Immobilie anlegen', 'url' => ['/immobilien/create']],
+                                ['label' => 'Neue Immobilie anlegen', 'url' => ['/immobilien/decide']],
                                 '<li class="divider"></li>',
                                 ['label' => 'Immobilien aufrufen', 'url' => ['/immobilien/index']],
                                 '<li class="divider"></li>',

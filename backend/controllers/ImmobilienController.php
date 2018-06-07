@@ -203,64 +203,17 @@ class ImmobilienController extends Controller {
         }
     }
 
-    /**
-     * Action to load a tabular form grid
-     * for Besichtigungstermin
-     * @author Yohanes Candrajaya <moo.tensai@gmail.com>
-     * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
-     *
-     * @return mixed
-     */
-    public function actionAddBesichtigungstermin() {
-        if (Yii::$app->request->isAjax) {
-            $row = Yii::$app->request->post('Besichtigungstermin');
-            if ((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
-                $row[] = [];
-            return $this->renderAjax('_formBesichtigungstermin', ['row' => $row]);
-        } else {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
-    }
-
-    /**
-     * Action to load a tabular form grid
-     * for EDateianhang
-     * @author Yohanes Candrajaya <moo.tensai@gmail.com>
-     * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
-     *
-     * @return mixed
-     */
-    public function actionAddEDateianhang() {
-        if (Yii::$app->request->isAjax) {
-            $row = Yii::$app->request->post('EDateianhang');
-            if ((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
-                $row[] = [];
-            return $this->renderAjax('_formEDateianhang', ['row' => $row]);
-        } else {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
-    }
-
-    /**
-     * Action to load a tabular form grid
-     * for Kundeimmobillie
-     * @author Yohanes Candrajaya <moo.tensai@gmail.com>
-     * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
-     *
-     * @return mixed
-     */
-    public function actionAddKundeimmobillie() {
-        if (Yii::$app->request->isAjax) {
-            $row = Yii::$app->request->post('Kundeimmobillie');
-            if ((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
-                $row[] = [];
-            return $this->renderAjax('_formKundeimmobillie', ['row' => $row]);
-        } else {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
-    }
-
     public function actionTermin() {
+        ?>
+        <h3>
+            Diese Methode soll dem Interessenten die Möglichkeit geben, einen Termin mit dem jeweiligen Makler zu beantragen. Es wird folglich ein Formular gerendert, welches die entsprechenden Optionen anbietet. Noch ist das allerdings eine Baustelle
+        </h3><br>
+        <?php
+        print_r("Script in der Klasse " . get_class() . " angehalten");
+        die();
+    }
+
+    public function actionDecide() {
         ?>
         <h3>
             Diese Methode soll dem Interessenten die Möglichkeit geben, einen Termin mit dem jeweiligen Makler zu beantragen. Es wird folglich ein Formular gerendert, welches die entsprechenden Optionen anbietet. Noch ist das allerdings eine Baustelle
