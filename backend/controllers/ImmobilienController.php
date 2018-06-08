@@ -106,8 +106,25 @@ class ImmobilienController extends Controller {
         $model_Dateianhang = new \frontend\models\Dateianhang();
         $model = $this->findModel($id);
         $form_id = $model->l_art_id;
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
-            return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
+        if ($model->loadAll(Yii::$app->request->post())) {
+            $valid = $model->validate();
+            if ($valid) {
+                $model->save();
+                return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
+            } else {
+                $error_model = $model->getErrors();
+                $error_anhang = $model_Dateianhang->getErrors();
+                foreach ($error_model as $values) {
+                    foreach ($values as $ausgabe) {
+                        throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
+                    }
+                }
+                foreach ($error_anhang as $values) {
+                    foreach ($values as $ausgabe) {
+                        throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
+                    }
+                }
+            }
         } else {
             if ($form_id == 1) {
                 return $this->render('_form_vermieten', [
