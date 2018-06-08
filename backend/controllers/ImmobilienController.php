@@ -184,22 +184,6 @@ class ImmobilienController extends Controller {
         return $pdf->render();
     }
 
-    public function actionSaveAsNew($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id) {
-        $model = new Immobilien();
-
-        if (Yii::$app->request->post('_asnew') != '1') {
-            $model = $this->findModel($id);
-        }
-
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
-            return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
-        } else {
-            return $this->render('saveAsNew', [
-                        'model' => $model,
-            ]);
-        }
-    }
-
     protected function findModel($id) {
         if (($model = Immobilien::findOne(['id' => $id])) !== null) {
             return $model;

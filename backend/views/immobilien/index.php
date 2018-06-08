@@ -39,7 +39,7 @@ $this->registerJs($search);
     }
     ?>
     <h1><?= Html::encode($this->title) ?></h1>
-    <center><h2>Verkaufobjekte</h2></center>
+    <center><h2>Verkaufsobjekte</h2></center>
     <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
 
     <p>
@@ -59,7 +59,7 @@ $this->registerJs($search);
                 return GridView::ROW_COLLAPSED;
             },
             'detail' => function ($model, $key, $index, $column) {
-                return Yii::$app->controller->renderPartial('_expand', ['model' => $model]);
+                return Yii::$app->controller->renderPartial('_expand_verkauf', ['model' => $model]);
             },
             'headerOptions' => ['class' => 'kartik-sheet-style'],
             'expandOneOnly' => true
@@ -178,7 +178,7 @@ $this->registerJs($search);
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{save-as-new} <br> {view} <br> {update} <br> {deleted}',
+            'template' => '{view}<br>{update}<br>{deleted}',
             'buttons' => [
                 'save-as-new' => function ($url) {
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Duplizieren']);
@@ -198,7 +198,7 @@ $this->registerJs($search);
                 return GridView::ROW_COLLAPSED;
             },
             'detail' => function ($model, $key, $index, $column) {
-                return Yii::$app->controller->renderPartial('_expand', ['model' => $model]);
+                return Yii::$app->controller->renderPartial('_expand_vermieten', ['model' => $model]);
             },
             'headerOptions' => ['class' => 'kartik-sheet-style'],
             'expandOneOnly' => true
@@ -310,7 +310,7 @@ $this->registerJs($search);
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{save-as-new} <br> {view} <br> {update} <br> {delete}',
+            'template' => '{view}<br>{update}<br>{delete}',
             'buttons' => [
                 'save-as-new' => function ($url) {
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Duplizieren']);
@@ -353,7 +353,7 @@ $this->registerJs($search);
         'toggleDataOptions' => ['minCount' => 10],
     ]);
     ?>
-    <center><h2>Vermietobjekte</h2></center>
+    <center><h2>Mietobjekte</h2></center>
     <?=
     GridView::widget([
         'dataProvider' => $dataProvider_vermieten,
