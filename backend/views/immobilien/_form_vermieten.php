@@ -295,7 +295,7 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
     <?php if (Yii::$app->controller->action->id != 'create'): ?>
         <?= Html::submitButton(Yii::t('app', 'Duplizieren'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
     <?php endif; ?>
-    <?= Html::a(Yii::t('app', 'Abbruch'), Yii::$app->request->referrer, ['class' => 'btn btn-danger']) ?>
+    <?= Html::a(Yii::t('app', 'Abbruch'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
 </div>
 <?php ActiveForm::end(); ?>
 </div>

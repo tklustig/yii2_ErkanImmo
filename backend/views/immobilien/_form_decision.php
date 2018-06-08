@@ -36,7 +36,7 @@ use kartik\form\ActiveForm;
             </div>
             <div class="form-group">
                 <?= Html::submitButton(Yii::t('app', 'Weiter'), ['class' => 'btn btn-info']) ?>
-                <?= Html::a(Yii::t('app', 'Cancel'), ['/immobilien/index'], ['class' => 'btn btn-danger']) ?>
+                <?= Html::a(Yii::t('app', 'Cancel'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
             </div>
 
             <?php ActiveForm::end(); ?>
