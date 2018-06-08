@@ -10,6 +10,8 @@ use yii\base\DynamicModel;
 use yii\web\NotFoundHttpException;
 use yii\web\NotAcceptableHttpException;
 use yii\filters\VerbFilter;
+use frontend\models\Dateianhang;
+use frontend\models\EDateianhang;
 
 class ImmobilienController extends Controller {
 
@@ -56,12 +58,15 @@ class ImmobilienController extends Controller {
 
     public function actionCreate($id) {
         $this->layout = "main_immo";
-        $model_Dateianhang = new \frontend\models\Dateianhang();
+        $model_Dateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $model = new Immobilien();
 
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
+        if ($model->loadAll(Yii::$app->request->post())) {
+            $model->l_art_id = $id;
             $valid = $model->validate();
             $isValid = $model_Dateianhang->validate() && $valid;
+            var_dump($isValid);
+            die();
             if ($isValid) {
                 return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
             } else {

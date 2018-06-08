@@ -15,10 +15,10 @@ class Dateianhang extends BaseDateianhang {
      */
     public function rules() {
         return array_replace_recursive(parent::rules(), [
-            [['dateiname', 'angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'required'],
             [['angelegt_am', 'aktualisert_am'], 'safe'],
             [['angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'integer'],
-            [['bezeichnung', 'dateiname'], 'string', 'max' => 255],
+            [['dateiname', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'required', 'except' => 'create_Dateianhang'],
+            [['bezeichnung', 'dateiname'], 'string'],
             [['attachement'], 'file', 'skipOnEmpty' => true, 'maxSize' => 10 * 1024000, 'tooBig' => 'Maximal erlaubte Dateigröße:10 MByte', 'maxFiles' => 10],
         ]);
     }

@@ -7,7 +7,7 @@ use kartik\slider\Slider;
 use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
 ?>
 
-<div class="immobilien-form">
+<div class="immobilien-form"><br><br><br>
 
     <?php
     $form = ActiveForm::begin([
@@ -27,7 +27,6 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                 ]) . ' ' . $model->id;
     }
     ?>
-    <br><br>
     <center><h1><?= Html::encode($this->title) ?></h1></center>
     <!-- Beginn des Anhangformulars-->
     <!-- START ACCORDION & CAROUSEL-->

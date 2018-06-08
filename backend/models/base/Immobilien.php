@@ -94,7 +94,7 @@ class Immobilien extends \yii\db\ActiveRecord {
             'bezeichnung' => Yii::t('app', 'Bezeichnung'),
             'strasse' => Yii::t('app', 'Strasse'),
             'wohnflaeche' => Yii::t('app', 'Wohnflaeche'),
-            'k_grundstuecksgroesse' => Yii::t('app', 'K Grundstuecksgroesse'),
+            'k_grundstuecksgroesse' => Yii::t('app', 'Grundstuecksgroesse'),
             'raeume' => Yii::t('app', 'Raeume'),
             'geldbetrag' => Yii::t('app', 'Geldbetrag'),
             'v_nebenkosten' => Yii::t('app', 'Nebenkosten'),

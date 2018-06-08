@@ -5,6 +5,7 @@ namespace frontend\models\base;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
+use frontend\models\EDateianhang;
 
 class Dateianhang extends \yii\db\ActiveRecord {
 
@@ -24,10 +25,10 @@ class Dateianhang extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['dateiname', 'angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'required'],
             [['angelegt_am', 'aktualisert_am'], 'safe'],
             [['angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'integer'],
-            [['bezeichnung', 'dateiname'], 'string', 'max' => 255],
+            [['bezeichnung', 'dateiname'], 'string'],
+            [['dateiname', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'required', 'except' => 'create_Dateianhang'],
             [['attachement'], 'file', 'skipOnEmpty' => true, 'maxSize' => 10 * 1024000, 'tooBig' => 'Maximal erlaubte Dateigröße:10 MByte', 'maxFiles' => 10],
         ];
     }
@@ -47,12 +48,12 @@ class Dateianhang extends \yii\db\ActiveRecord {
             'id' => Yii::t('app', 'ID'),
             'bezeichnung' => Yii::t('app', 'Bezeichnung'),
             'dateiname' => Yii::t('app', 'Dateiname'),
-            'angelegt_am' => Yii::t('app', 'Angelegt Am'),
-            'aktualisert_am' => Yii::t('app', 'Aktualisert Am'),
-            'angelegt_von' => Yii::t('app', 'Angelegt Von'),
-            'aktualisiert_von' => Yii::t('app', 'Aktualisiert Von'),
-            'l_dateianhang_art_id' => Yii::t('app', 'L Dateianhang Art ID'),
-            'e_dateianhang_id' => Yii::t('app', 'E Dateianhang ID'),
+            'angelegt_am' => Yii::t('app', 'angelegt am'),
+            'aktualisert_am' => Yii::t('app', 'aktualisert am'),
+            'angelegt_von' => Yii::t('app', 'angelegt von'),
+            'aktualisiert_von' => Yii::t('app', 'aktualisiert von'),
+            'l_dateianhang_art_id' => Yii::t('app', 'Dateianhangssrt'),
+            'e_dateianhang_id' => Yii::t('app', 'e_dateianhang_id'),
         ];
     }
 
@@ -99,6 +100,36 @@ class Dateianhang extends \yii\db\ActiveRecord {
         } catch (\Exception $error) {
             return;
         }
+    }
+
+    public function upload($model) {
+        $session = new Session();
+        $x = 0;
+        $valid = $this->validate();
+        if (!$valid) {
+            $error_dateianhang = $model->getErrors();
+            foreach ($error_dateianhang as $values) {
+                foreach ($values as $ausgabe) {
+                    var_dump($ausgabe);
+                }
+            }
+            print_r("Script in der Klasse " . get_class() . " angehalten");
+            die();
+        }
+
+        foreach ($this->attachement as $uploaded_file) {
+            //Umlaute im Dateinamen ersetzen
+            $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+            $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+            $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
+            $uploaded_file->saveAs(Yii::getAlias('@web') . '/' . $uploaded_file->name);
+            $localFile = $uploaded_file->name;
+            $x++;
+        }
+        if ($x > 0) {
+            return true;
+        }
+        return false;
     }
 
 }
