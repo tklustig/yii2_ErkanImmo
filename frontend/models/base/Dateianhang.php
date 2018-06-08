@@ -103,7 +103,6 @@ class Dateianhang extends \yii\db\ActiveRecord {
     }
 
     public function upload($model) {
-        $session = new Session();
         $x = 0;
         $valid = $this->validate();
         if (!$valid) {
@@ -116,14 +115,12 @@ class Dateianhang extends \yii\db\ActiveRecord {
             print_r("Script in der Klasse " . get_class() . " angehalten");
             die();
         }
-
         foreach ($this->attachement as $uploaded_file) {
             //Umlaute im Dateinamen ersetzen
             $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
             $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
             $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
-            $uploaded_file->saveAs(Yii::getAlias('@web') . '/' . $uploaded_file->name);
-            $localFile = $uploaded_file->name;
+            $uploaded_file->saveAs(Yii::getAlias('@pictures') . "/" . $uploaded_file->name);
             $x++;
         }
         if ($x > 0) {

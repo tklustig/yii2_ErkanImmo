@@ -13,6 +13,7 @@ use yii\filters\VerbFilter;
 use yii\web\Session;
 use yii\db\IntegrityException;
 use frontend\models\Dateianhang;
+use yii\web\UploadedFile;
 use frontend\models\EDateianhang;
 
 class ImmobilienController extends Controller {
@@ -65,8 +66,16 @@ class ImmobilienController extends Controller {
         $this->layout = "main_immo";
         $model_Dateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $model = new Immobilien();
+        $session = new Session();
 
         if ($model->loadAll(Yii::$app->request->post())) {
+            $model_Dateianhang->attachement = UploadedFile::getInstances($model_Dateianhang, 'attachement');
+            if ($model_Dateianhang->upload($model_Dateianhang)) {
+                $session->addFlash('success', "Der Anhang mit der Bezeichnung $model_Dateianhang->dateiname wurde erolgreich hochgeladen");
+            } else {
+                print_r("Der Anhang mit der Bezeichnung $model_Dateianhang->dateiname wurde erolgreich hochgeladen");
+                die();
+            }
             $model->l_art_id = $id;
             $valid = $model->validate();
             $isValid = $model_Dateianhang->validate() && $valid;
