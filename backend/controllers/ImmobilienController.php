@@ -104,19 +104,22 @@ class ImmobilienController extends Controller {
     public function actionUpdate($id) {
         $this->layout = "main_immo";
         $model_Dateianhang = new \frontend\models\Dateianhang();
-        if (Yii::$app->request->post('_asnew') == '1') {
-            $model = new Immobilien();
-        } else {
-            $model = $this->findModel($id);
-        }
-
+        $model = $this->findModel($id);
+        $form_id = $model->l_art_id;
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
         } else {
-            return $this->render('update', [
-                        'model' => $model,
-                        'model_Dateianhang' => $model_Dateianhang
-            ]);
+            if ($form_id == 1) {
+                return $this->render('_form_vermieten', [
+                            'model' => $model,
+                            'model_Dateianhang' => $model_Dateianhang
+                ]);
+            } else if ($form_id == 2) {
+                return $this->render('_form_verkauf', [
+                            'model' => $model,
+                            'model_Dateianhang' => $model_Dateianhang
+                ]);
+            }
         }
     }
 
@@ -128,7 +131,7 @@ class ImmobilienController extends Controller {
     }
 
     public function actionPdf($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id) {
-        $model = $this->findModel($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id);
+        $model = $this->findModel($id);
         $providerBesichtigungstermin = new \yii\data\ArrayDataProvider([
             'allModels' => $model->besichtigungstermins,
         ]);
@@ -168,7 +171,7 @@ class ImmobilienController extends Controller {
         $model = new Immobilien();
 
         if (Yii::$app->request->post('_asnew') != '1') {
-            $model = $this->findModel($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id);
+            $model = $this->findModel($id);
         }
 
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
