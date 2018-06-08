@@ -69,10 +69,10 @@ $this->registerJs($search);
                             $url = '@web/img/' . $bild->dateiname;
                         }
                     }
+                    return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
                 } catch (Exception $e) {
                     return;
                 }
-                return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
             }
         ],
         ['attribute' => 'id', 'visible' => false],
@@ -134,23 +134,29 @@ $this->registerJs($search);
             ],
             'filterInputOptions' => ['placeholder' => 'Immobilienart', 'id' => 'grid-immobilien-search-l_art_id']
         ],
+        'k_grundstuecksgroesse',
+        'v_nebenkosten',
+        'k_provision',
         [
-            'attribute' => 'angelegt_am',
-            'label' => Yii::t('app', 'angelegt am'),
-            'format' => ['datetime', 'php:d-M-Y H:i:s'],
-            'contentOptions' => [
-                'style' => ['width' => '150px;']
-            ],
-            'hAlign' => 'center',
+            'attribute' => 'l_heizungsart_id',
+            'label' => Yii::t('app', 'Heizungsart'),
             'value' => function($model) {
-                $angelegt_am = new DateTime($model->angelegt_am);
-                if ($model->angelegt_am) {
-                    return $angelegt_am;
+                if ($model->lHeizungsart) {
+                    return $model->lHeizungsart->id;
                 } else {
                     return NULL;
                 }
             },
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LHeizungsart::find()->asArray()->all(), 'id', 'id'),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => 'L heizungsart', 'id' => 'grid-immobilien-search-l_heizungsart_id']
         ],
+        'balkon_vorhanden',
+        'fahrstuhl_vorhanden',
+        'sonstiges:html',
         /*
           'aktualisiert_am',
           [
