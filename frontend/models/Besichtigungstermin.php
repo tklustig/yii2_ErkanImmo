@@ -17,10 +17,9 @@ class Besichtigungstermin extends BaseBesichtigungstermin
     {
         return array_replace_recursive(parent::rules(),
 	    [
-            [['l_plz_id', 'strasse', 'uhrzeit', 'l_stadt_id', 'Immobilien_id'], 'required'],
-            [['l_plz_id', 'l_stadt_id', 'angelegt_von', 'aktualisiert_von', 'Immobilien_id'], 'integer'],
+            [['uhrzeit', 'Immobilien_id'], 'required'],
             [['uhrzeit', 'angelegt_am', 'aktualisiert_am'], 'safe'],
-            [['strasse'], 'string', 'max' => 64],
+            [['angelegt_von', 'aktualisiert_von', 'Immobilien_id'], 'integer'],
             [['Relevanz'], 'string', 'max' => 1]
         ]);
     }
