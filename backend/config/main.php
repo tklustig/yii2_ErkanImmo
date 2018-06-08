@@ -51,7 +51,7 @@ return [
                 'immobilien_view' => 'immobilien/view',
                 'immobilien_erzeugen' => 'immobilien/create',
                 'immobilien_aktualisieren' => 'immobilien/update',
-                'immobilien_löschen' => 'immobilien/delete',
+                'immobilien_löschen' => 'immobilien/deleted',
                 'immobilien_duplizieren' => 'immobilien/save-as-new',
                 'immobilien_vorauswahl' => 'immobilien/decide',
                 'pdf' => 'gridview/export/download',

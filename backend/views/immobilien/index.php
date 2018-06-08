@@ -6,6 +6,8 @@
 use yii\helpers\Html;
 use yii\widgets\Pjax;
 use kartik\grid\GridView;
+use yii\web\Session;
+use kartik\widgets\Alert;
 
 $this->title = Yii::t('app', 'Immobilien');
 $this->params['breadcrumbs'][] = $this->title;
@@ -17,7 +19,27 @@ $this->registerJs($search);
 ?>
 <div class='container-fluid'>
     <br><br><br>
+    <?php
+//Hier werden alle Flashnachrichten ausgegeben
+    $session = new Session();
+    if (!empty($session->getAllFlashes())) {
+        foreach ($session->getAllFlashes() as $flash) {
+            foreach ($flash as $ausgabe) {
+                ?><?=
+                Alert::widget([
+                    'type' => Alert::TYPE_SUCCESS,
+                    'title' => 'Information',
+                    'icon' => 'glyphicon glyphicon-exclamation-sign',
+                    'body' => $ausgabe,
+                    'showSeparator' => true,
+                    'delay' => false
+                ]);
+            }
+        }
+    }
+    ?>
     <h1><?= Html::encode($this->title) ?></h1>
+    <center><h2>Verkaufobjekte</h2></center>
     <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
 
     <p>
@@ -28,7 +50,7 @@ $this->registerJs($search);
     </div>
     <?php
     $dummy = 'id';
-    $gridColumn = [
+    $gridColumn_verkauf = [
         ['class' => 'yii\grid\SerialColumn'],
         [
             'class' => 'kartik\grid\ExpandRowColumn',
@@ -93,21 +115,6 @@ $this->registerJs($search);
         'strasse',
         'wohnflaeche',
         'raeume',
-        // 'l_plz_id',
-        /*
-          [
-          'attribute' => 'user_id',
-          'label' => Yii::t('app', 'User'),
-          'value' => function($model) {
-          return $model->user->id;
-          },
-          'filterType' => GridView::FILTER_SELECT2,
-          'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'username'),
-          'filterWidgetOptions' => [
-          'pluginOptions' => ['allowClear' => true],
-          ],
-          'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-user_id']
-          ], */
         [
             'attribute' => 'geldbetrag',
             'label' => Yii::t('app', 'Kosten'),
@@ -135,7 +142,6 @@ $this->registerJs($search);
             'filterInputOptions' => ['placeholder' => 'Immobilienart', 'id' => 'grid-immobilien-search-l_art_id']
         ],
         'k_grundstuecksgroesse',
-        'v_nebenkosten',
         'k_provision',
         [
             'attribute' => 'l_heizungsart_id',
@@ -157,44 +163,138 @@ $this->registerJs($search);
         'balkon_vorhanden',
         'fahrstuhl_vorhanden',
         'sonstiges:html',
-        /*
-          'aktualisiert_am',
-          [
-          'attribute' => 'angelegt_von',
-          'label' => Yii::t('app', 'Angelegt Von'),
-          'value' => function($model) {
-          if ($model->angelegtVon) {
-          return $model->angelegtVon->id;
-          } else {
-          return NULL;
-          }
-          },
-          'filterType' => GridView::FILTER_SELECT2,
-          'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\User::find()->asArray()->all(), 'id', 'id'),
-          'filterWidgetOptions' => [
-          'pluginOptions' => ['allowClear' => true],
-          ],
-          'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-angelegt_von']
-          ],
-          [
-          'attribute' => 'aktualisiert_von',
-          'label' => Yii::t('app', 'Aktualisiert Von'),
-          'value' => function($model) {
-          if ($model->aktualisiertVon) {
-          return $model->aktualisiertVon->id;
-          } else {
-          return NULL;
-          }
-          },
-          'filterType' => GridView::FILTER_SELECT2,
-          'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\User::find()->asArray()->all(), 'id', 'id'),
-          'filterWidgetOptions' => [
-          'pluginOptions' => ['allowClear' => true],
-          ],
-          'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-aktualisiert_von']
-          ],
-
-         */
+        [
+            'class' => 'kartik\grid\ActionColumn',
+            'dropdown' => true,
+            'headerOptions' => ['width' => '80'],
+            'vAlign' => 'top',
+            'header' => '',
+            'template' => '{termin}',
+            'buttons' => [
+                'termin' => function ($model, $id) {
+                    return Html::a('<span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span>', ['immobilien/termin', 'id' => $id->id], ['title' => 'Termin vereinbaren', 'data' => ['pjax' => '0']]);
+                },
+            ],
+        ],
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '{save-as-new} <br> {view} <br> {update} <br> {deleted}',
+            'buttons' => [
+                'save-as-new' => function ($url) {
+                    return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Duplizieren']);
+                },
+                'deleted' => function ($model, $id) {
+                    return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/immobilien/deleted', 'id' => $id->id], ['title' => 'Löschen']);
+                },
+            ],
+        ],
+    ];
+    $gridColumn_vermieten = [
+        ['class' => 'yii\grid\SerialColumn'],
+        [
+            'class' => 'kartik\grid\ExpandRowColumn',
+            'width' => '50px',
+            'value' => function ($model, $key, $index, $column) {
+                return GridView::ROW_COLLAPSED;
+            },
+            'detail' => function ($model, $key, $index, $column) {
+                return Yii::$app->controller->renderPartial('_expand', ['model' => $model]);
+            },
+            'headerOptions' => ['class' => 'kartik-sheet-style'],
+            'expandOneOnly' => true
+        ],
+        [
+            'attribute' => $dummy,
+            'label' => Yii::t('app', ''),
+            'format' => 'html', // sorgt dafür,dass das HTML im return gerendert wird
+            'vAlign' => 'middle',
+            'value' => function($model) {
+                $bmp = '/bmp/';
+                $tif = '/tif/';
+                $png = '/png/';
+                $psd = '/psd/';
+                $pcx = '/pcx/';
+                $gif = '/gif/';
+                $jpeg = '/jpeg/';
+                $jpg = '/jpg/';
+                $ico = '/ico/';
+                try {
+                    $bilder = \frontend\models\Dateianhang::GetBild($model);
+                    foreach ($bilder as $bild) {
+                        if (preg_match($bmp, $bild->dateiname) || preg_match($tif, $bild->dateiname) || preg_match($png, $bild->dateiname) || preg_match($psd, $bild->dateiname) || preg_match($pcx, $bild->dateiname) || preg_match($gif, $bild->dateiname) || preg_match($jpeg, $bild->dateiname) || preg_match($jpg, $bild->dateiname) || preg_match($ico, $bild->dateiname)) {
+                            $url = '@web/img/' . $bild->dateiname;
+                        }
+                    }
+                    return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
+                } catch (Exception $e) {
+                    return;
+                }
+            }
+        ],
+        [
+            'attribute' => 'l_stadt_id',
+            'label' => Yii::t('app', 'Stadt'),
+            'value' => function($model) {
+                return $model->lStadt->stadt;
+            },
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LStadt::find()->asArray()->all(), 'id', 'stadt'),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => 'Stadt wählen', 'id' => 'grid-immobilien-search-l_stadt_id']
+        ],
+        'bezeichnung:html',
+        'strasse',
+        'wohnflaeche',
+        'raeume',
+        [
+            'attribute' => 'geldbetrag',
+            'label' => Yii::t('app', 'Kosten'),
+            'value' => function($model) {
+                $betrag = number_format(
+                        $model->geldbetrag, // zu konvertierende zahl
+                        2, // Anzahl an Nochkommastellen
+                        ",", // Dezimaltrennzeichen
+                        "."    // 1000er-Trennzeichen
+                );
+                return $betrag;
+            },
+        ],
+        [
+            'attribute' => 'l_art_id',
+            'label' => Yii::t('app', 'Art'),
+            'value' => function($model) {
+                return $model->lArt->bezeichnung;
+            },
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LArt::find()->asArray()->all(), 'id', 'bezeichnung'),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => 'Immobilienart', 'id' => 'grid-immobilien-search-l_art_id']
+        ],
+        'v_nebenkosten',
+        [
+            'attribute' => 'l_heizungsart_id',
+            'label' => Yii::t('app', 'Heizungsart'),
+            'value' => function($model) {
+                if ($model->lHeizungsart) {
+                    return $model->lHeizungsart->id;
+                } else {
+                    return NULL;
+                }
+            },
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LHeizungsart::find()->asArray()->all(), 'id', 'id'),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => 'L heizungsart', 'id' => 'grid-immobilien-search-l_heizungsart_id']
+        ],
+        'balkon_vorhanden',
+        'fahrstuhl_vorhanden',
+        'sonstiges:html',
         [
             'class' => 'kartik\grid\ActionColumn',
             'dropdown' => true,
@@ -222,9 +322,43 @@ $this->registerJs($search);
     ?>
     <?=
     GridView::widget([
-        'dataProvider' => $dataProvider,
+        'dataProvider' => $dataProvider_verkauf,
         'filterModel' => $searchModel,
-        'columns' => $gridColumn,
+        'columns' => $gridColumn_verkauf,
+        'pjax' => true,
+        'pjaxSettings' => [
+            'neverTimeout' => true,
+        ],
+        'options' => [
+            'style' => 'overflow: auto; word-wrap: break-word;'
+        ],
+        'condensed' => true,
+        'responsiveWrap' => true,
+        'hover' => true,
+        'persistResize' => true,
+        'panel' => [
+            "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
+            'type' => 'danger',
+            'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> zur Hauptseite', ['/site/index'], ['class' => 'btn btn-info']),
+            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/immobilien/index'], ['class' => 'btn btn-primary', 'title' => 'Setzt die GridView zurück']),
+            'toggleDataOptions' => ['minCount' => 10],
+        ],
+        'toolbar' => [
+            ['content' =>
+                Html::a('<i class="fa fa-folder-open"></i>', ['/immobilien/index', 'bez' => 'umbenennen'], ['class' => 'btn btn-primary', 'title' => 'additional content'])
+            ],
+            '{export}',
+            '{toggleData}'
+        ],
+        'toggleDataOptions' => ['minCount' => 10],
+    ]);
+    ?>
+    <center><h2>Vermietobjekte</h2></center>
+    <?=
+    GridView::widget([
+        'dataProvider' => $dataProvider_vermieten,
+        'filterModel' => $searchModel,
+        'columns' => $gridColumn_vermieten,
         'pjax' => true,
         'pjaxSettings' => [
             'neverTimeout' => true,

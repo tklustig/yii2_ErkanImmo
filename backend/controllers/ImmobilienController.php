@@ -10,6 +10,7 @@ use yii\base\DynamicModel;
 use yii\web\NotFoundHttpException;
 use yii\web\NotAcceptableHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Session;
 use frontend\models\Dateianhang;
 use frontend\models\EDateianhang;
 
@@ -28,11 +29,14 @@ class ImmobilienController extends Controller {
 
     public function actionIndex() {
         $searchModel = new ImmobilienSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_verkauf = $searchModel->search(Yii::$app->request->queryParams, 1);
+        $dataProvider_vermieten = $searchModel->search(Yii::$app->request->queryParams, 2);
+
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
+                    'dataProvider_verkauf' => $dataProvider_verkauf,
+                    'dataProvider_vermieten' => $dataProvider_vermieten
         ]);
     }
 
@@ -116,10 +120,11 @@ class ImmobilienController extends Controller {
         }
     }
 
-    public function actionDelete($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id) {
-        $this->findModel($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id)->deleteWithRelated();
-
-        return $this->redirect(['index']);
+    public function actionDeleted($id) {
+        $session = new Session();
+        $this->findModel($id)->deleteWithRelated();
+        $session->addFlash('info', "Der Datensatz mit der Id:$id wurde erfolgreich gelöscht");
+        return $this->redirect(['/immobilien/index']);
     }
 
     public function actionPdf($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id) {
