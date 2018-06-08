@@ -27,17 +27,15 @@ use yii\behaviors\BlameableBehavior;
  * @property \frontend\models\Immobilien $immobilien
  * @property \frontend\models\LStadt $lStadt
  */
-class Besichtigungstermin extends \yii\db\ActiveRecord
-{
+class Besichtigungstermin extends \yii\db\ActiveRecord {
+
     use \mootensai\relation\RelationTrait;
 
-
     /**
-    * This function helps \mootensai\relation\RelationTrait runs faster
-    * @return array relation names of this model
-    */
-    public function relationNames()
-    {
+     * This function helps \mootensai\relation\RelationTrait runs faster
+     * @return array relation names of this model
+     */
+    public function relationNames() {
         return [
             'adminbesichtigungkundes',
             'angelegtVon',
@@ -50,8 +48,7 @@ class Besichtigungstermin extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['l_plz_id', 'strasse', 'uhrzeit', 'l_stadt_id', 'Immobilien_id'], 'required'],
             [['l_plz_id', 'l_stadt_id', 'angelegt_von', 'aktualisiert_von', 'Immobilien_id'], 'integer'],
@@ -64,16 +61,14 @@ class Besichtigungstermin extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'besichtigungstermin';
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
             'l_plz_id' => Yii::t('app', 'L Plz ID'),
@@ -88,53 +83,47 @@ class Besichtigungstermin extends \yii\db\ActiveRecord
             'Immobilien_id' => Yii::t('app', 'Immobilien ID'),
         ];
     }
-    
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAdminbesichtigungkundes()
-    {
+    public function getAdminbesichtigungkundes() {
         return $this->hasMany(\frontend\models\Adminbesichtigungkunde::className(), ['besichtigungstermin_id' => 'id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAngelegtVon()
-    {
-        return $this->hasOne(\frontend\models\User::className(), ['id' => 'angelegt_von']);
+    public function getAngelegtVon() {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'angelegt_von']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAktualisiertVon()
-    {
-        return $this->hasOne(\frontend\models\User::className(), ['id' => 'aktualisiert_von']);
+    public function getAktualisiertVon() {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getImmobilien()
-    {
+    public function getImmobilien() {
         return $this->hasOne(\frontend\models\Immobilien::className(), ['id' => 'Immobilien_id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLStadt()
-    {
+    public function getLStadt() {
         return $this->hasOne(\frontend\models\LStadt::className(), ['id' => 'l_stadt_id']);
     }
-    
+
     /**
      * @inheritdoc
      * @return array mixed
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
@@ -149,4 +138,5 @@ class Besichtigungstermin extends \yii\db\ActiveRecord
             ],
         ];
     }
+
 }

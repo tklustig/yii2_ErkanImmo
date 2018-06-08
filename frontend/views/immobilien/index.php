@@ -9,23 +9,9 @@ use kartik\grid\GridView;
 
 $this->title = Yii::t('app', 'Immobilien');
 $this->params['breadcrumbs'][] = $this->title;
-$search = "$('.search-button').click(function(){
-	$('.search-form').toggle(1000);
-	return false;
-});";
-$this->registerJs($search);
 ?>
 <div class='container-fluid'>
-
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Tiefergehende Suche'), '#', ['class' => 'btn btn-warning search-button']) ?>
-    </p>
-    <div class="search-form" style="display:none">
-        <?= $this->render('_search', ['model' => $searchModel]); ?>
-    </div>
     <?php
     $dummy = 'id';
     $gridColumn = [
@@ -69,10 +55,10 @@ $this->registerJs($search);
                             $url = '@web/img/' . $bild->dateiname;
                         }
                     }
+                    return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
                 } catch (Exception $e) {
                     return;
                 }
-                return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
             }
         ],
         ['attribute' => 'id', 'visible' => false],

@@ -11,6 +11,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\NotAcceptableHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Session;
+use yii\db\IntegrityException;
 use frontend\models\Dateianhang;
 use frontend\models\EDateianhang;
 
@@ -141,8 +142,13 @@ class ImmobilienController extends Controller {
     }
 
     public function actionDeleted($id) {
-        $session = new Session();
-        $this->findModel($id)->deleteWithRelated();
+        try {
+            $session = new Session();
+            $this->findModel($id)->deleteWithRelated();
+        } catch (IntegrityException $e) {
+            $session->addFlash('error', 'Der Löschvorgang verstösst gegen die referentielle Integrität(RI) und wurde deshalb unterbunden. Löschen Sie zuerst all jene Datensätze, auf die sich dieser bezieht! Falls Sie nicht wissen, was RI bedeutet, fragen Sie einen Datenbankexperten.');
+            return $this->redirect(['/immobilien/index']);
+        }
         $session->addFlash('info', "Der Datensatz mit der Id:$id wurde erfolgreich gelöscht");
         return $this->redirect(['/immobilien/index']);
     }
