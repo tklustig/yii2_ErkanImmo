@@ -97,7 +97,6 @@ $this->registerJs($search);
                 }
             }
         ],
-        ['attribute' => 'id', 'visible' => false],
         [
             'attribute' => 'l_stadt_id',
             'label' => Yii::t('app', 'Stadt'),
@@ -111,13 +110,13 @@ $this->registerJs($search);
             ],
             'filterInputOptions' => ['placeholder' => 'Stadt wählen', 'id' => 'grid-immobilien-search-l_stadt_id']
         ],
-        'bezeichnung:html',
-        'strasse',
+        //'bezeichnung:html',
+        // 'strasse',
         'wohnflaeche',
         'raeume',
         [
             'attribute' => 'geldbetrag',
-            'label' => Yii::t('app', 'Kosten'),
+            'label' => Yii::t('app', 'Kaufpreis(€)'),
             'value' => function($model) {
                 $betrag = number_format(
                         $model->geldbetrag, // zu konvertierende zahl
@@ -128,41 +127,56 @@ $this->registerJs($search);
                 return $betrag;
             },
         ],
-        [
-            'attribute' => 'l_art_id',
-            'label' => Yii::t('app', 'Art'),
-            'value' => function($model) {
-                return $model->lArt->bezeichnung;
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LArt::find()->asArray()->all(), 'id', 'bezeichnung'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'Immobilienart', 'id' => 'grid-immobilien-search-l_art_id']
-        ],
         'k_grundstuecksgroesse',
-        'k_provision',
+        /*
+          [
+          'attribute' => 'k_provision',
+          'label' => Yii::t('app', 'Provision(%)'),
+          'value' => function($model) {
+          $betrag = number_format(
+          $model->k_provision, // zu konvertierende zahl
+          2, // Anzahl an Nochkommastellen
+          ",", // Dezimaltrennzeichen
+          "."    // 1000er-Trennzeichen
+          );
+          return $betrag;
+          },
+          ],
+         */
         [
             'attribute' => 'l_heizungsart_id',
             'label' => Yii::t('app', 'Heizungsart'),
             'value' => function($model) {
                 if ($model->lHeizungsart) {
-                    return $model->lHeizungsart->id;
+                    return $model->lHeizungsart->bezeichnung;
                 } else {
                     return NULL;
                 }
             },
             'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LHeizungsart::find()->asArray()->all(), 'id', 'id'),
+            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LHeizungsart::find()->asArray()->all(), 'id', 'bezeichnung'),
             'filterWidgetOptions' => [
                 'pluginOptions' => ['allowClear' => true],
             ],
-            'filterInputOptions' => ['placeholder' => 'L heizungsart', 'id' => 'grid-immobilien-search-l_heizungsart_id']
+            'filterInputOptions' => ['placeholder' => 'Heizungsart', 'id' => 'grid-immobilien-search']
         ],
-        'balkon_vorhanden',
-        'fahrstuhl_vorhanden',
-        'sonstiges:html',
+        [
+            'class' => 'kartik\grid\BooleanColumn',
+            'attribute' => 'balkon_vorhanden',
+            'trueLabel' => 'Ja',
+            'falseLabel' => 'Nein',
+            'label' => '<span class="glyphicon glyphicon-piggy-bank"></span>' . '<br>Balkon vorhanden',
+            'encodeLabel' => false,
+        ],
+        [
+            'class' => 'kartik\grid\BooleanColumn',
+            'attribute' => 'fahrstuhl_vorhanden',
+            'trueLabel' => 'Ja',
+            'falseLabel' => 'Nein',
+            'label' => '<span class="glyphicon glyphicon-circle-arrow-up"></span>' . '<br>Fahrstuhl vorhanden',
+            'encodeLabel' => false,
+        ],
+        // 'sonstiges:html',
         [
             'class' => 'kartik\grid\ActionColumn',
             'dropdown' => true,
@@ -204,6 +218,11 @@ $this->registerJs($search);
             'expandOneOnly' => true
         ],
         [
+            /*
+              Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBewerberBild(model),welche
+              drei JOINs und eine dynamische WHERE-Klausel enthält,die auf den FK id_person von bewerber prüft. Das Bild liegt physikalisch auf dem Webspace,
+              dessen Zugriffspfade in der Datenbank in einer ganz bestimmten Reihenfolge hinterlegt sein müssen!
+             */
             'attribute' => $dummy,
             'label' => Yii::t('app', ''),
             'format' => 'html', // sorgt dafür,dass das HTML im return gerendert wird
@@ -244,13 +263,13 @@ $this->registerJs($search);
             ],
             'filterInputOptions' => ['placeholder' => 'Stadt wählen', 'id' => 'grid-immobilien-search-l_stadt_id']
         ],
-        'bezeichnung:html',
+        //'bezeichnung:html',
         'strasse',
         'wohnflaeche',
         'raeume',
         [
             'attribute' => 'geldbetrag',
-            'label' => Yii::t('app', 'Kosten'),
+            'label' => Yii::t('app', 'Mietpreis(Netto)'),
             'value' => function($model) {
                 $betrag = number_format(
                         $model->geldbetrag, // zu konvertierende zahl
@@ -262,39 +281,52 @@ $this->registerJs($search);
             },
         ],
         [
-            'attribute' => 'l_art_id',
-            'label' => Yii::t('app', 'Art'),
+            'attribute' => 'v_nebenkosten',
+            'label' => Yii::t('app', 'Nebenkosten(€)'),
             'value' => function($model) {
-                return $model->lArt->bezeichnung;
+                $betrag = number_format(
+                        $model->v_nebenkosten, // zu konvertierende zahl
+                        2, // Anzahl an Nochkommastellen
+                        ",", // Dezimaltrennzeichen
+                        "."    // 1000er-Trennzeichen
+                );
+                return $betrag;
             },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LArt::find()->asArray()->all(), 'id', 'bezeichnung'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'Immobilienart', 'id' => 'grid-immobilien-search-l_art_id']
         ],
-        'v_nebenkosten',
         [
             'attribute' => 'l_heizungsart_id',
             'label' => Yii::t('app', 'Heizungsart'),
             'value' => function($model) {
                 if ($model->lHeizungsart) {
-                    return $model->lHeizungsart->id;
+                    return $model->lHeizungsart->bezeichnung;
                 } else {
                     return NULL;
                 }
             },
             'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LHeizungsart::find()->asArray()->all(), 'id', 'id'),
+            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LHeizungsart::find()->asArray()->all(), 'id', 'bezeichnung'),
             'filterWidgetOptions' => [
                 'pluginOptions' => ['allowClear' => true],
             ],
-            'filterInputOptions' => ['placeholder' => 'L heizungsart', 'id' => 'grid-immobilien-search-l_heizungsart_id']
+            'filterInputOptions' => ['placeholder' => 'Heizungsart', 'id' => 'grid-immobilien-search-l_2']
         ],
-        'balkon_vorhanden',
-        'fahrstuhl_vorhanden',
-        'sonstiges:html',
+        [
+            'class' => 'kartik\grid\BooleanColumn',
+            'attribute' => 'balkon_vorhanden',
+            'trueLabel' => 'Ja',
+            'falseLabel' => 'Nein',
+            'label' => '<span class="glyphicon glyphicon-piggy-bank"></span>' . '<br>Balkon vorhanden',
+            'encodeLabel' => false,
+        ],
+        [
+            'class' => 'kartik\grid\BooleanColumn',
+            'attribute' => 'fahrstuhl_vorhanden',
+            'trueLabel' => 'Ja',
+            'falseLabel' => 'Nein',
+            'label' => '<span class="glyphicon glyphicon-circle-arrow-up"></span>' . '<br>Fahrstuhl vorhanden',
+            'encodeLabel' => false,
+        ],
+        //'sonstiges:html',
         [
             'class' => 'kartik\grid\ActionColumn',
             'dropdown' => true,
@@ -310,10 +342,13 @@ $this->registerJs($search);
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{view}<br>{update}<br>{delete}',
+            'template' => '{view}<br>{update}<br>{deleted}',
             'buttons' => [
                 'save-as-new' => function ($url) {
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Duplizieren']);
+                },
+                'deleted' => function ($model, $id) {
+                    return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/immobilien/deleted', 'id' => $id->id], ['title' => 'Löschen']);
                 },
             ],
         ],
