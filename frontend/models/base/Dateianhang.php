@@ -5,6 +5,7 @@ namespace frontend\models\base;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
+use yii\web\NotAcceptableHttpException;
 use frontend\models\EDateianhang;
 
 class Dateianhang extends \yii\db\ActiveRecord {
@@ -110,10 +111,9 @@ class Dateianhang extends \yii\db\ActiveRecord {
             foreach ($error_dateianhang as $values) {
                 foreach ($values as $ausgabe) {
                     var_dump($ausgabe);
+                    throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
                 }
             }
-            print_r("Script in der Klasse " . get_class() . " angehalten");
-            die();
         }
         foreach ($this->attachement as $uploaded_file) {
             //Umlaute im Dateinamen ersetzen

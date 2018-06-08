@@ -72,9 +72,6 @@ class ImmobilienController extends Controller {
             $model_Dateianhang->attachement = UploadedFile::getInstances($model_Dateianhang, 'attachement');
             if ($model_Dateianhang->upload($model_Dateianhang)) {
                 $session->addFlash('success', "Der Anhang mit der Bezeichnung $model_Dateianhang->dateiname wurde erolgreich hochgeladen");
-            } else {
-                print_r("Der Anhang mit der Bezeichnung $model_Dateianhang->dateiname wurde erolgreich hochgeladen");
-                die();
             }
             $model->l_art_id = $id;
             $valid = $model->validate();
