@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\form\ActiveForm;
 use kartik\widgets\FileInput;
 use kartik\slider\Slider;
@@ -137,10 +138,10 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                     </div>
                     <div class="col-md-4">
                         <?=
-                        $form->field($model, 'l_stadt_id', ['addon' => [
-                                'prepend' => ['content' => 'Stadt']]])->widget(\kartik\widgets\Select2::classname(), [
-                            'data' => \yii\helpers\ArrayHelper::map(frontend\models\LStadt::find()->orderBy('id')->asArray()->all(), 'id', 'stadt'),
-                            'options' => ['placeholder' => Yii::t('app', 'Stadt wählen'),
+                        $form->field($model, 'l_plz_id', ['addon' => [
+                                'prepend' => ['content' => 'Plz']]])->widget(\kartik\widgets\Select2::classname(), [
+                            'data' => \yii\helpers\ArrayHelper::map(frontend\models\LPlz::find()->orderBy('id')->asArray()->all(), 'id', 'plz'),
+                            'options' => ['placeholder' => Yii::t('app', 'Postleitzahl wählen'),
                                 'id' => 'zip_code',
                             ],
                             'pluginOptions' => [
@@ -150,8 +151,8 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                         ?>
                     </div> <div class="col-md-4">
                         <?=
-                        $form->field($model, 'l_plz_id', ['addon' => [
-                                'prepend' => ['content' => 'Plz']]])->textInput(['maxlength' => true, 'placeholder' => 'Bitte die Postleitzahl eingeben'])
+                        $form->field($model, 'stadt', ['addon' => [
+                                'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'placeholder' => 'Applikation füllt die Stadt gemäß der Postleitzahl'])
                         ?>
 
                     </div>
@@ -306,16 +307,15 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
 <?php ActiveForm::end(); ?>
 
 <?php
-$url = yii\helpers\Url::to(['plz/get-city-province']);
+$url = Url::to(['plz/get-city-province']);
 
 $script = <<< JS
         $('#zip_code').change(function(){
         var zipId=$(this).val();
        $.get('$url',{zipId:zipId},function(data){
    var data=$.parseJSON(data);
-   alert(data.ort+" hat die Postleitzahl "+data.plz+"! Die Id ist "+zipId);
-   $('#customers-city').attr('value',data.city);
-       $('#customers-province').attr('value',data.province);
+   alert(data.plz+" entspricht der Stadt "+data.ort+"! Die Id ist "+zipId);
+   $('#immobilien-l_stadt_id').attr('value',data.ort);
    });
            });
 

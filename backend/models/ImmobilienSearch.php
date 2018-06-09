@@ -17,9 +17,9 @@ class ImmobilienSearch extends Immobilien {
      */
     public function rules() {
         return [
-            [['id', 'wohnflaeche', 'k_grundstuecksgroesse', 'raeume', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id', 'l_heizungsart_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
-            [['bezeichnung', 'strasse', 'balkon_vorhanden', 'fahrstuhl_vorhanden', 'sonstiges', 'angelegt_am', 'aktualisiert_am'], 'safe'],
-            [['geldbetrag', 'v_nebenkosten', 'k_provision'], 'number'],
+            [['id', 'id_bild', 'wohnflaeche', 'raeume', 'k_grundstuecksgroesse', 'l_plz_id', 'user_id', 'l_art_id', 'l_heizungsart_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
+            [['bezeichnung', 'sonstiges', 'strasse', 'balkon_vorhanden', 'fahrstuhl_vorhanden', 'stadt', 'angelegt_am', 'aktualisiert_am'], 'safe'],
+            [['geldbetrag', 'k_provision', 'v_nebenkosten'], 'number'],
         ];
     }
 
@@ -62,7 +62,6 @@ class ImmobilienSearch extends Immobilien {
                 'geldbetrag' => $this->geldbetrag,
                 'k_provision' => $this->k_provision,
                 'l_plz_id' => $this->l_plz_id,
-                'l_stadt_id' => $this->l_stadt_id,
                 'user_id' => $this->user_id,
                 'l_art_id' => $this->l_art_id,
                 'l_heizungsart_id' => $this->l_heizungsart_id,
@@ -76,6 +75,7 @@ class ImmobilienSearch extends Immobilien {
                     ->andFilterWhere(['like', 'strasse', $this->strasse])
                     ->andFilterWhere(['like', 'balkon_vorhanden', $this->balkon_vorhanden])
                     ->andFilterWhere(['like', 'fahrstuhl_vorhanden', $this->fahrstuhl_vorhanden])
+                    ->andFilterWhere(['like', 'stadt', $this->fahrstuhl_vorhanden])
                     ->andFilterWhere(['like', 'sonstiges', $this->sonstiges]);
             return $dataProvider;
         } else if ($id == 2) {
@@ -99,7 +99,6 @@ class ImmobilienSearch extends Immobilien {
                 'geldbetrag' => $this->geldbetrag,
                 'v_nebenkosten' => $this->v_nebenkosten,
                 'l_plz_id' => $this->l_plz_id,
-                'l_stadt_id' => $this->l_stadt_id,
                 'user_id' => $this->user_id,
                 'l_art_id' => $this->l_art_id,
                 'l_heizungsart_id' => $this->l_heizungsart_id,
@@ -112,6 +111,7 @@ class ImmobilienSearch extends Immobilien {
                     ->andFilterWhere(['like', 'strasse', $this->strasse])
                     ->andFilterWhere(['like', 'balkon_vorhanden', $this->balkon_vorhanden])
                     ->andFilterWhere(['like', 'fahrstuhl_vorhanden', $this->fahrstuhl_vorhanden])
+                    ->andFilterWhere(['like', 'stadt', $this->fahrstuhl_vorhanden])
                     ->andFilterWhere(['like', 'sonstiges', $this->sonstiges]);
             return $dataProvider;
         }

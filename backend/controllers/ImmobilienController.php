@@ -79,7 +79,7 @@ class ImmobilienController extends Controller {
             $isValid = $model_Dateianhang->validate() && $valid;
             if ($isValid) {
                 $model->save();
-                return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
+                return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 $error_model = $model->getErrors();
                 $error_anhang = $model_Dateianhang->getErrors();
@@ -118,7 +118,7 @@ class ImmobilienController extends Controller {
             $valid = $model->validate();
             if ($valid) {
                 $model->save();
-                return $this->redirect(['view', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id]);
+                return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 $error_model = $model->getErrors();
                 $error_anhang = $model_Dateianhang->getErrors();

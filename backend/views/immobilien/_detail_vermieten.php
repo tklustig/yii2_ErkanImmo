@@ -49,7 +49,7 @@ use yii\widgets\DetailView;
             'raeume',
             'l_plz_id',
             [
-                'attribute' => 'lStadt.stadt',
+                'attribute' => 'stadt',
                 'label' => Yii::t('app', 'Stadt'),
             ],
             [

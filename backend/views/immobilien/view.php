@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="upper" style="margin-top: 15px">
                 <?= Html::a(Yii::t('app', 'zur Übersicht'), ['index', 'id' => $model->id], ['class' => 'btn btn-success ']) ?>
                 <?=
-                Html::a('<i class="fa glyphicon glyphicon-hand-up"></i> ' . Yii::t('app', 'PDF'), ['pdf', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'l_stadt_id' => $model->l_stadt_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id], [
+                Html::a('<i class="fa glyphicon glyphicon-hand-up"></i> ' . Yii::t('app', 'PDF'), ['pdf', 'id' => $model->id, 'l_plz_id' => $model->l_plz_id, 'user_id' => $model->user_id, 'l_art_id' => $model->l_art_id], [
                     'class' => 'btn btn-danger',
                     'target' => '_blank',
                     'data-toggle' => 'tooltip',
@@ -44,8 +44,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'geldbetrag',
                 'l_plz_id',
                 [
-                    'attribute' => 'lStadt.id',
-                    'label' => Yii::t('app', 'L Stadt'),
+                    'attribute' => 'stadt',
+                    'label' => Yii::t('app', 'Stadt'),
                 ],
                 [
                     'attribute' => 'user.id',
@@ -149,18 +149,6 @@ $this->params['breadcrumbs'][] = $this->title;
         echo DetailView::widget([
             'model' => $model->user,
             'attributes' => $gridColumnUser]);
-        ?>
-        <div class="row">
-            <h4>LStadt<?= ' ' . Html::encode($this->title) ?></h4>
-        </div>
-        <?php
-        $gridColumnLStadt = [
-            ['attribute' => 'id', 'visible' => false],
-            'stadt',
-        ];
-        echo DetailView::widget([
-            'model' => $model->lStadt,
-            'attributes' => $gridColumnLStadt]);
         ?>
         <div class="row">
             <?php

@@ -98,17 +98,11 @@ $this->registerJs($search);
             }
         ],
         [
-            'attribute' => 'l_stadt_id',
+            'attribute' => 'stadt',
             'label' => Yii::t('app', 'Stadt'),
             'value' => function($model) {
-                return $model->lStadt->stadt;
+                return $model->stadt;
             },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LStadt::find()->asArray()->all(), 'id', 'stadt'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'Stadt wählen', 'id' => 'grid-immobilien-search-l_stadt_id']
         ],
         //'bezeichnung:html',
         // 'strasse',
@@ -251,17 +245,11 @@ $this->registerJs($search);
             }
         ],
         [
-            'attribute' => 'l_stadt_id',
+            'attribute' => 'stadt',
             'label' => Yii::t('app', 'Stadt'),
             'value' => function($model) {
-                return $model->lStadt->stadt;
+                return $model->stadt;
             },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LStadt::find()->asArray()->all(), 'id', 'stadt'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'Stadt wählen', 'id' => 'grid-immobilien-search-l_stadt_id']
         ],
         //'bezeichnung:html',
         'strasse',

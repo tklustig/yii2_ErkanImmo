@@ -139,26 +139,22 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                     <div class="col-md-4">
                         <?=
                         $form->field($model, 'l_plz_id', ['addon' => [
-                                'prepend' => ['content' => 'PLZ']]])->widget(\kartik\widgets\Select2::classname(), [
+                                'prepend' => ['content' => 'Plz']]])->widget(\kartik\widgets\Select2::classname(), [
                             'data' => \yii\helpers\ArrayHelper::map(frontend\models\LPlz::find()->orderBy('id')->asArray()->all(), 'id', 'plz'),
-                            'options' => ['placeholder' => Yii::t('app', 'PLZ auswählen')],
+                            'options' => ['placeholder' => Yii::t('app', 'Postleitzahl wählen'),
+                                'id' => 'zip_code',
+                            ],
                             'pluginOptions' => [
                                 'allowClear' => true
                             ],
                         ]);
                         ?>
                     </div> <div class="col-md-4">
-
                         <?=
-                        $form->field($model, 'l_stadt_id', ['addon' => [
-                                'prepend' => ['content' => 'Stadt']]])->widget(\kartik\widgets\Select2::classname(), [
-                            'data' => \yii\helpers\ArrayHelper::map(frontend\models\LStadt::find()->orderBy('id')->asArray()->all(), 'id', 'stadt'),
-                            'options' => ['placeholder' => Yii::t('app', 'Stadt wählen')],
-                            'pluginOptions' => [
-                                'allowClear' => true
-                            ],
-                        ]);
+                        $form->field($model, 'stadt', ['addon' => [
+                                'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'placeholder' => 'Applikation füllt die Stadt gemäß der Postleitzahl'])
                         ?>
+
                     </div>
                     <div class="col-md-4">
                         <?=

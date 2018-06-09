@@ -10,22 +10,23 @@ use yii\behaviors\BlameableBehavior;
  * This is the base model class for table "immobilien".
  *
  * @property integer $id
+ * @property integer $id_bild
  * @property string $bezeichnung
+ * @property string $sonstiges
  * @property string $strasse
  * @property integer $wohnflaeche
- * @property integer $k_grundstuecksgroesse
  * @property integer $raeume
  * @property string $geldbetrag
- * @property string $v_nebenkosten
+ * @property integer $k_grundstuecksgroesse
  * @property string $k_provision
+ * @property string $v_nebenkosten
+ * @property integer $balkon_vorhanden
+ * @property integer $fahrstuhl_vorhanden
  * @property integer $l_plz_id
- * @property integer $l_stadt_id
+ * @property string $stadt
  * @property integer $user_id
  * @property integer $l_art_id
  * @property integer $l_heizungsart_id
- * @property integer $balkon_vorhanden
- * @property integer $fahrstuhl_vorhanden
- * @property string $sonstiges
  * @property string $angelegt_am
  * @property string $aktualisiert_am
  * @property integer $angelegt_von
@@ -35,7 +36,6 @@ use yii\behaviors\BlameableBehavior;
  * @property \backend\models\EDateianhang[] $eDateianhangs
  * @property \backend\models\LArt $lArt
  * @property \backend\models\User $user
- * @property \backend\models\LStadt $lStadt
  * @property \backend\models\User $angelegtVon
  * @property \backend\models\User $aktualisiertVon
  * @property \backend\models\LHeizungsart $lHeizungsart
@@ -55,7 +55,6 @@ class Immobilien extends \yii\db\ActiveRecord {
             'eDateianhangs',
             'lArt',
             'user',
-            'lStadt',
             'angelegtVon',
             'aktualisiertVon',
             'lHeizungsart',
@@ -68,13 +67,14 @@ class Immobilien extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
+            [['id_bild', 'wohnflaeche', 'raeume', 'k_grundstuecksgroesse', 'l_plz_id', 'user_id', 'l_art_id', 'l_heizungsart_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['bezeichnung', 'sonstiges'], 'string'],
-            [['strasse', 'wohnflaeche', 'raeume', 'geldbetrag', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id'], 'required'],
-            [['wohnflaeche', 'k_grundstuecksgroesse', 'raeume', 'l_plz_id', 'l_stadt_id', 'user_id', 'l_art_id', 'l_heizungsart_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
-            [['geldbetrag', 'v_nebenkosten', 'k_provision'], 'double'],
+            [['strasse', 'wohnflaeche', 'raeume', 'geldbetrag', 'l_plz_id', 'stadt', 'user_id', 'l_art_id'], 'required'],
+            [['geldbetrag', 'k_provision', 'v_nebenkosten'], 'number'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
             [['strasse'], 'string', 'max' => 45],
-            [['balkon_vorhanden', 'fahrstuhl_vorhanden'], 'string', 'max' => 1]
+            [['balkon_vorhanden', 'fahrstuhl_vorhanden'], 'string', 'max' => 1],
+            [['stadt'], 'string', 'max' => 255]
         ];
     }
 
@@ -91,26 +91,27 @@ class Immobilien extends \yii\db\ActiveRecord {
     public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
+            'id_bild' => Yii::t('app', 'Id Bild'),
             'bezeichnung' => Yii::t('app', 'Bezeichnung'),
-            'strasse' => Yii::t('app', 'Strasse'),
-            'wohnflaeche' => Yii::t('app', 'Wohnfläche'),
-            'k_grundstuecksgroesse' => Yii::t('app', 'Grundstücksgrösse'),
-            'raeume' => Yii::t('app', 'Räume'),
-            'geldbetrag' => Yii::t('app', 'Geldbetrag'),
-            'v_nebenkosten' => Yii::t('app', 'Nebenkosten'),
-            'k_provision' => Yii::t('app', 'Provision'),
-            'l_plz_id' => Yii::t('app', 'Plz'),
-            'l_stadt_id' => Yii::t('app', 'Stadt'),
-            'user_id' => Yii::t('app', 'User'),
-            'l_art_id' => Yii::t('app', 'Objektart'),
-            'l_heizungsart_id' => Yii::t('app', 'Heizungsart'),
-            'balkon_vorhanden' => Yii::t('app', 'Balkon vorhanden'),
-            'fahrstuhl_vorhanden' => Yii::t('app', 'Fahrstuhl vorhanden'),
             'sonstiges' => Yii::t('app', 'Sonstiges'),
-            'angelegt_am' => Yii::t('app', 'angelegt am'),
-            'aktualisiert_am' => Yii::t('app', 'aktualisiert am'),
-            'angelegt_von' => Yii::t('app', 'angelegt von'),
-            'aktualisiert_von' => Yii::t('app', 'aktualisiert von'),
+            'strasse' => Yii::t('app', 'Strasse'),
+            'wohnflaeche' => Yii::t('app', 'Wohnflaeche'),
+            'raeume' => Yii::t('app', 'Raeume'),
+            'geldbetrag' => Yii::t('app', 'Geldbetrag'),
+            'k_grundstuecksgroesse' => Yii::t('app', 'K Grundstuecksgroesse'),
+            'k_provision' => Yii::t('app', 'K Provision'),
+            'v_nebenkosten' => Yii::t('app', 'V Nebenkosten'),
+            'balkon_vorhanden' => Yii::t('app', 'Balkon Vorhanden'),
+            'fahrstuhl_vorhanden' => Yii::t('app', 'Fahrstuhl Vorhanden'),
+            'l_plz_id' => Yii::t('app', 'L Plz ID'),
+            'stadt' => Yii::t('app', 'Stadt'),
+            'user_id' => Yii::t('app', 'User ID'),
+            'l_art_id' => Yii::t('app', 'L Art ID'),
+            'l_heizungsart_id' => Yii::t('app', 'L Heizungsart ID'),
+            'angelegt_am' => Yii::t('app', 'Angelegt Am'),
+            'aktualisiert_am' => Yii::t('app', 'Aktualisiert Am'),
+            'angelegt_von' => Yii::t('app', 'Angelegt Von'),
+            'aktualisiert_von' => Yii::t('app', 'Aktualisiert Von'),
         ];
     }
 
@@ -140,13 +141,6 @@ class Immobilien extends \yii\db\ActiveRecord {
      */
     public function getUser() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'user_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLStadt() {
-        return $this->hasOne(\frontend\models\LStadt::className(), ['id' => 'l_stadt_id']);
     }
 
     /**
