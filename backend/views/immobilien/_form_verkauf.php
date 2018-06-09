@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\JsExpression;
 use kartik\form\ActiveForm;
 use kartik\widgets\FileInput;
 use kartik\slider\Slider;
@@ -137,18 +138,32 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                         ?>
                     </div>
                     <div class="col-md-4">
-                        <?=
+                        <?php
+                        $route = Url::to(['auswahl']);
+                        ?><?=
                         $form->field($model, 'l_plz_id', ['addon' => [
                                 'prepend' => ['content' => 'Plz']]])->widget(\kartik\widgets\Select2::classname(), [
-                            'data' => \yii\helpers\ArrayHelper::map(frontend\models\LPlz::find()->orderBy('id')->asArray()->all(), 'id', 'plz'),
                             'options' => ['placeholder' => Yii::t('app', 'Postleitzahl wählen'),
                                 'id' => 'zip_code',
                             ],
                             'pluginOptions' => [
-                                'allowClear' => true
+                                'allowClear' => true,
+                                'minimumInputLength' => 3,
+                                'language' => [
+                                    'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                                ],
+                                'ajax' => [
+                                    'url' => $route,
+                                    'dataType' => 'json',
+                                    'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                                ],
+                                'escapeMarkup' => new JsExpression('function(markup) { return markup; }'),
+                                'templateResult' => new JsExpression('function(bewerber) { return bewerber.text; }'),
+                                'templateSelection' => new JsExpression('function(bewerber) { return bewerber.text; }'),
                             ],
-                        ]);
+                        ])->label(false);
                         ?>
+
                     </div> <div class="col-md-4">
                         <?=
                         $form->field($model, 'stadt', ['addon' => [
@@ -317,7 +332,7 @@ $script = <<< JS
    alert(data.plz+" entspricht der Stadt "+data.ort+"! Die Id ist "+zipId);
    $('#immobilien-stadt').attr('value',data.ort);
    });
-           });
+   });
 
 JS;
 $this->registerJS($script);

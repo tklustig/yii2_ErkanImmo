@@ -14,7 +14,8 @@ use yii\web\Session;
 use yii\db\IntegrityException;
 use frontend\models\Dateianhang;
 use yii\web\UploadedFile;
-use yii\helpers\Url;
+use frontend\models\LPlz;
+use yii\db\Query;
 use frontend\models\EDateianhang;
 
 class ImmobilienController extends Controller {
@@ -228,6 +229,23 @@ class ImmobilienController extends Controller {
                         'DynamicModel' => $DynamicModel,
             ]);
         }
+    }
+
+    public function actionAuswahl($q = null, $id = null) {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = ['results' => ['id' => '', 'text' => '']];
+        if (!is_null($q)) {
+            $query = new Query();
+            $query->select('id, plz AS text')
+                    ->from('l_plz')
+                    ->where(['like', 'plz', $q]);
+            $command = $query->createCommand();
+            $data = $command->queryAll();
+            $out['results'] = array_values($data);
+        } elseif ($id > 0) {
+            $out['results'] = ['id' => $id, 'text' => LPlz::find($id)->plz];
+        }
+        return $out;
     }
 
 }

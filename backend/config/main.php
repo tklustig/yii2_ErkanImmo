@@ -48,6 +48,7 @@ return [
                 'signup' => 'site/signup',
                 'delete_user' => 'site/userdel',
                 'plz_get' => 'plz/get-city-province',
+                'auswahl' => 'immobilien/auswahl',
                 'immobilien' => 'immobilien/index',
                 'immobilien_view' => 'immobilien/view',
                 'immobilien_erzeugen' => 'immobilien/create',
