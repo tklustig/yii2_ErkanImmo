@@ -7,14 +7,8 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\models\Immobilien;
 
-/**
- * backend\models\ImmobilienSearch represents the model behind the search form about `backend\models\Immobilien`.
- */
 class ImmobilienSearch extends Immobilien {
 
-    /**
-     * @inheritdoc
-     */
     public function rules() {
         return [
             [['id', 'id_bild', 'wohnflaeche', 'raeume', 'k_grundstuecksgroesse', 'l_plz_id', 'user_id', 'l_art_id', 'l_heizungsart_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
@@ -23,21 +17,11 @@ class ImmobilienSearch extends Immobilien {
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params, $id) {
         if ($id == 1) {
             $query = Immobilien::find()->where(['l_art_id' => 2]);
@@ -88,8 +72,6 @@ class ImmobilienSearch extends Immobilien {
             $this->load($params);
 
             if (!$this->validate()) {
-                // uncomment the following line if you do not want to return any records when validation fails
-                // $query->where('0=1');
                 return $dataProvider;
             }
             $query->andFilterWhere([
