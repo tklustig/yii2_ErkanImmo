@@ -22,8 +22,6 @@ echo TabularForm::widget([
     ],
     'attributes' => [
         "id" => ['type' => TabularForm::INPUT_HIDDEN, 'columnOptions' => ['hidden'=>true]],
-        'l_plz_id' => ['type' => TabularForm::INPUT_TEXT],
-        'strasse' => ['type' => TabularForm::INPUT_TEXT],
         'uhrzeit' => ['type' => TabularForm::INPUT_WIDGET,
             'widgetClass' => \kartik\datecontrol\DateControl::classname(),
             'options' => [
@@ -42,16 +40,6 @@ echo TabularForm::widget([
             'options' => [
                 'style' => 'position : relative; margin-top : -9px'
             ]
-        ],
-        'l_stadt_id' => [
-            'label' => 'L stadt',
-            'type' => TabularForm::INPUT_WIDGET,
-            'widgetClass' => \kartik\widgets\Select2::className(),
-            'options' => [
-                'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LStadt::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-                'options' => ['placeholder' => Yii::t('app', 'Choose L stadt')],
-            ],
-            'columnOptions' => ['width' => '200px']
         ],
         'angelegt_am' => ['type' => TabularForm::INPUT_WIDGET,
             'widgetClass' => \kartik\datecontrol\DateControl::classname(),

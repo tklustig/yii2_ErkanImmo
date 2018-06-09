@@ -4,9 +4,7 @@ use yii\data\ArrayDataProvider;
 
     $dataProvider = new ArrayDataProvider([
         'allModels' => $model->kundeimmobillies,
-        'key' => function($model){
-            return ['id' => $model->id, 'kunde_id' => $model->kunde_id, 'immobilien_id' => $model->immobilien_id];
-        }
+        'key' => 'id'
     ]);
     $gridColumns = [
         ['class' => 'yii\grid\SerialColumn'],

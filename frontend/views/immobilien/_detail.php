@@ -20,32 +20,39 @@ use kartik\grid\GridView;
         $gridColumn = [
             ['attribute' => 'id', 'visible' => false],
             'bezeichnung:html',
+            'sonstiges:html',
             'strasse',
             'wohnflaeche',
             'raeume',
             'geldbetrag',
+            'k_grundstuecksgroesse',
+            'k_provision',
+            'v_nebenkosten',
+            'balkon_vorhanden',
+            'fahrstuhl_vorhanden',
             'l_plz_id',
+            'stadt',
             [
-                'attribute' => 'lStadt.stadt',
-                'label' => Yii::t('app', 'Stadt'),
-            ],
-            [
-                'attribute' => 'user.username',
+                'attribute' => 'user.id',
                 'label' => Yii::t('app', 'User'),
             ],
             [
-                'attribute' => 'lArt.bezeichnung',
-                'label' => Yii::t('app', 'Art'),
+                'attribute' => 'lArt.id',
+                'label' => Yii::t('app', 'L Art'),
+            ],
+            [
+                'attribute' => 'lHeizungsart.id',
+                'label' => Yii::t('app', 'L Heizungsart'),
             ],
             'angelegt_am',
             'aktualisiert_am',
             [
-                'attribute' => 'angelegtVon.username',
-                'label' => Yii::t('app', 'angelegt von'),
+                'attribute' => 'angelegtVon.id',
+                'label' => Yii::t('app', 'Angelegt Von'),
             ],
             [
-                'attribute' => 'aktualisiertVon.username',
-                'label' => Yii::t('app', 'aktualisiert von'),
+                'attribute' => 'aktualisiertVon.id',
+                'label' => Yii::t('app', 'Aktualisiert Von'),
             ],
         ];
         echo DetailView::widget([

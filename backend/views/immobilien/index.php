@@ -4,7 +4,6 @@
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 use yii\helpers\Html;
-use yii\widgets\Pjax;
 use kartik\grid\GridView;
 use yii\web\Session;
 use kartik\widgets\Alert;
@@ -341,7 +340,6 @@ $this->registerJs($search);
             ],
         ],
     ];
-    Pjax::begin();
     ?>
     <?=
     GridView::widget([
@@ -383,23 +381,13 @@ $this->registerJs($search);
         'filterModel' => $searchModel,
         'columns' => $gridColumn_vermieten,
         'pjax' => true,
-        'pjaxSettings' => [
-            'neverTimeout' => true,
-        ],
-        'options' => [
-            'style' => 'overflow: auto; word-wrap: break-word;'
-        ],
-        'condensed' => true,
-        'responsiveWrap' => true,
-        'hover' => true,
-        'persistResize' => true,
+        'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container-immobilien']],
         'panel' => [
-            "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
-            'type' => 'danger',
+            'type' => GridView::TYPE_PRIMARY,
             'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> zur Hauptseite', ['/site/index'], ['class' => 'btn btn-info']),
-            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/immobilien/index'], ['class' => 'btn btn-primary', 'title' => 'Setzt die GridView zurück']),
-            'toggleDataOptions' => ['minCount' => 10],
+            'heading' => '<span class="glyphicon glyphicon-book"></span>  ' . Html::encode($this->title),
         ],
+        // your toolbar can include the additional full export menu
         'toolbar' => [
             ['content' =>
                 Html::a('<i class="fa fa-folder-open"></i>', ['/immobilien/index', 'bez' => 'umbenennen'], ['class' => 'btn btn-primary', 'title' => 'additional content'])
@@ -409,7 +397,6 @@ $this->registerJs($search);
         ],
         'toggleDataOptions' => ['minCount' => 10],
     ]);
-    Pjax::end();
     ?>
 </div>
 

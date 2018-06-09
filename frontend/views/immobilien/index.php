@@ -4,14 +4,28 @@
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 use yii\helpers\Html;
-use yii\widgets\Pjax;
+use kartik\export\ExportMenu;
 use kartik\grid\GridView;
 
 $this->title = Yii::t('app', 'Immobilien');
 $this->params['breadcrumbs'][] = $this->title;
+$search = "$('.search-button').click(function(){
+	$('.search-form').toggle(1000);
+	return false;
+});";
+$this->registerJs($search);
 ?>
-<div class='container-fluid'>
+<div class="container-fluid">
+
     <h1><?= Html::encode($this->title) ?></h1>
+    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
+
+    <p>
+        <?= Html::a(Yii::t('app', 'Tiefergehende Suche'), '#', ['class' => 'btn btn-info search-button']) ?>
+    </p>
+    <div class="search-form" style="display:none">
+        <?= $this->render('_search', ['model' => $searchModel]); ?>
+    </div>
     <?php
     $dummy = 'id';
     $gridColumn = [
@@ -61,169 +75,132 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             }
         ],
-        ['attribute' => 'id', 'visible' => false],
-        [
-            'attribute' => 'l_stadt_id',
-            'label' => Yii::t('app', 'Stadt'),
-            'value' => function($model) {
-                return $model->lStadt->stadt;
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LStadt::find()->asArray()->all(), 'id', 'stadt'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'Stadt wählen', 'id' => 'grid-immobilien-search-l_stadt_id']
-        ],
         'bezeichnung:html',
+        'sonstiges:html',
         'strasse',
         'wohnflaeche',
         'raeume',
-        // 'l_plz_id',
-        /*
-          [
-          'attribute' => 'user_id',
-          'label' => Yii::t('app', 'User'),
-          'value' => function($model) {
-          return $model->user->id;
-          },
-          'filterType' => GridView::FILTER_SELECT2,
-          'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'username'),
-          'filterWidgetOptions' => [
-          'pluginOptions' => ['allowClear' => true],
-          ],
-          'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-user_id']
-          ], */
+        'geldbetrag',
+        'k_grundstuecksgroesse',
+        'k_provision',
+        'v_nebenkosten',
+        'balkon_vorhanden',
+        'fahrstuhl_vorhanden',
+        'l_plz_id',
+        'stadt',
         [
-            'attribute' => 'geldbetrag',
-            'label' => Yii::t('app', 'Kosten'),
+            'attribute' => 'user_id',
+            'label' => Yii::t('app', 'User'),
             'value' => function($model) {
-                $betrag = number_format(
-                        $model->geldbetrag, // zu konvertierende zahl
-                        2, // Anzahl an Nochkommastellen
-                        ",", // Dezimaltrennzeichen
-                        "."    // 1000er-Trennzeichen
-                );
-                return $betrag;
-            },
-        ],
-        [
-            'attribute' => 'l_art_id',
-            'label' => Yii::t('app', 'Art'),
-            'value' => function($model) {
-                return $model->lArt->bezeichnung;
+                return $model->user->id;
             },
             'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LArt::find()->asArray()->all(), 'id', 'bezeichnung'),
+            'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'id'),
             'filterWidgetOptions' => [
                 'pluginOptions' => ['allowClear' => true],
             ],
-            'filterInputOptions' => ['placeholder' => 'Immobilienart', 'id' => 'grid-immobilien-search-l_art_id']
+            'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-user_id']
         ],
         [
-            'attribute' => 'angelegt_am',
-            'label' => Yii::t('app', 'angelegt am'),
-            'format' => ['datetime', 'php:d-M-Y H:i:s'],
-            'contentOptions' => [
-                'style' => ['width' => '150px;']
-            ],
-            'hAlign' => 'center',
+            'attribute' => 'l_art_id',
+            'label' => Yii::t('app', 'L Art'),
             'value' => function($model) {
-                $angelegt_am = new DateTime($model->angelegt_am);
-                if ($model->angelegt_am) {
-                    return $angelegt_am;
+                return $model->lArt->id;
+            },
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LArt::find()->asArray()->all(), 'id', 'id'),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => 'L art', 'id' => 'grid-immobilien-search-l_art_id']
+        ],
+        [
+            'attribute' => 'l_heizungsart_id',
+            'label' => Yii::t('app', 'L Heizungsart'),
+            'value' => function($model) {
+                if ($model->lHeizungsart) {
+                    return $model->lHeizungsart->id;
                 } else {
                     return NULL;
                 }
             },
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LHeizungsart::find()->asArray()->all(), 'id', 'id'),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => 'L heizungsart', 'id' => 'grid-immobilien-search-l_heizungsart_id']
         ],
-        /*
-          'aktualisiert_am',
-          [
-          'attribute' => 'angelegt_von',
-          'label' => Yii::t('app', 'Angelegt Von'),
-          'value' => function($model) {
-          if ($model->angelegtVon) {
-          return $model->angelegtVon->id;
-          } else {
-          return NULL;
-          }
-          },
-          'filterType' => GridView::FILTER_SELECT2,
-          'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\User::find()->asArray()->all(), 'id', 'id'),
-          'filterWidgetOptions' => [
-          'pluginOptions' => ['allowClear' => true],
-          ],
-          'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-angelegt_von']
-          ],
-          [
-          'attribute' => 'aktualisiert_von',
-          'label' => Yii::t('app', 'Aktualisiert Von'),
-          'value' => function($model) {
-          if ($model->aktualisiertVon) {
-          return $model->aktualisiertVon->id;
-          } else {
-          return NULL;
-          }
-          },
-          'filterType' => GridView::FILTER_SELECT2,
-          'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\User::find()->asArray()->all(), 'id', 'id'),
-          'filterWidgetOptions' => [
-          'pluginOptions' => ['allowClear' => true],
-          ],
-          'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-aktualisiert_von']
-          ],
-
-         */
+        'angelegt_am',
+        'aktualisiert_am',
         [
-            'class' => 'kartik\grid\ActionColumn',
-            'dropdown' => true,
-            'headerOptions' => ['width' => '80'],
-            'vAlign' => 'top',
-            'header' => '',
-            'template' => '{termin}',
+            'attribute' => 'angelegt_von',
+            'label' => Yii::t('app', 'Angelegt Von'),
+            'value' => function($model) {
+                if ($model->angelegtVon) {
+                    return $model->angelegtVon->id;
+                } else {
+                    return NULL;
+                }
+            },
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'id'),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-angelegt_von']
+        ],
+        [
+            'attribute' => 'aktualisiert_von',
+            'label' => Yii::t('app', 'Aktualisiert Von'),
+            'value' => function($model) {
+                if ($model->aktualisiertVon) {
+                    return $model->aktualisiertVon->id;
+                } else {
+                    return NULL;
+                }
+            },
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'id'),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-aktualisiert_von']
+        ],
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '{save-as-new} {view} {update} {delete}',
             'buttons' => [
-                'termin' => function ($model, $id) {
-                    return Html::a('<span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span>', ['immobilien/termin', 'id' => $id->id], ['title' => 'Termin vereinbaren', 'data' => ['pjax' => '0']]);
+                'save-as-new' => function ($url) {
+                    return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Save As New']);
                 },
             ],
         ],
     ];
-    Pjax::begin();
     ?>
-    <?=
-    GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => $gridColumn,
-        'pjax' => true,
-        'pjaxSettings' => [
-            'neverTimeout' => true,
-        ],
-        'options' => [
-            'style' => 'overflow: auto; word-wrap: break-word;'
-        ],
-        'condensed' => true,
-        'responsiveWrap' => true,
-        'hover' => true,
-        'persistResize' => true,
-        'panel' => [
-            "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
-            'type' => 'danger',
-            'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> zur Hauptseite', ['/site/index'], ['class' => 'btn btn-info']),
-            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/immobilien/index'], ['class' => 'btn btn-primary', 'title' => 'Setzt die GridView zurück']),
-            'toggleDataOptions' => ['minCount' => 10],
-        ],
-        'toolbar' => [
-            ['content' =>
-                Html::a('<i class="fa fa-folder-open"></i>', ['/immobilien/index', 'bez' => 'umbenennen'], ['class' => 'btn btn-primary', 'title' => 'additional content'])
+    <div class="container-fluid">
+        <?=
+        GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumn,
+            'pjax' => true,
+            'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container-immobilien']],
+            'panel' => [
+                'type' => GridView::TYPE_PRIMARY,
+                'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> zur Hauptseite', ['/site/index'], ['class' => 'btn btn-info']),
+                'heading' => '<span class="glyphicon glyphicon-book"></span>  ' . Html::encode($this->title),
             ],
-            '{export}',
-            '{toggleData}'
-        ],
-        'toggleDataOptions' => ['minCount' => 10],
-    ]);
-    Pjax::end();
-    ?>
+            // your toolbar can include the additional full export menu
+            'toolbar' => [
+                ['content' =>
+                    Html::a('<i class="fa fa-folder-open"></i>', ['/immobilien/index', 'bez' => 'umbenennen'], ['class' => 'btn btn-primary', 'title' => 'additional content'])
+                ],
+                '{export}',
+                '{toggleData}'
+            ],
+            'toggleDataOptions' => ['minCount' => 10],
+        ]);
+        ?>
+    </div>
 </div>
-

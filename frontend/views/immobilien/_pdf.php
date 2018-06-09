@@ -25,15 +25,18 @@ $this->params['breadcrumbs'][] = $this->title;
         ['attribute' => 'id', 'visible' => false],
         'id_bild',
         'bezeichnung:ntext',
+        'sonstiges:ntext',
         'strasse',
         'wohnflaeche',
         'raeume',
         'geldbetrag',
+        'k_grundstuecksgroesse',
+        'k_provision',
+        'v_nebenkosten',
+        'balkon_vorhanden',
+        'fahrstuhl_vorhanden',
         'l_plz_id',
-        [
-                'attribute' => 'lStadt.id',
-                'label' => Yii::t('app', 'L Stadt')
-            ],
+        'stadt',
         [
                 'attribute' => 'user.id',
                 'label' => Yii::t('app', 'User')
@@ -41,6 +44,10 @@ $this->params['breadcrumbs'][] = $this->title;
         [
                 'attribute' => 'lArt.id',
                 'label' => Yii::t('app', 'L Art')
+            ],
+        [
+                'attribute' => 'lHeizungsart.id',
+                'label' => Yii::t('app', 'L Heizungsart')
             ],
         'angelegt_am',
         'aktualisiert_am',
@@ -66,14 +73,8 @@ if($providerBesichtigungstermin->totalCount){
     $gridColumnBesichtigungstermin = [
         ['class' => 'yii\grid\SerialColumn'],
         ['attribute' => 'id', 'visible' => false],
-        'l_plz_id',
-        'strasse',
         'uhrzeit',
         'Relevanz',
-        [
-                'attribute' => 'lStadt.id',
-                'label' => Yii::t('app', 'L Stadt')
-            ],
         'angelegt_am',
         'aktualisiert_am',
         [
