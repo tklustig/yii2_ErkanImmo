@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\form\ActiveForm;
 use kartik\widgets\FileInput;
 use kartik\slider\Slider;
@@ -299,5 +300,21 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
     <?= Html::a(Yii::t('app', 'Abbruch'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
 </div>
 <?php ActiveForm::end(); ?>
-</div>
+
+<?php
+$url = Url::to(['plz/get-city-province']);
+
+$script = <<< JS
+        $('#zip_code').change(function(){
+        var zipId=$(this).val();
+       $.get('$url',{zipId:zipId},function(data){
+   var data=$.parseJSON(data);
+   alert(data.plz+" entspricht der Stadt "+data.ort+"! Die Id ist:"+zipId);
+   $('#immobilien-stadt').attr('value',data.ort);
+   });
+           });
+
+JS;
+$this->registerJS($script);
+?>
 
