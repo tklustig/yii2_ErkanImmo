@@ -315,7 +315,7 @@ $script = <<< JS
        $.get('$url',{zipId:zipId},function(data){
    var data=$.parseJSON(data);
    alert(data.plz+" entspricht der Stadt "+data.ort+"! Die Id ist "+zipId);
-   $('#immobilien-l_stadt_id').attr('value',data.ort);
+   $('#immobilien-stadt').attr('value',data.ort);
    });
            });
 

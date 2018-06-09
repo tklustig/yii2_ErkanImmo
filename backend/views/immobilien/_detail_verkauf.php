@@ -19,20 +19,6 @@ use yii\widgets\DetailView;
             'strasse',
             'wohnflaeche',
             [
-                'attribute' => 'v_nebenkosten',
-                'label' => Yii::t('app', 'Nebenkosten(€)'),
-                'value' => function($model) {
-                    $betrag = number_format(
-                            $model->v_nebenkosten, // zu konvertierende zahl
-                            2, // Anzahl an Nochkommastellen
-                            ",", // Dezimaltrennzeichen
-                            "."    // 1000er-Trennzeichen
-                    );
-                    ($model->v_nebenkosten) ? $value = $betrag : $value = NULL;
-                    return $value;
-                }
-            ],
-            [
                 'attribute' => 'k_grundstuecksgroesse',
                 'label' => Yii::t('app', 'Grundstücksgrösse(m^2)'),
             ],
