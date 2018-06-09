@@ -96,13 +96,13 @@ $url = Yii::getAlias("@web") . '/img/';
             </div>
             <div style="text-align: center; margin: 7% 20%;">
                 <h4 style="color: #9e7b4e;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4></div>
-            <div style="text-align: left; margin: 7% 26%;">
+            <div style="text-align: left; margin: 13% 24%;">
                 <p style="color:#0B173B;font-family:cursive"> Vom 1-Zimmer-Appartement für Studenten bis hin zu<br>Luxus-Villas für gehobenere Ansprüche:<br>Kanat Immobilien ist der ideale Vermittlungsmarkler.<br><?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns, oder inspizieren Sie unsere <?= Html::a(Yii::t('app', 'Angebote'), ['/immobilien/index']) ?> <p>
             </div>
 
 
         </div>
-        <div style="text-align: center; margin: 13% 26%;" class="column">
+        <div style="text-align: center; margin: 7% 26%;" class="column">
             <div class="copyright"> &copy; 2018 Kanat Immobilien. All Rights Reserved.
             </div>
         </div>
