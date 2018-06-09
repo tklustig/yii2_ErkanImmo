@@ -3,8 +3,6 @@
 namespace backend\controllers;
 
 use Yii;
-use backend\models\Immobilien;
-use backend\models\ImmobilienSearch;
 use yii\web\Controller;
 use yii\base\DynamicModel;
 use yii\web\NotFoundHttpException;
@@ -12,10 +10,14 @@ use yii\web\NotAcceptableHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Session;
 use yii\db\IntegrityException;
-use frontend\models\Dateianhang;
 use yii\web\UploadedFile;
 use frontend\models\LPlz;
 use yii\db\Query;
+use yii\db\Expression;
+/* Eigene Klassen */
+use backend\models\Immobilien;
+use backend\models\ImmobilienSearch;
+use frontend\models\Dateianhang;
 use frontend\models\EDateianhang;
 
 class ImmobilienController extends Controller {
@@ -68,18 +70,71 @@ class ImmobilienController extends Controller {
         $this->layout = "main_immo";
         $model_Dateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $model = new Immobilien();
+        $model_e = new EDateianhang();
         $session = new Session();
-
+        $FkInEDatei = array();
+        $files = array();
+        $extension = array();
+        $bezeichnung = array();
+        $connection = \Yii::$app->db;
+        $expression = new Expression('NOW()');
+        $now = (new \yii\db\Query)->select($expression)->scalar();
+        $Edateianhang = EDateianhang::find()->all();
+        if (Yii::$app->request->post()) {
+            $data = Yii::$app->request->post();
+            $art = $data['Dateianhang']['l_dateianhang_art_id'];
+        }
         if ($model->loadAll(Yii::$app->request->post())) {
             $model_Dateianhang->attachement = UploadedFile::getInstances($model_Dateianhang, 'attachement');
             if ($model_Dateianhang->upload($model_Dateianhang)) {
                 $session->addFlash('success', "Der Anhang mit der Bezeichnung $model_Dateianhang->dateiname wurde erolgreich hochgeladen");
+            }
+            foreach ($model_Dateianhang->attachement as $uploaded_file) {
+                $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+                $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+                $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
+// lege jede jeweils den Dateinamen und dessen Endung in zwei unterschiedliche Arrays ab
+                array_push($files, $uploaded_file->name);
+                array_push($extension, $uploaded_file->extension);
+            }
+            // Differenziere je nach Endung der Elemente im Array die in der Datenbank unten zu speichernden Werte
+            for ($i = 0; $i < count($extension); $i++) {
+                if ($extension[$i] == "bmp" || $extension[$i] == "tif" || $extension[$i] == "png" || $extension[$i] == "psd" || $extension[$i] == "pcx" || $extension[$i] == "gif" || $extension[$i] == "cdr" || $extension[$i] == "jpeg" || $extension[$i] == "jpg") {
+                    $bez = "Bild für eine Immobilie";
+                    array_push($bezeichnung, $bez);
+                } else {
+                    $bez = "Dokumente o.ä. für eine Immobilie";
+                    array_push($bezeichnung, $bez);
+                }
             }
             $model->l_art_id = $id;
             $valid = $model->validate();
             $isValid = $model_Dateianhang->validate() && $valid;
             if ($isValid) {
                 $model->save();
+                /* Prüfen, ob in e_dateianhang bereits ein Eintrag ist */
+                $Edateianhang = EDateianhang::find()->all();
+                foreach ($Edateianhang as $treffer) {
+                    array_push($FkInEDatei, $treffer->immobilien_id);
+                }
+                /* falls nicht */
+                if (!in_array($model->id, $FkInEDatei)) {
+                    $model_e->immobilien_id = $model->id;
+                    $model_e->save();
+                    $fk = $model_e->id;
+                    /* falls doch */
+                } else {
+                    $fk = EDateianhang::findOne(['immobilien_id' => $model->id]);
+                }
+                /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
+                  Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+                for ($i = 0; $i < count($files); $i++) {
+                    $connection->createCommand()
+                            ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
+                                [$fk, $art, $bezeichnung[$i], $files[$i], $now, $model->user_id],
+                            ])
+                            ->execute();
+                }
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 $error_model = $model->getErrors();

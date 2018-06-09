@@ -12,21 +12,68 @@ $dataProvider = new ArrayDataProvider([
 $gridColumns = [
     ['class' => 'yii\grid\SerialColumn'],
     ['attribute' => 'id', 'visible' => false],
-    'uhrzeit',
-    'Relevanz',
-    'angelegt_am',
-    'aktualisiert_am',
     [
-        'attribute' => 'angelegtVon.id',
-        'label' => Yii::t('app', 'Angelegt Von')
+        'attribute' => 'uhrzeit',
+        'label' => Yii::t('app', 'Termin am'),
+        'format' => ['datetime', 'php:d-M-Y H:i:s'],
+        'hAlign' => 'center',
+        'value' => function($model) {
+            $uhrzeit = new DateTime($model->uhrzeit);
+            if ($model->uhrzeit) {
+                return $uhrzeit;
+            } else {
+                return NULL;
+            }
+        },
     ],
     [
-        'attribute' => 'aktualisiertVon.id',
+        'attribute' => 'Relevanz',
+        'label' => Yii::t('app', 'Dringlich'),
+        'hAlign' => 'center',
+        'value' => function($model) {
+            if ($model->Relevanz == 1) {
+                $ausgabe = "Ja";
+            } else {
+                $ausgabe = "Nein";
+            }
+            return $ausgabe;
+        },
+    ],
+    [
+        'attribute' => 'angelegt_am',
+        'label' => Yii::t('app', 'Angelegt am'),
+        'format' => ['datetime', 'php:d-M-Y H:i:s'],
+        'hAlign' => 'center',
+        'value' => function($model) {
+            $angelegt_am = new DateTime($model->angelegt_am);
+            if ($model->angelegt_am) {
+                return $angelegt_am;
+            } else {
+                return NULL;
+            }
+        },
+    ],
+    [
+        'attribute' => 'aktualisiert_am',
+        'label' => Yii::t('app', 'Aktualisiert am'),
+        'format' => ['datetime', 'php:d-M-Y H:i:s'],
+        'hAlign' => 'center',
+        'value' => function($model) {
+            $aktualisiert_am = new DateTime($model->aktualisiert_am);
+            if ($model->aktualisiert_am) {
+                return $aktualisiert_am;
+            } else {
+                return NULL;
+            }
+        },
+    ],
+    [
+        'attribute' => 'angelegtVon.username',
+        'label' => Yii::t('app', 'Angelegt von')
+    ],
+    [
+        'attribute' => 'aktualisiertVon.username',
         'label' => Yii::t('app', 'Aktualisiert Von')
-    ],
-    [
-        'class' => 'yii\grid\ActionColumn',
-        'controller' => 'besichtigungstermin'
     ],
 ];
 
