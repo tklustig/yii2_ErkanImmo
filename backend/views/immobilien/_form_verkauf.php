@@ -137,27 +137,23 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                     </div>
                     <div class="col-md-4">
                         <?=
-                        $form->field($model, 'l_plz_id', ['addon' => [
-                                'prepend' => ['content' => 'PLZ']]])->widget(\kartik\widgets\Select2::classname(), [
-                            'data' => \yii\helpers\ArrayHelper::map(frontend\models\LPlz::find()->orderBy('id')->asArray()->all(), 'id', 'plz'),
-                            'options' => ['placeholder' => Yii::t('app', 'PLZ auswählen')],
+                        $form->field($model, 'l_stadt_id', ['addon' => [
+                                'prepend' => ['content' => 'Stadt']]])->widget(\kartik\widgets\Select2::classname(), [
+                            'data' => \yii\helpers\ArrayHelper::map(frontend\models\LStadt::find()->orderBy('id')->asArray()->all(), 'id', 'stadt'),
+                            'options' => ['placeholder' => Yii::t('app', 'Stadt wählen'),
+                                'id' => 'zip_code',
+                            ],
                             'pluginOptions' => [
                                 'allowClear' => true
                             ],
                         ]);
                         ?>
                     </div> <div class="col-md-4">
-
                         <?=
-                        $form->field($model, 'l_stadt_id', ['addon' => [
-                                'prepend' => ['content' => 'Stadt']]])->widget(\kartik\widgets\Select2::classname(), [
-                            'data' => \yii\helpers\ArrayHelper::map(frontend\models\LStadt::find()->orderBy('id')->asArray()->all(), 'id', 'stadt'),
-                            'options' => ['placeholder' => Yii::t('app', 'Stadt wählen')],
-                            'pluginOptions' => [
-                                'allowClear' => true
-                            ],
-                        ]);
+                        $form->field($model, 'l_plz_id', ['addon' => [
+                                'prepend' => ['content' => 'Plz']]])->textInput(['maxlength' => true, 'placeholder' => 'Bitte die Postleitzahl eingeben'])
                         ?>
+
                     </div>
                     <div class="col-md-4">
                         <?=
@@ -265,7 +261,6 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                                     'prepend' => ['content' => 'angelegt von'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\widgets\Select2::classname(), [
                                 'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
                                 'disabled' => true,
-                                'id' => 'id_X'
                             ]);
                             ?>
                         </div>
@@ -309,5 +304,22 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
     <?= Html::a(Yii::t('app', 'Abbruch'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
 </div>
 <?php ActiveForm::end(); ?>
-</div>
+
+<?php
+$url = yii\helpers\Url::to(['plz/get-city-province']);
+
+$script = <<< JS
+        $('#zip_code').change(function(){
+        var zipId=$(this).val();
+       $.get('$url',{zipId:zipId},function(data){
+   var data=$.parseJSON(data);
+   alert(data.ort+" hat die Postleitzahl "+data.plz+"! Die Id ist "+zipId);
+   $('#customers-city').attr('value',data.city);
+       $('#customers-province').attr('value',data.province);
+   });
+           });
+
+JS;
+$this->registerJS($script);
+?>
 

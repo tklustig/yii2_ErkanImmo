@@ -38,7 +38,7 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => true,
-            'enableStrictParsing' => false,
+            'enableStrictParsing' => true,
             'class' => 'yii\web\UrlManager',
             'rules' => [
                 'home' => 'site/index',
@@ -47,6 +47,7 @@ return [
                 'logout' => 'site/logout',
                 'signup' => 'site/signup',
                 'delete_user' => 'site/userdel',
+                'plz_get' => 'plz/get-city-province',
                 'immobilien' => 'immobilien/index',
                 'immobilien_view' => 'immobilien/view',
                 'immobilien_erzeugen' => 'immobilien/create',
