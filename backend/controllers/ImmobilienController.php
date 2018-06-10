@@ -14,6 +14,7 @@ use yii\web\UploadedFile;
 use frontend\models\LPlz;
 use yii\db\Query;
 use yii\db\Expression;
+use kartik\widgets\Growl;
 /* Eigene Klassen */
 use backend\models\Immobilien;
 use backend\models\ImmobilienSearch;
@@ -84,12 +85,40 @@ class ImmobilienController extends Controller {
         if (Yii::$app->request->post()) {
             $data = Yii::$app->request->post();
             $art = $data['Dateianhang']['l_dateianhang_art_id'];
+            $model_Dateianhang->l_dateianhang_art_id = $art;
         }
         if ($model->loadAll(Yii::$app->request->post())) {
             $model_Dateianhang->attachement = UploadedFile::getInstances($model_Dateianhang, 'attachement');
             if ($model_Dateianhang->upload($model_Dateianhang)) {
                 $boolAnhang = true;
-                $session->addFlash('success', "Der Anhang mit der Bezeichnung $model_Dateianhang->dateiname wurde erolgreich hochgeladen");
+            }
+            if ($boolAnhang && empty($model_Dateianhang->l_dateianhang_art_id)) {
+                echo Growl::widget([
+                    'type' => Growl::TYPE_GROWL,
+                    'title' => 'Warning',
+                    'icon' => 'glyphicon glyphicon-ok-sign',
+                    'body' => 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.',
+                    'showSeparator' => true,
+                    'delay' => 1500,
+                    'pluginOptions' => [
+                        'showProgressbar' => true,
+                        'placement' => [
+                            'from' => 'top',
+                            'align' => 'center',
+                        ]
+                    ]
+                ]);
+                if ($id == 1) {
+                    return $this->render('_form_vermieten', [
+                                'model' => $model,
+                                'model_Dateianhang' => $model_Dateianhang
+                    ]);
+                } else if ($id == 2) {
+                    return $this->render('_form_verkauf', [
+                                'model' => $model,
+                                'model_Dateianhang' => $model_Dateianhang
+                    ]);
+                }
             }
             foreach ($model_Dateianhang->attachement as $uploaded_file) {
                 $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
@@ -237,14 +266,15 @@ class ImmobilienController extends Controller {
                 }
 //sofern Dateinamen im Array enthalten, lösche nicht
                 if (in_array($picName, $FilesSeveral)) {
-                    $session->addFlash('info', 'Der Anhang ' . $file . ' wurde nicht von Ihrem WebSpace entfernt, da er  mehrere mal verwendet wird!');
+                    $session->addFlash('info', 'Der Anhang ' . $file . " wurde nicht aus Ihrem Webverzeichnis entfernt, da er  mehrere mal verwendet wird");
                     //andernfalls lösche
                 } else {
                     unlink($filename_backend);
                     unlink($filename_frontend);
-                    $this->findModelAnhang($idAnhang)->deleteWithRelated();
+                    $session->addFlash('info', 'Der Anhang ' . $picName . " wurde aus Ihrem Webverzeichnis entfernt.");
                 }
             }
+            $this->findModelAnhang($idAnhang)->deleteWithRelated();
             $this->findModel($id)->delete();
         } catch (IntegrityException $e) {
             $session->addFlash('error', 'Der Löschvorgang verstösst gegen die referentielle Integrität(RI) und wurde deshalb unterbunden. Löschen Sie zuerst all jene Datensätze, auf die sich dieser bezieht! Falls Sie nicht wissen, was RI bedeutet, fragen Sie einen Datenbankexperten.');
