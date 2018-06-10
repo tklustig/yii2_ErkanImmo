@@ -207,49 +207,43 @@ class ImmobilienController extends Controller {
     }
 
     public function actionDeleted($id) {
+        $x = 0;
         $allFiles = array();
+        $FilesSeveral = array();
         try {
             $session = new Session();
             if (!empty(EDateianhang::findOne(['immobilien_id' => $id]))) {
                 $fk = EDateianhang::findOne(['immobilien_id' => $id])->id;
                 $idAnhang = Dateianhang::findOne(['e_dateianhang_id' => $fk])->id;
                 $picName = Dateianhang::findOne(['e_dateianhang_id' => $fk])->dateiname;
+//picname enthält den zu löschenden Dateinamen
                 $url_frontend = $_SERVER["DOCUMENT_ROOT"] . '/yii2_ErkanImmo/frontend/web/img/';
                 $filename_frontend = $url_frontend . $picName;
                 $url_backend = Yii::getAlias('@pictures') . "/";
                 $filename_backend = $url_backend . $picName;
+
 // eruiere alle Dateinamen, die in Dateianhang vermerkt sind
                 $FindAllFiles = Dateianhang::find()->all();
                 foreach ($FindAllFiles as $files) {
                     array_push($allFiles, $files->dateiname);
                 }
-//gebe ein Array zurück, in dem die Werte des Arrays array als Schlüssel, und die Häufigkeit ihres Auftretens als Werte angegeben sind.
+//gebe ein Array zurück, in dem die Häufigkeit ihres Auftretens und der jeweilige Dateinamen angegeben sind.
                 $ElementsInArray = array_count_values($allFiles);
-//finde alle doppelten Einträge und packe diese Einträge in ein Array
+//finde alle doppelten Einträge und packe diese Einträge in ein Array. key enthält den Dateinamen, value die Häufigkeit
                 foreach ($ElementsInArray as $key => $value) {
                     if ($value > 1) {
-                        $FilesSeveral[$z] = $key;
-                        $z++;
+                        array_push($FilesSeveral, $key);
                     }
                 }
-                foreach ($files as $file) {
-                    if ($file->dateiname != NULL) {
-                        $filename[$x] = $file->dateiname;
-                        $x++;
-                    }
+//sofern Dateinamen im Array enthalten, lösche nicht
+                if (in_array($picName, $FilesSeveral)) {
+                    $session->addFlash('info', 'Der Anhang ' . $file . ' wurde nicht von Ihrem WebSpace entfernt, da er  mehrere mal verwendet wird!');
+                    //andernfalls lösche
+                } else {
+                    unlink($filename_backend);
+                    unlink($filename_frontend);
+                    $this->findModelAnhang($idAnhang)->deleteWithRelated();
                 }
-                //entferne alle doppelten Elemente aus dem Array
-                $filename_unique = array_unique($filename);
-                foreach ($filename_unique as $file) {
-                    if (in_array($file, $FilesSeveral)) {
-                        $session->addFlash('info', 'Der Anhang ' . $file . ' wurde nicht von Ihrem WebSpace entfernt, da er  mehrere mal verwendet wird!');
-                        unset($filename_unique[$xy]);
-                        $xy++;
-                    }
-                }
-                unlink($filename_backend);
-                unlink($filename_frontend);
-                $this->findModelAnhang($idAnhang)->deleteWithRelated();
             }
             $this->findModel($id)->delete();
         } catch (IntegrityException $e) {
