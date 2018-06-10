@@ -54,12 +54,12 @@ class ImmobilienSearch extends Immobilien {
                 'angelegt_von' => $this->angelegt_von,
                 'aktualisiert_von' => $this->aktualisiert_von,
             ]);
+            $query->andFilterWhere(['=', 'fahrstuhl_vorhanden', $this->fahrstuhl_vorhanden]);
+            $query->andFilterWhere(['=', 'balkon_vorhanden', $this->balkon_vorhanden]);
 
             $query->andFilterWhere(['like', 'bezeichnung', $this->bezeichnung])
                     ->andFilterWhere(['like', 'strasse', $this->strasse])
-                    ->andFilterWhere(['like', 'balkon_vorhanden', $this->balkon_vorhanden])
-                    ->andFilterWhere(['like', 'fahrstuhl_vorhanden', $this->fahrstuhl_vorhanden])
-                    ->andFilterWhere(['like', 'stadt', $this->fahrstuhl_vorhanden])
+                    ->andFilterWhere(['like', 'stadt', $this->stadt])
                     ->andFilterWhere(['like', 'sonstiges', $this->sonstiges]);
             return $dataProvider;
         } else if ($id == 2) {
@@ -84,16 +84,18 @@ class ImmobilienSearch extends Immobilien {
                 'user_id' => $this->user_id,
                 'l_art_id' => $this->l_art_id,
                 'l_heizungsart_id' => $this->l_heizungsart_id,
+                'l_heizungsart_id' => $this->l_heizungsart_id,
                 'angelegt_am' => $this->angelegt_am,
                 'aktualisiert_am' => $this->aktualisiert_am,
                 'angelegt_von' => $this->angelegt_von,
                 'aktualisiert_von' => $this->aktualisiert_von,
             ]);
+            $query->andFilterWhere(['=', 'fahrstuhl_vorhanden', $this->fahrstuhl_vorhanden]);
+            $query->andFilterWhere(['=', 'balkon_vorhanden', $this->balkon_vorhanden]);
+
             $query->andFilterWhere(['like', 'bezeichnung', $this->bezeichnung])
                     ->andFilterWhere(['like', 'strasse', $this->strasse])
-                    ->andFilterWhere(['like', 'balkon_vorhanden', $this->balkon_vorhanden])
-                    ->andFilterWhere(['like', 'fahrstuhl_vorhanden', $this->fahrstuhl_vorhanden])
-                    ->andFilterWhere(['like', 'stadt', $this->fahrstuhl_vorhanden])
+                    ->andFilterWhere(['like', 'stadt', $this->stadt])
                     ->andFilterWhere(['like', 'sonstiges', $this->sonstiges]);
             return $dataProvider;
         }
