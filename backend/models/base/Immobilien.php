@@ -163,6 +163,10 @@ class Immobilien extends \yii\db\ActiveRecord {
         return $this->hasOne(\frontend\models\LHeizungsart::className(), ['id' => 'l_heizungsart_id']);
     }
 
+    public function getLPlz() {
+        return $this->hasOne(\frontend\models\LPlz::className(), ['id' => 'l_plz_id']);
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

@@ -51,7 +51,13 @@ use yii\widgets\DetailView;
                     return $value;
                 }
             ],
-            'l_plz_id',
+            [
+                'attribute' => 'l_plz_id',
+                'label' => Yii::t('app', 'Plz'),
+                'value' => function($model) {
+                    return $model->lPlz->plz;
+                },
+            ],
             [
                 'attribute' => 'stadt',
                 'label' => Yii::t('app', 'Stadt'),

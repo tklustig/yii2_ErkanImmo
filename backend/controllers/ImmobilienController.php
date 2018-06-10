@@ -80,6 +80,7 @@ class ImmobilienController extends Controller {
         $expression = new Expression('NOW()');
         $now = (new \yii\db\Query)->select($expression)->scalar();
         $Edateianhang = EDateianhang::find()->all();
+        $boolAnhang = false;
         if (Yii::$app->request->post()) {
             $data = Yii::$app->request->post();
             $art = $data['Dateianhang']['l_dateianhang_art_id'];
@@ -87,6 +88,7 @@ class ImmobilienController extends Controller {
         if ($model->loadAll(Yii::$app->request->post())) {
             $model_Dateianhang->attachement = UploadedFile::getInstances($model_Dateianhang, 'attachement');
             if ($model_Dateianhang->upload($model_Dateianhang)) {
+                $boolAnhang = true;
                 $session->addFlash('success', "Der Anhang mit der Bezeichnung $model_Dateianhang->dateiname wurde erolgreich hochgeladen");
             }
             foreach ($model_Dateianhang->attachement as $uploaded_file) {
@@ -118,7 +120,7 @@ class ImmobilienController extends Controller {
                     array_push($FkInEDatei, $treffer->immobilien_id);
                 }
                 /* falls nicht */
-                if (!in_array($model->id, $FkInEDatei)) {
+                if (!in_array($model->id, $FkInEDatei) && $boolAnhang) {
                     $model_e->immobilien_id = $model->id;
                     $model_e->save();
                     $fk = $model_e->id;
@@ -205,9 +207,50 @@ class ImmobilienController extends Controller {
     }
 
     public function actionDeleted($id) {
+        $allFiles = array();
         try {
             $session = new Session();
-            $this->findModel($id)->deleteWithRelated();
+            if (!empty(EDateianhang::findOne(['immobilien_id' => $id]))) {
+                $fk = EDateianhang::findOne(['immobilien_id' => $id])->id;
+                $idAnhang = Dateianhang::findOne(['e_dateianhang_id' => $fk])->id;
+                $picName = Dateianhang::findOne(['e_dateianhang_id' => $fk])->dateiname;
+                $url_frontend = $_SERVER["DOCUMENT_ROOT"] . '/yii2_ErkanImmo/frontend/web/img/';
+                $filename_frontend = $url_frontend . $picName;
+                $url_backend = Yii::getAlias('@pictures') . "/";
+                $filename_backend = $url_backend . $picName;
+// eruiere alle Dateinamen, die in Dateianhang vermerkt sind
+                $FindAllFiles = Dateianhang::find()->all();
+                foreach ($FindAllFiles as $files) {
+                    array_push($allFiles, $files->dateiname);
+                }
+//gebe ein Array zurück, in dem die Werte des Arrays array als Schlüssel, und die Häufigkeit ihres Auftretens als Werte angegeben sind.
+                $ElementsInArray = array_count_values($allFiles);
+//finde alle doppelten Einträge und packe diese Einträge in ein Array
+                foreach ($ElementsInArray as $key => $value) {
+                    if ($value > 1) {
+                        $FilesSeveral[$z] = $key;
+                        $z++;
+                    }
+                }
+                foreach ($files as $file) {
+                    if ($file->dateiname != NULL) {
+                        $filename[$x] = $file->dateiname;
+                        $x++;
+                    }
+                }
+                //entferne alle doppelten Elemente aus dem Array
+                $filename_unique = array_unique($filename);
+                foreach ($filename_unique as $file) {
+                    if (in_array($file, $FilesSeveral)) {
+                        $session->addFlash('info', 'Der Anhang ' . $file . ' wurde nicht von Ihrem WebSpace entfernt, da er  mehrere mal verwendet wird!');
+                        unset($filename_unique[$xy]);
+                        $xy++;
+                    }
+                }
+                unlink($filename_backend);
+                unlink($filename_frontend);
+                $this->findModelAnhang($idAnhang)->deleteWithRelated();
+            }
         } catch (IntegrityException $e) {
             $session->addFlash('error', 'Der Löschvorgang verstösst gegen die referentielle Integrität(RI) und wurde deshalb unterbunden. Löschen Sie zuerst all jene Datensätze, auf die sich dieser bezieht! Falls Sie nicht wissen, was RI bedeutet, fragen Sie einen Datenbankexperten.');
             return $this->redirect(['/immobilien/index']);
@@ -253,14 +296,6 @@ class ImmobilienController extends Controller {
         return $pdf->render();
     }
 
-    protected function findModel($id) {
-        if (($model = Immobilien::findOne(['id' => $id])) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
-    }
-
     public function actionTermin() {
         ?>
         <h3>
@@ -301,6 +336,22 @@ class ImmobilienController extends Controller {
             $out['results'] = ['id' => $id, 'text' => LPlz::find($id)->plz];
         }
         return $out;
+    }
+
+    protected function findModel($id) {
+        if (($model = Immobilien::findOne(['id' => $id])) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model konnte nicht geladen werden'));
+        }
+    }
+
+    protected function findModelAnhang($id) {
+        if (($model = Dateianhang::findOne(['id' => $id])) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model konnte nicht geladen werden'));
+        }
     }
 
 }
