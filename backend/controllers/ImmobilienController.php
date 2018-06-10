@@ -273,15 +273,19 @@ class ImmobilienController extends Controller {
                     unlink($filename_frontend);
                     $session->addFlash('info', 'Der Anhang ' . $picName . " wurde aus Ihrem Webverzeichnis entfernt.");
                 }
+                $this->findModelAnhang($idAnhang)->deleteWithRelated();
             }
-            $this->findModelAnhang($idAnhang)->deleteWithRelated();
             $this->findModel($id)->delete();
+            if (!empty($idAnhang)) {
+                $session->addFlash('info', "Der Datensatz mit der Id:$id wurde erfolgreich gelöscht");
+            } else {
+                $session->addFlash('info', "Der Datensatz mit der Id:$id wurde erfolgreich gelöscht. Er hatte keinen Anhang!");
+            }
+            return $this->redirect(['/immobilien/index']);
         } catch (IntegrityException $e) {
             $session->addFlash('error', 'Der Löschvorgang verstösst gegen die referentielle Integrität(RI) und wurde deshalb unterbunden. Löschen Sie zuerst all jene Datensätze, auf die sich dieser bezieht! Falls Sie nicht wissen, was RI bedeutet, fragen Sie einen Datenbankexperten.');
             return $this->redirect(['/immobilien/index']);
         }
-        $session->addFlash('info', "Der Datensatz mit der Id:$id wurde erfolgreich gelöscht");
-        return $this->redirect(['/immobilien/index']);
     }
 
     public function actionPdf($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id) {
