@@ -251,6 +251,7 @@ class ImmobilienController extends Controller {
                 unlink($filename_frontend);
                 $this->findModelAnhang($idAnhang)->deleteWithRelated();
             }
+            $this->findModel($id)->delete();
         } catch (IntegrityException $e) {
             $session->addFlash('error', 'Der Löschvorgang verstösst gegen die referentielle Integrität(RI) und wurde deshalb unterbunden. Löschen Sie zuerst all jene Datensätze, auf die sich dieser bezieht! Falls Sie nicht wissen, was RI bedeutet, fragen Sie einen Datenbankexperten.');
             return $this->redirect(['/immobilien/index']);
