@@ -56,6 +56,7 @@ return [
                 'immobilien_löschen' => 'immobilien/deleted',
                 'immobilien_duplizieren' => 'immobilien/save-as-new',
                 'immobilien_vorauswahl' => 'immobilien/decide',
+                'immobilien_showlink' => 'immobilien/show',
                 'pdf' => 'gridview/export/download',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',

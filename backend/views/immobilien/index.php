@@ -169,7 +169,7 @@ $this->registerJs($search);
             'label' => '<span class="glyphicon glyphicon-circle-arrow-up"></span>' . '<br>Fahrstuhl vorhanden',
             'encodeLabel' => false,
         ],
-        // 'sonstiges:html',
+        'id',
         [
             'class' => 'kartik\grid\ActionColumn',
             'dropdown' => true,
@@ -313,7 +313,7 @@ $this->registerJs($search);
             'label' => '<span class="glyphicon glyphicon-circle-arrow-up"></span>' . '<br>Fahrstuhl vorhanden',
             'encodeLabel' => false,
         ],
-        //'sonstiges:html',
+        'id',
         [
             'class' => 'kartik\grid\ActionColumn',
             'dropdown' => true,
