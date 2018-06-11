@@ -39,8 +39,12 @@ class ImmobilienController extends Controller {
         $searchModel = new ImmobilienSearch();
         $dataProvider_verkauf = $searchModel->search(Yii::$app->request->queryParams, 1);
         $dataProvider_vermieten = $searchModel->search(Yii::$app->request->queryParams, 2);
+        ?>
+        <center>
+            <?= Html::a("$name laden", $url, ['class' => 'btn btn-success btn-block', 'target' => '_blank', 'title' => "Load $name"]);
+            ?></center>
 
-
+        <?php
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider_verkauf' => $dataProvider_verkauf,
@@ -241,6 +245,8 @@ class ImmobilienController extends Controller {
         $allFiles = array();
         $FilesSeveral = array();
         $session = new Session();
+        $ArrayOfPicName = array();
+        $ArrayOfIdAnhang = array();
         try {
             if (!empty(Besichtigungstermin::findOne(['Immobilien_id' => $id]))) {
                 $session->addFlash('info', "Für diese Immobilie existiert ein Besichtigungstermin. Eine Löschung der Immobilie Id:$id ist folglich nicht möglich");
@@ -249,13 +255,15 @@ class ImmobilienController extends Controller {
             if (!empty(EDateianhang::findOne(['immobilien_id' => $id]))) {
                 $fk = EDateianhang::findOne(['immobilien_id' => $id])->id;
                 $idAnhang = Dateianhang::findOne(['e_dateianhang_id' => $fk])->id;
-                $picName = Dateianhang::findOne(['e_dateianhang_id' => $fk])->dateiname;
-//picname enthält den zu löschenden Dateinamen
+                $picName = Dateianhang::find()->where(['e_dateianhang_id' => $fk])->all();
+//packe die Ids und die Dateinamen in ein Array
+                foreach ($picName as $file) {
+                    array_push($ArrayOfPicName, $file->dateiname);
+                    array_push($ArrayOfIdAnhang, $file->id);
+                }
+//eruiere die Pfade
                 $url_frontend = $_SERVER["DOCUMENT_ROOT"] . '/yii2_ErkanImmo/frontend/web/img/';
-                $filename_frontend = $url_frontend . $picName;
                 $url_backend = Yii::getAlias('@pictures') . "/";
-                $filename_backend = $url_backend . $picName;
-
 // eruiere alle Dateinamen, die in Dateianhang vermerkt sind
                 $FindAllFiles = Dateianhang::find()->all();
                 foreach ($FindAllFiles as $files) {
@@ -272,13 +280,17 @@ class ImmobilienController extends Controller {
 //sofern Dateinamen im Array enthalten, lösche nicht
                 if (in_array($picName, $FilesSeveral)) {
                     $session->addFlash('info', 'Der Anhang ' . $file . " wurde nicht aus Ihrem Webverzeichnis entfernt, da er  mehrere mal verwendet wird");
-                    //andernfalls lösche
+//andernfalls lösche gemäß der Angaben im Array
                 } else {
-                    unlink($filename_backend);
-                    unlink($filename_frontend);
-                    $session->addFlash('info', 'Der Anhang ' . $picName . " wurde aus Ihrem Webverzeichnis entfernt.");
+                    for ($i = 0; $i < count($ArrayOfPicName); $i++) {
+                        unlink($url_backend . $ArrayOfPicName[$i]);
+                        unlink($url_frontend . $ArrayOfPicName[$i]);
+                        $session->addFlash('info', 'Der Anhang ' . $ArrayOfPicName[$i] . " wurde aus Ihrem Webverzeichnis entfernt.");
+                    }
                 }
-                $this->findModelAnhang($idAnhang)->deleteWithRelated();
+                for ($i = 0; $i < count($ArrayOfIdAnhang); $i++) {
+                    $this->findModelAnhang($ArrayOfIdAnhang[$i])->deleteWithRelated();
+                }
             }
             $this->findModel($id)->deleteWithRelated();
             if (!empty($idAnhang)) {
