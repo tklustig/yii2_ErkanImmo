@@ -37,7 +37,6 @@ class ImmobilienSearch extends Immobilien {
                 // $query->where('0=1');
                 return $dataProvider;
             }
-
             $query->andFilterWhere([
                 'id' => $this->id,
                 'wohnflaeche' => $this->wohnflaeche,
