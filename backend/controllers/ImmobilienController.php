@@ -36,17 +36,9 @@ class ImmobilienController extends Controller {
     }
 
     public function actionIndex() {
-        $ArrayOfEDatei = array();
-        $ArrayOfPk = array();
-        ?><br><br><br><?php
         $searchModel = new ImmobilienSearch();
         $dataProvider_verkauf = $searchModel->search(Yii::$app->request->queryParams, 1);
         $dataProvider_vermieten = $searchModel->search(Yii::$app->request->queryParams, 2);
-        $doc = '/doc/';
-        $docx = '/docx/';
-        $txt = '/txt/';
-        $pdf = '/pdf/';
-        $url_backend = Yii::getAlias('@pictures') . "/";
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider_verkauf' => $dataProvider_verkauf,

@@ -35,6 +35,10 @@ $this->beginPage()
             body{
                 background-color: #D8D8D8 !important;
             }
+            .id_breite_css {
+                background-color:#F2F5A9;
+                width: 20px;
+            }
         </style>
         <?php $this->head(); ?>
     </head>

@@ -1,3 +1,4 @@
+
 <?php
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\ImmobilienSearch */
@@ -169,7 +170,10 @@ $this->registerJs($search);
             'label' => '<span class="glyphicon glyphicon-circle-arrow-up"></span>' . '<br>Fahrstuhl vorhanden',
             'encodeLabel' => false,
         ],
-        'id',
+        [
+            'attribute' => 'id',
+            'contentOptions' => ['class' => 'id_breite_css', 'style' => 'width:50px;'],
+        ],
         [
             'class' => 'kartik\grid\ActionColumn',
             'dropdown' => true,
@@ -326,7 +330,10 @@ $this->registerJs($search);
             'label' => '<span class="glyphicon glyphicon-circle-arrow-up"></span>' . '<br>Fahrstuhl vorhanden',
             'encodeLabel' => false,
         ],
-        'id',
+        [
+            'attribute' => 'id',
+            'contentOptions' => ['class' => 'id_breite_css', 'style' => 'width:50px;'],
+        ],
         [
             'class' => 'kartik\grid\ActionColumn',
             'dropdown' => true,
@@ -410,6 +417,13 @@ $this->registerJs($search);
         'pjaxSettings' => [
             'neverTimeout' => true,
         ],
+        'options' => [
+            'style' => 'overflow: auto; word-wrap: break-word;'
+        ],
+        'condensed' => true,
+        'responsiveWrap' => true,
+        'hover' => true,
+        'persistResize' => true,
         'panel' => [
             'type' => GridView::TYPE_PRIMARY,
             'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> zur Hauptseite', ['/site/index'], ['class' => 'btn btn-info']),

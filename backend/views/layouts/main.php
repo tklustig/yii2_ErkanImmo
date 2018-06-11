@@ -19,6 +19,9 @@ AssetBundle::register($this);
             body{
                 background-color: #D8D8D8 !important;
             }
+            .id_breite_css {
+                background-color:#F2F5A9;
+            }
         </style>
         <?php $this->head() ?>
     </head>
