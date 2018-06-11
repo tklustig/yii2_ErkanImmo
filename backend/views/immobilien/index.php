@@ -185,13 +185,26 @@ $this->registerJs($search);
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{view}<br>{update}<br>{deleted}',
+            'template' => '{view}<br>{update}<br>{deleted}<br>{showDocument}',
             'buttons' => [
                 'save-as-new' => function ($url) {
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Duplizieren']);
                 },
                 'deleted' => function ($model, $id) {
                     return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/immobilien/deleted', 'id' => $id->id], ['title' => 'Löschen']);
+                },
+                'showDocument' => function ($model, $id) {
+                    $doc = '/doc/';
+                    $docx = '/docx/';
+                    $txt = '/txt/';
+                    $pdf = '/pdf/';
+                    if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $id]))) {
+                        $pk = \frontend\models\EDateianhang::findOne(['immobilien_id' => $id])->id;
+                        $filename = frontend\models\Dateianhang::findOne(['e_dateianhang_id' => $pk])->dateiname;
+                        if (preg_match($doc, $filename) || preg_match($docx, $filename) || preg_match($txt, $filename) || preg_match($pdf, $filename)) {
+                            return Html::a('<span class="glyphicon glyphicon-file"></span>', ['/immobilien/show', 'filename' => $filename], ['title' => 'Dokument anzeigen', 'data' => ['pjax' => '0']]);
+                        }
+                    }
                 },
             ],
         ],
@@ -329,13 +342,26 @@ $this->registerJs($search);
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{view}<br>{update}<br>{deleted}',
+            'template' => '{view}<br>{update}<br>{deleted}<br>{showDocument}',
             'buttons' => [
                 'save-as-new' => function ($url) {
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Duplizieren']);
                 },
                 'deleted' => function ($model, $id) {
                     return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/immobilien/deleted', 'id' => $id->id], ['title' => 'Löschen']);
+                },
+                'showDocument' => function ($model, $id) {
+                    $doc = '/doc/';
+                    $docx = '/docx/';
+                    $txt = '/txt/';
+                    $pdf = '/pdf/';
+                    if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $id]))) {
+                        $pk = \frontend\models\EDateianhang::findOne(['immobilien_id' => $id])->id;
+                        $filename = frontend\models\Dateianhang::findOne(['e_dateianhang_id' => $pk])->dateiname;
+                        if (preg_match($doc, $filename) || preg_match($docx, $filename) || preg_match($txt, $filename) || preg_match($pdf, $filename)) {
+                            return Html::a('<span class="glyphicon glyphicon-file"></span>', ['/immobilien/show', 'filename' => $filename], ['title' => 'Dokument anzeigen', 'data' => ['pjax' => '0']]);
+                        }
+                    }
                 },
             ],
         ],
@@ -381,7 +407,9 @@ $this->registerJs($search);
         'filterModel' => $searchModel,
         'columns' => $gridColumn_vermieten,
         'pjax' => true,
-        'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container-immobilien']],
+        'pjaxSettings' => [
+            'neverTimeout' => true,
+        ],
         'panel' => [
             'type' => GridView::TYPE_PRIMARY,
             'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> zur Hauptseite', ['/site/index'], ['class' => 'btn btn-info']),

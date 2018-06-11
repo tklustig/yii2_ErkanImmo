@@ -14,7 +14,6 @@ use yii\web\UploadedFile;
 use frontend\models\LPlz;
 use yii\db\Query;
 use yii\db\Expression;
-use yii\helpers\Html;
 use kartik\widgets\Growl;
 /* Eigene Klassen */
 use backend\models\Immobilien;
@@ -48,19 +47,10 @@ class ImmobilienController extends Controller {
         $txt = '/txt/';
         $pdf = '/pdf/';
         $url_backend = Yii::getAlias('@pictures') . "/";
-        $extension = Dateianhang::find()->all();
-        foreach ($extension as $treffer) {
-            if (preg_match($doc, $treffer->dateiname) || preg_match($docx, $treffer->dateiname) || preg_match($txt, $treffer->dateiname) || preg_match($pdf, $treffer->dateiname)) {
-                $boolDocument = true;
-            } else {
-                $boolDocument = false;
-            }
-        }
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider_verkauf' => $dataProvider_verkauf,
                     'dataProvider_vermieten' => $dataProvider_vermieten,
-                    'boolDocument' => $boolDocument
         ]);
     }
 
@@ -317,8 +307,9 @@ class ImmobilienController extends Controller {
         }
     }
 
-    public function actionShow() {
-        die();
+    public function actionShow($filename) {
+        $completePath = Yii::getAlias('@pictures' . '/' . $filename);
+        return Yii::$app->response->sendFile($completePath, $filename);
     }
 
     public function actionPdf($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id) {
