@@ -43,6 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'raeume',
                 'geldbetrag',
                 'l_plz_id',
+                'sonstiges:html',
                 [
                     'attribute' => 'stadt',
                     'label' => Yii::t('app', 'Stadt'),
@@ -79,14 +80,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 $gridColumnBesichtigungstermin = [
                     ['class' => 'yii\grid\SerialColumn'],
                     ['attribute' => 'id', 'visible' => false],
-                    'l_plz_id',
-                    'strasse',
                     'uhrzeit',
                     'Relevanz',
-                    [
-                        'attribute' => 'lStadt.id',
-                        'label' => Yii::t('app', 'L Stadt')
-                    ],
                     'angelegt_am',
                     'aktualisiert_am',
                     [

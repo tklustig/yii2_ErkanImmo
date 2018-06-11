@@ -20,6 +20,7 @@ use backend\models\Immobilien;
 use backend\models\ImmobilienSearch;
 use frontend\models\Dateianhang;
 use frontend\models\EDateianhang;
+use frontend\models\Besichtigungstermin;
 
 class ImmobilienController extends Controller {
 
@@ -239,8 +240,12 @@ class ImmobilienController extends Controller {
         $x = 0;
         $allFiles = array();
         $FilesSeveral = array();
+        $session = new Session();
         try {
-            $session = new Session();
+            if (!empty(Besichtigungstermin::findOne(['Immobilien_id' => $id]))) {
+                $session->addFlash('info', "Für diese Immobilie existiert ein Besichtigungstermin. Eine Löschung der Immobilie Id:$id ist folglich nicht möglich");
+                return $this->redirect(['/immobilien/index']);
+            }
             if (!empty(EDateianhang::findOne(['immobilien_id' => $id]))) {
                 $fk = EDateianhang::findOne(['immobilien_id' => $id])->id;
                 $idAnhang = Dateianhang::findOne(['e_dateianhang_id' => $fk])->id;
@@ -283,8 +288,8 @@ class ImmobilienController extends Controller {
             }
             return $this->redirect(['/immobilien/index']);
         } catch (IntegrityException $e) {
-            $session->addFlash('error', 'Der Löschvorgang verstösst gegen die referentielle Integrität(RI) und wurde deshalb unterbunden. Löschen Sie zuerst all jene Datensätze, auf die sich dieser bezieht! Falls Sie nicht wissen, was RI bedeutet, fragen Sie einen Datenbankexperten.');
-            return $this->redirect(['/immobilien/index']);
+            $ausgabe = "Unknown error. Bitte kontaktieren Sie den Softwartehersteller unter Angabe folgender Punkte:<br><1>:" . get_class() . "<br><2>" . $e;
+            throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
         }
     }
 

@@ -46,7 +46,7 @@ return [
                 'reset' => 'site/request-password-reset',
                 'logout' => 'site/logout',
                 'signup' => 'site/signup',
-                'delete_user' => 'site/userdel',
+                'delete_user' => 'site/deluser',
                 'plz_get' => 'plz/get-city-province',
                 'auswahl' => 'immobilien/auswahl',
                 'immobilien' => 'immobilien/index',
