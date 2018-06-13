@@ -26,143 +26,118 @@ $this->registerJs($search);
     </div>
     <?php
     $dummy = 'id';
-    $gridColumn = [
-        ['class' => 'yii\grid\SerialColumn'],
-        [
-            /*
-              Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBewerberBild(model),welche
-              drei JOINs und eine dynamische WHERE-Klausel enthält,die auf den FK id_person von bewerber prüft. Das Bild liegt physikalisch auf dem Webspace,
-              dessen Zugriffspfade in der Datenbank in einer ganz bestimmten Reihenfolge hinterlegt sein müssen!
-             */
-            'attribute' => $dummy,
-            'label' => Yii::t('app', ''),
-            'format' => 'html', // sorgt dafür,dass das HTML im return gerendert wird
-            'vAlign' => 'middle',
-            'value' => function($model) {
-                $bmp = '/bmp/';
-                $tif = '/tif/';
-                $png = '/png/';
-                $psd = '/psd/';
-                $pcx = '/pcx/';
-                $gif = '/gif/';
-                $jpeg = '/jpeg/';
-                $jpg = '/jpg/';
-                $ico = '/ico/';
-                try {
-                    $bilder = \frontend\models\Dateianhang::GetBild($model);
-                    foreach ($bilder as $bild) {
-                        if (preg_match($bmp, $bild->dateiname) || preg_match($tif, $bild->dateiname) || preg_match($png, $bild->dateiname) || preg_match($psd, $bild->dateiname) || preg_match($pcx, $bild->dateiname) || preg_match($gif, $bild->dateiname) || preg_match($jpeg, $bild->dateiname) || preg_match($jpg, $bild->dateiname) || preg_match($ico, $bild->dateiname)) {
-                            $url = '@web/img/' . $bild->dateiname;
+    /* $art=2 entpsricht einer Kaufimmobilie, $art=1 entspricht einer Mietimmobilie =>
+      KAUF-Immobilie:
+     */
+    if ($art == 2) {
+        $gridColumn = [
+            [
+                /*
+                  Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBewerberBild(model),welche
+                  drei JOINs und eine dynamische WHERE-Klausel enthält,die auf den FK id_person von bewerber prüft. Das Bild liegt physikalisch auf dem Webspace,
+                  dessen Zugriffspfade in der Datenbank in einer ganz bestimmten Reihenfolge hinterlegt sein müssen!
+                 */
+                'attribute' => $dummy,
+                'label' => Yii::t('app', ''),
+                'format' => 'html', // sorgt dafür,dass das HTML im return gerendert wird
+                'vAlign' => 'middle',
+                'value' => function($model) {
+                    $bmp = '/bmp/';
+                    $tif = '/tif/';
+                    $png = '/png/';
+                    $psd = '/psd/';
+                    $pcx = '/pcx/';
+                    $gif = '/gif/';
+                    $jpeg = '/jpeg/';
+                    $jpg = '/jpg/';
+                    $ico = '/ico/';
+                    try {
+                        $bilder = \frontend\models\Dateianhang::GetBild($model);
+                        foreach ($bilder as $bild) {
+                            if (preg_match($bmp, $bild->dateiname) || preg_match($tif, $bild->dateiname) || preg_match($png, $bild->dateiname) || preg_match($psd, $bild->dateiname) || preg_match($pcx, $bild->dateiname) || preg_match($gif, $bild->dateiname) || preg_match($jpeg, $bild->dateiname) || preg_match($jpg, $bild->dateiname) || preg_match($ico, $bild->dateiname)) {
+                                $url = '@web/img/' . $bild->dateiname;
+                            }
                         }
+                        return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
+                    } catch (Exception $e) {
+                        return;
                     }
-                    return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
-                } catch (Exception $e) {
-                    return;
                 }
-            }
-        ],
-        'bezeichnung:html',
-        'sonstiges:html',
-        'strasse',
-        'wohnflaeche',
-        'raeume',
-        'geldbetrag',
-        'k_grundstuecksgroesse',
-        'k_provision',
-        'v_nebenkosten',
-        'balkon_vorhanden',
-        'fahrstuhl_vorhanden',
-        'l_plz_id',
-        'stadt',
-        [
-            'attribute' => 'user_id',
-            'label' => Yii::t('app', 'User'),
-            'value' => function($model) {
-                return $model->user->id;
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'id'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
             ],
-            'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-user_id']
-        ],
-        [
-            'attribute' => 'l_art_id',
-            'label' => Yii::t('app', 'L Art'),
-            'value' => function($model) {
-                return $model->lArt->id;
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LArt::find()->asArray()->all(), 'id', 'id'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'L art', 'id' => 'grid-immobilien-search-l_art_id']
-        ],
-        [
-            'attribute' => 'l_heizungsart_id',
-            'label' => Yii::t('app', 'L Heizungsart'),
-            'value' => function($model) {
-                if ($model->lHeizungsart) {
-                    return $model->lHeizungsart->id;
-                } else {
-                    return NULL;
-                }
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\LHeizungsart::find()->asArray()->all(), 'id', 'id'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'L heizungsart', 'id' => 'grid-immobilien-search-l_heizungsart_id']
-        ],
-        'angelegt_am',
-        'aktualisiert_am',
-        [
-            'attribute' => 'angelegt_von',
-            'label' => Yii::t('app', 'Angelegt Von'),
-            'value' => function($model) {
-                if ($model->angelegtVon) {
-                    return $model->angelegtVon->id;
-                } else {
-                    return NULL;
-                }
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'id'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-angelegt_von']
-        ],
-        [
-            'attribute' => 'aktualisiert_von',
-            'label' => Yii::t('app', 'Aktualisiert Von'),
-            'value' => function($model) {
-                if ($model->aktualisiertVon) {
-                    return $model->aktualisiertVon->id;
-                } else {
-                    return NULL;
-                }
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'id'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-immobilien-search-aktualisiert_von']
-        ],
-        [
-            'class' => 'yii\grid\ActionColumn',
-            'template' => '{save-as-new} {view} {update} {delete}',
-            'buttons' => [
-                'save-as-new' => function ($url) {
-                    return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Save As New']);
+            'bezeichnung:html',
+            'sonstiges:html',
+            'k_grundstuecksgroesse',
+            'k_provision',
+            'balkon_vorhanden',
+            'fahrstuhl_vorhanden',
+            [
+                'attribute' => 'l_heizungsart_id',
+                'label' => Yii::t('app', 'Heizungsart'),
+                'value' => function($model) {
+                    if ($model->lHeizungsart) {
+                        return $model->lHeizungsart->bezeichnung;
+                    } else {
+                        return NULL;
+                    }
                 },
             ],
-        ],
-    ];
+        ];
+        /* $art=1 entpsricht einer Kaufimmobilie, $art=2 entspricht einer Mietimmobilie =>
+          MIET-Immobilie:
+         */
+    } else if ($art == 1) {
+        $gridColumn = [
+            [
+                /*
+                  Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBewerberBild(model),welche
+                  drei JOINs und eine dynamische WHERE-Klausel enthält,die auf den FK id_person von bewerber prüft. Das Bild liegt physikalisch auf dem Webspace,
+                  dessen Zugriffspfade in der Datenbank in einer ganz bestimmten Reihenfolge hinterlegt sein müssen!
+                 */
+                'attribute' => $dummy,
+                'label' => Yii::t('app', ''),
+                'format' => 'html', // sorgt dafür,dass das HTML im return gerendert wird
+                'vAlign' => 'middle',
+                'value' => function($model) {
+                    $bmp = '/bmp/';
+                    $tif = '/tif/';
+                    $png = '/png/';
+                    $psd = '/psd/';
+                    $pcx = '/pcx/';
+                    $gif = '/gif/';
+                    $jpeg = '/jpeg/';
+                    $jpg = '/jpg/';
+                    $ico = '/ico/';
+                    try {
+                        $bilder = \frontend\models\Dateianhang::GetBild($model);
+                        foreach ($bilder as $bild) {
+                            if (preg_match($bmp, $bild->dateiname) || preg_match($tif, $bild->dateiname) || preg_match($png, $bild->dateiname) || preg_match($psd, $bild->dateiname) || preg_match($pcx, $bild->dateiname) || preg_match($gif, $bild->dateiname) || preg_match($jpeg, $bild->dateiname) || preg_match($jpg, $bild->dateiname) || preg_match($ico, $bild->dateiname)) {
+                                $url = '@web/img/' . $bild->dateiname;
+                            }
+                        }
+                        return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
+                    } catch (Exception $e) {
+                        return;
+                    }
+                }
+            ],
+            'bezeichnung:html',
+            'sonstiges:html',
+            'v_nebenkosten',
+            'balkon_vorhanden',
+            'fahrstuhl_vorhanden',
+            [
+                'attribute' => 'l_heizungsart_id',
+                'label' => Yii::t('app', 'Heizungsart'),
+                'value' => function($model) {
+                    if ($model->lHeizungsart) {
+                        return $model->lHeizungsart->bezeichnung;
+                    } else {
+                        return NULL;
+                    }
+                },
+            ],
+        ];
+    }
     ?>
     <div class="container-fluid">
         <?=
@@ -174,7 +149,7 @@ $this->registerJs($search);
             'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container-immobilien']],
             'panel' => [
                 'type' => GridView::TYPE_PRIMARY,
-                'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> zur Hauptseite', ['/site/index'], ['class' => 'btn btn-info']),
+                'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> zur Übersicht', ['/immobilien/preview'], ['class' => 'btn btn-info']),
                 'heading' => '<span class="glyphicon glyphicon-book"></span>  ' . Html::encode($this->title),
             ],
             // your toolbar can include the additional full export menu

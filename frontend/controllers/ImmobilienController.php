@@ -40,36 +40,101 @@ class ImmobilienController extends Controller {
         $ArrayOfFilename = array();
         $ArrayOfId = array();
         $ArrayOfImmo = array();
+        $ArrayOfE = array();
+        $ArrayOfImmoAll = array();
         $model_dateianhang = Dateianhang::find()->all();
+        $model_e = EDateianhang::find()->all();
+        $model_immobilien = Immobilien::find()->all();
+// Eruiere die jenigen Immobilien-Ids, die kein Bild haben
+        foreach ($model_e as $id) {
+            array_push($ArrayOfE, $id->immobilien_id);
+        }
+        foreach ($model_immobilien as $id) {
+            array_push($ArrayOfImmoAll, $id->id);
+        }
+//verfrachte diese Id in ein Array
+        $ArrayOfDifference = array_diff($ArrayOfImmoAll, $ArrayOfE);
+
+//Eruiere alle Immobilien-Ids, die ein Bild haben
+//verfrachte den Dateinamen des jeweiligen Bildes...
         foreach ($model_dateianhang as $filename) {
             if (preg_match($bmp, $filename->dateiname) || preg_match($tif, $filename->dateiname) || preg_match($png, $filename->dateiname) || preg_match($psd, $filename->dateiname) || preg_match($pcx, $filename->dateiname) || preg_match($gif, $filename->dateiname) || preg_match($jpeg, $filename->dateiname) || preg_match($jpg, $filename->dateiname) || preg_match($ico, $filename->dateiname)) {
                 array_push($ArrayOfFilename, $filename->dateiname);
                 array_push($ArrayOfId, $filename->e_dateianhang_id);
             }
         }
+//und dessen ID in Arrays
         for ($i = 0; $i < count($ArrayOfId); $i++) {
             array_push($ArrayOfImmo, EDateianhang::findOne(['id' => $ArrayOfId[$i]])->immobilien_id);
         }
+//zähle alle gefundenen Datensätze
         $count = Immobilien::find()->count();
-        $searchModel = new ImmobilienSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//eruiere alle Attribute, die angezeigt werden und verfrachte sie in ein Array
+        $ArrayOfArt = array();
+        $ArrayOfMoney = array();
+        $ArrayOfTown = array();
+        $ArrayOfGroesse = array();
+        $ArrayOfRooms = array();
+        $ArrayOfPlz = array();
+        $ArrayOfStreet = array();
+        foreach ($model_immobilien as $immoAttribute) {
+            if ($immoAttribute->l_art_id == 2 && !in_array($immoAttribute->id, $ArrayOfDifference)) {
+                $begriff = "Kaufpreis";
+                array_push($ArrayOfArt, $begriff);
+                $betrag = number_format(
+                        $immoAttribute->geldbetrag, // zu konvertierende zahl
+                        2, // Anzahl an Nochkommastellen
+                        ",", // Dezimaltrennzeichen
+                        "."    // 1000er-Trennzeichen
+                );
+                array_push($ArrayOfMoney, $betrag);
+                array_push($ArrayOfPlz, $immoAttribute->lPlz->plz);
+                array_push($ArrayOfTown, $immoAttribute->stadt);
+                array_push($ArrayOfStreet, $immoAttribute->strasse);
+                array_push($ArrayOfGroesse, $immoAttribute->wohnflaeche);
+                array_push($ArrayOfRooms, $immoAttribute->raeume);
+            } else if ($immoAttribute->l_art_id == 1 && !in_array($immoAttribute->id, $ArrayOfDifference)) {
+                $begriff = "Kaltmiete";
+                array_push($ArrayOfArt, $begriff);
+                $betrag = number_format(
+                        $immoAttribute->geldbetrag, // zu konvertierende zahl
+                        2, // Anzahl an Nochkommastellen
+                        ",", // Dezimaltrennzeichen
+                        "."    // 1000er-Trennzeichen
+                );
+                array_push($ArrayOfMoney, $betrag);
+                array_push($ArrayOfPlz, $immoAttribute->lPlz->plz);
+                array_push($ArrayOfTown, $immoAttribute->stadt);
+                array_push($ArrayOfStreet, $immoAttribute->strasse);
+                array_push($ArrayOfGroesse, $immoAttribute->wohnflaeche);
+                array_push($ArrayOfRooms, $immoAttribute->raeume);
+            }
+        }
+        //übergebe folgende Werte:Array(kein Bild),Array(Bild),Array(Immo-Id), AnzahlDatensätze und alle Attributarrays
         return $this->render('_index', [
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
                     'count' => $count,
                     'ArrayOfFilename' => $ArrayOfFilename,
-                    'ArrayOfImmo' => $ArrayOfImmo
+                    'ArrayOfImmo' => $ArrayOfImmo,
+                    'ArrayOfDifference' => $ArrayOfDifference,
+                    'model_immobilien' => $model_immobilien,
+                    'ArrayOfArt' => $ArrayOfArt,
+                    'ArrayOfMoney' => $ArrayOfMoney,
+                    'ArrayOfPlz' => $ArrayOfPlz,
+                    'ArrayOfTown' => $ArrayOfTown,
+                    'ArrayOfStreet' => $ArrayOfStreet,
+                    'ArrayOfGroesse' => $ArrayOfGroesse,
+                    'ArrayOfRooms' => $ArrayOfRooms
         ]);
     }
 
     public function actionIndex($id) {
-        var_dump($id);
-        die();
+        $art = Immobilien::findOne(['id' => $id])->l_art_id;
         $searchModel = new ImmobilienSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $id);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $id, $art);
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
+                    'art' => $art
         ]);
     }
 
