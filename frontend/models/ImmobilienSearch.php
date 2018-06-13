@@ -38,7 +38,7 @@ class ImmobilienSearch extends Immobilien {
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $id, $art) {
+    public function search($params, $id = NULL, $art = NULL) {
         if ($art == 1) {
             $query = Immobilien::find()->where(['id' => $id, 'l_art_id' => $art]);
 

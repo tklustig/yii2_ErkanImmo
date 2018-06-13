@@ -8,21 +8,9 @@ use kartik\grid\GridView;
 
 $this->title = Yii::t('app', 'Immobilien');
 $this->params['breadcrumbs'][] = $this->title;
-$search = "$('.search-button').click(function(){
-	$('.search-form').toggle(1000);
-	return false;
-});";
-$this->registerJs($search);
 ?>
 <div class="container-fluid">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-    <p>
-        <?= Html::a(Yii::t('app', 'Tiefergehende Suche'), '#', ['class' => 'btn btn-info search-button']) ?>
-    </p>
-    <div class="search-form" style="display:none">
-        <?= $this->render('_search', ['model' => $searchModel]); ?>
-    </div>
+    <br><br>
     <?php
     $dummy = 'id';
     /* $art=2 entpsricht einer Kaufimmobilie, $art=1 entspricht einer Mietimmobilie =>
@@ -61,13 +49,26 @@ $this->registerJs($search);
             'bezeichnung:html',
             'sonstiges:html',
             'k_grundstuecksgroesse',
-            'k_provision',
+            [
+                'attribute' => 'k_provision',
+                'label' => Yii::t('app', 'Provision(%)'),
+                'value' => function($model) {
+                    $betrag = number_format(
+                            $model->k_provision, // zu konvertierende zahl
+                            2, // Anzahl an Nochkommastellen
+                            ",", // Dezimaltrennzeichen
+                            "."    // 1000er-Trennzeichen
+                    );
+                    ($model->k_provision) ? $value = $betrag : $value = NULL;
+                    return $value;
+                }
+            ],
             [
                 'class' => 'kartik\grid\BooleanColumn',
                 'attribute' => 'balkon_vorhanden',
                 'trueLabel' => 'nA',
                 'falseLabel' => 'nA',
-                'label' => '<span class="glyphicon glyphicon-piggy-bank"></span>' . '<br>Balkon vorhanden',
+                'label' => '<span class="fa fa-skyatlas"></span>' . '<br>Balkon vorhanden',
                 'encodeLabel' => false,
             ],
             [
@@ -75,7 +76,7 @@ $this->registerJs($search);
                 'attribute' => 'fahrstuhl_vorhanden',
                 'trueLabel' => 'nAc',
                 'falseLabel' => 'nAc',
-                'label' => '<span class="glyphicon glyphicon-circle-arrow-up"></span>' . '<br>Fahrstuhl vorhanden',
+                'label' => '<span class="fa fa-crop"></span>' . '<br>Fahrstuhl vorhanden',
                 'encodeLabel' => false,
             ],
             [
@@ -125,9 +126,35 @@ $this->registerJs($search);
             ],
             'bezeichnung:html',
             'sonstiges:html',
-            'v_nebenkosten',
-            'balkon_vorhanden',
-            'fahrstuhl_vorhanden',
+            [
+                'attribute' => 'v_nebenkosten',
+                'label' => Yii::t('app', 'Nebenkosten(€)'),
+                'value' => function($model) {
+                    $betrag = number_format(
+                            $model->v_nebenkosten, // zu konvertierende zahl
+                            2, // Anzahl an Nochkommastellen
+                            ",", // Dezimaltrennzeichen
+                            "."    // 1000er-Trennzeichen
+                    );
+                    return $betrag;
+                },
+            ],
+            [
+                'class' => 'kartik\grid\BooleanColumn',
+                'attribute' => 'balkon_vorhanden',
+                'trueLabel' => 'nA',
+                'falseLabel' => 'nA',
+                'label' => '<span class="fa fa-skyatlas"></span>' . '<br>Balkon vorhanden',
+                'encodeLabel' => false,
+            ],
+            [
+                'class' => 'kartik\grid\BooleanColumn',
+                'attribute' => 'fahrstuhl_vorhanden',
+                'trueLabel' => 'nAc',
+                'falseLabel' => 'nAc',
+                'label' => '<span class="fa fa-crop"></span>' . '<br>Fahrstuhl vorhanden',
+                'encodeLabel' => false,
+            ],
             [
                 'attribute' => 'l_heizungsart_id',
                 'label' => Yii::t('app', 'Heizungsart'),

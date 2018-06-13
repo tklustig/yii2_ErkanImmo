@@ -37,6 +37,8 @@ class ImmobilienController extends Controller {
         $jpeg = '/jpeg/';
         $jpg = '/jpg/';
         $ico = '/ico/';
+        $searchModel = new ImmobilienSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $ArrayOfFilename = array();
         $ArrayOfId = array();
         $ArrayOfImmo = array();
@@ -123,7 +125,9 @@ class ImmobilienController extends Controller {
                     'ArrayOfTown' => $ArrayOfTown,
                     'ArrayOfStreet' => $ArrayOfStreet,
                     'ArrayOfGroesse' => $ArrayOfGroesse,
-                    'ArrayOfRooms' => $ArrayOfRooms
+                    'ArrayOfRooms' => $ArrayOfRooms,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
