@@ -5,7 +5,6 @@ use yii\bootstrap\ActiveForm;
 use yii\web\Session;
 use kartik\alert\Alert;
 ?>
-
 <?php
 $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
 ?>
@@ -21,7 +20,7 @@ $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
                                     <li id="menu-item-1" class="menu-item menu-item-type-post_type menu-item-object-page">
                                     </li>
                                     <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                        <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/immobilien/index']) ?>
+                                        <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/immobilien/preview']) ?>
                                     </li>
                                     <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
                                         <?= Html::a('Angebote erstellen(Backend)', $link, ['class' => 'fa fa-gear', 'title' => 'Switch to Backend']) ?>

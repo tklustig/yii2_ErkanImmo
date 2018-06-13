@@ -8,6 +8,8 @@ use frontend\models\ImmobilienSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use frontend\models\EDateianhang;
+use frontend\models\Dateianhang;
 
 /**
  * ImmobilienController implements the CRUD actions for Immobilien model.
@@ -25,14 +27,47 @@ class ImmobilienController extends Controller {
         ];
     }
 
-    /**
-     * Lists all Immobilien models.
-     * @return mixed
-     */
-    public function actionIndex() {
+    public function actionPreview() {
+        $bmp = '/bmp/';
+        $tif = '/tif/';
+        $png = '/png/';
+        $psd = '/psd/';
+        $pcx = '/pcx/';
+        $gif = '/gif/';
+        $jpeg = '/jpeg/';
+        $jpg = '/jpg/';
+        $ico = '/ico/';
+        $ArrayOfFilename = array();
+        $ArrayOfId = array();
+        $ArrayOfImmo = array();
+        $model_dateianhang = Dateianhang::find()->all();
+        foreach ($model_dateianhang as $filename) {
+            if (preg_match($bmp, $filename->dateiname) || preg_match($tif, $filename->dateiname) || preg_match($png, $filename->dateiname) || preg_match($psd, $filename->dateiname) || preg_match($pcx, $filename->dateiname) || preg_match($gif, $filename->dateiname) || preg_match($jpeg, $filename->dateiname) || preg_match($jpg, $filename->dateiname) || preg_match($ico, $filename->dateiname)) {
+                array_push($ArrayOfFilename, $filename->dateiname);
+                array_push($ArrayOfId, $filename->e_dateianhang_id);
+            }
+        }
+        for ($i = 0; $i < count($ArrayOfId); $i++) {
+            array_push($ArrayOfImmo, EDateianhang::findOne(['id' => $ArrayOfId[$i]])->immobilien_id);
+        }
+        $count = Immobilien::find()->count();
         $searchModel = new ImmobilienSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('_index', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                    'count' => $count,
+                    'ArrayOfFilename' => $ArrayOfFilename,
+                    'ArrayOfImmo' => $ArrayOfImmo
+        ]);
+    }
+
+    public function actionIndex($id) {
+        var_dump($id);
+        die();
+        $searchModel = new ImmobilienSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $id);
+        return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
         ]);
