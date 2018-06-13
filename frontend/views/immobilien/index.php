@@ -4,7 +4,6 @@
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 use yii\helpers\Html;
-use kartik\export\ExportMenu;
 use kartik\grid\GridView;
 
 $this->title = Yii::t('app', 'Immobilien');
@@ -32,11 +31,6 @@ $this->registerJs($search);
     if ($art == 2) {
         $gridColumn = [
             [
-                /*
-                  Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBewerberBild(model),welche
-                  drei JOINs und eine dynamische WHERE-Klausel enthält,die auf den FK id_person von bewerber prüft. Das Bild liegt physikalisch auf dem Webspace,
-                  dessen Zugriffspfade in der Datenbank in einer ganz bestimmten Reihenfolge hinterlegt sein müssen!
-                 */
                 'attribute' => $dummy,
                 'label' => Yii::t('app', ''),
                 'format' => 'html', // sorgt dafür,dass das HTML im return gerendert wird
@@ -68,8 +62,22 @@ $this->registerJs($search);
             'sonstiges:html',
             'k_grundstuecksgroesse',
             'k_provision',
-            'balkon_vorhanden',
-            'fahrstuhl_vorhanden',
+            [
+                'class' => 'kartik\grid\BooleanColumn',
+                'attribute' => 'balkon_vorhanden',
+                'trueLabel' => 'nA',
+                'falseLabel' => 'nA',
+                'label' => '<span class="glyphicon glyphicon-piggy-bank"></span>' . '<br>Balkon vorhanden',
+                'encodeLabel' => false,
+            ],
+            [
+                'class' => 'kartik\grid\BooleanColumn',
+                'attribute' => 'fahrstuhl_vorhanden',
+                'trueLabel' => 'nAc',
+                'falseLabel' => 'nAc',
+                'label' => '<span class="glyphicon glyphicon-circle-arrow-up"></span>' . '<br>Fahrstuhl vorhanden',
+                'encodeLabel' => false,
+            ],
             [
                 'attribute' => 'l_heizungsart_id',
                 'label' => Yii::t('app', 'Heizungsart'),
@@ -88,11 +96,6 @@ $this->registerJs($search);
     } else if ($art == 1) {
         $gridColumn = [
             [
-                /*
-                  Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBewerberBild(model),welche
-                  drei JOINs und eine dynamische WHERE-Klausel enthält,die auf den FK id_person von bewerber prüft. Das Bild liegt physikalisch auf dem Webspace,
-                  dessen Zugriffspfade in der Datenbank in einer ganz bestimmten Reihenfolge hinterlegt sein müssen!
-                 */
                 'attribute' => $dummy,
                 'label' => Yii::t('app', ''),
                 'format' => 'html', // sorgt dafür,dass das HTML im return gerendert wird
