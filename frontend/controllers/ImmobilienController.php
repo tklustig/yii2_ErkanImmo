@@ -30,7 +30,6 @@ class ImmobilienController extends Controller {
      * @return mixed
      */
     public function actionIndex() {
-        $this->layout = 'main_immo';
         $searchModel = new ImmobilienSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('_index', [
