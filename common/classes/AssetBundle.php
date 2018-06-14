@@ -15,6 +15,7 @@ class AssetBundle extends \yii\web\AssetBundle {
     public $baseUrl = '@web';
     public $css = [
         'css/font-awesome.min.css',
+        'css/lightbox.min.css'
     ];
     public $depends = [
         'yii\web\YiiAsset',

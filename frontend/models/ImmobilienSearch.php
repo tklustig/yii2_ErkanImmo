@@ -47,6 +47,8 @@ class ImmobilienSearch extends Immobilien {
             ]);
 
             $this->load($params);
+            $query->andFilterWhere(['=', 'fahrstuhl_vorhanden', $this->fahrstuhl_vorhanden]);
+            $query->andFilterWhere(['=', 'balkon_vorhanden', $this->balkon_vorhanden]);
             return $dataProvider;
         } else if ($art == 2) {
             $query = Immobilien::find()->where(['l_art_id' => 1, 'id' => $id, 'l_art_id' => $art]);
@@ -56,6 +58,8 @@ class ImmobilienSearch extends Immobilien {
             ]);
 
             $this->load($params);
+            $query->andFilterWhere(['=', 'fahrstuhl_vorhanden', $this->fahrstuhl_vorhanden]);
+            $query->andFilterWhere(['=', 'balkon_vorhanden', $this->balkon_vorhanden]);
 
             if (!$this->validate()) {
                 return $dataProvider;
