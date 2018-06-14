@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => $dummy,
                 'label' => Yii::t('app', ''),
                 'format' => 'html', // sorgt dafür,dass das HTML im return gerendert wird
-                'vAlign' => 'middle',
+                //'vAlign' => 'middle',
                 'value' => function($model) {
                     $bmp = '/bmp/';
                     $tif = '/tif/';
@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 $url = '@web/img/' . $bild->dateiname;
                             }
                         }
-                        return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
+                        return Html::a(Html::img($url, ['alt' => 'picNotFound', 'class' => 'img-rounded', 'style' => 'width:225px;height:225px',]), ['/immobilien/show', 'filename' => $bild->dateiname], ['title' => 'Bild laden']);
                     } catch (Exception $e) {
                         return;
                     }
@@ -66,16 +66,16 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'kartik\grid\BooleanColumn',
                 'attribute' => 'balkon_vorhanden',
-                'trueLabel' => 'nA',
-                'falseLabel' => 'nA',
+                'trueLabel' => 'Ja',
+                'falseLabel' => 'Nein',
                 'label' => '<span class="fa fa-skyatlas"></span>' . '<br>Balkon vorhanden',
                 'encodeLabel' => false,
             ],
             [
                 'class' => 'kartik\grid\BooleanColumn',
                 'attribute' => 'fahrstuhl_vorhanden',
-                'trueLabel' => 'nAc',
-                'falseLabel' => 'nAc',
+                'trueLabel' => 'Ja',
+                'falseLabel' => 'Nein',
                 'label' => '<span class="fa fa-crop"></span>' . '<br>Fahrstuhl vorhanden',
                 'encodeLabel' => false,
             ],
@@ -100,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => $dummy,
                 'label' => Yii::t('app', ''),
                 'format' => 'html', // sorgt dafür,dass das HTML im return gerendert wird
-                'vAlign' => 'middle',
+                //'vAlign' => 'middle',
                 'value' => function($model) {
                     $bmp = '/bmp/';
                     $tif = '/tif/';
@@ -118,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 $url = '@web/img/' . $bild->dateiname;
                             }
                         }
-                        return Html::a(Html::img($url, ['alt' => 'picNotFound', 'class' => 'img-rounded', 'style' => 'width:225px;height:225px',]), ['/immobilien/show', 'filename' => $bild->dateiname], ['title' => 'Dokument anzeigen']);
+                        return Html::a(Html::img($url, ['alt' => 'picNotFound', 'class' => 'img-rounded', 'style' => 'width:225px;height:225px',]), ['/immobilien/show', 'filename' => $bild->dateiname], ['title' => 'Bild laden']);
                     } catch (Exception $e) {
                         return;
                     }
@@ -142,16 +142,16 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'kartik\grid\BooleanColumn',
                 'attribute' => 'balkon_vorhanden',
-                'trueLabel' => 'nA',
-                'falseLabel' => 'nA',
+                'trueLabel' => 'Ja',
+                'falseLabel' => 'Nein',
                 'label' => '<span class="fa fa-skyatlas"></span>' . '<br>Balkon vorhanden',
                 'encodeLabel' => false,
             ],
             [
                 'class' => 'kartik\grid\BooleanColumn',
                 'attribute' => 'fahrstuhl_vorhanden',
-                'trueLabel' => 'nAc',
-                'falseLabel' => 'nAc',
+                'trueLabel' => 'Ja',
+                'falseLabel' => 'Nein',
                 'label' => '<span class="fa fa-crop"></span>' . '<br>Fahrstuhl vorhanden',
                 'encodeLabel' => false,
             ],
@@ -178,18 +178,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'panel' => [
                 'type' => GridView::TYPE_PRIMARY,
                 'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> zur Übersicht', ['/immobilien/preview'], ['class' => 'btn btn-info']),
+                'after' => Html::a('<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>Termin vereinbaren', ['/immobilien/termin'], ['class' => 'btn btn-success']),
                 'heading' => '<span class="glyphicon glyphicon-book"></span>  ' . Html::encode($this->title),
                 'class' => 'danger'
             ],
-            // your toolbar can include the additional full export menu
             'toolbar' => [
-                ['content' =>
-                    Html::a('<i class="fa fa-folder-open"></i>', ['/immobilien/index', 'bez' => 'umbenennen'], ['class' => 'btn btn-primary', 'title' => 'additional content'])
-                ],
                 '{export}',
                 '{toggleData}'
             ],
-            'toggleDataOptions' => ['minCount' => 10],
         ]);
         ?>
     </div>

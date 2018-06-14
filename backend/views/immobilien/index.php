@@ -183,7 +183,7 @@ $this->registerJs($search);
             'template' => '{termin}',
             'buttons' => [
                 'termin' => function ($model, $id) {
-                    return Html::a('<span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span>', ['immobilien/termin', 'id' => $id->id], ['title' => 'Termin vereinbaren', 'data' => ['pjax' => '0']]);
+                    return Html::a('<span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span>', ['immobilien/termin', 'id' => $id->id], ['title' => 'nicht im Preis inbegriffen', 'data' => ['pjax' => '0']]);
                 },
             ],
         ],
