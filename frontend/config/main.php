@@ -50,6 +50,7 @@ return [
                 'preview' => 'immobilien/preview',
                 'immobilien_pdf' => 'immobilien/pdf',
                 'immobilien_view' => 'immobilien/view',
+                'immobilien_showlink' => 'immobilien/show',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',

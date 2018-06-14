@@ -118,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 $url = '@web/img/' . $bild->dateiname;
                             }
                         }
-                        return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
+                        return Html::a(Html::img($url, ['alt' => 'picNotFound', 'class' => 'img-rounded', 'style' => 'width:225px;height:225px',]), ['/immobilien/show', 'filename' => $bild->dateiname], ['title' => 'Dokument anzeigen']);
                     } catch (Exception $e) {
                         return;
                     }
@@ -175,12 +175,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => $gridColumn,
-            'pjax' => true,
-            'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container-immobilien']],
             'panel' => [
                 'type' => GridView::TYPE_PRIMARY,
                 'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> zur Übersicht', ['/immobilien/preview'], ['class' => 'btn btn-info']),
                 'heading' => '<span class="glyphicon glyphicon-book"></span>  ' . Html::encode($this->title),
+                'class' => 'danger'
             ],
             // your toolbar can include the additional full export menu
             'toolbar' => [
