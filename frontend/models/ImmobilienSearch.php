@@ -7,38 +7,28 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\Immobilien;
 
-/**
- * frontend\models\ImmobilienSearch represents the model behind the search form about `frontend\models\Immobilien`.
- */
 class ImmobilienSearch extends Immobilien {
 
-    /**
-     * @inheritdoc
-     */
+    public $choice_date;
+
     public function rules() {
         return [
             [['id', 'wohnflaeche', 'raeume', 'k_grundstuecksgroesse', 'l_plz_id', 'user_id', 'l_art_id', 'l_heizungsart_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['bezeichnung', 'sonstiges', 'strasse', 'balkon_vorhanden', 'fahrstuhl_vorhanden', 'stadt', 'angelegt_am', 'aktualisiert_am'], 'safe'],
             [['geldbetrag', 'k_provision', 'v_nebenkosten'], 'number'],
+            [['choice_date'], 'boolean'],
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
-    public function search($params, $id = NULL, $art = NULL) {
+    public function search($params, $id = NULL, $art = NULL, $searchPreview = NULL) {
+        if ($searchPreview == 1) {
+            var_dump($params);
+        }
         if ($art == 1) {
             $query = Immobilien::find()->where(['id' => $id, 'l_art_id' => $art]);
 

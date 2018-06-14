@@ -27,7 +27,12 @@ class ImmobilienController extends Controller {
         ];
     }
 
-    public function actionPreview() {
+    public function actionPreview($searchPreview = NULL) {
+        if ($searchPreview == 1) {
+            $searchModel = new ImmobilienSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams, NULL, NULL, $searchPreview);
+        }
+
         $bmp = '/bmp/';
         $tif = '/tif/';
         $png = '/png/';

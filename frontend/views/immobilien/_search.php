@@ -2,22 +2,21 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
-/* @var $this yii\web\View */
-/* @var $model frontend\models\ImmobilienSearch */
-/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="form-immobilien-search">
 
     <?php
     $form = ActiveForm::begin([
-                'action' => ['index'],
+                'action' => ['preview', 'searchPreview' => 1],
                 'method' => 'get',
     ]);
     ?>
+    <?=
+    $form->field($model, 'choice_date')->radioList([0 => 'Höher', 1 => 'Weniger'], ['itemOptions' => ['class' => 'choiceRadio']])->label('Grenzen Sie über diese beiden Radio Buttons Ihre Suche bzgl. der Kosten ein');
+    ?>
 
-    <?= $form->field($model, 'id', ['template' => '{input}'])->textInput(['style' => 'display:none']); ?>
+    <?= $form->field($model, 'id')->textInput(); ?>
 
     <?= $form->field($model, 'bezeichnung')->textarea(['rows' => 6]) ?>
 
@@ -110,10 +109,10 @@ use yii\widgets\ActiveForm;
       ]); */ ?>
 
     <div class="form-group">
-<?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
-    <?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-default']) ?>
+        <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-default']) ?>
     </div>
 
-<?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 </div>
