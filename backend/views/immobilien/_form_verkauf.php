@@ -124,7 +124,7 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                     <div class="col-md-6">
                         <?=
                         $form->field($model, 'bezeichnung', ['addon' => [
-                                'prepend' => ['content' => 'Immobilien-Beschreibung']]])->widget(\dosamigos\ckeditor\CKEditor::className(), [
+                                'prepend' => ['content' => 'Immobilien-Beschreibung']]])->widget(\dosamigos\ckeditor\CKEditor::className()->widget(TwbsMaxlength::className()), [
                             'preset' => 'full', 'clientOptions' => ['height' => 200],
                         ])
                         ?>
@@ -132,7 +132,7 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                     <div class="col-md-6">
                         <?=
                         $form->field($model, 'sonstiges', ['addon' => [
-                                'prepend' => ['content' => 'Sonstiges']]])->widget(\dosamigos\ckeditor\CKEditor::className(), [
+                                'prepend' => ['content' => 'Sonstiges']]])->widget(\dosamigos\ckeditor\CKEditor::className()->widget(TwbsMaxlength::className()), [
                             'preset' => 'full', 'clientOptions' => ['height' => 200],
                         ])
                         ?>
@@ -206,21 +206,21 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
 
                         <?=
                                 $form->field($model, 'wohnflaeche', ['addon' => [
-                                        'prepend' => ['content' => 'Wohnfläche']]])->widget(TwbsMaxlength::className())
+                                        'prepend' => ['content' => 'Wohnfläche']]])
                                 ->textInput(['maxlength' => true, 'placeholder' => 'Bitte die maximale Nutzfläche']);
                         ?>
                     </div>
                     <div class="col-md-6">
                         <?=
                                 $form->field($model, 'k_grundstuecksgroesse', ['addon' => [
-                                        'prepend' => ['content' => 'Grundstücksgrösse']]])->widget(TwbsMaxlength::className())
+                                        'prepend' => ['content' => 'Grundstücksgrösse']]])
                                 ->textInput(['maxlength' => true, 'placeholder' => 'Bitte die maximale Grundstücksgrösse']);
                         ?>
                     </div>
                     <div class="col-md-6">
                         <?=
                                 $form->field($model, 'k_provision', ['addon' => [
-                                        'prepend' => ['content' => 'Provision'], 'append' => ['content' => 'in Prozent']]])->widget(TwbsMaxlength::className())
+                                        'prepend' => ['content' => 'Provision'], 'append' => ['content' => 'in Prozent']]])
                                 ->textInput(['maxlength' => true, 'placeholder' => 'Bitte den Provisionssatz eingeben']);
                         ?>
                     </div>

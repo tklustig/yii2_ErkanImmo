@@ -51,6 +51,7 @@ return [
                 'immobilien_pdf' => 'immobilien/pdf',
                 'immobilien_view' => 'immobilien/view',
                 'immobilien_showlink' => 'immobilien/show',
+                'auswahl' => 'immobilien/auswahl',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',

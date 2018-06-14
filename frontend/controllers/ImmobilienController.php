@@ -8,6 +8,7 @@ use frontend\models\ImmobilienSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\db\Query;
 use frontend\models\EDateianhang;
 use frontend\models\Dateianhang;
 
@@ -168,6 +169,23 @@ class ImmobilienController extends Controller {
     public function actionShow($filename) {
         $completePath = Yii::getAlias('@pictures' . '/' . $filename);
         return Yii::$app->response->sendFile($completePath, $filename);
+    }
+
+    public function actionAuswahl($q = null, $id = null) {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = ['results' => ['id' => '', 'text' => '']];
+        if (!is_null($q)) {
+            $query = new Query();
+            $query->select('id, plz AS text')
+                    ->from('l_plz')
+                    ->where(['like', 'plz', $q]);
+            $command = $query->createCommand();
+            $data = $command->queryAll();
+            $out['results'] = array_values($data);
+        } elseif ($id > 0) {
+            $out['results'] = ['id' => $id, 'text' => LPlz::find($id)->plz];
+        }
+        return $out;
     }
 
 }

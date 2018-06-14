@@ -1,7 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use kartik\widgets\ActiveForm;
+use yii\web\JsExpression;
+use yii\helpers\Url;
+use kartik\widgets\TouchSpin;
 ?>
 
 <div class="form-immobilien-search">
@@ -10,103 +13,101 @@ use yii\widgets\ActiveForm;
     $form = ActiveForm::begin([
                 'action' => ['preview', 'searchPreview' => 1],
                 'method' => 'get',
+                'id' => 'dynamic-form',
+                'type' => ActiveForm::TYPE_VERTICAL,
+                'formConfig' => [
+                    'showLabels' => false
+                ]
     ]);
     ?>
-    <?=
-    $form->field($model, 'choice_date')->radioList([0 => 'Höher', 1 => 'Weniger'], ['itemOptions' => ['class' => 'choiceRadio']])->label('Grenzen Sie über diese beiden Radio Buttons Ihre Suche bzgl. der Kosten ein');
+    <?php
+    $route = Url::to(['auswahl']);
     ?>
+    <div class="col-md-6">
+        <?=
+        $form->field($model, 'l_plz_id', ['addon' => [
+                'prepend' => ['content' => 'Plz']]])->widget(\kartik\widgets\Select2::classname(), [
+            'options' => ['placeholder' => Yii::t('app', 'Plz wählen'),
+                'id' => 'zip_code',
+            ],
+            'pluginOptions' => [
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                ],
+                'ajax' => [
+                    'url' => $route,
+                    'dataType' => 'json',
+                    'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                ],
+                'escapeMarkup' => new JsExpression('function(markup) { return markup; }'),
+                'templateResult' => new JsExpression('function(bewerber) { return bewerber.text; }'),
+                'templateSelection' => new JsExpression('function(bewerber) { return bewerber.text; }'),
+            ],
+        ])->label(false);
+        ?>
+    </div>
+    <div class="col-md-6">
+        <?=
+        $form->field($model, 'stadt', ['addon' => [
+                'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'placeholder' => 'Applikation füllt die Stadt gemäß der Postleitzahl', 'disabled' => true]);
+        ?>
+    </div>
+    <div class="col-md-6">
+        <?=
+        $form->field($model, 'choice_date')->radioList([0 => 'Höher als...', 1 => 'Weniger als...'], ['itemOptions' => ['class' => 'choiceRadio']])->hint('Grenzen Sie über diese beiden Radio Buttons Ihre Suche bzgl. der Kosten ein');
+        ?>
+    </div>
+    <div class="col-md-6">
+        <?=
+        $form->field($model, 'geldbetrag', ['addon' => [
+                'prepend' => ['content' => 'Kosten'], 'append' => ['content' => '€']]])->textInput(['placeholder' => 'Kaufpreis oder Kaltmiete']);
+        ?>
+    </div>
+    <div class="col-md-6">
+        <?=
+        $form->field($model, 'wohnflaeche', ['addon' => [
+                'prepend' => ['content' => 'Wohnfläche'], 'append' => ['content' => 'minimal(qm)']]])->widget(TouchSpin::classname(), [
+            'options' => ['placeholder' => 'Von 20 bis 1000...'],
+            'pluginOptions' => [
+                'min' => '20',
+                'max' => '1000'
+            ]
+        ]);
+        ?>
+    </div>
+    <div class="col-md-6">
+        <?=
+        $form->field($model, 'raeume')->widget(TouchSpin::classname(), [
+            'options' => ['placeholder' => 'Von 1 bis 20...'],
+            'pluginOptions' => [
+                'verticalbuttons' => true,
+                'verticalupclass' => 'glyphicon glyphicon-plus',
+                'verticaldownclass' => 'glyphicon glyphicon-minus',
+                'min' => '1',
+                'max' => '20'
+            ]
+        ])->hint("Anzahl nutzbarer Räume");
+        ?>
+    </div>
+    <div class="col-md-6">
+        <?=
+        $form->field($model, 'balkon_vorhanden')->widget(\kartik\checkbox\CheckboxX::classname(), [
+            'autoLabel' => true,
+            'pluginOptions' => ['threeState' => false]
+        ])->label(false);
+        ?>
+    </div>
+    <div class="col-md-6">
+        <?=
+        $form->field($model, 'fahrstuhl_vorhanden')->widget(\kartik\checkbox\CheckboxX::classname(), [
+            'autoLabel' => true,
+            'pluginOptions' => ['threeState' => false]
+        ])->label(false);
+        ?>
+    </div>
 
-    <?= $form->field($model, 'id')->textInput(); ?>
-
-    <?= $form->field($model, 'bezeichnung')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'sonstiges')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'strasse')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
-
-    <?php /* echo $form->field($model, 'wohnflaeche')->textInput(['placeholder' => 'Wohnflaeche']) */ ?>
-
-    <?php /* echo $form->field($model, 'raeume')->textInput(['placeholder' => 'Raeume']) */ ?>
-
-    <?php /* echo $form->field($model, 'geldbetrag')->textInput(['maxlength' => true, 'placeholder' => 'Geldbetrag']) */ ?>
-
-    <?php /* echo $form->field($model, 'k_grundstuecksgroesse')->textInput(['placeholder' => 'K Grundstuecksgroesse']) */ ?>
-
-    <?php /* echo $form->field($model, 'k_provision')->textInput(['maxlength' => true, 'placeholder' => 'K Provision']) */ ?>
-
-    <?php /* echo $form->field($model, 'v_nebenkosten')->textInput(['maxlength' => true, 'placeholder' => 'V Nebenkosten']) */ ?>
-
-    <?php /* echo $form->field($model, 'balkon_vorhanden')->checkbox() */ ?>
-
-    <?php /* echo $form->field($model, 'fahrstuhl_vorhanden')->checkbox() */ ?>
-
-    <?php /* echo $form->field($model, 'l_plz_id')->textInput(['placeholder' => 'L Plz']) */ ?>
-
-    <?php /* echo $form->field($model, 'stadt')->textInput(['maxlength' => true, 'placeholder' => 'Stadt']) */ ?>
-
-    <?php /* echo $form->field($model, 'user_id')->widget(\kartik\widgets\Select2::classname(), [
-      'data' => \yii\helpers\ArrayHelper::map(\frontend\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-      'options' => ['placeholder' => Yii::t('app', 'Choose User')],
-      'pluginOptions' => [
-      'allowClear' => true
-      ],
-      ]); */ ?>
-
-    <?php /* echo $form->field($model, 'l_art_id')->widget(\kartik\widgets\Select2::classname(), [
-      'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LArt::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-      'options' => ['placeholder' => Yii::t('app', 'Choose L art')],
-      'pluginOptions' => [
-      'allowClear' => true
-      ],
-      ]); */ ?>
-
-    <?php /* echo $form->field($model, 'l_heizungsart_id')->widget(\kartik\widgets\Select2::classname(), [
-      'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LHeizungsart::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-      'options' => ['placeholder' => Yii::t('app', 'Choose L heizungsart')],
-      'pluginOptions' => [
-      'allowClear' => true
-      ],
-      ]); */ ?>
-
-    <?php /* echo $form->field($model, 'angelegt_am')->widget(\kartik\datecontrol\DateControl::classname(), [
-      'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-      'saveFormat' => 'php:Y-m-d H:i:s',
-      'ajaxConversion' => true,
-      'options' => [
-      'pluginOptions' => [
-      'placeholder' => Yii::t('app', 'Choose Angelegt Am'),
-      'autoclose' => true,
-      ]
-      ],
-      ]); */ ?>
-
-    <?php /* echo $form->field($model, 'aktualisiert_am')->widget(\kartik\datecontrol\DateControl::classname(), [
-      'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-      'saveFormat' => 'php:Y-m-d H:i:s',
-      'ajaxConversion' => true,
-      'options' => [
-      'pluginOptions' => [
-      'placeholder' => Yii::t('app', 'Choose Aktualisiert Am'),
-      'autoclose' => true,
-      ]
-      ],
-      ]); */ ?>
-
-    <?php /* echo $form->field($model, 'angelegt_von')->widget(\kartik\widgets\Select2::classname(), [
-      'data' => \yii\helpers\ArrayHelper::map(\frontend\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-      'options' => ['placeholder' => Yii::t('app', 'Choose User')],
-      'pluginOptions' => [
-      'allowClear' => true
-      ],
-      ]); */ ?>
-
-    <?php /* echo $form->field($model, 'aktualisiert_von')->widget(\kartik\widgets\Select2::classname(), [
-      'data' => \yii\helpers\ArrayHelper::map(\frontend\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-      'options' => ['placeholder' => Yii::t('app', 'Choose User')],
-      'pluginOptions' => [
-      'allowClear' => true
-      ],
-      ]); */ ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
