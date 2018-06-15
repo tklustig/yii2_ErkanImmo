@@ -168,7 +168,7 @@ class ImmobilienController extends Controller {
             $ArrayOfStreet = array();
             $ArrayOfDifference = array();
             $count = 0;
-            /* bei 2^3 Suchparameter muss es folglich auch 2^3 Konditionen geben */
+            /* bei 2^3 Suchparameter muss es folglich 2^3-1 Konditionen geben */
 //1.Kondition:Sofern Suchrequestparameter enthält plz
             if ($dataProvider['plz'][0] != null) {
                 $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->all();
@@ -184,11 +184,19 @@ class ImmobilienController extends Controller {
             }
 //4.Kondition:Sofern Suchrequestparameter enthält plz und Kohle
             if ($dataProvider['plz'][0] != null && $dataProvider['Kosten'][0] != null) {
-                $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->orWhere(["$operator", 'geldbetrag', $dataProvider['Kosten'][0]])->all();
+                $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->andWhere(["$operator", 'geldbetrag', $dataProvider['Kosten'][0]])->all();
             }
-//5.Kondition:Sofern Suchrequestparameter enthält plz und Kohle
-            if ($dataProvider['plz'][0] != null && $dataProvider['Kosten'][0] != null) {
-                $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->orWhere(['geldbetrag' => $dataProvider['Kosten'][0]])->all();
+//5.Kondition:Sofern Suchrequestparameter enthält plz und Räume
+            if ($dataProvider['plz'][0] != null && $dataProvider['raeume'][0] != null) {
+                $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->andWhere([">=", 'raeume', $dataProvider['raeume'][0]])->all();
+            }
+//6.Kondition:Sofern Suchrequestparameter enthält Kohle und Räume
+            if ($dataProvider['Kosten'][0] != null && $dataProvider['raeume'][0] != null) {
+                $model_I = Immobilien::find()->where(["$operator", 'geldbetrag', $dataProvider['Kosten'][0]])->andWhere([">=", 'raeume', $dataProvider['raeume'][0]])->all();
+            }
+//7.Kondition:Sofern Suchrequestparameter enthält Kohle und Räume und plz
+            if ($dataProvider['Kosten'][0] != null && $dataProvider['raeume'][0] != null && $dataProvider['plz'][0] != null) {
+                $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->andWhere(["$operator", 'geldbetrag', $dataProvider['Kosten'][0]])->orWhere([">=", 'raeume', $dataProvider['raeume'][0]])->all();
             }
 
             if (!empty($model_I)) {
@@ -197,6 +205,7 @@ class ImmobilienController extends Controller {
                 }
             }
             var_dump($dataProvider);
+            var_dump($model_I);
             die();
             for ($i = 0; $i < count($ArrayOfImmo); $i++) {
                 array_push($ArrayOfE, EDateianhang::findOne(['immobilien_id' => $ArrayOfImmo[$i]])->id);
