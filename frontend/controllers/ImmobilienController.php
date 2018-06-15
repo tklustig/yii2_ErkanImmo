@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\db\Query;
+use kartik\widgets\Growl;
 use frontend\models\EDateianhang;
 use frontend\models\Dateianhang;
 
@@ -114,6 +115,43 @@ class ImmobilienController extends Controller {
         }
 //sofern ein Suchrequest abgefeuert wurde,übergebe an das Searchmodel den Parameter...
         if ($searchPreview == 1) {
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams, NULL, NULL, $searchPreview);
+            if ($dataProvider['operator'][0] == null && $dataProvider['Kosten'][0] != null) {
+                ?><?=
+                Growl::widget([
+                    'type' => Growl::TYPE_GROWL,
+                    'title' => 'Warning',
+                    'icon' => 'glyphicon glyphicon-ok-sign',
+                    'body' => 'Wenn Sie nach einem Kaufpreis/Miete suchen, müssen Sie entweder Höher als oder Weniger als auswählen.',
+                    'showSeparator' => true,
+                    'delay' => 1500,
+                    'pluginOptions' => [
+                        'showProgressbar' => true,
+                        'placement' => [
+                            'from' => 'top',
+                            'align' => 'center',
+                        ]
+                    ]
+                ]);
+                $dataProvider = $searchModel->search(NULL, NULL, NULL, NULL);
+                return $this->render('_index', [
+                            'count' => $count,
+                            'ArrayOfFilename' => $ArrayOfFilename,
+                            'ArrayOfImmo' => $ArrayOfImmo,
+                            'ArrayOfDifference' => $ArrayOfDifference,
+                            'model_immobilien' => $model_immobilien,
+                            'ArrayOfArt' => $ArrayOfArt,
+                            'ArrayOfMoney' => $ArrayOfMoney,
+                            'ArrayOfPlz' => $ArrayOfPlz,
+                            'ArrayOfTown' => $ArrayOfTown,
+                            'ArrayOfStreet' => $ArrayOfStreet,
+                            'ArrayOfGroesse' => $ArrayOfGroesse,
+                            'ArrayOfRooms' => $ArrayOfRooms,
+                            'searchModel' => $searchModel,
+                            'dataProvider' => $dataProvider,
+                ]);
+            }
+
             $ArrayOfFilename = array();
             $ArrayOfId = array();
             $ArrayOfImmo = array();
@@ -128,7 +166,26 @@ class ImmobilienController extends Controller {
             $ArrayOfStreet = array();
             $ArrayOfDifference = array();
             $count = 0;
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams, NULL, NULL, $searchPreview);
+            if ($dataProvider['plz'][0] != null) {
+                $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->all();
+            }
+            if ($dataProvider['plz'][0] != null && $dataProvider['Kosten'][0] != null) {
+                $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->orWhere(['geldbetrag' => $dataProvider['Kosten'][0]])->all();
+            }
+            if (!empty($model_I)) {
+                foreach ($model_I as $value) {
+                    array_push($ArrayOfImmo, $value->id);
+                }
+            }
+            for ($i = 0; $i < count($ArrayOfImmo); $i++) {
+                array_push($ArrayOfE, EDateianhang::findOne(['immobilien_id' => $ArrayOfImmo[$i]])->id);
+            }
+            for ($i = 0; $i < count($ArrayOfE); $i++) {
+                if (preg_match($bmp, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($tif, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($png, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($psd, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($pcx, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($gif, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($jpeg, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($jpg, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($ico, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname)) {
+                    array_push($ArrayOfFilename, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname);
+                }
+            }
+            //$model_dateianhang = Dateianhang::find()->all();
             return $this->render('_index', [
                         'count' => $count,
                         'ArrayOfFilename' => $ArrayOfFilename,

@@ -31,45 +31,24 @@ class ImmobilienSearch extends Immobilien {
             $CompareMoney = $params['ImmobilienSearch']['choice_date'];
             $money = $params['ImmobilienSearch']['geldbetrag'];
             $ArrayOfArguments = array();
-            if (!empty($money) && empty($CompareMoney)) {
-?><?=
-
-                Growl::widget([
-                    'type' => Growl::TYPE_GROWL,
-                    'title' => 'Warning',
-                    'icon' => 'glyphicon glyphicon-ok-sign',
-                    'body' => 'Wenn Sie nach einem Kaufpreis/Miete suchen, müssen Sie entweder Höher als oder Weniger als auswählen.',
-                    'showSeparator' => true,
-                    'delay' => 1500,
-                    'pluginOptions' => [
-                        'showProgressbar' => true,
-                        'placement' => [
-                            'from' => 'top',
-                            'align' => 'center',
-                        ]
-                    ]
-                ]);
-                return;
-            } else {
-                $IdPlz = $params['ImmobilienSearch']['l_plz_id'];
-                if (empty($IdPlz))
-                    $IdPlz = null;
-                $money = $params['ImmobilienSearch']['geldbetrag'];
-                if (empty($money))
-                    $money = null;
-                $wohnflaeche = $params['ImmobilienSearch']['wohnflaeche'];
-                if (empty($wohnflaeche))
-                    $wohnflaeche = null;
-                $raeume = $params['ImmobilienSearch']['raeume'];
-                if (empty($raeume))
-                    $raeume = null;
-                $is_balkon = $params['ImmobilienSearch']['balkon_vorhanden'];
-                if (empty($is_balkon))
-                    $is_balkon = null;
-                $is_fahrstuhl = $params['ImmobilienSearch']['fahrstuhl_vorhanden'];
-                if (empty($is_fahrstuhl))
-                    $is_fahrstuhl = null;
-            }
+            $IdPlz = $params['ImmobilienSearch']['l_plz_id'];
+            if (empty($IdPlz))
+                $IdPlz = null;
+            $money = $params['ImmobilienSearch']['geldbetrag'];
+            if (empty($money))
+                $money = null;
+            $wohnflaeche = $params['ImmobilienSearch']['wohnflaeche'];
+            if (empty($wohnflaeche))
+                $wohnflaeche = null;
+            $raeume = $params['ImmobilienSearch']['raeume'];
+            if (empty($raeume))
+                $raeume = null;
+            $is_balkon = $params['ImmobilienSearch']['balkon_vorhanden'];
+            if (empty($is_balkon))
+                $is_balkon = null;
+            $is_fahrstuhl = $params['ImmobilienSearch']['fahrstuhl_vorhanden'];
+            if (empty($is_fahrstuhl))
+                $is_fahrstuhl = null;
             if (!empty($CompareMoney) && $CompareMoney == 1)
                 $operator = '>';
             else if (!empty($CompareMoney) && $CompareMoney == 2)
