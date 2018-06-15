@@ -115,6 +115,9 @@ class ImmobilienController extends Controller {
         }
 //sofern ein Suchrequest abgefeuert wurde,übergebe an das Searchmodel den Parameter...
         if ($searchPreview == 1) {
+
+            /* Hier noch prüfen, ob dataProvider nur Null-Werte enthält. Wenn ja, dann 'zurück rendern' */
+
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams, NULL, NULL, $searchPreview);
 //sofern Suchangaben unvollständig
             if ($dataProvider['operator'][0] == null && $dataProvider['Kosten'][0] != null) {
@@ -153,12 +156,11 @@ class ImmobilienController extends Controller {
                 ]);
             }
 //lösche alle Arrays, sofern ein Suchrequest abgefeuert wurde
-
             $ArrayOfFilename = array();
             $ArrayOfId = array();
             $ArrayOfImmo = array();
-            $ArrayOfE = array();
             $ArrayOfImmoAll = array();
+            $ArrayOfEDatei = array();
             $ArrayOfArt = array();
             $ArrayOfMoney = array();
             $ArrayOfTown = array();
@@ -167,7 +169,9 @@ class ImmobilienController extends Controller {
             $ArrayOfPlz = array();
             $ArrayOfStreet = array();
             $ArrayOfDifference = array();
-            $count = 0;
+//füge neues Array hinzu
+            $ArrayOfObjAnh = array();
+            $ArrayOfObjImmo = array();
             /* bei 2^3 Suchparameter muss es folglich 2^3-1 Konditionen geben */
 //1.Kondition:Sofern Suchrequestparameter enthält plz
             if ($dataProvider['plz'][0] != null) {
@@ -198,24 +202,71 @@ class ImmobilienController extends Controller {
             if ($dataProvider['Kosten'][0] != null && $dataProvider['raeume'][0] != null && $dataProvider['plz'][0] != null) {
                 $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->andWhere(["$operator", 'geldbetrag', $dataProvider['Kosten'][0]])->andWhere([">=", 'raeume', $dataProvider['raeume'][0]])->all();
             }
-
             if (!empty($model_I)) {
                 foreach ($model_I as $value) {
                     array_push($ArrayOfImmo, $value->id);
                 }
+                $count = count($ArrayOfImmo);
+                $ArrayOfDifference = array_diff($ArrayOfImmo, $ArrayOfE);
+                $count += count($ArrayOfDifference);
             }
-            var_dump($dataProvider);
-            var_dump($model_I);
-            die();
-            for ($i = 0; $i < count($ArrayOfImmo); $i++) {
-                array_push($ArrayOfE, EDateianhang::findOne(['immobilien_id' => $ArrayOfImmo[$i]])->id);
-            }
-            for ($i = 0; $i < count($ArrayOfE); $i++) {
-                if (preg_match($bmp, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($tif, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($png, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($psd, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($pcx, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($gif, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($jpeg, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($jpg, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname) || preg_match($ico, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname)) {
-                    array_push($ArrayOfFilename, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfE[$i]])->dateiname);
+            if (!empty($ArrayOfImmo)) {
+                for ($i = 0; $i < count($ArrayOfImmo); $i++) {
+                    if (!empty(EDateianhang::findOne(['immobilien_id' => $ArrayOfImmo[$i]]))) {
+                        array_push($ArrayOfEDatei, EDateianhang::findOne(['immobilien_id' => $ArrayOfImmo[$i]])->id);
+                    }
+                }
+                for ($i = 0; $i < count($ArrayOfEDatei); $i++) {
+                    array_push($ArrayOfObjAnh, Dateianhang::find()->where(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->all());
+                    // if (preg_match($bmp, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($tif, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($png, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($psd, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($pcx, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($gif, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($jpeg, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($jpg, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($ico, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname)) {
+                    //}
+                }
+                foreach ($ArrayOfObjAnh as $object) {
+                    foreach ($object as $value) {
+                        if (preg_match($bmp, $value->dateiname) || preg_match($tif, $value->dateiname) || preg_match($png, $value->dateiname) || preg_match($psd, $value->dateiname) || preg_match($pcx, $value->dateiname) || preg_match($gif, $value->dateiname) || preg_match($jpeg, $value->dateiname) || preg_match($jpg, $value->dateiname) || preg_match($ico, $value->dateiname)) {
+                            array_push($ArrayOfFilename, $value->dateiname);
+                        }
+                    }
+                }
+                for ($i = 0; $i < count($ArrayOfImmo); $i++) {
+                    array_push($ArrayOfObjImmo, Immobilien::find()->where(['id' => $ArrayOfImmo[$i]])->all());
+                }
+                foreach ($ArrayOfObjImmo as $object) {
+                    foreach ($object as $value) {
+                        if ($value->l_art_id == 2 && !in_array($value->id, $ArrayOfDifference)) {
+                            $begriff = "Kaufpreis";
+                            array_push($ArrayOfArt, $begriff);
+                            $betrag = number_format(
+                                    $value->geldbetrag, // zu konvertierende zahl
+                                    2, // Anzahl an Nochkommastellen
+                                    ",", // Dezimaltrennzeichen
+                                    "."    // 1000er-Trennzeichen
+                            );
+                            array_push($ArrayOfMoney, $betrag);
+                            array_push($ArrayOfPlz, $value->lPlz->plz);
+                            array_push($ArrayOfTown, $value->stadt);
+                            array_push($ArrayOfStreet, $value->strasse);
+                            array_push($ArrayOfGroesse, $value->wohnflaeche);
+                            array_push($ArrayOfRooms, $value->raeume);
+                        } else if ($value->l_art_id == 1 && !in_array($value->id, $ArrayOfDifference)) {
+                            $begriff = "Kaltmiete";
+                            array_push($ArrayOfArt, $begriff);
+                            $betrag = number_format(
+                                    $value->geldbetrag, // zu konvertierende zahl
+                                    2, // Anzahl an Nochkommastellen
+                                    ",", // Dezimaltrennzeichen
+                                    "."    // 1000er-Trennzeichen
+                            );
+                            array_push($ArrayOfMoney, $betrag);
+                            array_push($ArrayOfPlz, $value->lPlz->plz);
+                            array_push($ArrayOfTown, $value->stadt);
+                            array_push($ArrayOfStreet, $value->strasse);
+                            array_push($ArrayOfGroesse, $value->wohnflaeche);
+                            array_push($ArrayOfRooms, $value->raeume);
+                        }
+                    }
                 }
             }
-            //$model_dateianhang = Dateianhang::find()->all();
             return $this->render('_index', [
                         'count' => $count,
                         'ArrayOfFilename' => $ArrayOfFilename,
