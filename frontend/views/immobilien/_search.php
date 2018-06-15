@@ -117,3 +117,18 @@ use kartik\widgets\TouchSpin;
     <?php ActiveForm::end(); ?>
 
 </div>
+<?php
+$url = Url::to(['plz/get-city-province']);
+$script = <<< JS
+        $('#zip_code').change(function(){
+        var zipId=$(this).val();
+       $.get('$url',{zipId:zipId},function(data){
+   var data=$.parseJSON(data);
+   alert(data.plz+" entspricht dem Ort "+data.ort+"! Er wird in das Feld übernommen.");
+   $('#immobiliensearch-stadt').attr('value',data.ort);
+   });
+   });
+
+JS;
+$this->registerJS($script);
+?>

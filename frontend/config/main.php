@@ -48,6 +48,7 @@ return [
                 'pdf' => 'gridview/export/download',
                 'immobilien' => 'immobilien/index',
                 'preview' => 'immobilien/preview',
+                'plz_get' => 'plz/get-city-province',
                 'immobilien_pdf' => 'immobilien/pdf',
                 'immobilien_view' => 'immobilien/view',
                 'immobilien_showlink' => 'immobilien/show',
