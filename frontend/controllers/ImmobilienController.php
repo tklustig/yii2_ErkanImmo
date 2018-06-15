@@ -29,11 +29,6 @@ class ImmobilienController extends Controller {
     }
 
     public function actionPreview($searchPreview = NULL) {
-        if ($searchPreview == 1) {
-            $searchModel = new ImmobilienSearch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams, NULL, NULL, $searchPreview);
-        }
-
         $bmp = '/bmp/';
         $tif = '/tif/';
         $png = '/png/';
@@ -43,8 +38,6 @@ class ImmobilienController extends Controller {
         $jpeg = '/jpeg/';
         $jpg = '/jpg/';
         $ico = '/ico/';
-        $searchModel = new ImmobilienSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $ArrayOfFilename = array();
         $ArrayOfId = array();
         $ArrayOfImmo = array();
@@ -119,22 +112,46 @@ class ImmobilienController extends Controller {
             }
         }
         //übergebe folgende Werte:Array(kein Bild),Array(Bild),Array(Immo-Id), AnzahlDatensätze und alle Attributarrays
-        return $this->render('_index', [
-                    'count' => $count,
-                    'ArrayOfFilename' => $ArrayOfFilename,
-                    'ArrayOfImmo' => $ArrayOfImmo,
-                    'ArrayOfDifference' => $ArrayOfDifference,
-                    'model_immobilien' => $model_immobilien,
-                    'ArrayOfArt' => $ArrayOfArt,
-                    'ArrayOfMoney' => $ArrayOfMoney,
-                    'ArrayOfPlz' => $ArrayOfPlz,
-                    'ArrayOfTown' => $ArrayOfTown,
-                    'ArrayOfStreet' => $ArrayOfStreet,
-                    'ArrayOfGroesse' => $ArrayOfGroesse,
-                    'ArrayOfRooms' => $ArrayOfRooms,
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
-        ]);
+        if ($searchPreview == 1) {
+            $searchModel = new ImmobilienSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams, NULL, NULL, $searchPreview);
+            var_dump($dataProvider);
+            return $this->render('_index', [
+                        'count' => $count,
+                        'ArrayOfFilename' => $ArrayOfFilename,
+                        'ArrayOfImmo' => $ArrayOfImmo,
+                        'ArrayOfDifference' => $ArrayOfDifference,
+                        'model_immobilien' => $model_immobilien,
+                        'ArrayOfArt' => $ArrayOfArt,
+                        'ArrayOfMoney' => $ArrayOfMoney,
+                        'ArrayOfPlz' => $ArrayOfPlz,
+                        'ArrayOfTown' => $ArrayOfTown,
+                        'ArrayOfStreet' => $ArrayOfStreet,
+                        'ArrayOfGroesse' => $ArrayOfGroesse,
+                        'ArrayOfRooms' => $ArrayOfRooms,
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+            ]);
+        } else {
+            $searchModel = new ImmobilienSearch();
+            $dataProvider = $searchModel->search(NULL, NULL, NULL, NULL);
+            return $this->render('_index', [
+                        'count' => $count,
+                        'ArrayOfFilename' => $ArrayOfFilename,
+                        'ArrayOfImmo' => $ArrayOfImmo,
+                        'ArrayOfDifference' => $ArrayOfDifference,
+                        'model_immobilien' => $model_immobilien,
+                        'ArrayOfArt' => $ArrayOfArt,
+                        'ArrayOfMoney' => $ArrayOfMoney,
+                        'ArrayOfPlz' => $ArrayOfPlz,
+                        'ArrayOfTown' => $ArrayOfTown,
+                        'ArrayOfStreet' => $ArrayOfStreet,
+                        'ArrayOfGroesse' => $ArrayOfGroesse,
+                        'ArrayOfRooms' => $ArrayOfRooms,
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+            ]);
+        }
     }
 
     public function actionIndex($id) {

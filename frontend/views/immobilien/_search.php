@@ -56,7 +56,7 @@ use kartik\widgets\TouchSpin;
     </div>
     <div class="col-md-6">
         <?=
-        $form->field($model, 'choice_date')->radioList([0 => 'Höher als...', 1 => 'Weniger als...'], ['itemOptions' => ['class' => 'choiceRadio']])->hint('Grenzen Sie über diese beiden Radio Buttons Ihre Suche bzgl. der Kosten ein');
+        $form->field($model, 'choice_date')->radioList([1 => 'Höher als...', 2 => 'Weniger als...'], ['itemOptions' => ['class' => 'choiceRadio']])->hint('Grenzen Sie über diese beiden Radio Buttons Ihre Suche bzgl. der Kosten ein');
         ?>
     </div>
     <div class="col-md-6">

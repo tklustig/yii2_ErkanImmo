@@ -341,16 +341,6 @@ class ImmobilienController extends Controller {
         return $pdf->render();
     }
 
-    public function actionTermin() {
-        ?>
-        <h3>
-            Diese Methode soll dem Makler die Möglichkeit geben, einen Termin für die jeweilige Immobilie zu beantragen. Es wird folglich ein Formular gerendert, welches die entsprechenden Optionen anbietet. Noch ist das allerdings eine Baustelle
-        </h3><br>
-        <?php
-        print_r("Script in der Klasse " . get_class() . " angehalten");
-        die();
-    }
-
     public function actionDecide() {
         $this->layout = 'main_immo';
         $DynamicModel = new DynamicModel(['art']);
