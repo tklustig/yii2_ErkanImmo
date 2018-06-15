@@ -114,8 +114,21 @@ class ImmobilienController extends Controller {
         }
 //sofern ein Suchrequest abgefeuert wurde,übergebe an das Searchmodel den Parameter...
         if ($searchPreview == 1) {
+            $ArrayOfFilename = array();
+            $ArrayOfId = array();
+            $ArrayOfImmo = array();
+            $ArrayOfE = array();
+            $ArrayOfImmoAll = array();
+            $ArrayOfArt = array();
+            $ArrayOfMoney = array();
+            $ArrayOfTown = array();
+            $ArrayOfGroesse = array();
+            $ArrayOfRooms = array();
+            $ArrayOfPlz = array();
+            $ArrayOfStreet = array();
+            $ArrayOfDifference = array();
+            $count = 0;
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams, NULL, NULL, $searchPreview);
-            var_dump($dataProvider);
             return $this->render('_index', [
                         'count' => $count,
                         'ArrayOfFilename' => $ArrayOfFilename,
