@@ -76,6 +76,7 @@ class ImmobilienSearch extends Immobilien {
                 $operator = '<';
             else
                 $operator = null;
+
             $ArrayOfArguments['plz'][0] = $IdPlz;
             $ArrayOfArguments['operator'][0] = $operator;
             $ArrayOfArguments['Kosten'][0] = $money;

@@ -11,7 +11,7 @@ use kartik\widgets\TouchSpin;
 
     <?php
     $form = ActiveForm::begin([
-                'action' => ['preview', 'searchPreview' => 1],
+                'action' => ['/immobilien/preview', 'searchPreview' => 1],
                 'method' => 'get',
                 'id' => 'dynamic-form',
                 'type' => ActiveForm::TYPE_VERTICAL,

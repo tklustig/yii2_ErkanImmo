@@ -38,6 +38,7 @@ class ImmobilienController extends Controller {
         $jpeg = '/jpeg/';
         $jpg = '/jpg/';
         $ico = '/ico/';
+        $searchModel = new ImmobilienSearch();
         $ArrayOfFilename = array();
         $ArrayOfId = array();
         $ArrayOfImmo = array();
@@ -64,7 +65,7 @@ class ImmobilienController extends Controller {
                 array_push($ArrayOfId, $filename->e_dateianhang_id);
             }
         }
-//und dessen ID in Arrays
+//...und dessen ID in Arrays
         for ($i = 0; $i < count($ArrayOfId); $i++) {
             array_push($ArrayOfImmo, EDateianhang::findOne(['id' => $ArrayOfId[$i]])->immobilien_id);
         }
@@ -111,9 +112,8 @@ class ImmobilienController extends Controller {
                 array_push($ArrayOfRooms, $immoAttribute->raeume);
             }
         }
-        //übergebe folgende Werte:Array(kein Bild),Array(Bild),Array(Immo-Id), AnzahlDatensätze und alle Attributarrays
+//sofern ein Suchrequest abgefeuert wurde,übergebe an das Searchmodel den Parameter...
         if ($searchPreview == 1) {
-            $searchModel = new ImmobilienSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams, NULL, NULL, $searchPreview);
             var_dump($dataProvider);
             return $this->render('_index', [
@@ -132,8 +132,8 @@ class ImmobilienController extends Controller {
                         'searchModel' => $searchModel,
                         'dataProvider' => $dataProvider,
             ]);
+//andernfalls übergebe keine Parameter
         } else {
-            $searchModel = new ImmobilienSearch();
             $dataProvider = $searchModel->search(NULL, NULL, NULL, NULL);
             return $this->render('_index', [
                         'count' => $count,
