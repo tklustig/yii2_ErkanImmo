@@ -54,7 +54,7 @@ use kartik\widgets\TouchSpin;
                 'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'placeholder' => 'Applikation füllt die Stadt gemäß der Postleitzahl', 'disabled' => true]);
         ?>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-12">
         <?=
         $form->field($model, 'choice_date')->radioList([1 => 'Höher als...', 2 => 'Weniger als...'], ['itemOptions' => ['class' => 'choiceRadio']])->hint('Grenzen Sie über diese beiden Radio Buttons Ihre Suche bzgl. der Kosten ein');
         ?>
@@ -63,18 +63,6 @@ use kartik\widgets\TouchSpin;
         <?=
         $form->field($model, 'geldbetrag', ['addon' => [
                 'prepend' => ['content' => 'Kosten'], 'append' => ['content' => '€']]])->textInput(['placeholder' => 'Kaufpreis oder Kaltmiete']);
-        ?>
-    </div>
-    <div class="col-md-6">
-        <?=
-        $form->field($model, 'wohnflaeche', ['addon' => [
-                'prepend' => ['content' => 'Wohnfläche'], 'append' => ['content' => 'minimal(qm)']]])->widget(TouchSpin::classname(), [
-            'options' => ['placeholder' => 'Von 20 bis 1000...'],
-            'pluginOptions' => [
-                'min' => '20',
-                'max' => '1000'
-            ]
-        ]);
         ?>
     </div>
     <div class="col-md-6">
@@ -89,22 +77,6 @@ use kartik\widgets\TouchSpin;
                 'max' => '20'
             ]
         ])->hint("Anzahl nutzbarer Räume");
-        ?>
-    </div>
-    <div class="col-md-6">
-        <?=
-        $form->field($model, 'balkon_vorhanden')->widget(\kartik\checkbox\CheckboxX::classname(), [
-            'autoLabel' => true,
-            'pluginOptions' => ['threeState' => false]
-        ])->label(false);
-        ?>
-    </div>
-    <div class="col-md-6">
-        <?=
-        $form->field($model, 'fahrstuhl_vorhanden')->widget(\kartik\checkbox\CheckboxX::classname(), [
-            'autoLabel' => true,
-            'pluginOptions' => ['threeState' => false]
-        ])->label(false);
         ?>
     </div>
 

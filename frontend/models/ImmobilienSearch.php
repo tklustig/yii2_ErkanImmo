@@ -37,18 +37,9 @@ class ImmobilienSearch extends Immobilien {
             $money = $params['ImmobilienSearch']['geldbetrag'];
             if (empty($money))
                 $money = null;
-            $wohnflaeche = $params['ImmobilienSearch']['wohnflaeche'];
-            if (empty($wohnflaeche))
-                $wohnflaeche = null;
             $raeume = $params['ImmobilienSearch']['raeume'];
             if (empty($raeume))
                 $raeume = null;
-            $is_balkon = $params['ImmobilienSearch']['balkon_vorhanden'];
-            if (empty($is_balkon))
-                $is_balkon = null;
-            $is_fahrstuhl = $params['ImmobilienSearch']['fahrstuhl_vorhanden'];
-            if (empty($is_fahrstuhl))
-                $is_fahrstuhl = null;
             if (!empty($CompareMoney) && $CompareMoney == 1)
                 $operator = '>';
             else if (!empty($CompareMoney) && $CompareMoney == 2)
@@ -59,10 +50,7 @@ class ImmobilienSearch extends Immobilien {
             $ArrayOfArguments['plz'][0] = $IdPlz;
             $ArrayOfArguments['operator'][0] = $operator;
             $ArrayOfArguments['Kosten'][0] = $money;
-            $ArrayOfArguments['wohnflaeche'][0] = $wohnflaeche;
             $ArrayOfArguments['raeume'][0] = $raeume;
-            $ArrayOfArguments['is_balkon'][0] = $is_balkon;
-            $ArrayOfArguments['is_fahrstuhl'][0] = $is_fahrstuhl;
             return $ArrayOfArguments;
         }
 
