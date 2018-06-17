@@ -3,10 +3,30 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\web\Session;
-use kartik\alert\Alert;
+use kartik\widgets\Growl;
+use kartik\widgets\Alert;
 ?>
 <?php
 $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
+?>
+<?php
+//Hier werden alle Flashnachrichten ausgegeben
+$session = new Session();
+if (!empty($session->getAllFlashes())) {
+    foreach ($session->getAllFlashes() as $flash) {
+        foreach ($flash as $ausgabe) {
+            ?><?=
+            Alert::widget([
+                'type' => Alert::TYPE_SUCCESS,
+                'title' => 'Information',
+                'icon' => 'glyphicon glyphicon-exclamation-sign',
+                'body' => $ausgabe,
+                'showSeparator' => true,
+                'delay' => false
+            ]);
+        }
+    }
+}
 ?>
 <div id="Header_wrapper" >
     <header id="Header">
@@ -62,26 +82,6 @@ $url = Yii::getAlias("@web") . '/img/';
                 <div class="column_attr clearfix"  style="">
                     <h6 class="themecolor" style="text-transform: uppercase;">Startseite</h6>
                     <br><br><br>
-
-                    <?php
-//Hier werden alle Flashnachrichten ausgegeben
-                    $session = new Session();
-                    if (!empty($session->getAllFlashes())) {
-                        foreach ($session->getAllFlashes() as $flash) {
-                            foreach ($flash as $ausgabe) {
-                                ?><?=
-                                Alert::widget([
-                                    'type' => Alert::TYPE_SUCCESS,
-                                    'title' => 'Information',
-                                    'icon' => 'glyphicon glyphicon-exclamation-sign',
-                                    'body' => $ausgabe,
-                                    'showSeparator' => true,
-                                    'delay' => false
-                                ]);
-                            }
-                        }
-                    }
-                    ?>
                 </div>
             </div>
         </div>

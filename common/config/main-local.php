@@ -38,7 +38,7 @@ return [
                 'class' => 'Swift_SmtpTransport',
                 'host' => 'smtp.strato.de',
                 'username' => 't.kipp@eisvogel-online-software.de',
-                'password' => 'StrengGeheim',
+                'password' => 'Hannover96',
                 'port' => '587',
                 'encryption' => 'tls',
             ],
