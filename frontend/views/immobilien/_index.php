@@ -45,7 +45,17 @@ $this->registerJs($search);
                 </div>
                 <?php
                 if ($i >= 1 && $i % 2 != 0) {
-                    echo "<br><br><br><br><br><br><br>";
+                    ?>
+                    <script>
+                        var myWidth = 0;
+                        if (typeof (window.innerWidth) == 'number') {
+                            myWidth = window.innerWidth;
+                        }
+                        if (myWidth >= 990) {
+                            document.write("<br><br><br><br><br><br><br>");
+                        }
+                    </script>
+                    <?php
                 }
             }/*
               if ($i % 2 != 0)
