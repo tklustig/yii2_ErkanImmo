@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'adminEmail' => 'hasanoynak@hotmail.de',
+    'adminEmail' => 't.kipp@eisvogel-online-software.de',
         //'adminEmail' => 'tklustig.thomas@gmail.com',
 ];
