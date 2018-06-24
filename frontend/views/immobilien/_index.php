@@ -51,7 +51,7 @@ $this->registerJs($search);
                         if (typeof (window.innerWidth) == 'number') {
                             myWidth = window.innerWidth;
                         }
-                        if (myWidth >= 990) {
+                        if (myWidth >= 1000) {
                             document.write("<br><br><br><br><br><br><br>");
                         }
                     </script>

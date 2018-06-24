@@ -115,10 +115,28 @@ class ImmobilienController extends Controller {
         }
 //sofern ein Suchrequest abgefeuert wurde,übergebe an das Searchmodel den Parameter...
         if ($searchPreview == 1) {
-
             /* Hier noch prüfen, ob dataProvider nur Null-Werte enthält. Wenn ja, dann 'zurück rendern' */
-
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams, NULL, NULL, $searchPreview);
+            if ($dataProvider['plz'][0] == null && $dataProvider['Kosten'][0] == null && $dataProvider['raeume'][0] == null) {
+                $dataProvider = $searchModel->search(NULL, NULL, NULL, NULL);
+                return $this->render('_index', [
+                            'count' => $count,
+                            'ArrayOfFilename' => $ArrayOfFilename,
+                            'ArrayOfImmo' => $ArrayOfImmo,
+                            'ArrayOfDifference' => $ArrayOfDifference,
+                            'model_immobilien' => $model_immobilien,
+                            'ArrayOfArt' => $ArrayOfArt,
+                            'ArrayOfMoney' => $ArrayOfMoney,
+                            'ArrayOfPlz' => $ArrayOfPlz,
+                            'ArrayOfTown' => $ArrayOfTown,
+                            'ArrayOfStreet' => $ArrayOfStreet,
+                            'ArrayOfGroesse' => $ArrayOfGroesse,
+                            'ArrayOfRooms' => $ArrayOfRooms,
+                            'searchModel' => $searchModel,
+                            'dataProvider' => $dataProvider,
+                ]);
+            }
+
 //sofern Suchangaben unvollständig
             if ($dataProvider['operator'][0] == null && $dataProvider['Kosten'][0] != null) {
                 ?><?=
@@ -169,7 +187,7 @@ class ImmobilienController extends Controller {
             $ArrayOfPlz = array();
             $ArrayOfStreet = array();
             $ArrayOfDifference = array();
-//füge neues Array hinzu
+//füge neue Arrays hinzu
             $ArrayOfObjAnh = array();
             $ArrayOfObjImmo = array();
             /* bei 2^3 Suchparameter muss es folglich 2^3-1 Konditionen geben */
