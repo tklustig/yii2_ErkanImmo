@@ -59,11 +59,8 @@ if (!empty($session->getAllFlashes())) {
                         <?php $form = ActiveForm::begin(['id' => 'start-form']); ?>
                         <div><br></div>
                         <?=
-                        $form->field($DynamicModel, 'searching')->textInput(['class' => 'field', 'placeholder' => 'Suchbegriff eingeben'])->label(false);
+                        $form->field($DynamicModel, 'searching')->textInput(['style' => 'color:green;', 'placeholder' => 'Suchbegriff eingeben'])->label(false);
                         ?>
-                        <div class="form-group">
-                            <?= Html::submitButton('Absenden', ['name' => 'start-button']) ?>
-                        </div>
                         <?php ActiveForm::end(); ?>
                     </div>
                 </div>
@@ -95,7 +92,7 @@ $url = Yii::getAlias("@web") . '/img/';
             <div style="text-align: center; margin: 7% 20%;">
                 <h4 style="color: #9e7b4e;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4></div>
             <div style="text-align: left; margin: 13% 24%;">
-                <p style="color:#0B173B;font-family:cursive"> Vom 1-Zimmer-Appartement für Studenten bis hin zu<br>Luxus-Villas für gehobenere Ansprüche:<br>Kanat Immobilien ist der ideale Vermittlungsmarkler.<br><?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns, oder inspizieren Sie unsere <?= Html::a(Yii::t('app', 'Angebote'), ['/immobilien/index']) ?> <p>
+                <p style="color:#0B173B;font-family:cursive"> Vom 1-Zimmer-Appartement für Studenten bis hin zu<br>Luxus-Villas für gehobenere Ansprüche:<br>Kanat Immobilien ist der ideale Vermittlungsmarkler.<br><?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns, oder inspizieren Sie unsere <?= Html::a(Yii::t('app', 'Angebote'), ['/immobilien/preview']) ?> <p>
             </div>
 
 
