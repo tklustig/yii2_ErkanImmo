@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="content_wrapper clearfix">
                 <div class="sections_group">
                     <div class="entry-content" itemprop="mainContentOfPage">
-                        <div class="section mcb-section" style="padding-top:20px; padding-bottom:130px; background-color:#252628;">
+                        <div class="section mcb-section" style="padding-top:20px; padding-bottom:330px; background-color:#252628;">
                             <div class="section_wrapper mcb-section-inner">
                                 <div class="wrap mcb-wrap two-third  valign-top clearfix" style="">
                                     <div class="mcb-wrap-inner">

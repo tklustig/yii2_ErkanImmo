@@ -68,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'balkon_vorhanden',
                 'trueLabel' => 'Ja',
                 'falseLabel' => 'Nein',
-                'label' => '<span class="fa fa-skyatlas"></span>' . '<br>Balkon vorhanden',
+                'label' => '<span class="fa fa-skyatlas"></span>' . '<br>Balkon',
                 'encodeLabel' => false,
             ],
             [
@@ -76,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'fahrstuhl_vorhanden',
                 'trueLabel' => 'Ja',
                 'falseLabel' => 'Nein',
-                'label' => '<span class="fa fa-crop"></span>' . '<br>Fahrstuhl vorhanden',
+                'label' => '<span class="fa fa-crop"></span>' . '<br>Fahrstuhl',
                 'encodeLabel' => false,
             ],
             [
@@ -144,7 +144,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'balkon_vorhanden',
                 'trueLabel' => 'Ja',
                 'falseLabel' => 'Nein',
-                'label' => '<span class="fa fa-skyatlas"></span>' . '<br>Balkon vorhanden',
+                'label' => '<span class="fa fa-skyatlas"></span>' . '<br>Balkon',
                 'encodeLabel' => false,
             ],
             [
@@ -152,7 +152,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'fahrstuhl_vorhanden',
                 'trueLabel' => 'Ja',
                 'falseLabel' => 'Nein',
-                'label' => '<span class="fa fa-crop"></span>' . '<br>Fahrstuhl vorhanden',
+                'label' => '<span class="fa fa-crop"></span>' . '<br>Fahrstuhl',
                 'encodeLabel' => false,
             ],
             [

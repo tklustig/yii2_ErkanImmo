@@ -124,7 +124,7 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                     <div class="col-md-6">
                         <?=
                         $form->field($model, 'bezeichnung', ['addon' => [
-                                'prepend' => ['content' => 'Immobilien-Beschreibung']]])->widget(\dosamigos\ckeditor\CKEditor::className()->widget(TwbsMaxlength::className()), [
+                                'prepend' => ['content' => 'Immobilien-Beschreibung']]])->widget(\dosamigos\ckeditor\CKEditor::className(), [
                             'preset' => 'full', 'clientOptions' => ['height' => 200],
                         ])
                         ?>
@@ -132,7 +132,7 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                     <div class="col-md-6">
                         <?=
                         $form->field($model, 'sonstiges', ['addon' => [
-                                'prepend' => ['content' => 'Sonstiges']]])->widget(\dosamigos\ckeditor\CKEditor::className()->widget(TwbsMaxlength::className()), [
+                                'prepend' => ['content' => 'Sonstiges']]])->widget(\dosamigos\ckeditor\CKEditor::className(), [
                             'preset' => 'full', 'clientOptions' => ['height' => 200],
                         ])
                         ?>
