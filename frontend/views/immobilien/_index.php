@@ -57,42 +57,39 @@ $this->registerJs($search);
                     </script>
                     <?php
                 }
-            }/*
-              if ($i % 2 != 0)
-              echo"</div></div>"; */
-            ?>
-        </div>
-        <hr>
-        <h3>Immobilienofferten <small>ohne Bilder</small></h3>
-        <hr>
-        <?php
-        foreach ($ArrayOfDifference as $attribute) {
-            $town = frontend\models\Immobilien::findOne(['id' => $attribute])->stadt;
-            $street = frontend\models\ImmobilienSearch::findOne(['id' => $attribute])->strasse;
-            $wohnflaeche = frontend\models\ImmobilienSearch::findOne(['id' => $attribute])->wohnflaeche;
-            $raeume = frontend\models\ImmobilienSearch::findOne(['id' => $attribute])->raeume;
-            $kosten = frontend\models\ImmobilienSearch::findOne(['id' => $attribute])->geldbetrag;
-            $betrag = number_format(
-                    $kosten, // zu konvertierende zahl
-                    2, // Anzahl an Nochkommastellen
-                    ",", // Dezimaltrennzeichen
-                    "."    // 1000er-Trennzeichen
-            );
-            if (frontend\models\ImmobilienSearch::findOne(['id' => $attribute])->l_art_id == 1) {
-                $begriff = "Kaltmiete";
-            } else if ((frontend\models\ImmobilienSearch::findOne(['id' => $attribute])->l_art_id == 2)) {
-                $begriff = "Kaufpreis";
-            }
-            ?>
-            <div class="col-md-12">
-                <label>Standort:</label><label><?= $town ?>,</label>
-                <label>Strasse:</label><label><?= $street ?>,</label>
-                <label>Wohnfläche:</label><label><?= $wohnflaeche ?>,</label>
-                <label>Zimmer:</label><label><?= $raeume ?>,</label>
-                <label><?= $begriff ?>:</label><label><?= $betrag ?> €</label> <?= Html::a(Yii::t('app', 'zum Angebot'), ['/immobilien/index', 'id' => $attribute], ['class' => 'btn btn-success']) ?>
+                ?>
             </div>
-        <?php }
-        ?>
+            <hr>
+            <h3>Immobilienofferten <small>ohne Bilder</small></h3>
+            <hr>
+            <?php
+            foreach ($ArrayOfDifference as $attribute) {
+                $town = frontend\models\Immobilien::findOne(['id' => $attribute])->stadt;
+                $street = frontend\models\ImmobilienSearch::findOne(['id' => $attribute])->strasse;
+                $wohnflaeche = frontend\models\ImmobilienSearch::findOne(['id' => $attribute])->wohnflaeche;
+                $raeume = frontend\models\ImmobilienSearch::findOne(['id' => $attribute])->raeume;
+                $kosten = frontend\models\ImmobilienSearch::findOne(['id' => $attribute])->geldbetrag;
+                $betrag = number_format(
+                        $kosten, // zu konvertierende zahl
+                        2, // Anzahl an Nochkommastellen
+                        ",", // Dezimaltrennzeichen
+                        "."    // 1000er-Trennzeichen
+                );
+                if (frontend\models\ImmobilienSearch::findOne(['id' => $attribute])->l_art_id == 1) {
+                    $begriff = "Kaltmiete";
+                } else if ((frontend\models\ImmobilienSearch::findOne(['id' => $attribute])->l_art_id == 2)) {
+                    $begriff = "Kaufpreis";
+                }
+                ?>
+                <div class="col-md-12">
+                    <label>Standort:</label><label><?= $town ?>,</label>
+                    <label>Strasse:</label><label><?= $street ?>,</label>
+                    <label>Wohnfläche:</label><label><?= $wohnflaeche ?>,</label>
+                    <label>Zimmer:</label><label><?= $raeume ?>,</label>
+                    <label><?= $begriff ?>:</label><label><?= $betrag ?> €</label> <?= Html::a(Yii::t('app', 'zum Angebot'), ['/immobilien/index', 'id' => $attribute], ['class' => 'btn btn-success']) ?>
+                </div>
+            <?php }
+            ?>
     </div>
 </div>
 
