@@ -14,7 +14,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\web\Session;
 use frontend\models\ContactForm;
-use yii\base\DynamicModel;
+use kartik\widgets\Alert;
 
 class SiteController extends Controller {
 
@@ -54,16 +54,21 @@ class SiteController extends Controller {
 
     /* Regelt die Logik der Startseite */
 
-    public function actionIndex() {
-        $this->layout = "main_kanat";
-        $DynamicModel = new DynamicModel(['searching']);
-        $DynamicModel->addRule(['searching'], 'string');
-        if ($DynamicModel->load(Yii::$app->request->post())) {
-            print_r("Script wurde in der Klasse " . get_class() . " angehalten");
-            die();
+    public function actionIndex($id = NULL) {
+        if ($id == 1) {
+?><?=
+
+            Alert::widget([
+                'type' => Alert::TYPE_DANGER,
+                'title' => 'Konfigurationsfehler',
+                'icon' => 'glyphicon glyphicon-remove-sign',
+                'body' => 'Unter NGINX lässt sich das Backend auf meinem Pi nicht ansteuern. Sobald die Applikation auf Strato gehostet wird, können Sie sich in das Backend einloggen, vorausgesetzt, Sie haben das Passwort...',
+                'showSeparator' => true,
+                'delay' => false
+            ]);
         }
+        $this->layout = "main_kanat";
         return $this->render('index', [
-                    'DynamicModel' => $DynamicModel,
         ]);
     }
 
@@ -82,12 +87,27 @@ class SiteController extends Controller {
         $this->layout = "main_kontakt";
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-                $session->addFlash("warning", "Ihre Nachricht wurde weitergeleitet. Wir werden Sie schnellstmöglichst unter Ihrer Mailadresse $model->email kontaktieren!<br> Mit freundlichen Grüßen<br> Kanat Immobilien");
-            } else {
-                $session->addFlash("warning", "Ihre Nachricht konnte nicht weitergeleitet werden. Versuchen Sie es erneut!");
-            }
-            $this->redirect(["/site/index"]);
+?><?=
+
+            Alert::widget([
+                'type' => Alert::TYPE_DANGER,
+                'title' => 'Konfigurationsfehler',
+                'icon' => 'glyphicon glyphicon-remove-sign',
+                'body' => 'Auf meinem Pi läuft PHP 5.6! Damit der Mailversand funktioniert, muss allerdings PHP 7.X installiert sein. Sobald die Applikation auf Strato gehostet wird, dürfte der Mailversand keine Probleme mehr bereiten...',
+                'showSeparator' => true,
+                'delay' => false
+            ]);
+            return $this->render('contact', [
+                        'model' => $model,
+            ]);
+            /*
+              if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
+              $session->addFlash("warning", "Ihre Nachricht wurde weitergeleitet. Wir werden Sie schnellstmöglichst unter Ihrer Mailadresse $model->email kontaktieren!<br> Mit freundlichen Grüßen<br> Kanat Immobilien");
+              } else {
+              $session->addFlash("warning", "Ihre Nachricht konnte nicht weitergeleitet werden. Versuchen Sie es erneut!");
+              }
+              $this->redirect(["/site/index"]);
+             */
         } else {
             return $this->render('contact', [
                         'model' => $model,

@@ -6,9 +6,6 @@ use yii\web\Session;
 use kartik\widgets\Alert;
 ?>
 <?php
-$link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
-?>
-<?php
 //Hier werden alle Flashnachrichten ausgegeben
 $session = new Session();
 if (!empty($session->getAllFlashes())) {
@@ -42,7 +39,7 @@ if (!empty($session->getAllFlashes())) {
                                         <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/immobilien/preview']) ?>
                                     </li>
                                     <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                        <?= Html::a('Angebote erstellen(Backend)', $link, ['class' => 'fa fa-gear', 'title' => 'Switch to Backend']) ?>
+                                        <?= Html::a('Angebote erstellen(Backend)', ['/site/index', 'id' => 1], ['class' => 'fa fa-gear', 'title' => 'Switch to Backend']) ?>
                                     </li>
                                     <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
                                         <?= Html::a(Yii::t('app', 'Impressum'), ['/site/about']) ?>
@@ -56,12 +53,6 @@ if (!empty($session->getAllFlashes())) {
                                 <i class="icon-menu-fine"></i>
                             </a>
                         </div>
-                        <?php $form = ActiveForm::begin(['id' => 'start-form']); ?>
-                        <div><br></div>
-                        <?=
-                        $form->field($DynamicModel, 'searching')->textInput(['style' => 'color:green;', 'placeholder' => 'Suchbegriff eingeben'])->label(false);
-                        ?>
-                        <?php ActiveForm::end(); ?>
                     </div>
                 </div>
             </div>
@@ -76,8 +67,18 @@ $url = Yii::getAlias("@web") . '/img/';
         <div class="wrap mcb-wrap one  valign-top clearfix" style="">
             <div class="column mcb-column one column_column  column-margin-">
                 <div class="column_attr clearfix"  style="">
-                    <h6 class="themecolor" style="text-transform: uppercase;">Startseite</h6>
-                    <br><br><br>
+                    <h6 class="themecolor" style="text-transform: uppercase;">Menu</h6>
+                    <script>
+                        var myWidth = 0;
+                        if (typeof (window.innerWidth) == 'number') {
+                            myWidth = window.innerWidth;
+                        }
+                        if (myWidth >= 1680) {
+                            document.write("<br><br><br>");
+                        } else if (myWidth >= 1920) {
+                            document.write("<br><br><br><br><br>");
+                        }
+                    </script>
                 </div>
             </div>
         </div>
