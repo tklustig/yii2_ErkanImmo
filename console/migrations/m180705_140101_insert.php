@@ -34,7 +34,7 @@ class m180705_140101_insert extends \yii\db\Migration {
                     ->execute();
             $connection->createCommand()
                     ->batchInsert('user', ['id', 'username', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'telefon', 'status', 'created_at', 'updated_at'], [
-                        [1, 8, 'admin', '5ZYKHPy4hADG3yzHrEelfO0JLG9j5F5n', '$2y$13$u5SKbpjJ3v4ZP6JQ3OWfluprxY3WmFbSvSWZk5K25RKMqT13IxE6e', NULL, 'admin@gmx.net', '0176/2237680', 10, 1528207437, 1528207437],
+                        [1, 'admin', '5ZYKHPy4hADG3yzHrEelfO0JLG9j5F5n', '$2y$13$u5SKbpjJ3v4ZP6JQ3OWfluprxY3WmFbSvSWZk5K25RKMqT13IxE6e', NULL, 'admin@gmx.net', '0176/2237680', 10, 1528207437, 1528207437],
                     ])
                     ->execute();
             $connection->createCommand()
