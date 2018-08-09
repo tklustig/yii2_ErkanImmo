@@ -55,18 +55,6 @@ class SiteController extends Controller {
     /* Regelt die Logik der Startseite */
 
     public function actionIndex($id = NULL) {
-        if ($id == 1) {
-?><?=
-
-            Alert::widget([
-                'type' => Alert::TYPE_DANGER,
-                'title' => 'Konfigurationsfehler',
-                'icon' => 'glyphicon glyphicon-remove-sign',
-                'body' => 'Unter NGINX lässt sich das Backend auf meinem Pi nicht ansteuern. Sobald die Applikation auf Strato gehostet wird, können Sie sich in das Backend einloggen, vorausgesetzt, Sie haben das Passwort...',
-                'showSeparator' => true,
-                'delay' => false
-            ]);
-        }
         $this->layout = "main_kanat";
         return $this->render('index', [
         ]);

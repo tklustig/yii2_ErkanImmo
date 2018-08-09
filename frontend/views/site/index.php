@@ -5,6 +5,7 @@ use yii\web\Session;
 use kartik\widgets\Alert;
 ?>
 <?php
+$link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
 //Hier werden alle Flashnachrichten ausgegeben
 $session = new Session();
 if (!empty($session->getAllFlashes())) {
@@ -38,7 +39,7 @@ if (!empty($session->getAllFlashes())) {
                                         <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/immobilien/preview']) ?>
                                     </li>
                                     <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
-                                        <?= Html::a('Angebote erstellen(Backend)', ['/site/index', 'id' => 1], ['class' => 'fa fa-gear', 'title' => 'Switch to Backend']) ?>
+                                        <?= Html::a('Angebote erstellen(Backend)', $link, ['class' => 'fa fa-gear', 'title' => 'Switch to Backend']) ?>
                                     </li>
                                     <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
                                         <?= Html::a(Yii::t('app', 'Impressum'), ['/site/about']) ?>
