@@ -30,6 +30,7 @@ class ImmobilienController extends Controller {
     }
 
     public function actionPreview($searchPreview = NULL) {
+        //ToDo:$count liefert mitunter einen inkorrekten Wert. Code überprüfen und korrigieren!
         $bmp = '/bmp/';
         $tif = '/tif/';
         $png = '/png/';
