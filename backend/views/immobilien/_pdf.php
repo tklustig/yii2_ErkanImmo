@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'raeume',
         'geldbetrag',
         'l_plz_id',
-        [
+        /*[
                 'attribute' => 'lStadt.id',
                 'label' => Yii::t('app', 'L Stadt')
             ],
@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
                 'attribute' => 'lArt.id',
                 'label' => Yii::t('app', 'L Art')
-            ],
+            ],*/
         'angelegt_am',
         'aktualisiert_am',
         [
@@ -61,6 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
     
     <div class="row">
 <?php
+/*
 if($providerBesichtigungstermin->totalCount){
     $gridColumnBesichtigungstermin = [
         ['class' => 'yii\grid\SerialColumn'],
@@ -149,6 +150,7 @@ if($providerKundeimmobillie->totalCount){
         'columns' => $gridColumnKundeimmobillie
     ]);
 }
+ * */
 ?>
     </div>
 </div>
