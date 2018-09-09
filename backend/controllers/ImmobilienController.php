@@ -197,7 +197,7 @@ class ImmobilienController extends Controller {
 
     public function actionUpdate($id) {
         $this->layout = "main_immo";
-        $model_Dateianhang = new \frontend\models\Dateianhang();
+        $model_Dateianhang = new Dateianhang();
         $model = $this->findModel($id);
         $form_id = $model->l_art_id;
         if ($model->loadAll(Yii::$app->request->post())) {
@@ -304,7 +304,7 @@ class ImmobilienController extends Controller {
         return Yii::$app->response->sendFile($completePath, $filename);
     }
 
-    public function actionPdf($id, $l_plz_id, $l_stadt_id, $user_id, $l_art_id) {
+    public function actionPdf($id) {
         $model = $this->findModel($id);
         $providerBesichtigungstermin = new \yii\data\ArrayDataProvider([
             'allModels' => $model->besichtigungstermins,
@@ -318,9 +318,6 @@ class ImmobilienController extends Controller {
 
         $content = $this->renderAjax('_pdf', [
             'model' => $model,
-            'providerBesichtigungstermin' => $providerBesichtigungstermin,
-            'providerEDateianhang' => $providerEDateianhang,
-            'providerKundeimmobillie' => $providerKundeimmobillie,
         ]);
 
         $pdf = new \kartik\mpdf\Pdf([
