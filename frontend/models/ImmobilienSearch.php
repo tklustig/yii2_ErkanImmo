@@ -26,8 +26,8 @@ class ImmobilienSearch extends Immobilien {
         return Model::scenarios();
     }
 
-    public function search($params, $id = NULL, $art = NULL, $searchPreview = NULL) {
-        if ($searchPreview == 1) {
+    public function search($params, $id = NULL, $art = NULL, $SearchPreview = NULL) {
+        if ($SearchPreview == 1) {
             $CompareMoney = $params['ImmobilienSearch']['choice_date'];
             $money = $params['ImmobilienSearch']['geldbetrag'];
             $ArrayOfArguments = array();
@@ -57,25 +57,25 @@ class ImmobilienSearch extends Immobilien {
         if ($art == 1) {
             $query = Immobilien::find()->where(['l_art_id' => 1, 'id' => $id]);
 
-            $dataProvider = new ActiveDataProvider([
+            $DataProvider = new ActiveDataProvider([
                 'query' => $query,
             ]);
 
             $this->load($params);
             $query->andFilterWhere(['=', 'fahrstuhl_vorhanden', $this->fahrstuhl_vorhanden]);
             $query->andFilterWhere(['=', 'balkon_vorhanden', $this->balkon_vorhanden]);
-            return $dataProvider;
+            return $DataProvider;
         } else if ($art == 2) {
             $query = Immobilien::find()->where(['l_art_id' => 2, 'id' => $id]);
 
-            $dataProvider = new ActiveDataProvider([
+            $DataProvider = new ActiveDataProvider([
                 'query' => $query,
             ]);
 
             $this->load($params);
             $query->andFilterWhere(['=', 'fahrstuhl_vorhanden', $this->fahrstuhl_vorhanden]);
             $query->andFilterWhere(['=', 'balkon_vorhanden', $this->balkon_vorhanden]);
-            return $dataProvider;
+            return $DataProvider;
         }
     }
 
