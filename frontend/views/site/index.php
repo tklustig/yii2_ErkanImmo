@@ -62,7 +62,7 @@ if (!empty($session->getAllFlashes())) {
 <?php
 $url = Yii::getAlias("@web") . '/img/';
 ?>
-<div style="background:url(<?= $url ?>accept_all_you_see-wallpaper-1680x1050.jpg); background-repeat:inherit; background-position:center top;-webkit-background-size:">
+<div style="background:url(<?= $url ?>accept_all_you_see-wallpaper-1680x1050_copy.jpg); background-repeat:inherit; background-position:center top;-webkit-background-size:">
     <div class="section_wrapper mcb-section-inner">
         <div class="wrap mcb-wrap one  valign-top clearfix" style="">
             <div class="column mcb-column one column_column  column-margin-">
@@ -92,7 +92,7 @@ $url = Yii::getAlias("@web") . '/img/';
             </div>
             <div style="text-align: center; margin: 7% 20%;">
                 <h4 style="color: #9e7b4e;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4></div>
-            <div style="text-align: left; margin: 13% 24%;">
+            <div style="text-align: left; margin: 13% 29%;">
                 <p style="color:#0B173B;font-family:cursive"> Vom 1-Zimmer-Appartement für Studenten bis hin zu<br>Luxus-Villas für gehobenere Ansprüche:<br>Kanat Immobilien ist der ideale Vermittlungsmarkler.<br><?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns, oder inspizieren Sie unsere <?= Html::a(Yii::t('app', 'Angebote'), ['/immobilien/preview']) ?> <p>
             </div>
 
