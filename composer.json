@@ -10,12 +10,12 @@
         "forum": "http://www.yiiframework.com/forum/",
         "wiki": "http://www.yiiframework.com/wiki/",
         "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/yii2"
+        "source": "https://github.com/tklustig/Erkan_Immobilien"
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
-        "yiisoft/yii2": "~2.0.6",
+        "yiisoft/yii2": "~2.0.12",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "kartik-v/yii2-krajee-base": "*",
@@ -35,9 +35,11 @@
         "kartik-v/yii2-mpdf": "*",
         "kartik-v/yii2-widget-growl": "*",
         "kartik-v/yii2-slider": "*",
-        "raoul2000/yii2-twbsmaxlength-widget": "*"
+        "raoul2000/yii2-twbsmaxlength-widget": "*",
+        "drmabuse/yii2-slick-carousel": "*"
     },
     "require-dev": {
+        "mootensai/yii2-enhanced-gii": "dev-master",
         "yiisoft/yii2-debug": "~2.0.0",
         "yiisoft/yii2-gii": "~2.0.0",
         "yiisoft/yii2-faker": "~2.0.0",

@@ -1,53 +1,128 @@
 <?php
 
-/* @var $this yii\web\View */
-
-$this->title = 'My Yii Application';
+use yii\helpers\Html;
+use yii\web\Session;
+use kartik\widgets\Alert;
 ?>
-<div class="site-index">
-
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
+<?php
+$link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
+//Hier werden alle Flashnachrichten ausgegeben
+$session = new Session();
+if (!empty($session->getAllFlashes())) {
+    foreach ($session->getAllFlashes() as $flash) {
+        foreach ($flash as $ausgabe) {
+            ?><?=
+            Alert::widget([
+                'type' => Alert::TYPE_SUCCESS,
+                'title' => 'Information',
+                'icon' => 'glyphicon glyphicon-exclamation-sign',
+                'body' => $ausgabe,
+                'showSeparator' => true,
+                'delay' => false
+            ]);
+        }
+    }
+}
+?>
+<div id="Header_wrapper" >
+    <header id="Header">
+        <div id="Top_bar" class="loading">
+            <div class="container">
+                <div class="column one">
+                    <div class="top_bar_left clearfix">
+                        <div class="menu_wrapper">
+                            <nav id="menu">
+                                <ul id="menu-main-menu" class="menu menu-main">
+                                    <li id="menu-item-1" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                    </li>
+                                    <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                        <?= Html::a(Yii::t('app', 'Angebote einsehen'), ['/immobilien/preview']) ?>
+                                    </li>
+                                    <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                        <?= Html::a('Angebote erstellen(Backend)', $link, ['class' => 'fa fa-gear', 'title' => 'Switch to Backend']) ?>
+                                    </li>
+                                    <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                        <?= Html::a(Yii::t('app', 'Impressum'), ['/site/about']) ?>
+                                    </li>
+                                    <li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page">
+                                        <?= Html::a(Yii::t('app', 'Kontakt'), ['/site/contact']) ?>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <a class="responsive-menu-toggle " href="#">
+                                <i class="icon-menu-fine"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </header>
+</div>
+<?php
+$url = Yii::getAlias("@web") . '/img/';
+?>
+<div style="background:url(<?= $url ?>accept_all_you_see-wallpaper-1680x1050_copy.jpg); background-repeat:inherit; background-position:center top;-webkit-background-size:">
+    <div class="section_wrapper mcb-section-inner">
+        <div class="wrap mcb-wrap one  valign-top clearfix" style="">
+            <div class="column mcb-column one column_column  column-margin-">
+                <div class="column_attr clearfix"  style="">
+                    <h6 class="themecolor" style="text-transform: uppercase;">Menu</h6>
+                    <script>
+                        var myWidth = 0;
+                        if (typeof (window.innerWidth) == 'number') {
+                            myWidth = window.innerWidth;
+                        }
+                        if (myWidth >= 1680) {
+                            document.write("<br><br><br>");
+                        } else if (myWidth >= 1920) {
+                            document.write("<br><br><br><br><br>");
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div class="column one">
+            <div style="position: relative; margin-top: -100px; z-index: 1;">
+                <div class="image_frame image_item no_link scale-with-grid aligncenter no_border" >
+                    <div class="image_wrapper">
+                        <?= Html::img('@web/img/erkan_logo.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid', 'style' => 'width:350px;height:150px;']); ?>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin: 7% 20%;">
+                <h4 style="color: #9e7b4e;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4></div>
+            <div style="text-align: left; margin: 13% 29%;">
+                <p style="color:#0B173B;font-family:cursive"> Vom 1-Zimmer-Appartement für Studenten bis hin zu<br>Luxus-Villas für gehobenere Ansprüche:<br>Kanat Immobilien ist der ideale Vermittlungsmarkler.<br><?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns, oder inspizieren Sie unsere <?= Html::a(Yii::t('app', 'Angebote'), ['/immobilien/preview']) ?> <p>
+            </div>
 
+
+        </div>
+        <div style="text-align: center; margin: 7% 26%;" class="column">
+            <div class="copyright"> &copy; 2018 Kanat Immobilien. All Rights Reserved.
+            </div>
+        </div>
     </div>
 </div>
+
+
+
+
+
+
+<div id="Side_slide" class="right dark" data-width="250">
+    <div class="close-wrapper"><a href="#" class="close">
+            <i class="icon-cancel-fine">
+            </i>
+        </a>
+    </div>
+    <div class="extras">
+        <div class="extras-wrapper"></div>
+    </div>
+    <div class="lang-wrapper"></div>
+    <div class="menu_wrapper"></div>
+    <ul class="social"></ul>
+</div>
+<div id="body_overlay"></div>
+
+

@@ -1,9 +1,7 @@
 <?php
+
 $params = array_merge(
-    require __DIR__ . '/../../common/config/params.php',
-    require __DIR__ . '/../../common/config/params-local.php',
-    require __DIR__ . '/params.php',
-    require __DIR__ . '/params-local.php'
+        require __DIR__ . '/../../common/config/params.php', require __DIR__ . '/../../common/config/params-local.php', require __DIR__ . '/params.php', require __DIR__ . '/params-local.php'
 );
 
 return [
@@ -37,14 +35,39 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
+            'showScriptName' => true,
+            'enableStrictParsing' => false,
+            'class' => 'yii\web\UrlManager',
             'rules' => [
+                'home' => 'site/index',
+                'login' => 'site/login',
+                'reset' => 'site/request-password-reset',
+                'logout' => 'site/logout',
+                'signup' => 'site/signup',
+                'delete_user' => 'site/deluser',
+                'plz_get' => 'plz/get-city-province',
+                'auswahl' => 'immobilien/auswahl',
+                'immobilien' => 'immobilien/index',
+                'immobilien_view' => 'immobilien/view',
+                'immobilien_erzeugen' => 'immobilien/create',
+                'immobilien_aktualisieren' => 'immobilien/update',
+                'immobilien_löschen' => 'immobilien/deleted',
+                'immobilien_duplizieren' => 'immobilien/save-as-new',
+                'immobilien_vorauswahl' => 'immobilien/decide',
+                'immobilien_showlink' => 'immobilien/show',
+                'pdf' => 'gridview/export/download',
+                '<controller:\w+>/<id:\d+>' => '<controller>/view',
+                '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<action:(contact|captcha)>' => 'site/<action>',
             ],
         ],
-        */
+        'urlManagerFrontend' => [
+            'class' => 'yii\web\UrlManager',
+            'baseUrl' => '/yii2_ErkanImmo/frontend/web/index.php',
+        ],
     ],
     'params' => $params,
 ];

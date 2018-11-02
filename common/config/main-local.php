@@ -3,11 +3,8 @@
 return [
     'aliases' =>
     [
-        '@mails' => '@app/mails',
         '@uploading' => '@app/uploadedfiles',
-        '@documents' => '@app/documents/',
         '@pictures' => '@app/web/img',
-        '@emailanhang' => '@app/emailanhang/',
     ],
     'modules' => [
         'datecontrol' => [
@@ -35,34 +32,20 @@ return [
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'viewPath' => '@common/mail',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
-            'useFileTransport' => true,
-        ],
-        'urlManager' => [
-            'class' => 'yii\web\UrlManager',
-            'enablePrettyUrl' => true,
-            'showScriptName' => true,
-            'enableStrictParsing' => true,
-            'rules' => [
-                '/' => 'site/index',
-                'login' => 'site/login',
-                'reset' => 'site/request-password-reset',
-                'about' => 'site/about',
-                'contact' => 'site/contact',
-                'logout' => 'site/logout',
-                'signup' => 'site/signup',
-                'pdf' => 'gridview/export/download',
-                '<controller:\w+>/<id:\d+>' => '<controller>/view',
-                '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',
-                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
-                '<action:(contact|captcha)>' => 'site/<action>',
+            'useFileTransport' => false, //set this property to false to send mails to real email addresses
+            //comment the following array to send mail using php's mail function
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.strato.de',
+                'username' => 't.kipp@eisvogel-online-software.de',
+                'password' => 'Hannover96',
+                'port' => '587',
+                'encryption' => 'tls',
             ],
         ],
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=yii2_widget',
+            'dsn' => 'mysql:host=localhost;dbname=yii2_kanatimmo',
             'username' => 'root',
             'password' => '',
             'charset' => 'utf8',
