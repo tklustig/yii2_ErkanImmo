@@ -46,7 +46,7 @@ class ImmobilienController extends Controller {
         $ArrayOfImmo = array();
         $ArrayOfE = array();
         $ArrayOfImmoAll = array();
-        $$ModelDateianhang = Dateianhang::find()->all();
+        $ModelDateianhang = Dateianhang::find()->all();
         $ModelE = EDateianhang::find()->all();
         $ModelImmobilien = Immobilien::find()->all();
         // Eruiere zunächst alle Immobilien in der Datenbank
@@ -60,7 +60,7 @@ class ImmobilienController extends Controller {
         $ArrayOfDifference = array_diff($ArrayOfImmoAll, $ArrayOfE);
 
         //verfrachte den Dateinamen des jeweiligen Bildes...
-        foreach ($$ModelDateianhang as $filename) {
+        foreach ($ModelDateianhang as $filename) {
             if (preg_match($bmp, $filename->dateiname) || preg_match($tif, $filename->dateiname) || preg_match($png, $filename->dateiname) || preg_match($psd, $filename->dateiname) || preg_match($pcx, $filename->dateiname) || preg_match($gif, $filename->dateiname) || preg_match($jpeg, $filename->dateiname) || preg_match($jpg, $filename->dateiname) || preg_match($ico, $filename->dateiname)) {
                 array_push($ArrayOfFilename, $filename->dateiname);
                 array_push($ArrayOfId, $filename->e_dateianhang_id);
