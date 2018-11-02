@@ -48,11 +48,15 @@ $this->registerJs($search);
                     ?>
                     <script>
                         var myWidth = 0;
+                        var abstand = 7;
                         if (typeof (window.innerWidth) == 'number') {
                             myWidth = window.innerWidth;
                         }
                         if (myWidth >= 1000) {
-                            document.write("<br><br><br><br><br><br><br>");
+                            //je größer abstand, desto mehr Abstände zwischen den einzelnen Bildern. Inelegant, aber effektiv.
+                            for (var i = 0; i < abstand; i++) {
+                                document.write("<br>");
+                            }
                         }
                     </script>
                     <?php
