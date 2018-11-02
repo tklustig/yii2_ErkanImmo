@@ -146,7 +146,7 @@ class ImmobilienController extends Controller {
                 $IsValid = $ModelDateianhang->validate() && $valid;
                 if ($IsValid) {
                     $model->save();
-                    /* Prüfen, ob in e_dateianhang bereits ein Eintrag ist */
+                    /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
                     $EDateianhang = EDateianhang::find()->all();
                     foreach ($EDateianhang as $treffer) {
                         array_push($FkInEDatei, $treffer->immobilien_id);

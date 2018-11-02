@@ -49,31 +49,30 @@ class ImmobilienController extends Controller {
         $$ModelDateianhang = Dateianhang::find()->all();
         $ModelE = EDateianhang::find()->all();
         $ModelImmobilien = Immobilien::find()->all();
-// Eruiere die jenigen Immobilien-Ids, die kein Bild haben
+        // Eruiere zunächst alle Immobilien in der Datenbank
         foreach ($ModelE as $id) {
             array_push($ArrayOfE, $id->immobilien_id);
         }
         foreach ($ModelImmobilien as $id) {
             array_push($ArrayOfImmoAll, $id->id);
         }
-//verfrachte diese Id in ein Array
+        // Eruiere die jenigen Immobilien-Ids, die kein Bild haben
         $ArrayOfDifference = array_diff($ArrayOfImmoAll, $ArrayOfE);
 
-//Eruiere alle Immobilien-Ids, die ein Bild haben
-//verfrachte den Dateinamen des jeweiligen Bildes...
+        //verfrachte den Dateinamen des jeweiligen Bildes...
         foreach ($$ModelDateianhang as $filename) {
             if (preg_match($bmp, $filename->dateiname) || preg_match($tif, $filename->dateiname) || preg_match($png, $filename->dateiname) || preg_match($psd, $filename->dateiname) || preg_match($pcx, $filename->dateiname) || preg_match($gif, $filename->dateiname) || preg_match($jpeg, $filename->dateiname) || preg_match($jpg, $filename->dateiname) || preg_match($ico, $filename->dateiname)) {
                 array_push($ArrayOfFilename, $filename->dateiname);
                 array_push($ArrayOfId, $filename->e_dateianhang_id);
             }
         }
-//...und dessen ID in Arrays
+        //...und dessen ID in Arrays
         for ($i = 0; $i < count($ArrayOfId); $i++) {
             array_push($ArrayOfImmo, EDateianhang::findOne(['id' => $ArrayOfId[$i]])->immobilien_id);
         }
-//zähle alle gefundenen Datensätze
+        //zähle alle gefundenen Datensätze
         $count = Immobilien::find()->count();
-//eruiere alle Attribute, die angezeigt werden und verfrachte sie in ein Array
+        //intialisiere Arrays
         $ArrayOfArt = array();
         $ArrayOfMoney = array();
         $ArrayOfTown = array();
@@ -81,6 +80,7 @@ class ImmobilienController extends Controller {
         $ArrayOfRooms = array();
         $ArrayOfPlz = array();
         $ArrayOfStreet = array();
+        //eruiere alle Attribute, die angezeigt werden und verfrachte sie in obige Arrays
         foreach ($ModelImmobilien as $immoAttribute) {
             if ($immoAttribute->l_art_id == 2 && !in_array($immoAttribute->id, $ArrayOfDifference)) {
                 $begriff = "Kaufpreis";
@@ -114,7 +114,7 @@ class ImmobilienController extends Controller {
                 array_push($ArrayOfRooms, $immoAttribute->raeume);
             }
         }
-//sofern ein Suchrequest abgefeuert wurde,übergebe an das Searchmodel den Parameter...
+        //sofern ein Suchrequest abgefeuert wurde,übergebe an das Searchmodel den Parameter...
         if ($SearchPreview == 1) {
             /* Hier noch prüfen, ob dataProvider nur Null-Werte enthält. Wenn ja, dann 'zurück rendern' */
             $DataProvider = $SearchModel->search(Yii::$app->request->queryParams, NULL, NULL, $SearchPreview);
@@ -138,7 +138,7 @@ class ImmobilienController extends Controller {
                 ]);
             }
 
-//sofern Suchangaben unvollständig
+            //sofern Suchangaben unvollständig
             if ($DataProvider['operator'][0] == null && $DataProvider['Kosten'][0] != null) {
                 ?><?=
                 Growl::widget([
@@ -174,7 +174,7 @@ class ImmobilienController extends Controller {
                             'dataProvider' => $DataProvider,
                 ]);
             }
-//lösche alle Arrays, sofern ein Suchrequest abgefeuert wurde
+            //lösche alle Arrays, sofern ein Suchrequest abgefeuert wurde
             $ArrayOfFilename = array();
             $ArrayOfId = array();
             $ArrayOfImmo = array();
@@ -188,36 +188,36 @@ class ImmobilienController extends Controller {
             $ArrayOfPlz = array();
             $ArrayOfStreet = array();
             $ArrayOfDifference = array();
-//füge neue Arrays hinzu
+            //füge neue Arrays hinzu
             $ArrayOfObjAnh = array();
             $ArrayOfObjImmo = array();
             /* bei 2^3 Suchparameter muss es folglich 2^3-1 Konditionen geben */
-//1.Kondition:Sofern Suchrequestparameter enthält plz
+            //1.Kondition:Sofern Suchrequestparameter enthält plz
             if ($DataProvider['plz'][0] != null) {
                 $model_I = Immobilien::find()->where(['l_plz_id' => $DataProvider['plz'][0]])->all();
             }
-//2.Kondition:Sofern Suchrequestparameter enthält Kohle
+            //2.Kondition:Sofern Suchrequestparameter enthält Kohle
             if ($DataProvider['Kosten'][0] != null) {
                 $operator = $DataProvider['operator'][0];
                 $model_I = Immobilien::find()->where(["$operator", 'geldbetrag', $DataProvider['Kosten'][0]])->all();
             }
-//3.Kondition:Sofern Suchrequestparameter enthält Räume
+            //3.Kondition:Sofern Suchrequestparameter enthält Räume
             if ($DataProvider['raeume'][0] != null) {
                 $model_I = Immobilien::find()->where([">=", 'raeume', $DataProvider['raeume'][0]])->all();
             }
-//4.Kondition:Sofern Suchrequestparameter enthält plz und Kohle
+            //4.Kondition:Sofern Suchrequestparameter enthält plz und Kohle
             if ($DataProvider['plz'][0] != null && $DataProvider['Kosten'][0] != null) {
                 $model_I = Immobilien::find()->where(['l_plz_id' => $DataProvider['plz'][0]])->andWhere(["$operator", 'geldbetrag', $DataProvider['Kosten'][0]])->all();
             }
-//5.Kondition:Sofern Suchrequestparameter enthält plz und Räume
+            //5.Kondition:Sofern Suchrequestparameter enthält plz und Räume
             if ($DataProvider['plz'][0] != null && $DataProvider['raeume'][0] != null) {
                 $model_I = Immobilien::find()->where(['l_plz_id' => $DataProvider['plz'][0]])->andWhere([">=", 'raeume', $DataProvider['raeume'][0]])->all();
             }
-//6.Kondition:Sofern Suchrequestparameter enthält Kohle und Räume
+            //6.Kondition:Sofern Suchrequestparameter enthält Kohle und Räume
             if ($DataProvider['Kosten'][0] != null && $DataProvider['raeume'][0] != null) {
                 $model_I = Immobilien::find()->where(["$operator", 'geldbetrag', $DataProvider['Kosten'][0]])->andWhere([">=", 'raeume', $DataProvider['raeume'][0]])->all();
             }
-//7.Kondition:Sofern Suchrequestparameter enthält Kohle und Räume und plz
+            //7.Kondition:Sofern Suchrequestparameter enthält Kohle und Räume und plz
             if ($DataProvider['Kosten'][0] != null && $DataProvider['raeume'][0] != null && $DataProvider['plz'][0] != null) {
                 $model_I = Immobilien::find()->where(['l_plz_id' => $DataProvider['plz'][0]])->andWhere(["$operator", 'geldbetrag', $DataProvider['Kosten'][0]])->andWhere([">=", 'raeume', $DataProvider['raeume'][0]])->all();
             }
@@ -302,7 +302,7 @@ class ImmobilienController extends Controller {
                         'searchModel' => $SearchModel,
                         'dataProvider' => $DataProvider,
             ]);
-//andernfalls übergebe keine Parameter
+            //andernfalls übergebe keine Parameter
         } else {
             $DataProvider = $SearchModel->search(NULL, NULL, NULL, NULL);
             return $this->render('_index', [
