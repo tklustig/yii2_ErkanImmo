@@ -19,6 +19,8 @@ use common\classes\error_handling;
 
 class SiteController extends Controller {
 
+    const RenderBackInCaseOfError = '/site/index';
+
     public function behaviors() {
         return [
             'access' => [
@@ -62,7 +64,7 @@ class SiteController extends Controller {
 
     public function actionIndex() {
         if (Yii::$app->user->isGuest) {
-            $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+            $MenuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
 ?><?=
 
             Growl::widget([
@@ -101,8 +103,8 @@ class SiteController extends Controller {
 
     public function actionSignup() {
         $this->layout = "reset_main";
-        $modelUser = User::find()->all();
-        foreach ($modelUser as $user) {
+        $ModelUser = User::find()->all();
+        foreach ($ModelUser as $user) {
             $telefon = $user->telefon;
         }
         $session = new Session();
@@ -173,8 +175,8 @@ class SiteController extends Controller {
             $session = new Session();
             $connection = \Yii::$app->db;
             $record = $connection->createCommand('SELECT COUNT(id) FROM user');
-            $user_count = $record->queryScalar();
-            if ($user_count < 2) {
+            $UserCount = $record->queryScalar();
+            if ($UserCount < 2) {
                 $session->addFlash("warning", "Sie würden sich ausperren, da nur ein User im System registriert ist. Legen Sie einen neuen Benuzer an, bevor Sie dieses Feature aufrufen!");
                 return $this->redirect(['/site/index']);
             }
@@ -192,8 +194,7 @@ class SiteController extends Controller {
                 ]);
             }
         } catch (\Exception $error) {
-            $go_back = "/site/index";
-            error_handling::error_without_id($error, $go_back);
+            error_handling::error_without_id($error, SiteController::RenderBackInCaseOfError);
         }
     }
 

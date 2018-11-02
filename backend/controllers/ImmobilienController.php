@@ -24,6 +24,8 @@ use frontend\models\Besichtigungstermin;
 
 class ImmobilienController extends Controller {
 
+    const RenderBackInCaseOfError = '/immobilien/index';
+
     public function behaviors() {
         return [
             'verbs' => [
@@ -36,42 +38,42 @@ class ImmobilienController extends Controller {
     }
 
     public function actionIndex() {
-        $searchModel = new ImmobilienSearch();
-        $dataProvider_verkauf = $searchModel->search(Yii::$app->request->queryParams, 1);
-        $dataProvider_vermieten = $searchModel->search(Yii::$app->request->queryParams, 2);
+        $SearchModel = new ImmobilienSearch();
+        $DataProviderVerkauf = $SearchModel->search(Yii::$app->request->queryParams, 1);
+        $DataProviderVermieten = $SearchModel->search(Yii::$app->request->queryParams, 2);
         return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'dataProvider_verkauf' => $dataProvider_verkauf,
-                    'dataProvider_vermieten' => $dataProvider_vermieten,
+                    'searchModel' => $SearchModel,
+                    'dataProvider_verkauf' => $DataProviderVerkauf,
+                    'dataProvider_vermieten' => $DataProviderVermieten,
         ]);
     }
 
     public function actionView($id) {
         $this->layout = 'main_immo';
         $model = $this->findModel($id);
-        $providerBesichtigungstermin = new \yii\data\ArrayDataProvider([
+        $ProviderBesichtigungstermin = new \yii\data\ArrayDataProvider([
             'allModels' => $model->besichtigungstermins,
         ]);
-        $providerEDateianhang = new \yii\data\ArrayDataProvider([
+        $ProviderEDateianhang = new \yii\data\ArrayDataProvider([
             'allModels' => $model->eDateianhangs,
         ]);
-        $providerKundeimmobillie = new \yii\data\ArrayDataProvider([
+        $ProviderKundeImmobillie = new \yii\data\ArrayDataProvider([
             'allModels' => $model->kundeimmobillies,
         ]);
         return $this->render('view', [
                     'model' => $this->findModel($id),
-                    'providerBesichtigungstermin' => $providerBesichtigungstermin,
-                    'providerEDateianhang' => $providerEDateianhang,
-                    'providerKundeimmobillie' => $providerKundeimmobillie,
+                    'providerBesichtigungstermin' => $ProviderBesichtigungstermin,
+                    'providerEDateianhang' => $ProviderEDateianhang,
+                    'providerKundeimmobillie' => $ProviderKundeImmobillie,
         ]);
     }
 
     public function actionCreate($id) {
+
         $this->layout = "main_immo";
-        $model_Dateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
+        $ModelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $model = new Immobilien();
-        $model_e = new EDateianhang();
-        $session = new Session();
+        $modelE = new EDateianhang();
         $FkInEDatei = array();
         $files = array();
         $extension = array();
@@ -79,164 +81,173 @@ class ImmobilienController extends Controller {
         $connection = \Yii::$app->db;
         $expression = new Expression('NOW()');
         $now = (new \yii\db\Query)->select($expression)->scalar();
-        $Edateianhang = EDateianhang::find()->all();
-        $boolAnhang = false;
-        if (Yii::$app->request->post()) {
-            $data = Yii::$app->request->post();
-            $art = $data['Dateianhang']['l_dateianhang_art_id'];
-            $model_Dateianhang->l_dateianhang_art_id = $art;
-        }
-        if ($model->loadAll(Yii::$app->request->post())) {
-            $model_Dateianhang->attachement = UploadedFile::getInstances($model_Dateianhang, 'attachement');
-            if ($model_Dateianhang->upload($model_Dateianhang)) {
-                $boolAnhang = true;
+        $EDateianhang = EDateianhang::find()->all();
+        $BoolAnhang = false;
+        $session = new Session();
+        try {
+            if (Yii::$app->request->post()) {
+                $data = Yii::$app->request->post();
+                $art = $data['Dateianhang']['l_dateianhang_art_id'];
+                $ModelDateianhang->l_dateianhang_art_id = $art;
             }
-            if ($boolAnhang && empty($model_Dateianhang->l_dateianhang_art_id)) {
-                echo Growl::widget([
-                    'type' => Growl::TYPE_GROWL,
-                    'title' => 'Warning',
-                    'icon' => 'glyphicon glyphicon-ok-sign',
-                    'body' => 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.',
-                    'showSeparator' => true,
-                    'delay' => 1500,
-                    'pluginOptions' => [
-                        'showProgressbar' => true,
-                        'placement' => [
-                            'from' => 'top',
-                            'align' => 'center',
+            if ($model->loadAll(Yii::$app->request->post())) {
+                $ModelDateianhang->attachement = UploadedFile::getInstances($ModelDateianhang, 'attachement');
+                if ($ModelDateianhang->upload($ModelDateianhang)) {
+                    $BoolAnhang = true;
+                }
+                if ($BoolAnhang && empty($ModelDateianhang->l_dateianhang_art_id)) {
+                    echo Growl::widget([
+                        'type' => Growl::TYPE_GROWL,
+                        'title' => 'Warning',
+                        'icon' => 'glyphicon glyphicon-ok-sign',
+                        'body' => 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.',
+                        'showSeparator' => true,
+                        'delay' => 1500,
+                        'pluginOptions' => [
+                            'showProgressbar' => true,
+                            'placement' => [
+                                'from' => 'top',
+                                'align' => 'center',
+                            ]
                         ]
-                    ]
-                ]);
+                    ]);
+                    if ($id == 1) {
+                        return $this->render('_form_vermieten', [
+                                    'model' => $model,
+                                    'model_Dateianhang' => $ModelDateianhang
+                        ]);
+                    } else if ($id == 2) {
+                        return $this->render('_form_verkauf', [
+                                    'model' => $model,
+                                    'model_Dateianhang' => $ModelDateianhang
+                        ]);
+                    }
+                }
+                foreach ($ModelDateianhang->attachement as $uploaded_file) {
+                    $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+                    $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+                    $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
+// lege jede jeweils den Dateinamen und dessen Endung in zwei unterschiedliche Arrays ab
+                    array_push($files, $uploaded_file->name);
+                    array_push($extension, $uploaded_file->extension);
+                }
+                // Differenziere je nach Endung der Elemente im Array die in der Datenbank unten zu speichernden Werte
+                for ($i = 0; $i < count($extension); $i++) {
+                    if ($extension[$i] == "bmp" || $extension[$i] == "tif" || $extension[$i] == "png" || $extension[$i] == "psd" || $extension[$i] == "pcx" || $extension[$i] == "gif" || $extension[$i] == "cdr" || $extension[$i] == "jpeg" || $extension[$i] == "jpg") {
+                        $bez = "Bild für eine Immobilie";
+                        array_push($bezeichnung, $bez);
+                    } else {
+                        $bez = "Dokumente o.ä. für eine Immobilie";
+                        array_push($bezeichnung, $bez);
+                    }
+                }
+                $model->l_art_id = $id;
+                $valid = $model->validate();
+                $IsValid = $ModelDateianhang->validate() && $valid;
+                if ($IsValid) {
+                    $model->save();
+                    /* Prüfen, ob in e_dateianhang bereits ein Eintrag ist */
+                    $EDateianhang = EDateianhang::find()->all();
+                    foreach ($EDateianhang as $treffer) {
+                        array_push($FkInEDatei, $treffer->immobilien_id);
+                    }
+                    /* falls nicht */
+                    if (!in_array($model->id, $FkInEDatei) && $BoolAnhang) {
+                        $modelE->immobilien_id = $model->id;
+                        $modelE->save();
+                        $fk = $modelE->id;
+                        /* falls doch */
+                    } else {
+                        $fk = EDateianhang::findOne(['immobilien_id' => $model->id]);
+                    }
+                    /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
+                      Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+                    for ($i = 0; $i < count($files); $i++) {
+                        $connection->createCommand()
+                                ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
+                                    [$fk, $art, $bezeichnung[$i], $files[$i], $now, $model->user_id],
+                                ])
+                                ->execute();
+                    }
+                    return $this->redirect(['view', 'id' => $model->id]);
+                } else {
+                    $ErrorModel = $model->getErrors();
+                    $ErrorAnhang = $ModelDateianhang->getErrors();
+                    foreach ($ErrorModel as $values) {
+                        foreach ($values as $ausgabe) {
+                            throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
+                        }
+                    }
+                    foreach ($ErrorAnhang as $values) {
+                        foreach ($values as $ausgabe) {
+                            throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
+                        }
+                    }
+                }
+            } else {
                 if ($id == 1) {
                     return $this->render('_form_vermieten', [
                                 'model' => $model,
-                                'model_Dateianhang' => $model_Dateianhang
+                                'model_Dateianhang' => $ModelDateianhang
                     ]);
                 } else if ($id == 2) {
                     return $this->render('_form_verkauf', [
                                 'model' => $model,
-                                'model_Dateianhang' => $model_Dateianhang
+                                'model_Dateianhang' => $ModelDateianhang
                     ]);
                 }
             }
-            foreach ($model_Dateianhang->attachement as $uploaded_file) {
-                $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
-                $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
-                $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
-// lege jede jeweils den Dateinamen und dessen Endung in zwei unterschiedliche Arrays ab
-                array_push($files, $uploaded_file->name);
-                array_push($extension, $uploaded_file->extension);
-            }
-            // Differenziere je nach Endung der Elemente im Array die in der Datenbank unten zu speichernden Werte
-            for ($i = 0; $i < count($extension); $i++) {
-                if ($extension[$i] == "bmp" || $extension[$i] == "tif" || $extension[$i] == "png" || $extension[$i] == "psd" || $extension[$i] == "pcx" || $extension[$i] == "gif" || $extension[$i] == "cdr" || $extension[$i] == "jpeg" || $extension[$i] == "jpg") {
-                    $bez = "Bild für eine Immobilie";
-                    array_push($bezeichnung, $bez);
-                } else {
-                    $bez = "Dokumente o.ä. für eine Immobilie";
-                    array_push($bezeichnung, $bez);
-                }
-            }
-            $model->l_art_id = $id;
-            $valid = $model->validate();
-            $isValid = $model_Dateianhang->validate() && $valid;
-            if ($isValid) {
-                $model->save();
-                /* Prüfen, ob in e_dateianhang bereits ein Eintrag ist */
-                $Edateianhang = EDateianhang::find()->all();
-                foreach ($Edateianhang as $treffer) {
-                    array_push($FkInEDatei, $treffer->immobilien_id);
-                }
-                /* falls nicht */
-                if (!in_array($model->id, $FkInEDatei) && $boolAnhang) {
-                    $model_e->immobilien_id = $model->id;
-                    $model_e->save();
-                    $fk = $model_e->id;
-                    /* falls doch */
-                } else {
-                    $fk = EDateianhang::findOne(['immobilien_id' => $model->id]);
-                }
-                /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
-                  Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
-                for ($i = 0; $i < count($files); $i++) {
-                    $connection->createCommand()
-                            ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
-                                [$fk, $art, $bezeichnung[$i], $files[$i], $now, $model->user_id],
-                            ])
-                            ->execute();
-                }
-                return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                $error_model = $model->getErrors();
-                $error_anhang = $model_Dateianhang->getErrors();
-                foreach ($error_model as $values) {
-                    foreach ($values as $ausgabe) {
-                        throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
-                    }
-                }
-                foreach ($error_anhang as $values) {
-                    foreach ($values as $ausgabe) {
-                        throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
-                    }
-                }
-            }
-        } else {
-            if ($id == 1) {
-                return $this->render('_form_vermieten', [
-                            'model' => $model,
-                            'model_Dateianhang' => $model_Dateianhang
-                ]);
-            } else if ($id == 2) {
-                return $this->render('_form_verkauf', [
-                            'model' => $model,
-                            'model_Dateianhang' => $model_Dateianhang
-                ]);
-            }
+        } catch (\Exception $error) {
+            error_handling::error_without_id($error, ImmobilienController::RenderBackInCaseOfError);
         }
     }
 
     public function actionUpdate($id) {
         $this->layout = "main_immo";
-        $model_Dateianhang = new Dateianhang();
+        $ModelDateianhang = new Dateianhang();
         $model = $this->findModel($id);
-        $form_id = $model->l_art_id;
-        if ($model->loadAll(Yii::$app->request->post())) {
-            $valid = $model->validate();
-            if ($valid) {
-                $model->save();
-                return $this->redirect(['view', 'id' => $model->id]);
+        $FormId = $model->l_art_id;
+        try {
+            if ($model->loadAll(Yii::$app->request->post())) {
+                $valid = $model->validate();
+                if ($valid) {
+                    $model->save();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                } else {
+                    $ErrorModel = $model->getErrors();
+                    $ErrorAnhang = $ModelDateianhang->getErrors();
+                    foreach ($ErrorModel as $values) {
+                        foreach ($values as $ausgabe) {
+                            throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
+                        }
+                    }
+                    foreach ($ErrorAnhang as $values) {
+                        foreach ($values as $ausgabe) {
+                            throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
+                        }
+                    }
+                }
             } else {
-                $error_model = $model->getErrors();
-                $error_anhang = $model_Dateianhang->getErrors();
-                foreach ($error_model as $values) {
-                    foreach ($values as $ausgabe) {
-                        throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
-                    }
-                }
-                foreach ($error_anhang as $values) {
-                    foreach ($values as $ausgabe) {
-                        throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
-                    }
+                if ($FormId == 1) {
+                    return $this->render('_form_vermieten', [
+                                'model' => $model,
+                                'model_Dateianhang' => $ModelDateianhang
+                    ]);
+                } else if ($FormId == 2) {
+                    return $this->render('_form_verkauf', [
+                                'model' => $model,
+                                'model_Dateianhang' => $ModelDateianhang
+                    ]);
                 }
             }
-        } else {
-            if ($form_id == 1) {
-                return $this->render('_form_vermieten', [
-                            'model' => $model,
-                            'model_Dateianhang' => $model_Dateianhang
-                ]);
-            } else if ($form_id == 2) {
-                return $this->render('_form_verkauf', [
-                            'model' => $model,
-                            'model_Dateianhang' => $model_Dateianhang
-                ]);
-            }
+        } catch (\Exception $error) {
+            error_handling::error_without_id($error, ImmobilienController::RenderBackInCaseOfError);
         }
     }
 
     public function actionDeleted($id) {
         $x = 0;
-        $allFiles = array();
+        $AllFiles = array();
         $FilesSeveral = array();
         $session = new Session();
         $ArrayOfPicName = array();
@@ -248,23 +259,23 @@ class ImmobilienController extends Controller {
             }
             if (!empty(EDateianhang::findOne(['immobilien_id' => $id]))) {
                 $fk = EDateianhang::findOne(['immobilien_id' => $id])->id;
-                $idAnhang = Dateianhang::findOne(['e_dateianhang_id' => $fk])->id;
-                $picName = Dateianhang::find()->where(['e_dateianhang_id' => $fk])->all();
+                $IdAnhang = Dateianhang::findOne(['e_dateianhang_id' => $fk])->id;
+                $PicName = Dateianhang::find()->where(['e_dateianhang_id' => $fk])->all();
 //packe die Ids und die Dateinamen in ein Array
-                foreach ($picName as $file) {
+                foreach ($PicName as $file) {
                     array_push($ArrayOfPicName, $file->dateiname);
                     array_push($ArrayOfIdAnhang, $file->id);
                 }
 //eruiere die Pfade
-                $url_frontend = $_SERVER["DOCUMENT_ROOT"] . '/yii2_ErkanImmo/frontend/web/img/';
-                $url_backend = Yii::getAlias('@pictures') . "/";
+                $UrlFrontend = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . 'yii2_ErkanImmo/frontend/web/img/';
+                $UrlBackend = Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR;
 // eruiere alle Dateinamen, die in Dateianhang vermerkt sind
                 $FindAllFiles = Dateianhang::find()->all();
                 foreach ($FindAllFiles as $files) {
-                    array_push($allFiles, $files->dateiname);
+                    array_push($AllFiles, $files->dateiname);
                 }
 //gebe ein Array zurück, in dem die Häufigkeit ihres Auftretens und der jeweilige Dateinamen angegeben sind.
-                $ElementsInArray = array_count_values($allFiles);
+                $ElementsInArray = array_count_values($AllFiles);
 //finde alle doppelten Einträge und packe diese Einträge in ein Array. key enthält den Dateinamen, value die Häufigkeit
                 foreach ($ElementsInArray as $key => $value) {
                     if ($value > 1) {
@@ -272,13 +283,13 @@ class ImmobilienController extends Controller {
                     }
                 }
 //sofern Dateinamen im Array enthalten, lösche nicht
-                if (in_array($picName, $FilesSeveral)) {
+                if (in_array($PicName, $FilesSeveral)) {
                     $session->addFlash('info', 'Der Anhang ' . $file . " wurde nicht aus Ihrem Webverzeichnis entfernt, da er  mehrere mal verwendet wird");
 //andernfalls lösche gemäß der Angaben im Array
                 } else {
                     for ($i = 0; $i < count($ArrayOfPicName); $i++) {
-                        unlink($url_backend . $ArrayOfPicName[$i]);
-                        unlink($url_frontend . $ArrayOfPicName[$i]);
+                        unlink($UrlBackend . $ArrayOfPicName[$i]);
+                        unlink($UrlFrontend . $ArrayOfPicName[$i]);
                         $session->addFlash('info', 'Der Anhang ' . $ArrayOfPicName[$i] . " wurde aus Ihrem Webverzeichnis entfernt.");
                     }
                 }
@@ -287,7 +298,7 @@ class ImmobilienController extends Controller {
                 }
             }
             $this->findModel($id)->deleteWithRelated();
-            if (!empty($idAnhang)) {
+            if (!empty($IdAnhang)) {
                 $session->addFlash('info', "Der Datensatz mit der Id:$id wurde erfolgreich gelöscht");
             } else {
                 $session->addFlash('info', "Der Datensatz mit der Id:$id wurde erfolgreich gelöscht. Er hatte keinen Anhang!");
@@ -300,19 +311,19 @@ class ImmobilienController extends Controller {
     }
 
     public function actionShow($filename) {
-        $completePath = Yii::getAlias('@pictures' . '/' . $filename);
-        return Yii::$app->response->sendFile($completePath, $filename);
+        $CompletePath = Yii::getAlias('@pictures' . '/' . $filename);
+        return Yii::$app->response->sendFile($CompletePath, $filename);
     }
 
     public function actionPdf($id) {
         $model = $this->findModel($id);
-        $providerBesichtigungstermin = new \yii\data\ArrayDataProvider([
+        $ProviderBesichtigungstermin = new \yii\data\ArrayDataProvider([
             'allModels' => $model->besichtigungstermins,
         ]);
-        $providerEDateianhang = new \yii\data\ArrayDataProvider([
+        $ProviderEDateianhang = new \yii\data\ArrayDataProvider([
             'allModels' => $model->eDateianhangs,
         ]);
-        $providerKundeimmobillie = new \yii\data\ArrayDataProvider([
+        $ProviderKundeImmobillie = new \yii\data\ArrayDataProvider([
             'allModels' => $model->kundeimmobillies,
         ]);
 
