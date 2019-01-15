@@ -185,6 +185,7 @@ class m180705_130101_backup extends \yii\db\Migration {
         } else {
             echo "\nTable `" . Yii::$app->db->tablePrefix . "kundeimmobillie` already exists!\n";
         }
+        /*
         if (!in_array(Yii::$app->db->tablePrefix . 'l_plz', $tables)) {
             $this->createTable('l_plz', [
                 'id' => $this->primaryKey(),
@@ -195,6 +196,7 @@ class m180705_130101_backup extends \yii\db\Migration {
         } else {
             echo "\nTable `" . Yii::$app->db->tablePrefix . "l_plz` already exists!\n";
         }
+        */
         if (!in_array(Yii::$app->db->tablePrefix . 'migration', $tables)) {
             $this->createTable('migration', [
                 'version' => $this->string(180)->notNull(),
