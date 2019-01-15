@@ -80,6 +80,7 @@ class m180705_140101_insert extends \yii\db\Migration {
             print_r("Second:U aready do have all or a couple of these values in ur database.\nCheck ur database using for instance phpmyadmin.\n");
             print_r("It's not possible inserting values outcasting referentiel integrity.\n");
             print_r("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+            var_dump($e);
         }
     }
 
