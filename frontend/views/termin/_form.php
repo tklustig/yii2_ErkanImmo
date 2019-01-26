@@ -19,7 +19,6 @@ use frontend\models\Immobilien;
     ]]);
     ?>
     <?= $form->errorSummary($model); ?>
-    <?= $form->errorSummary($modelKunde); ?>
     <?php
     if ($model->isNewRecord) {
         $this->title = Yii::t('app', 'Termin vereinbaren');
@@ -47,16 +46,16 @@ use frontend\models\Immobilien;
                         </div>
                         <div id="collapseOne" class="panel-collapse collapse in"> <!-- !weist der Column die JS-Id zu!-->
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <?=
                                     $form->field($model, 'Immobilien_id', ['addon' => [
                                             'prepend' => ['content' => 'Immobilienort']]])->widget(\kartik\widgets\Select2::classname(), [
                                         'data' => \yii\helpers\ArrayHelper::map(Immobilien::find()->where(['id' => $id])->asArray()->all(), 'id', 'stadt'),
-                                        //'disabled' => true,
+                                        'disabled' => true,
                                     ]);
                                     ?>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <?=
                                     $form->field($model, 'uhrzeit', ['addon' => [
                                             'prepend' => ['content' => 'Uhrzeit und Datum']]])->widget(DateTimePicker::classname(), [
@@ -68,15 +67,15 @@ use frontend\models\Immobilien;
                                     ]);
                                     ?>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <?=
                                     $form->field($model, 'Relevanz', ['addon' => [
-                                            'prepend' => ['content' => 'An Kauf interesiert']]])->widget(\kartik\checkbox\CheckboxX::classname(), [
+                                            'prepend' => ['content' => 'An Abwicklung interesiert']]])->widget(\kartik\checkbox\CheckboxX::classname(), [
                                         'autoLabel' => false,
                                     ])->label(false);
                                     ?>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <?=
                                     $form->field($model, 'angelegt_von', ['addon' => [
                                             'prepend' => ['content' => 'soll bearbeitet werden von']]])->widget(\kartik\widgets\Select2::classname(), [
