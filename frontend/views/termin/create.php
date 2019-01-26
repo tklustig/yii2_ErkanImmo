@@ -10,11 +10,12 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Besichtigungstermins
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="besichtigungstermin-create">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <?= $this->render('_form', [
+    <?=
+    $this->render('_form', [
         'model' => $model,
-    ]) ?>
+        'modelKunde' => $modelKunde,
+        'id' => $id,
+    ])
+    ?>
 
 </div>

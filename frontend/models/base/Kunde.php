@@ -28,17 +28,15 @@ use yii\behaviors\BlameableBehavior;
  * @property \frontend\models\User $aktualisiertVon
  * @property \frontend\models\Kundeimmobillie[] $kundeimmobillies
  */
-class Kunde extends \yii\db\ActiveRecord
-{
+class Kunde extends \yii\db\ActiveRecord {
+
     use \mootensai\relation\RelationTrait;
 
-
     /**
-    * This function helps \mootensai\relation\RelationTrait runs faster
-    * @return array relation names of this model
-    */
-    public function relationNames()
-    {
+     * This function helps \mootensai\relation\RelationTrait runs faster
+     * @return array relation names of this model
+     */
+    public function relationNames() {
         return [
             'adminbesichtigungkundes',
             'eDateianhangs',
@@ -53,11 +51,11 @@ class Kunde extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['l_plz_id', 'l_stadt_id', 'strasse', 'bankverbindung_id'], 'required'],
-            [['l_plz_id', 'l_stadt_id', 'bankverbindung_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
+            [['l_plz_id', 'stadt', 'strasse', 'bankverbindung_id'], 'required'],
+            [['l_plz_id', 'bankverbindung_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
+            [['stadt'], 'string'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
             [['strasse'], 'string', 'max' => 44],
             [['solvenz'], 'string', 'max' => 1]
@@ -67,16 +65,14 @@ class Kunde extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'kunde';
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
             'l_plz_id' => Yii::t('app', 'L Plz ID'),
@@ -90,69 +86,61 @@ class Kunde extends \yii\db\ActiveRecord
             'aktualisiert_von' => Yii::t('app', 'Aktualisiert Von'),
         ];
     }
-    
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAdminbesichtigungkundes()
-    {
+    public function getAdminbesichtigungkundes() {
         return $this->hasMany(\frontend\models\Adminbesichtigungkunde::className(), ['kunde_id' => 'id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEDateianhangs()
-    {
+    public function getEDateianhangs() {
         return $this->hasMany(\frontend\models\EDateianhang::className(), ['kunde_id' => 'id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBankverbindung()
-    {
+    public function getBankverbindung() {
         return $this->hasOne(\frontend\models\Bankverbindung::className(), ['id' => 'bankverbindung_id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLStadt()
-    {
+    public function getLStadt() {
         return $this->hasOne(\frontend\models\LStadt::className(), ['id' => 'l_stadt_id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAngelegtVon()
-    {
+    public function getAngelegtVon() {
         return $this->hasOne(\frontend\models\User::className(), ['id' => 'angelegt_von']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAktualisiertVon()
-    {
+    public function getAktualisiertVon() {
         return $this->hasOne(\frontend\models\User::className(), ['id' => 'aktualisiert_von']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getKundeimmobillies()
-    {
+    public function getKundeimmobillies() {
         return $this->hasMany(\frontend\models\Kundeimmobillie::className(), ['kunde_id' => 'id']);
     }
-    
+
     /**
      * @inheritdoc
      * @return array mixed
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
@@ -167,4 +155,5 @@ class Kunde extends \yii\db\ActiveRecord
             ],
         ];
     }
+
 }

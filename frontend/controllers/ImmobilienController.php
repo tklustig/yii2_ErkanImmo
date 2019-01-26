@@ -331,7 +331,8 @@ class ImmobilienController extends Controller {
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
-                    'art' => $art
+                    'art' => $art,
+                    'id' => $id,
         ]);
     }
 
@@ -343,9 +344,9 @@ class ImmobilienController extends Controller {
         }
     }
 
-    public function actionTermin() {
+    public function actionTermin($id) {
         $model = new \frontend\models\Besichtigungstermin();
-        return $this->redirect(['termin/index','model'=>$model]);
+        return $this->redirect(['termin/create', 'model' => $model, 'id' => $id]);
     }
 
     public function actionShow($filename) {

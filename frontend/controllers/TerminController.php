@@ -4,21 +4,18 @@ namespace frontend\controllers;
 
 use Yii;
 use frontend\models\Besichtigungstermin;
+use frontend\models\Kunde;
 use frontend\models\TerminSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use frontend\models\Immobilien;
+use frontend\models\LPlz;
+use yii\db\Query;
 
-/**
- * BesichtigungController implements the CRUD actions for Besichtigungstermin model.
- */
-class TerminController extends Controller
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
+class TerminController extends Controller {
+
+    public function behaviors() {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -29,108 +26,71 @@ class TerminController extends Controller
         ];
     }
 
-    /**
-     * Lists all Besichtigungstermin models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $searchModel = new TerminSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
-    /**
-     * Displays a single Besichtigungstermin model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+    public function actionView($id) {
+        $this->layout = "main_immo";
+        return $this->render('view', ['model' => $this->findModel($id), 'id' => $id]);
     }
 
-    /**
-     * Creates a new Besichtigungstermin model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
+    public function actionCreate($id) {
+        $this->layout = "main_immo";
         $model = new Besichtigungstermin();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $modelKunde = new Kunde();
+        if ($model->load(Yii::$app->request->post()) && $modelKunde->load(Yii::$app->request->post())) {
+            if ($modelKunde->l_plz_id == "")
+                $modelKunde->l_plz_id = null;
+            $model->validate();
+            if (!$model->validate()) {
+                print_r("<br>ModelTermine ist invalide<br>");
+                var_dump($model);
+                die();
+            }
+            $modelKunde->validate();
+            if (!$modelKunde->validate()) {
+                print_r("<br>ModelKunde ist invalide<br>");
+                var_dump($modelKunde);
+                die();
+            }
+            $immoId = Immobilien::findOne(['id' => $id])->id;
+            $model->Immobilien_id = $immoId;
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
     }
 
-    /**
-     * Updates an existing Besichtigungstermin model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id) {
         $model = $this->findModel($id);
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        return $this->render('update', ['model' => $model,]);
     }
 
-    /**
-     * Deletes an existing Besichtigungstermin model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
+    public function actionDelete($id) {
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the Besichtigungstermin model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Besichtigungstermin the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
+    protected function findModel($id) {
         if (($model = Besichtigungstermin::findOne($id)) !== null) {
             return $model;
         }
-
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
-        public function actionPdf($id) {
+
+    public function actionPdf($id) {
         $model = $this->findModel($id);
-        $providerBewerbungVorschlag = new \yii\data\ArrayDataProvider([
-            'allModels' => $model->bewerbungVorschlags,
-        ]);
         $content = $this->renderAjax('_pdf', [
             'model' => $model,
-            'providerBewerbungVorschlag' => $providerBewerbungVorschlag
         ]);
 
         $pdf = new \kartik\mpdf\Pdf([
@@ -149,4 +109,22 @@ class TerminController extends Controller
         ]);
         return $pdf->render();
     }
+
+    public function actionAuswahl($q = null, $id = null) {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = ['results' => ['id' => '', 'text' => '']];
+        if (!is_null($q)) {
+            $query = new Query();
+            $query->select('id, plz AS text')
+                    ->from('l_plz')
+                    ->where(['like', 'plz', $q]);
+            $command = $query->createCommand();
+            $data = $command->queryAll();
+            $out['results'] = array_values($data);
+        } elseif ($id > 0) {
+            $out['results'] = ['id' => $id, 'text' => LPlz::find($id)->plz];
+        }
+        return $out;
+    }
+
 }

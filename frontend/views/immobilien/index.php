@@ -178,7 +178,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'panel' => [
                 'type' => GridView::TYPE_PRIMARY,
                 'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> zur Übersicht', ['/immobilien/preview'], ['class' => 'btn btn-info']),
-                'after' => Html::a('<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>Termin vereinbaren', ['/immobilien/termin'], ['class' => 'btn btn-success']),
+                'after' => Html::a('<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>Termin vereinbaren', ['/immobilien/termin','id' => $id], ['class' => 'btn btn-success']),
                 'heading' => '<span class="glyphicon glyphicon-book"></span>  ' . Html::encode($this->title),
                 'class' => 'danger'
             ],
