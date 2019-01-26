@@ -46,34 +46,35 @@ $this->params['breadcrumbs'][] = $this->title;
         'Immobilien_id',
     ];
     ?>
-    ?>
-    <?=
-    GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => $gridColumn,
-        'pjax' => true,
-        'pjaxSettings' => [
-            'neverTimeout' => true,
-        ],
-        'options' => [
-            'style' => 'overflow: auto; word-wrap: break-word;'
-        ],
-        'condensed' => true,
-        'responsiveWrap' => true,
-        'hover' => true,
-        'persistResize' => true,
-        'panel' => [
-            'type' => GridView::TYPE_PRIMARY,
-            "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
+    <div class="container-fluid">
+        <?=
+        GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumn,
+            'pjax' => true,
+            'pjaxSettings' => [
+                'neverTimeout' => true,
+            ],
+            'options' => [
+                'style' => 'overflow: auto; word-wrap: break-word;'
+            ],
+            'condensed' => true,
+            'responsiveWrap' => true,
+            'hover' => true,
+            'persistResize' => true,
+            'panel' => [
+                'type' => GridView::TYPE_PRIMARY,
+                "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
+                'toggleDataOptions' => ['minCount' => 10],
+            ],
+            'toolbar' => [
+                '{export}',
+                '{toggleData}'
+            ],
             'toggleDataOptions' => ['minCount' => 10],
-        ],
-        'toolbar' => [
-            //'{export}',
-            '{toggleData}'
-        ],
-        'toggleDataOptions' => ['minCount' => 10],
-    ]);
-    ?>
-    <?php Pjax::end(); ?>
+        ]);
+        ?>
+        <?php Pjax::end(); ?>
+    </div>
 </div>

@@ -37,7 +37,6 @@ class TerminController extends Controller
     {
         $searchModel = new TerminSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -123,5 +122,31 @@ class TerminController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+        public function actionPdf($id) {
+        $model = $this->findModel($id);
+        $providerBewerbungVorschlag = new \yii\data\ArrayDataProvider([
+            'allModels' => $model->bewerbungVorschlags,
+        ]);
+        $content = $this->renderAjax('_pdf', [
+            'model' => $model,
+            'providerBewerbungVorschlag' => $providerBewerbungVorschlag
+        ]);
+
+        $pdf = new \kartik\mpdf\Pdf([
+            'mode' => \kartik\mpdf\Pdf::MODE_CORE,
+            'format' => \kartik\mpdf\Pdf::FORMAT_A4,
+            'orientation' => \kartik\mpdf\Pdf::ORIENT_PORTRAIT,
+            'destination' => \kartik\mpdf\Pdf::DEST_BROWSER,
+            'content' => $content,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+            'options' => ['title' => \Yii::$app->name],
+            'methods' => [
+                'SetHeader' => [\Yii::$app->name],
+                'SetFooter' => ['{PAGENO}'],
+            ]
+        ]);
+        return $pdf->render();
     }
 }

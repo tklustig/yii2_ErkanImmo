@@ -13,6 +13,7 @@ use yii\helpers\Html;
 <!Doctype html> <!-- Definition des doctype-Modus -->
 <html> <!-- Definition des Stammverzeichnises -->
     <head> <!-- Definition des Kopfbereiches -->
+        <?= Html::csrfMetaTags() ?>
         <meta charset="utf-8"> <!-- charset[utf-8:]  definiert den deutschen Zeichensatz -->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <title><?= Html::encode($this->title) ?></title>

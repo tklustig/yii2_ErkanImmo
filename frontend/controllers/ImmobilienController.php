@@ -345,7 +345,6 @@ class ImmobilienController extends Controller {
 
     public function actionTermin() {
         $model = new \frontend\models\Besichtigungstermin();
-        //return $this->redirect(array('termin/index', 'model' => $model));
         return $this->redirect(['termin/index','model'=>$model]);
     }
 
