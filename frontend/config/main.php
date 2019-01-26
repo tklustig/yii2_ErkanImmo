@@ -54,6 +54,7 @@ return [
                 'immobilien_showlink' => 'immobilien/show',
                 'immobilien_termin' => 'immobilien/termin',
                 'auswahl' => 'immobilien/auswahl',
+                'termin'=>'termin/index',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',

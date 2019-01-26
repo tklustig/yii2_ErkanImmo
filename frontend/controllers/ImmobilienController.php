@@ -139,7 +139,8 @@ class ImmobilienController extends Controller {
 
 //sofern Suchangaben unvollständig
             if ($dataProvider['operator'][0] == null && $dataProvider['Kosten'][0] != null) {
-                ?><?=
+?><?=
+
                 Growl::widget([
                     'type' => Growl::TYPE_GROWL,
                     'title' => 'Warning',
@@ -343,13 +344,9 @@ class ImmobilienController extends Controller {
     }
 
     public function actionTermin() {
-        ?>
-        <h3>
-            Diese Methode soll dem Interessenten die Möglichkeit geben, einen Termin mit dem jeweiligen Makler zu beantragen. Es wird folglich ein Formular gerendert, welches die entsprechenden Optionen anbietet. Noch ist das allerdings eine Baustelle
-        </h3><br>
-        <?php
-        print_r("Script in der Klasse " . get_class() . " angehalten");
-        die();
+        $model = new \frontend\models\Besichtigungstermin();
+        //return $this->redirect(array('termin/index', 'model' => $model));
+        return $this->redirect(['termin/index','model'=>$model]);
     }
 
     public function actionShow($filename) {

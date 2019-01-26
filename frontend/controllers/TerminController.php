@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * BesichtigungController implements the CRUD actions for Besichtigungstermin model.
  */
-class BesichtigungController extends Controller
+class TerminController extends Controller
 {
     /**
      * {@inheritdoc}
