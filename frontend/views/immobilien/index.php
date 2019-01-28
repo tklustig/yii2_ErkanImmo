@@ -46,8 +46,26 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            'bezeichnung:html',
-            'sonstiges:html',
+            [
+                'attribute' => 'bezeichnung',
+                'format' => 'html',
+                'label' => Yii::t('app', 'Bez'),
+                'value' => function($model) {
+                    $value = $model->bezeichnung;
+                    $value = Cutten($value);
+                    return $value;
+                }
+            ],
+            [
+                'attribute' => 'sonstiges',
+                'format' => 'html',
+                'label' => Yii::t('app', 'Sonstiges'),
+                'value' => function($model) {
+                    $value = $model->sonstiges;
+                    $value = Cutten($value);
+                    return $value;
+                }
+            ],
             'k_grundstuecksgroesse',
             [
                 'attribute' => 'k_provision',
@@ -124,8 +142,24 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            'bezeichnung:html',
-            'sonstiges:html',
+            [
+                'attribute' => 'bezeichnung',
+                'label' => Yii::t('app', 'Bez'),
+                'value' => function($model) {
+                    $value = $model->bezeichnung;
+                    $value = Cutten($value);
+                    return $value;
+                }
+            ],
+            [
+                'attribute' => 'sonstiges',
+                'label' => Yii::t('app', 'Sonstiges'),
+                'value' => function($model) {
+                    $value = $model->sonstiges;
+                    $value = Cutten($value);
+                    return $value;
+                }
+            ],
             [
                 'attribute' => 'v_nebenkosten',
                 'label' => Yii::t('app', 'Nebenkosten(€)'),
@@ -178,7 +212,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'panel' => [
                 'type' => GridView::TYPE_PRIMARY,
                 'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> zur Übersicht', ['/immobilien/preview'], ['class' => 'btn btn-info']),
-                'after' => Html::a('<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>Termin vereinbaren', ['/immobilien/termin','id' => $id], ['class' => 'btn btn-success']),
+                'after' => Html::a('<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>Termin vereinbaren', ['/immobilien/termin', 'id' => $id], ['class' => 'btn btn-success']),
                 'heading' => '<span class="glyphicon glyphicon-book"></span>  ' . Html::encode($this->title),
                 'class' => 'danger'
             ],
@@ -190,3 +224,15 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
     </div>
 </div>
+<?php
+
+function Cutten($string2BeChanged, $keyword = null, $replaceWith = null) {
+    if ($keyword == null)
+        $keyword = "/\r\n\/";
+    if ($replaceWith == null)
+        $string = preg_replace($keyword, " ", $string2BeChanged);
+    else
+        $string = preg_replace($keyword, $replaceWith, $string2BeChanged);
+    return $string;
+}
+?>
