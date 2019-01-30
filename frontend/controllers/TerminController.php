@@ -46,12 +46,14 @@ class TerminController extends Controller {
         $modelKunde = new Kunde();
         if ($model->load(Yii::$app->request->post()) && $modelKunde->load(Yii::$app->request->post())) {
             if ($modelKunde->l_plz_id == "")
-                $modelKunde->l_plz_id = null;
+                $modelKunde->l_plz_id = null;            
+            $year = preg_replace('/^[^\d]*(\d{4}).*$/', '\1', $model->uhrzeit);
+            var_dump($year);
+            var_dump($model->uhrzeit);
             $model->validate();
             if (!$model->validate()) {
                 print_r("<br>ModelTermine ist invalide<br>");
                 var_dump($model);
-                die();
             }
             $modelKunde->validate();
             if (!$modelKunde->validate()) {

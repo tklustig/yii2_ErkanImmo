@@ -144,6 +144,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'bezeichnung',
+                'format' => 'html',
                 'label' => Yii::t('app', 'Bez'),
                 'value' => function($model) {
                     $value = $model->bezeichnung;
@@ -153,6 +154,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'sonstiges',
+                'format'=>'html',
                 'label' => Yii::t('app', 'Sonstiges'),
                 'value' => function($model) {
                     $value = $model->sonstiges;
@@ -227,10 +229,15 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 
 function Cutten($string2BeChanged, $keyword = null, $replaceWith = null) {
-    if ($keyword == null)
-        $keyword = "/\r\n\/";
+    if ($keyword == null) {
+        $keyword = array();
+        $keyword[0] = "/\\\\/";
+        $keyword[1] = "/rn/";
+        //$keyword[2] = "/(?:\r?\n)/{2}";
+        //$keyword[3] = "/(\r\n){2}/";
+    }
     if ($replaceWith == null)
-        $string = preg_replace($keyword, " ", $string2BeChanged);
+        $string = preg_replace($keyword, "", $string2BeChanged);
     else
         $string = preg_replace($keyword, $replaceWith, $string2BeChanged);
     return $string;
