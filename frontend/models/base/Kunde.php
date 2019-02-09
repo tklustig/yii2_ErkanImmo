@@ -23,7 +23,7 @@ class Kunde extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['l_plz_id', 'vorname', 'nachname', 'stadt', 'strasse', 'geburtsdatum', 'bankverbindung_id'], 'required'],
+            [['vorname', 'nachname', 'stadt', 'strasse'], 'required'],
             [['l_plz_id', 'bankverbindung_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['geburtsdatum', 'angelegt_am', 'aktualisiert_am'], 'safe'],
             [['vorname', 'nachname', 'stadt'], 'string', 'max' => 255],

@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\form\ActiveForm;
 use kartik\widgets\DateTimePicker;
+use kartik\widgets\DatePicker;
 use yii\web\JsExpression;
 use frontend\models\Immobilien;
 ?>
@@ -108,10 +109,33 @@ use frontend\models\Immobilien;
                         </div>
                         <div id="collapseTwo" class="panel-collapse collapse in"> <!-- !weist der Column die JS-Id zu!-->
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <?=
+                                    $form->field($modelKunde, 'vorname', ['addon' => ['prepend' => ['content' => 'Vorname']]])->textInput();
+                                    ?>   
+                                </div>
+                                <div class="col-md-4">
+                                    <?=
+                                    $form->field($modelKunde, 'nachname', ['addon' => ['prepend' => ['content' => 'Nachname']]])->textInput();
+                                    ?>   
+                                </div>
+                                <div class="col-md-4">
+                                    <?=
+                                    $form->field($modelKunde, 'geburtsdatum', ['addon' => [
+                                            'prepend' => ['content' => 'Geburtsdatum']]])->widget(DatePicker::classname(), [
+                                        'options' => ['placeholder' => 'Datum eingeben'],
+                                        'pluginOptions' => [
+                                            'autoclose' => true,
+                                            'format' => 'yyyy-mm-dd',
+                                        ]
+                                    ]);
+                                    ?>
+                                </div>
+                                <div class="col-md-4">
                                     <?php
                                     $route = Url::to(['auswahl']);
-                                    ?><?=
+                                    ?>
+                                    <?=
                                     $form->field($modelKunde, 'l_plz_id', ['addon' => [
                                             'prepend' => ['content' => 'Plz']]])->widget(\kartik\widgets\Select2::classname(), [
                                         'options' => ['placeholder' => Yii::t('app', 'Postleitzahl wählen'),
@@ -135,7 +159,7 @@ use frontend\models\Immobilien;
                                     ])->label(false);
                                     ?>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <?=
                                     $form->field($modelKunde, 'stadt', ['addon' => [
                                             'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'placeholder' => 'Applikation füllt die Stadt gemäß der Postleitzahl', 'readonly' => true])
@@ -143,10 +167,10 @@ use frontend\models\Immobilien;
 
                                 </div>
                                 <div class="col-md-4">
-
-                                </div>
-                                <div class="col-md-4">
-
+                                    <?=
+                                    $form->field($modelKunde, 'strasse', ['addon' => [
+                                            'prepend' => ['content' => 'Strasse'], 'append' => ['content' => 'Hausnummer']]])->textInput();
+                                    ?>  
                                 </div>
                             </div>
                         </div>
