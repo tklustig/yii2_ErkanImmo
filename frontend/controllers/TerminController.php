@@ -12,6 +12,8 @@ use yii\filters\VerbFilter;
 use frontend\models\Immobilien;
 use frontend\models\LPlz;
 use yii\db\Query;
+use kartik\growl\Growl;
+use common\models\User;
 
 class TerminController extends Controller {
 
@@ -46,10 +48,19 @@ class TerminController extends Controller {
         $modelKunde = new Kunde();
         if ($model->load(Yii::$app->request->post()) && $modelKunde->load(Yii::$app->request->post())) {
             if ($modelKunde->l_plz_id == "")
-                $modelKunde->l_plz_id = null;            
-            $year = preg_replace('/^[^\d]*(\d{4}).*$/', '\1', $model->uhrzeit);
-            var_dump($year);
-            var_dump($model->uhrzeit);
+                $modelKunde->l_plz_id = null;
+            //$year = preg_replace('/^[^\d]*(\d{4}).*$/', '\1', $model->uhrzeit);
+            preg_match("/(\d{4})-\d{2}-\d{2} +(\d{2}):\d{2}:\d{2}/", $model->uhrzeit, $matches);
+            $wholeString = $matches[0];
+            $year = $matches[1];
+            $hour = $matches[2];
+            if ($hour < 6 || $hour > 19) {
+                $maklerId = $model->angelegt_von;
+                $makler = User::findOne(['id' => $maklerId])->username;
+                $message = "Uhrzeit ist außerhalb der Arbeitszeiten unserer Makler's Herr/Frau $makler.";
+                $this->message($message);
+                return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
+            }
             $model->validate();
             if (!$model->validate()) {
                 print_r("<br>ModelTermine ist invalide<br>");
@@ -127,6 +138,24 @@ class TerminController extends Controller {
             $out['results'] = ['id' => $id, 'text' => LPlz::find($id)->plz];
         }
         return $out;
+    }
+
+    private function message($message) {
+        echo Growl::widget([
+            'type' => Growl::TYPE_GROWL,
+            'title' => 'Warning!',
+            'icon' => 'glyphicon glyphicon-exclamation-sign',
+            'body' => $message,
+            'showSeparator' => true,
+            'delay' => 1000,
+            'pluginOptions' => [
+                'showProgressbar' => true,
+                'placement' => [
+                    'from' => 'top',
+                    'align' => 'center',
+                ]
+            ]
+        ]);
     }
 
 }
