@@ -45,37 +45,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ]);
         ?>
     </div>
-
-    <div class="row">
-        <?php
-        if ($providerBewerbungVorschlag->totalCount) {
-            $gridColumnBewerbungVorschlag = [
-                ['class' => 'yii\grid\SerialColumn'],
-                'id',
-                [
-                    'attribute' => 'stelle.id',
-                    'label' => Yii::t('app', 'Id Stelle')
-                ],
-                [
-                    'attribute' => 'kunde.id',
-                    'label' => Yii::t('app', 'Id Kunde')
-                ],
-                'sende_schluessel',
-                'angelegt_am',
-                [
-                    'attribute' => 'angelegtVon.id',
-                    'label' => Yii::t('app', 'Angelegt Von')
-                ],
-                'aktualisiert_am',
-                [
-                    'attribute' => 'aktualisiertVon.id',
-                    'label' => Yii::t('app', 'Aktualisiert Von')
-                ],
-            ];
-        }
-        ?>
-    </div>
-
     <div class="row">
     </div>
 </div>

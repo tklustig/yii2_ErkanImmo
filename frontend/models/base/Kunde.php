@@ -47,10 +47,6 @@ class Kunde extends \yii\db\ActiveRecord
      * return string name of field are used to stored optimistic lock
      *
      */
-    public function optimisticLock() {
-        return 'lock';
-    }
-
     /**
      * @inheritdoc
      */
@@ -122,14 +118,14 @@ class Kunde extends \yii\db\ActiveRecord
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
-                'createdAtAttribute' => 'created_at',
-                'updatedAtAttribute' => 'updated_at',
+                'createdAtAttribute' => 'angelegt_am',
+                'updatedAtAttribute' => 'aktualisiert_am',
                 'value' => new \yii\db\Expression('NOW()'),
             ],
             'blameable' => [
                 'class' => BlameableBehavior::className(),
                 'createdByAttribute' => 'angelegt_von',
-                'updatedByAttribute' => 'aktualisert_von',
+                'updatedByAttribute' => 'aktualisiert_von',
             ],
         ];
     }

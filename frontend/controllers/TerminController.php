@@ -49,7 +49,9 @@ class TerminController extends Controller {
         if ($model->load(Yii::$app->request->post()) && $modelKunde->load(Yii::$app->request->post())) {
             if ($modelKunde->l_plz_id == "")
                 $modelKunde->l_plz_id = null;
-            //$year = preg_replace('/^[^\d]*(\d{4}).*$/', '\1', $model->uhrzeit);
+            //handle ForeignKey Immobilien_id in table besichtigungstermin
+            $immoId = Immobilien::findOne(['id' => $id])->id;
+            $model->Immobilien_id = $immoId;
             preg_match("/(\d{4})-\d{2}-\d{2} +(\d{2}):\d{2}:\d{2}/", $model->uhrzeit, $matches);
             $wholeString = $matches[0];
             $year = $matches[1];
@@ -59,6 +61,28 @@ class TerminController extends Controller {
                 $makler = User::findOne(['id' => $maklerId])->username;
                 $message = "Uhrzeit ist außerhalb der Arbeitszeiten unserer Makler's Herr/Frau $makler.";
                 $this->message($message);
+                return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
+            }
+            //Die Überprüfung der Strasse auf eine Hausnummer ist noch ineffizient
+            $string2Array = explode(' ', $modelKunde->strasse);
+            for ($i = 0; $i < count($string2Array); $i++) {
+                if (!(count($string2Array) > 1)) {
+                    $bool = false;
+                    break;
+                }
+                if ($i == count($string2Array) - 1 && is_numeric($string2Array[$i]))
+                    $bool = true;
+                else
+                    $bool = false;
+                /*
+                  var_dump($i);
+                  var_dump($string2Array[$i]);
+                  var_dump($bool);
+                 */
+            }
+            if (!$bool) {
+                $message = "Die Strasse enthält keine vom Namen abgesonderte Hausnummer.";
+                $this->message($message, 'Error', 1250, Growl::TYPE_DANGER);
                 return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
             }
             $model->validate();
@@ -72,8 +96,10 @@ class TerminController extends Controller {
                 var_dump($modelKunde);
                 die();
             }
-            $immoId = Immobilien::findOne(['id' => $id])->id;
-            $model->Immobilien_id = $immoId;
+            $modelKunde->angelegt_von=$modelKunde->id;
+            $modelKunde->save();
+            $angeletVon=$modelKunde->id;
+            $model->angelegt_von=$angeletVon;
             $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -140,14 +166,14 @@ class TerminController extends Controller {
         return $out;
     }
 
-    private function message($message) {
+    private function message($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
         echo Growl::widget([
-            'type' => Growl::TYPE_GROWL,
-            'title' => 'Warning!',
+            'type' => $type,
+            'title' => $typus,
             'icon' => 'glyphicon glyphicon-exclamation-sign',
             'body' => $message,
             'showSeparator' => true,
-            'delay' => 1000,
+            'delay' => $delay,
             'pluginOptions' => [
                 'showProgressbar' => true,
                 'placement' => [
