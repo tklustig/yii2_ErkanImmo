@@ -58,7 +58,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'angelegt_von')->textInput(['placeholder' => 'Angelegt Von']) ?>
 
     <?= $form->field($model, 'aktualisiert_von')->widget(\kartik\widgets\Select2::classname(), [
-        'data' => \yii\helpers\ArrayHelper::map(\backend\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
+        'data' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
         'options' => ['placeholder' => Yii::t('app', 'Choose User')],
         'pluginOptions' => [
             'allowClear' => true

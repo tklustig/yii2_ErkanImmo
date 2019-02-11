@@ -108,7 +108,6 @@ class BankverbindungController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->deleteWithRelated();
-
         return $this->redirect(['index']);
     }
     

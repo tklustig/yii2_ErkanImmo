@@ -63,22 +63,21 @@ class TerminController extends Controller {
                 $this->message($message);
                 return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
             }
-            //Die Überprüfung der Strasse auf eine Hausnummer ist noch ineffizient
+            //Die Überprüfung der Strasse auf eine Hausnummer klappt mit dem pregmatchPattern
             $string2Array = explode(' ', $modelKunde->strasse);
-            for ($i = 0; $i < count($string2Array); $i++) {
-                if (!(count($string2Array) > 1)) {
-                    $bool = false;
-                    break;
+            if (count($string2Array) < 1)
+                $bool = false;
+            else
+                $bool = true;
+            if ($bool) {
+                $pattern = '/\d+[a-zA-Z]*/';
+                foreach ($string2Array as $item) {
+                    $result = preg_match($pattern, $item, $matches);
+                    if ($result)
+                        $bool = true;
+                    else
+                        $bool = false;
                 }
-                if ($i == count($string2Array) - 1 && is_numeric($string2Array[$i]))
-                    $bool = true;
-                else
-                    $bool = false;
-                /*
-                  var_dump($i);
-                  var_dump($string2Array[$i]);
-                  var_dump($bool);
-                 */
             }
             if (!$bool) {
                 $message = "Die Strasse enthält keine vom Namen abgesonderte Hausnummer.";
@@ -87,19 +86,22 @@ class TerminController extends Controller {
             }
             $model->validate();
             if (!$model->validate()) {
-                print_r("<br>ModelTermine ist invalide<br>");
+                print_r("<center><h2>ModelTermine ist invalide</h2></center>");
                 var_dump($model);
+                $bool = true;
             }
             $modelKunde->validate();
             if (!$modelKunde->validate()) {
-                print_r("<br>ModelKunde ist invalide<br>");
+                print_r("<center><h2>ModelKunde ist invalide</h2></center>");
                 var_dump($modelKunde);
-                die();
+                $bool = true;
             }
-            $modelKunde->angelegt_von=$modelKunde->id;
+            if ($bool)
+                die();
+            $modelKunde->angelegt_von = $modelKunde->id;
             $modelKunde->save();
-            $angeletVon=$modelKunde->id;
-            $model->angelegt_von=$angeletVon;
+            $angelegtVon = $modelKunde->id;
+            $model->angelegt_von = $angelegtVon;
             $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         }

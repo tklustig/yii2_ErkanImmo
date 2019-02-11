@@ -89,7 +89,7 @@ class Bankverbindung extends \yii\db\ActiveRecord
      */
     public function getKundes()
     {
-        return $this->hasMany(\backend\models\Kunde::className(), ['bankverbindung_id' => 'id']);
+        return $this->hasMany(\frontend\models\Kunde::className(), ['bankverbindung_id' => 'id']);
     }
     
     /**
