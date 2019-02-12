@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\base\DynamicModel;
+use kartik\widgets\Growl;
 
 class BankverbindungController extends Controller {
 
@@ -131,18 +132,43 @@ class BankverbindungController extends Controller {
     }
 
     public function actionSelect() {
-        $this->layout = 'main_immo';
-        $DynamicModel = new DynamicModel(['kunde']);
-        $DynamicModel->addRule(['kunde'], 'integer');
-        $DynamicModel->addRule(['kunde'], 'required');
+        $modelKunde = \frontend\models\Kunde::find()->all();
+        if (!empty($modelKunde)) {
+            $this->layout = 'main_immo';
+            $DynamicModel = new DynamicModel(['kunde']);
+            $DynamicModel->addRule(['kunde'], 'integer');
+            $DynamicModel->addRule(['kunde'], 'required');
 
-        if ($DynamicModel->load(Yii::$app->request->post())) {
-            $this->redirect(['/bankverbindung/create', 'id' => $DynamicModel->kunde]);
+            if ($DynamicModel->load(Yii::$app->request->post())) {
+                $this->redirect(['/bankverbindung/create', 'id' => $DynamicModel->kunde]);
+            } else {
+                return $this->render('_form_select', [
+                            'DynamicModel' => $DynamicModel,
+                ]);
+            }
         } else {
-            return $this->render('_form_select', [
-                        'DynamicModel' => $DynamicModel,
-            ]);
+            $string = 'Es exisitert noch kein Kunde in der Datenbank. Steigern Sie Ihre Kundenaqkuise!';
+            $this->message($message);
+            return $this->redirect(['site/index']);
         }
+    }
+
+    private function message($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
+        echo Growl::widget([
+            'type' => $type,
+            'title' => $typus,
+            'icon' => 'glyphicon glyphicon-exclamation-sign',
+            'body' => $message,
+            'showSeparator' => true,
+            'delay' => $delay,
+            'pluginOptions' => [
+                'showProgressbar' => true,
+                'placement' => [
+                    'from' => 'top',
+                    'align' => 'center',
+                ]
+            ]
+        ]);
     }
 
 }

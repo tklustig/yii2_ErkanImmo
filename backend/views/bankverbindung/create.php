@@ -1,23 +1,20 @@
 <?php
 
-use yii\helpers\Html;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\Bankverbindung */
+use frontend\models\Kunde;
 
 $this->title = Yii::t('app', 'Create Bankverbindung');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bankverbindung'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-$string = 'Bankdaten eingeben';
-$kundenname= frontend\models\Kunde::findOne(['id'=>$id])->nachname;
+$vornameKunde = Kunde::findOne(['id' => $id])->vorname;
+$nachnameKunde = Kunde::findOne(['id' => $id])->nachname;
+$string = "Bankdaten für $nachnameKunde, $vornameKunde eingeben";
 ?>
 <div class="bankverbindung-create">
-
-    <center> <h2><?= $string ?></h2></center>
+    <center><h2><?= $string ?></h2></center>
     <?=
     $this->render('_form', [
         'model' => $model,
+        'id'=>$id
     ])
     ?>
-
 </div>

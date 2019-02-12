@@ -6,43 +6,19 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 
-/**
- * This is the base model class for table "bankverbindung".
- *
- * @property integer $id
- * @property string $art
- * @property string $iban
- * @property string $bic
- * @property string $angelegt_am
- * @property string $aktualisiert_am
- * @property integer $angelegt_von
- * @property integer $aktualisiert_von
- *
- * @property \backend\models\User $aktualisiertVon
- * @property \backend\models\Kunde[] $kundes
- */
-class Bankverbindung extends \yii\db\ActiveRecord
-{
+class Bankverbindung extends \yii\db\ActiveRecord {
+
     use \mootensai\relation\RelationTrait;
+    public $blz;
 
-
-    /**
-    * This function helps \mootensai\relation\RelationTrait runs faster
-    * @return array relation names of this model
-    */
-    public function relationNames()
-    {
+    public function relationNames() {
         return [
             'aktualisiertVon',
             'kundes'
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['art', 'iban'], 'required'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
@@ -51,53 +27,32 @@ class Bankverbindung extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'bankverbindung';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
-            'art' => Yii::t('app', 'Art'),
-            'iban' => Yii::t('app', 'Iban'),
-            'bic' => Yii::t('app', 'Bic'),
-            'angelegt_am' => Yii::t('app', 'Angelegt Am'),
-            'aktualisiert_am' => Yii::t('app', 'Aktualisiert Am'),
-            'angelegt_von' => Yii::t('app', 'Angelegt Von'),
-            'aktualisiert_von' => Yii::t('app', 'Aktualisiert Von'),
+            'art' => Yii::t('app', 'Institut'),
+            'iban' => Yii::t('app', 'IBAN'),
+            'bic' => Yii::t('app', 'BIC'),
+            'angelegt_am' => Yii::t('app', 'angelegt am'),
+            'aktualisiert_am' => Yii::t('app', 'aktualisiert am'),
+            'angelegt_von' => Yii::t('app', 'angelegt von'),
+            'aktualisiert_von' => Yii::t('app', 'aktualisiert von'),
         ];
     }
-    
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAktualisiertVon()
-    {
+
+    public function getAktualisiertVon() {
         return $this->hasOne(\backend\models\User::className(), ['id' => 'aktualisiert_von']);
     }
-        
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getKundes()
-    {
+
+    public function getKundes() {
         return $this->hasMany(\frontend\models\Kunde::className(), ['bankverbindung_id' => 'id']);
     }
-    
-    /**
-     * @inheritdoc
-     * @return array mixed
-     */
-    public function behaviors()
-    {
+
+    public function behaviors() {
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
@@ -112,4 +67,5 @@ class Bankverbindung extends \yii\db\ActiveRecord
             ],
         ];
     }
+
 }
