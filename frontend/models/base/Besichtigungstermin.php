@@ -114,12 +114,7 @@ class Besichtigungstermin extends \yii\db\ActiveRecord {
                 'createdAtAttribute' => 'angelegt_am',
                 'updatedAtAttribute' => 'aktualisiert_am',
                 'value' => new \yii\db\Expression('NOW()'),
-            ],
-            'blameable' => [
-                'class' => BlameableBehavior::className(),
-                'createdByAttribute' => 'angelegt_von',
-                'updatedByAttribute' => 'aktualisiert_von',
-            ],
+            ]
         ];
     }
 

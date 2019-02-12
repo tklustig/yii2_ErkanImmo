@@ -18,6 +18,7 @@ use frontend\models\Immobilien;
                 'formConfig' => [
                     'showLabels' => false
     ]]);
+    $arrayGeschlecht = array('Herr' => 'Herr', 'Frau' => 'Frau', 'Other' => 'Sonstiges');
     ?>
     <?= $form->errorSummary($model); ?>
     <?php
@@ -109,17 +110,29 @@ use frontend\models\Immobilien;
                         </div>
                         <div id="collapseTwo" class="panel-collapse collapse in"> <!-- !weist der Column die JS-Id zu!-->
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">                                  
+                                    <?=
+                                    $form->field($modelKunde, 'geschlecht', ['addon' => [
+                                            'prepend' => ['content' => 'Geschlecht']]])->widget(\kartik\widgets\Select2::classname(), [
+                                        'data' => $arrayGeschlecht,
+                                        'options' => ['placeholder' => Yii::t('app', 'Geschlechtwählen')],
+                                        'pluginOptions' => [
+                                            'allowClear' => true
+                                        ],
+                                    ]);
+                                    ?>
+                                </div>
+                                <div class="col-md-3">
                                     <?=
                                     $form->field($modelKunde, 'vorname', ['addon' => ['prepend' => ['content' => 'Vorname']]])->textInput();
                                     ?>   
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <?=
                                     $form->field($modelKunde, 'nachname', ['addon' => ['prepend' => ['content' => 'Nachname']]])->textInput();
                                     ?>   
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <?=
                                     $form->field($modelKunde, 'geburtsdatum', ['addon' => [
                                             'prepend' => ['content' => 'Geburtsdatum']]])->widget(DatePicker::classname(), [

@@ -4,12 +4,40 @@ namespace frontend\models\base;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use yii\behaviors\BlameableBehavior;
 
+/**
+ * This is the base model class for table "kunde".
+ *
+ * @property integer $id
+ * @property integer $l_plz_id
+ * @property string $geschlecht
+ * @property string $vorname
+ * @property string $nachname
+ * @property string $stadt
+ * @property string $strasse
+ * @property string $geburtsdatum
+ * @property integer $solvenz
+ * @property integer $bankverbindung_id
+ * @property string $angelegt_am
+ * @property string $aktualisiert_am
+ * @property integer $angelegt_von
+ * @property integer $aktualisiert_von
+ *
+ * @property \frontend\models\Adminbesichtigungkunde[] $adminbesichtigungkundes
+ * @property \frontend\models\EDateianhang[] $eDateianhangs
+ * @property \frontend\models\Bankverbindung $bankverbindung
+ * @property \frontend\models\User $aktualisiertVon
+ * @property \frontend\models\Kundeimmobillie[] $kundeimmobillies
+ */
 class Kunde extends \yii\db\ActiveRecord
 {
     use \mootensai\relation\RelationTrait;
-    
+
+
+    /**
+    * This function helps \mootensai\relation\RelationTrait runs faster
+    * @return array relation names of this model
+    */
     public function relationNames()
     {
         return [
@@ -20,15 +48,20 @@ class Kunde extends \yii\db\ActiveRecord
             'kundeimmobillies'
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
-            [['vorname', 'nachname', 'stadt', 'strasse'], 'required'],
+            [['l_plz_id', 'geschlecht', 'vorname', 'nachname', 'stadt', 'strasse'], 'required'],
             [['l_plz_id', 'bankverbindung_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['geburtsdatum', 'angelegt_am', 'aktualisiert_am'], 'safe'],
+            [['geschlecht'], 'string', 'max' => 64],
             [['vorname', 'nachname', 'stadt'], 'string', 'max' => 255],
-            [['strasse'], 'string', 'max' => 255],
-            [['solvenz'], 'integer', 'max' => 1],
+            [['strasse'], 'string', 'max' => 44],
+            [['solvenz'], 'string', 'max' => 1]
         ];
     }
 
@@ -41,13 +74,6 @@ class Kunde extends \yii\db\ActiveRecord
     }
 
     /**
-     *
-     * @return string
-     * overwrite function optimisticLock
-     * return string name of field are used to stored optimistic lock
-     *
-     */
-    /**
      * @inheritdoc
      */
     public function attributeLabels()
@@ -55,6 +81,7 @@ class Kunde extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'l_plz_id' => Yii::t('app', 'L Plz ID'),
+            'geschlecht' => Yii::t('app', 'Geschlecht'),
             'vorname' => Yii::t('app', 'Vorname'),
             'nachname' => Yii::t('app', 'Nachname'),
             'stadt' => Yii::t('app', 'Stadt'),
@@ -121,11 +148,6 @@ class Kunde extends \yii\db\ActiveRecord
                 'createdAtAttribute' => 'angelegt_am',
                 'updatedAtAttribute' => 'aktualisiert_am',
                 'value' => new \yii\db\Expression('NOW()'),
-            ],
-            'blameable' => [
-                'class' => BlameableBehavior::className(),
-                'createdByAttribute' => 'angelegt_von',
-                'updatedByAttribute' => 'aktualisiert_von',
             ],
         ];
     }

@@ -22,12 +22,12 @@ use kartik\form\ActiveForm;
     <div class="jumbotron">
         <div class="container">
             <div class="col-md-12">
-                <p>Bitte treffen Sie eine Vorauswahl, welche Art an Immobilie Sie erstellen wollen. Ihre Wahl bestimmt maßgeblich das darauf folgende Formular..</p>
+                <p>Bitte treffen Sie eine Vorauswahl, für welchen Kunden Sie die Bankdaten eingeben wollen..</p>
                 <?=
-                $form->field($DynamicModel, 'art', ['addon' => [
+                $form->field($DynamicModel, 'kunde', ['addon' => [
                         'prepend' => ['content' => 'Typ']]])->widget(\kartik\widgets\Select2::classname(), [
-                    'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LArt::find()->orderBy('id')->asArray()->all(), 'id', 'bezeichnung'),
-                    'options' => ['placeholder' => Yii::t('app', 'Art des Objektes wählen')],
+                    'data' => \yii\helpers\ArrayHelper::map(frontend\models\Kunde::find()->orderBy('id')->asArray()->all(), 'id', 'nachname'),
+                    'options' => ['placeholder' => Yii::t('app', 'Kunde wählen')],
                     'pluginOptions' => [
                         'allowClear' => true
                     ],

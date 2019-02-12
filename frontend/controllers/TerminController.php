@@ -14,6 +14,8 @@ use frontend\models\LPlz;
 use yii\db\Query;
 use kartik\growl\Growl;
 use common\models\User;
+use frontend\models\Kundeimmobillie;
+use frontend\models\Adminbesichtigungkunde;
 
 class TerminController extends Controller {
 
@@ -46,6 +48,8 @@ class TerminController extends Controller {
         $this->layout = "main_immo";
         $model = new Besichtigungstermin();
         $modelKunde = new Kunde();
+        $modelKundeImmo = new Kundeimmobillie();
+        $modelAdminBesKunde = new Adminbesichtigungkunde();
         if ($model->load(Yii::$app->request->post()) && $modelKunde->load(Yii::$app->request->post())) {
             if ($modelKunde->l_plz_id == "")
                 $modelKunde->l_plz_id = null;
@@ -70,7 +74,7 @@ class TerminController extends Controller {
             else
                 $bool = true;
             if ($bool) {
-                $pattern = '/\d+[a-zA-Z]*/';
+                $pattern = '/(\d+)[\s\-]*([a-zA-Z]*)/';
                 foreach ($string2Array as $item) {
                     $result = preg_match($pattern, $item, $matches);
                     if ($result)
@@ -93,16 +97,29 @@ class TerminController extends Controller {
             $modelKunde->validate();
             if (!$modelKunde->validate()) {
                 print_r("<center><h2>ModelKunde ist invalide</h2></center>");
-                var_dump($modelKunde);
+
                 $bool = true;
             }
-            if ($bool)
+            if (!$bool) {
+                var_dump($modelKunde);
+                var_dump($model);
+                var_dump($matches);
+                var_dump($bool);
                 die();
+            }
+            //Die gesamten Schreibprozesse in die Datenbank müssen eigentlich in eine Tranaction verfrachtet werden
+            $createdBy=$model->angelegt_von;
             $modelKunde->angelegt_von = $modelKunde->id;
             $modelKunde->save();
-            $angelegtVon = $modelKunde->id;
-            $model->angelegt_von = $angelegtVon;
+            $model->angelegt_von = $modelKunde->id;
             $model->save();
+            $modelKundeImmo->kunde_id = $modelKunde->id;
+            $modelKundeImmo->immobilien_id = $immoId;
+            $modelKundeImmo->save();
+            $modelAdminBesKunde->besichtigungstermin_id = $model->id;
+            $modelAdminBesKunde->admin_id = $createdBy;
+            $modelAdminBesKunde->kunde_id = $modelKunde->id;
+            $modelAdminBesKunde->save();
             return $this->redirect(['view', 'id' => $model->id]);
         }
         return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
