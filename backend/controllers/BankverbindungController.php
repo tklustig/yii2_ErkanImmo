@@ -8,14 +8,14 @@ use backend\models\BankverbindungSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\base\DynamicModel;
 
 /**
  * BankverbindungController implements the CRUD actions for Bankverbindung model.
  */
-class BankverbindungController extends Controller
-{
-    public function behaviors()
-    {
+class BankverbindungController extends Controller {
+
+    public function behaviors() {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -30,14 +30,13 @@ class BankverbindungController extends Controller
      * Lists all Bankverbindung models.
      * @return mixed
      */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $searchModel = new BankverbindungSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -46,15 +45,14 @@ class BankverbindungController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
-    {
+    public function actionView($id) {
         $model = $this->findModel($id);
         $providerKunde = new \yii\data\ArrayDataProvider([
             'allModels' => $model->kundes,
         ]);
         return $this->render('view', [
-            'model' => $this->findModel($id),
-            'providerKunde' => $providerKunde,
+                    'model' => $this->findModel($id),
+                    'providerKunde' => $providerKunde,
         ]);
     }
 
@@ -63,15 +61,14 @@ class BankverbindungController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
+    public function actionCreate() {
         $model = new Bankverbindung();
 
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -82,11 +79,10 @@ class BankverbindungController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id) {
         if (Yii::$app->request->post('_asnew') == '1') {
             $model = new Bankverbindung();
-        }else{
+        } else {
             $model = $this->findModel($id);
         }
 
@@ -94,7 +90,7 @@ class BankverbindungController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -105,12 +101,11 @@ class BankverbindungController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
-    {
+    public function actionDelete($id) {
         $this->findModel($id)->deleteWithRelated();
         return $this->redirect(['index']);
     }
-    
+
     /**
      * 
      * Export Bankverbindung information into PDF format.
@@ -147,29 +142,29 @@ class BankverbindungController extends Controller
     }
 
     /**
-    * Creates a new Bankverbindung model by another data,
-    * so user don't need to input all field from scratch.
-    * If creation is successful, the browser will be redirected to the 'view' page.
-    *
-    * @param mixed $id
-    * @return mixed
-    */
+     * Creates a new Bankverbindung model by another data,
+     * so user don't need to input all field from scratch.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     *
+     * @param mixed $id
+     * @return mixed
+     */
     public function actionSaveAsNew($id) {
         $model = new Bankverbindung();
 
         if (Yii::$app->request->post('_asnew') != '1') {
             $model = $this->findModel($id);
         }
-    
+
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('saveAsNew', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
-    
+
     /**
      * Finds the Bankverbindung model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -177,32 +172,46 @@ class BankverbindungController extends Controller
      * @return Bankverbindung the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
+    protected function findModel($id) {
         if (($model = Bankverbindung::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
-    
+
     /**
-    * Action to load a tabular form grid
-    * for Kunde
-    * @author Yohanes Candrajaya <moo.tensai@gmail.com>
-    * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
-    *
-    * @return mixed
-    */
-    public function actionAddKunde()
-    {
+     * Action to load a tabular form grid
+     * for Kunde
+     * @author Yohanes Candrajaya <moo.tensai@gmail.com>
+     * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
+     *
+     * @return mixed
+     */
+    public function actionAddKunde() {
         if (Yii::$app->request->isAjax) {
             $row = Yii::$app->request->post('Kunde');
-            if((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
+            if ((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
                 $row[] = [];
             return $this->renderAjax('_formKunde', ['row' => $row]);
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
+
+    public function actionSelect() {
+        $this->layout = 'main_immo';
+        $DynamicModel = new DynamicModel(['art']);
+        $DynamicModel->addRule(['art'], 'integer');
+        $DynamicModel->addRule(['art'], 'required');
+
+        if ($DynamicModel->load(Yii::$app->request->post())) {
+            $this->redirect(['/bankverbindung/create', 'id' => $DynamicModel->art]);
+        } else {
+            return $this->render('_form_select', [
+                        'DynamicModel' => $DynamicModel,
+            ]);
+        }
+    }
+
 }

@@ -70,11 +70,9 @@ $this->beginPage()
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Aufrufen', 'url' => ['/bankverbindung/index']],
-                                ['label' => 'Anlegen', 'url' => ['/bankverbindung/create']],
+                                ['label' => 'Anlegen', 'url' => ['/bankverbindung/select']],
                             ],
                         ],
-                        '<li class="divider"></li>',
-                        ['label' => 'Bankverbindung eintragen', 'url' => ['/bankverbindung/create']],
                         '<li class="divider"></li>',
                         ['label' => 'Neuen Benutzer anlegen', 'url' => ['/site/signup']],
                         '<li class="divider"></li>',
