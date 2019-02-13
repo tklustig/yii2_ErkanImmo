@@ -4,13 +4,15 @@ namespace frontend\models\base;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use yii\behaviors\BlameableBehavior;
 
 /**
  * This is the base model class for table "bankverbindung".
  *
  * @property integer $id
- * @property string $art
+ * @property string $laenderkennung
+ * @property string $institut
+ * @property integer $blz
+ * @property integer $kontoNr
  * @property string $iban
  * @property string $bic
  * @property string $angelegt_am
@@ -18,7 +20,6 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $angelegt_von
  * @property integer $aktualisiert_von
  *
- * @property \frontend\models\User $angelegtVon
  * @property \frontend\models\User $aktualisiertVon
  * @property \frontend\models\Kunde[] $kundes
  */
@@ -34,7 +35,6 @@ class Bankverbindung extends \yii\db\ActiveRecord
     public function relationNames()
     {
         return [
-            'angelegtVon',
             'aktualisiertVon',
             'kundes'
         ];
@@ -46,10 +46,13 @@ class Bankverbindung extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['art', 'iban'], 'required'],
+            [['laenderkennung', 'blz', 'kontoNr'], 'required'],
+            [['blz', 'kontoNr', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
-            [['angelegt_von', 'aktualisiert_von'], 'integer'],
-            [['art', 'iban', 'bic'], 'string', 'max' => 32]
+            [['laenderkennung'], 'string', 'max' => 3],
+            [['institut'], 'string', 'max' => 255],
+            [['iban'], 'string', 'max' => 32],
+            [['bic'], 'string', 'max' => 8]
         ];
     }
 
@@ -68,7 +71,10 @@ class Bankverbindung extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'art' => Yii::t('app', 'Art'),
+            'laenderkennung' => Yii::t('app', 'Laenderkennung'),
+            'institut' => Yii::t('app', 'Institut'),
+            'blz' => Yii::t('app', 'Blz'),
+            'kontoNr' => Yii::t('app', 'Konto Nr'),
             'iban' => Yii::t('app', 'Iban'),
             'bic' => Yii::t('app', 'Bic'),
             'angelegt_am' => Yii::t('app', 'Angelegt Am'),
@@ -78,14 +84,6 @@ class Bankverbindung extends \yii\db\ActiveRecord
         ];
     }
     
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAngelegtVon()
-    {
-        return $this->hasOne(\frontend\models\User::className(), ['id' => 'angelegt_von']);
-    }
-        
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -114,11 +112,6 @@ class Bankverbindung extends \yii\db\ActiveRecord
                 'createdAtAttribute' => 'angelegt_am',
                 'updatedAtAttribute' => 'aktualisiert_am',
                 'value' => new \yii\db\Expression('NOW()'),
-            ],
-            'blameable' => [
-                'class' => BlameableBehavior::className(),
-                'createdByAttribute' => 'angelegt_von',
-                'updatedByAttribute' => 'aktualisiert_von',
             ],
         ];
     }

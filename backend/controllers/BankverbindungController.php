@@ -13,6 +13,8 @@ use kartik\widgets\Growl;
 
 class BankverbindungController extends Controller {
 
+    const RenderBackInCaseOfError = '/site/index';
+
     public function behaviors() {
         return [
             'verbs' => [
@@ -46,14 +48,37 @@ class BankverbindungController extends Controller {
     }
 
     public function actionCreate($id) {
-        $model = new Bankverbindung();
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                        'model' => $model,
-                        'id' => $id,
-            ]);
+        try {
+            $key = '_cs2YlLeMclnA504wLigtHuB9WvmKQI58EKtSVTm_mo3kULxLxIfryqWmzS9QqCJ';
+            $key = 'TopSecret'; //muss durch eine kostenlose Registrierung initialisert worden sein
+            $laenderkennung = 'DE';
+            $kontonummer = '1911869221';
+            $blz = '25050180';
+            // erzeuge einen neuen cURL-Handle
+            $curl = curl_init();
+            curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://fintechtoolbox.com/bankcodes/' . $blz));
+            $webserviceValues = curl_exec($curl);
+            $respobj = json_decode($webserviceValues);
+            $bank = $respobj->bank_code->description . ' ' . $respobj->bank_code->city;
+            $bic = $respobj->bank_code->bic;
+            var_dump($bank);
+            var_dump($bic);
+            curl_close($curl);
+            $iban = $this->CalcIban($laenderkennung, $blz, $kontonummer);
+            var_dump($iban);
+            die();
+
+            $model = new Bankverbindung();
+            if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                return $this->render('create', [
+                            'model' => $model,
+                            'id' => $id,
+                ]);
+            }
+        } catch (\Exception $error) {
+            error_handling::error_without_id($error, BankverbindungController::RenderBackInCaseOfError);
         }
     }
 
@@ -169,6 +194,38 @@ class BankverbindungController extends Controller {
                 ]
             ]
         ]);
+    }
+
+    private function CalcIban($laenderkennung, $bankleitzahl, $kontonummer) {
+        try {
+            $laenderkennungTranslate = false;
+            while (strlen($kontonummer) < 10) {
+                $kontonummer = '0' . $kontonummer;
+            }
+            $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $landExplode = str_split($laenderkennung);
+            if (count($landExplode) == 2) {
+                foreach ($landExplode as $check) {
+                    $laenderkennungTranslate .= (string) strpos($alphabet, $check) + 10;
+                }
+                $laenderkennungTranslate = $laenderkennungTranslate . '00';
+                if ($laenderkennungTranslate) {
+                    $ibanRaw = $bankleitzahl . $kontonummer . $laenderkennungTranslate;
+                    if (strlen($ibanRaw) == 24) {
+                        $pruefsumme = 98 - bcmod($ibanRaw, 97);
+                        if ($pruefsumme < 10)
+                            $pruefnummer = '0' . $pruefsumme;
+                        $iban = $laenderkennung . $pruefsumme . $bankleitzahl . $kontonummer;
+                    }
+                }
+                return $iban;
+            } else {
+                print_r('Error!Error!Error<br>Länderkennung hat das falsche Format');
+                die();
+            }
+        } catch (\Exception $error) {
+            error_handling::error_without_id($error, BankverbindungController::RenderBackInCaseOfError);
+        }
     }
 
 }

@@ -17,10 +17,13 @@ class Bankverbindung extends BaseBankverbindung
     {
         return array_replace_recursive(parent::rules(),
 	    [
-            [['art', 'iban'], 'required'],
+            [['laenderkennung', 'blz', 'kontoNr'], 'required'],
+            [['blz', 'kontoNr', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
-            [['angelegt_von', 'aktualisiert_von'], 'integer'],
-            [['art', 'iban', 'bic'], 'string', 'max' => 32]
+            [['laenderkennung'], 'string', 'max' => 3],
+            [['institut'], 'string', 'max' => 255],
+            [['iban'], 'string', 'max' => 32],
+            [['bic'], 'string', 'max' => 8]
         ]);
     }
 	
