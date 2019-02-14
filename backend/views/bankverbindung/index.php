@@ -1,5 +1,4 @@
 <?php
-
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\BankverbindungSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -19,16 +18,16 @@ $this->registerJs($search);
 <div class="bankverbindung-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Bankverbindung'), ['select'], ['class' => 'btn btn-success']) ?>
+        <?php // echo Html::a(Yii::t('app', 'Create Bankverbindung'), ['create'], ['class' => 'btn btn-success'])  ?>
         <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-info search-button']) ?>
     </p>
     <div class="search-form" style="display:none">
-        <?=  $this->render('_search', ['model' => $searchModel]); ?>
+        <?= $this->render('_search', ['model' => $searchModel]); ?>
     </div>
-    <?php 
+    <?php
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
         [
@@ -44,28 +43,32 @@ $this->registerJs($search);
             'expandOneOnly' => true
         ],
         ['attribute' => 'id', 'visible' => false],
-        'art',
+        'laenderkennung',
+        'institut',
+        'blz',
+        'kontoNr',
         'iban',
         'bic',
         'angelegt_am',
         'aktualisiert_am',
         'angelegt_von',
         [
-                'attribute' => 'aktualisiert_von',
-                'label' => Yii::t('app', 'Aktualisiert Von'),
-                'value' => function($model){
-                    if ($model->aktualisiertVon)
-                    {return $model->aktualisiertVon->id;}
-                    else
-                    {return NULL;}
-                },
-                'filterType' => GridView::FILTER_SELECT2,
-                'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'id'),
-                'filterWidgetOptions' => [
-                    'pluginOptions' => ['allowClear' => true],
-                ],
-                'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-bankverbindung-search-aktualisiert_von']
+            'attribute' => 'aktualisiert_von',
+            'label' => Yii::t('app', 'Aktualisiert Von'),
+            'value' => function($model) {
+                if ($model->aktualisiertVon) {
+                    return $model->aktualisiertVon->id;
+                } else {
+                    return NULL;
+                }
+            },
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'id'),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
             ],
+            'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-bankverbindung-search-aktualisiert_von']
+        ],
         [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{save-as-new} {view} {update} {delete}',
@@ -75,9 +78,10 @@ $this->registerJs($search);
                 },
             ],
         ],
-    ]; 
+    ];
     ?>
-    <?= GridView::widget([
+    <?=
+    GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => $gridColumn,
@@ -102,8 +106,9 @@ $this->registerJs($search);
                         '<li class="dropdown-header">Export All Data</li>',
                     ],
                 ],
-            ]) ,
+            ]),
         ],
-    ]); ?>
+    ]);
+    ?>
 
 </div>

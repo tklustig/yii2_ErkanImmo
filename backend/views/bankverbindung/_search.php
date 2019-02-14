@@ -17,13 +17,19 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id', ['template' => '{input}'])->textInput(['style' => 'display:none']); ?>
 
-    <?= $form->field($model, 'art')->textInput(['maxlength' => true, 'placeholder' => 'Art']) ?>
+    <?= $form->field($model, 'laenderkennung')->textInput(['maxlength' => true, 'placeholder' => 'Laenderkennung']) ?>
 
-    <?= $form->field($model, 'iban')->textInput(['maxlength' => true, 'placeholder' => 'Iban']) ?>
+    <?= $form->field($model, 'institut')->textInput(['maxlength' => true, 'placeholder' => 'Institut']) ?>
 
-    <?= $form->field($model, 'bic')->textInput(['maxlength' => true, 'placeholder' => 'Bic']) ?>
+    <?= $form->field($model, 'blz')->textInput(['placeholder' => 'Blz']) ?>
 
-    <?= $form->field($model, 'angelegt_am')->widget(\kartik\datecontrol\DateControl::classname(), [
+    <?= $form->field($model, 'kontoNr')->textInput(['placeholder' => 'KontoNr']) ?>
+
+    <?php /* echo $form->field($model, 'iban')->textInput(['maxlength' => true, 'placeholder' => 'Iban']) */ ?>
+
+    <?php /* echo $form->field($model, 'bic')->textInput(['maxlength' => true, 'placeholder' => 'Bic']) */ ?>
+
+    <?php /* echo $form->field($model, 'angelegt_am')->widget(\kartik\datecontrol\DateControl::classname(), [
         'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
         'saveFormat' => 'php:Y-m-d H:i:s',
         'ajaxConversion' => true,
@@ -33,7 +39,7 @@ use yii\widgets\ActiveForm;
                 'autoclose' => true,
             ]
         ],
-    ]); ?>
+    ]); */ ?>
 
     <?php /* echo $form->field($model, 'aktualisiert_am')->widget(\kartik\datecontrol\DateControl::classname(), [
         'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,

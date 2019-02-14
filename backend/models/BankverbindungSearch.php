@@ -18,8 +18,8 @@ use backend\models\Bankverbindung;
     public function rules()
     {
         return [
-            [['id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
-            [['art', 'iban', 'bic', 'angelegt_am', 'aktualisiert_am'], 'safe'],
+            [['id', 'blz', 'kontoNr', 'angelegt_von', 'aktualisiert_von'], 'integer'],
+            [['laenderkennung', 'institut', 'iban', 'bic', 'angelegt_am', 'aktualisiert_am'], 'safe'],
         ];
     }
 
@@ -57,13 +57,16 @@ use backend\models\Bankverbindung;
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'blz' => $this->blz,
+            'kontoNr' => $this->kontoNr,
             'angelegt_am' => $this->angelegt_am,
             'aktualisiert_am' => $this->aktualisiert_am,
             'angelegt_von' => $this->angelegt_von,
             'aktualisiert_von' => $this->aktualisiert_von,
         ]);
 
-        $query->andFilterWhere(['like', 'art', $this->art])
+        $query->andFilterWhere(['like', 'laenderkennung', $this->laenderkennung])
+            ->andFilterWhere(['like', 'institut', $this->institut])
             ->andFilterWhere(['like', 'iban', $this->iban])
             ->andFilterWhere(['like', 'bic', $this->bic]);
 

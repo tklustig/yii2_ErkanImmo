@@ -45,7 +45,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php 
     $gridColumn = [
         ['attribute' => 'id', 'visible' => false],
-        'art',
+        'laenderkennung',
+        'institut',
+        'blz',
+        'kontoNr',
         'iban',
         'bic',
         'angelegt_am',
@@ -88,6 +91,7 @@ if($providerKunde->totalCount){
         ['class' => 'yii\grid\SerialColumn'],
             ['attribute' => 'id', 'visible' => false],
             'l_plz_id',
+            'geschlecht',
             'vorname',
             'nachname',
             'stadt',

@@ -20,7 +20,10 @@ use kartik\grid\GridView;
 <?php 
     $gridColumn = [
         ['attribute' => 'id', 'visible' => false],
-        'art',
+        'laenderkennung',
+        'institut',
+        'blz',
+        'kontoNr',
         'iban',
         'bic',
         'angelegt_am',
