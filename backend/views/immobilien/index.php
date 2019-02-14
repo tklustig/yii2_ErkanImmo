@@ -11,11 +11,11 @@ use kartik\widgets\Alert;
 
 $this->title = Yii::t('app', 'Immobilien');
 $this->params['breadcrumbs'][] = $this->title;
-/*$search = "$('.search-button').click(function(){
+$search = "$('.search-button').click(function(){
 	$('.search-form').toggle(1000);
 	return false;
 });";
-$this->registerJs($search);*/
+$this->registerJs($search);
 ?>
 <div class='container-fluid'>
     <br><br><br>

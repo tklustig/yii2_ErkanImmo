@@ -21,11 +21,11 @@ $this->registerJs($search);
     </center>
     <div style="float:right;">
         <p>
-<?= Html::a(Yii::t('app', 'Kundendaten'), '#', ['class' => 'btn btn-info search-button']) ?>
+            <?= Html::a(Yii::t('app', 'Kundendaten'), '#', ['class' => 'btn btn-info search-button']) ?>
         </p>
     </div>
     <div class="search-form" style="display:none">
-    <?= $this->render('kundeninfo', ['id' => $id]); ?>
+        <?= $this->render('kundeninfo', ['id' => $id]); ?>
     </div>
     <?=
     $this->render('_form', [
