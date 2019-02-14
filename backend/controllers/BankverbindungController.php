@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\base\DynamicModel;
 use kartik\widgets\Growl;
+use common\classes\error_handling;
 
 class BankverbindungController extends Controller {
 
@@ -61,12 +62,12 @@ class BankverbindungController extends Controller {
             $respobj = json_decode($webserviceValues);
             $bank = $respobj->bank_code->description . ' ' . $respobj->bank_code->city;
             $bic = $respobj->bank_code->bic;
-            var_dump($bank);
+            /*var_dump($bank);
             var_dump($bic);
             curl_close($curl);
             $iban = $this->CalcIban($laenderkennung, $blz, $kontonummer);
             var_dump($iban);
-            die();
+            die();*/
 
             $model = new Bankverbindung();
             if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {

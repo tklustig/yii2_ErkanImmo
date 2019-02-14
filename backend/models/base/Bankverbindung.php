@@ -9,7 +9,6 @@ use yii\behaviors\BlameableBehavior;
 class Bankverbindung extends \yii\db\ActiveRecord {
 
     use \mootensai\relation\RelationTrait;
-    public $blz;
 
     public function relationNames() {
         return [
@@ -20,10 +19,13 @@ class Bankverbindung extends \yii\db\ActiveRecord {
 
     public function rules() {
         return [
-            [['art', 'iban'], 'required'],
+            [['laenderkennung', 'blz', 'kontoNr'], 'required'],
+            [['blz', 'kontoNr', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
-            [['angelegt_von', 'aktualisiert_von'], 'integer'],
-            [['art', 'iban', 'bic'], 'string', 'max' => 32]
+            [['laenderkennung'], 'string', 'max' => 3],
+            [['institut'], 'string', 'max' => 255],
+            [['iban'], 'string', 'max' => 32],
+            [['bic'], 'string', 'max' => 8]
         ];
     }
 
@@ -34,13 +36,16 @@ class Bankverbindung extends \yii\db\ActiveRecord {
     public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
-            'art' => Yii::t('app', 'Institut'),
-            'iban' => Yii::t('app', 'IBAN'),
-            'bic' => Yii::t('app', 'BIC'),
-            'angelegt_am' => Yii::t('app', 'angelegt am'),
-            'aktualisiert_am' => Yii::t('app', 'aktualisiert am'),
-            'angelegt_von' => Yii::t('app', 'angelegt von'),
-            'aktualisiert_von' => Yii::t('app', 'aktualisiert von'),
+            'laenderkennung' => Yii::t('app', 'Laenderkennung'),
+            'institut' => Yii::t('app', 'Institut'),
+            'blz' => Yii::t('app', 'Blz'),
+            'kontoNr' => Yii::t('app', 'Konto Nr'),
+            'iban' => Yii::t('app', 'Iban'),
+            'bic' => Yii::t('app', 'Bic'),
+            'angelegt_am' => Yii::t('app', 'Angelegt Am'),
+            'aktualisiert_am' => Yii::t('app', 'Aktualisiert Am'),
+            'angelegt_von' => Yii::t('app', 'Angelegt Von'),
+            'aktualisiert_von' => Yii::t('app', 'Aktualisiert Von'),
         ];
     }
 
@@ -49,7 +54,7 @@ class Bankverbindung extends \yii\db\ActiveRecord {
     }
 
     public function getKundes() {
-        return $this->hasMany(\frontend\models\Kunde::className(), ['bankverbindung_id' => 'id']);
+        return $this->hasMany(\backend\models\Kunde::className(), ['bankverbindung_id' => 'id']);
     }
 
     public function behaviors() {
@@ -63,7 +68,7 @@ class Bankverbindung extends \yii\db\ActiveRecord {
             'blameable' => [
                 'class' => BlameableBehavior::className(),
                 'createdByAttribute' => 'angelegt_von',
-                'updatedByAttribute' => 'aktualisert_von',
+                'updatedByAttribute' => 'aktualisiert_von',
             ],
         ];
     }
