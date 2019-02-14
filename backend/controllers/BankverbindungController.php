@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\base\DynamicModel;
 use kartik\widgets\Growl;
+use kartik\widgets\Alert;
 use common\classes\error_handling;
 
 class BankverbindungController extends Controller {
@@ -31,10 +32,7 @@ class BankverbindungController extends Controller {
         $searchModel = new BankverbindungSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
-        ]);
+        return $this->render('index', ['searchModel' => $searchModel,'dataProvider' => $dataProvider]);
     }
 
     public function actionView($id) {
@@ -42,44 +40,81 @@ class BankverbindungController extends Controller {
         $providerKunde = new \yii\data\ArrayDataProvider([
             'allModels' => $model->kundes,
         ]);
-        return $this->render('view', [
-                    'model' => $this->findModel($id),
-                    'providerKunde' => $providerKunde,
-        ]);
+        return $this->render('view', ['model' => $this->findModel($id),'providerKunde' => $providerKunde]);
     }
 
     public function actionCreate($id) {
         try {
-            $key = '_cs2YlLeMclnA504wLigtHuB9WvmKQI58EKtSVTm_mo3kULxLxIfryqWmzS9QqCJ';
-            $key = 'TopSecret'; //muss durch eine kostenlose Registrierung initialisert worden sein
-            $laenderkennung = 'DE';
-            $kontonummer = '1911869221';
-            $blz = '25050180';
-            // erzeuge einen neuen cURL-Handle
-            $curl = curl_init();
-            curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://fintechtoolbox.com/bankcodes/' . $blz));
-            $webserviceValues = curl_exec($curl);
-            $respobj = json_decode($webserviceValues);
-            $bank = $respobj->bank_code->description . ' ' . $respobj->bank_code->city;
-            $bic = $respobj->bank_code->bic;
-            /*var_dump($bank);
-            var_dump($bic);
-            curl_close($curl);
-            $iban = $this->CalcIban($laenderkennung, $blz, $kontonummer);
-            var_dump($iban);
-            die();*/
-
             $model = new Bankverbindung();
-            if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->loadAll(Yii::$app->request->post())) {
+                $laenderkennung = $model->laenderkennung;
+                $kontonummer = $model->kontoNr;
+                $blz = $model->blz;
+                $curl = curl_init();
+                curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://fintechtoolbox.com/bankcodes/' . $blz));
+                try {
+                    $webserviceValues = curl_exec($curl);
+                    $respobj = json_decode($webserviceValues);
+                    $institut = $respobj->bank_code->description . ' ' . $respobj->bank_code->city;
+                    $bic = $respobj->bank_code->bic;
+                    curl_close($curl);
+                } catch (\Exception $e) {
+                    $message = 'Mindestens eine Ihrer Angaben sind inkorrekt. Bitte überprüfen Sie, ob Kontonummer und Bankleitzahl stimmig sind!';
+                    $this->message($message, 'Error', 250, Growl::TYPE_DANGER);
+                    $zusatz = 'Um zu überprüfen, ob der Webservice die korrekten Daten errechnet, geben Sie bitte folgendes ein:<br>für Länderkennung: DE<br>für BLZ: 25050180<br>für Kontonummer: 1911869221';
+                    echo Alert::widget([
+                        'type' => Alert::TYPE_INFO,
+                        'title' => 'Importan Message',
+                        'icon' => 'fas fa-info-circle',
+                        'body' => $zusatz,
+                        'showSeparator' => true,
+                        'delay' => false
+                    ]);
+                    return $this->render('create', ['model' => $model,'id' => $id]);
+                }
+                if (substr($blz, -1) == ' ') {
+                    $blz = substr($bla, 0, -1);
+                } else if (substr($kontonummer, -1) == ' ') {
+                    $kontonummer = substr($kontonummer, 0, -1);
+                }
+                $iban = $this->CalcIban($laenderkennung, $blz, $kontonummer, $model, $id);
+                if (!$iban) {
+                    $message = 'IbanRaw hat in der gekapselten Methode CalcIban() die falsche Länge. Informieren Sie den Softwarehersteller oder überprüfen Sie Ihre Eingaben.';
+                    $this->message($message, 'Error!', 250, Growl::TYPE_GROWL);
+                    return $this->render('create', ['model' => $model,'id' => $id,]);
+                } else
+                    return $this->redirect(['conclusion', 'id' => $id, 'laenderkennung' => $laenderkennung, 'kontonummer' => $kontonummer, 'blz' => $blz, 'institut' => $institut, 'bic' => $bic, 'iban' => $iban]);
             } else {
-                return $this->render('create', [
-                            'model' => $model,
-                            'id' => $id,
-                ]);
+                return $this->render('create', ['model' => $model,'id' => $id]);
             }
         } catch (\Exception $error) {
             error_handling::error_without_id($error, BankverbindungController::RenderBackInCaseOfError);
+        }
+    }
+
+    public function actionConclusion($id, $laenderkennung, $kontonummer, $blz, $institut, $bic, $iban) {
+        $model = new Bankverbindung();
+        var_dump($id);
+        var_dump($laenderkennung);
+        var_dump($kontonummer);
+        var_dump($blz);
+        var_dump($institut);
+        var_dump($bic);
+        var_dump($iban);
+        if ($model->loadAll(Yii::$app->request->post())) {
+            /*
+              ToDO:Save record into database
+             */
+        } else {
+            return $this->render('_form_conclusion', [
+                        'id' => $id,
+                        'laenderkennung' => $laenderkennung,
+                        'kontonummer' => $kontonummer,
+                        'blz' => $blz,
+                        'institut' => $institut,
+                        'bic' => $bic,
+                        'iban' => $iban
+            ]);
         }
     }
 
@@ -93,9 +128,7 @@ class BankverbindungController extends Controller {
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('update', [
-                        'model' => $model,
-            ]);
+            return $this->render('update', ['model' => $model]);
         }
     }
 
@@ -110,10 +143,7 @@ class BankverbindungController extends Controller {
             'allModels' => $model->kundes,
         ]);
 
-        $content = $this->renderAjax('_pdf', [
-            'model' => $model,
-            'providerKunde' => $providerKunde,
-        ]);
+        $content = $this->renderAjax('_pdf', ['model' => $model,'providerKunde' => $providerKunde]);
 
         $pdf = new \kartik\mpdf\Pdf([
             'mode' => \kartik\mpdf\Pdf::MODE_CORE,
@@ -143,9 +173,7 @@ class BankverbindungController extends Controller {
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('saveAsNew', [
-                        'model' => $model,
-            ]);
+            return $this->render('saveAsNew', ['model' => $model]);
         }
     }
 
@@ -168,9 +196,7 @@ class BankverbindungController extends Controller {
             if ($DynamicModel->load(Yii::$app->request->post())) {
                 $this->redirect(['/bankverbindung/create', 'id' => $DynamicModel->kunde]);
             } else {
-                return $this->render('_form_select', [
-                            'DynamicModel' => $DynamicModel,
-                ]);
+                return $this->render('_form_select', ['DynamicModel' => $DynamicModel]);
             }
         } else {
             $string = 'Es exisitert noch kein Kunde in der Datenbank. Steigern Sie Ihre Kundenaqkuise!';
@@ -217,9 +243,10 @@ class BankverbindungController extends Controller {
                         if ($pruefsumme < 10)
                             $pruefnummer = '0' . $pruefsumme;
                         $iban = $laenderkennung . $pruefsumme . $bankleitzahl . $kontonummer;
-                    }
+                        return $iban;
+                    } else
+                        return false;
                 }
-                return $iban;
             } else {
                 print_r('Error!Error!Error<br>Länderkennung hat das falsche Format');
                 die();

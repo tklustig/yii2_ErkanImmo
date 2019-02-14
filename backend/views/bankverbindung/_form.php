@@ -37,26 +37,26 @@ use kartik\widgets\ActiveForm;
     <div class="col-md-4">
         <?=
         $form->field($model, 'kontoNr', ['addon' => [
-                'prepend' => ['content' => 'Kontonummer']]])->textInput(['maxlength' => true, 'placeholder' => 'bitte die Kontonummer'])
+                'prepend' => ['content' => 'Kontonummer']]])->textInput(['maxlength' => true, 'placeholder' => 'Bitte die Kontonummer eingeben'])
         ?>
     </div>
     <div class="col-md-4">
         <?=
         $form->field($model, 'iban', ['addon' => [
-                'prepend' => ['content' => 'IBAN'], 'append' => ['content' => 'berechnet die Applikation']]])->textInput(['maxlength' => true, 'placeholder' => 'Die IBAN ermittelt die Applikation', 'readonly' => true])
+                'prepend' => ['content' => 'IBAN'], 'append' => ['content' => 'berechnet die Applikation']]])->textInput(['maxlength' => true, 'placeholder' => 'IBAN ermittelt die Applikation', 'readonly' => true])
         ?>
     </div>
     <div class="col-md-4">
         <?=
         $form->field($model, 'bic', ['addon' => [
-                'prepend' => ['content' => 'BIC'], 'append' => ['content' => 'ermittelt die Applikation']]])->textInput(['maxlength' => true, 'placeholder' => 'BIC ermittelt die Applikation', 'readonly' => true])
+                'prepend' => ['content' => 'BIC'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true, 'placeholder' => 'BIC ermittelt die Applikation', 'readonly' => true])
         ?>
     </div>
 </div>
 <div class="col-md-4">
     <?=
     $form->field($model, 'institut', ['addon' => [
-            'prepend' => ['content' => 'Institut'], 'append' => ['content' => 'ermittelt die Applikation']]])->textInput(['maxlength' => true, 'placeholder' => 'Institut ermittelt die Applikation', 'readonly' => true])
+            'prepend' => ['content' => 'Institut'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true, 'placeholder' => 'Institut ermittelt die Applikation', 'readonly' => true])
     ?>
 </div>
 <div class="form-group">

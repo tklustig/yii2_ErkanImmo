@@ -63,6 +63,7 @@ return [
                 'bankverbindung_aktualisieren' => 'bankverbindung/update',
                 'bankverbindung_löschen' => 'bankverbindung/delete',
                 'bankverbindung_select' => 'bankverbindung/select',
+                'bankverbindung_conc' => 'bankverbindung/conclusion',
                 'pdf' => 'gridview/export/download',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',
