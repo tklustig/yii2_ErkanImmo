@@ -14,6 +14,7 @@ use kartik\form\ActiveForm;
                     'showLabels' => false
     ]]);
     $this->title = Yii::t('app', 'Vorauswahl');
+    $data = array('1' => 'Vermietung', '2' => 'Verkauf');
     ?>
     <div class="page-header">
         <br><br><center>
@@ -22,11 +23,11 @@ use kartik\form\ActiveForm;
     <div class="jumbotron">
         <div class="container">
             <div class="col-md-12">
-                <p>Bitte treffen Sie eine Vorauswahl,für welchen Kunden Sie die Bankdaten eingeben möchten..</p>
+                <p>Bitte treffen Sie eine Vorauswahl, was für ein Objekt Sie erstellen wollen. Ihre Wahl bestimmt maßgeblich das folgende Formular</p>
                 <?=
                 $form->field($DynamicModel, 'art', ['addon' => [
                         'prepend' => ['content' => 'Typ']]])->widget(\kartik\widgets\Select2::classname(), [
-                    'data' => \yii\helpers\ArrayHelper::map(\frontend\models\Kunde::find()->orderBy('id')->asArray()->all(), 'id', 'bezeichnung'),
+                    'data' => $data,
                     'options' => ['placeholder' => Yii::t('app', 'Art des Objektes wählen')],
                     'pluginOptions' => [
                         'allowClear' => true
