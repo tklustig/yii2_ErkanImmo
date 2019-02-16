@@ -23,11 +23,13 @@ if (!empty($session->getAllFlashes())) {
     }
 }
 ?>
-<h1>Adminseite</h1>
+<center><div class="page-header">
+        <h1 class="text-purple">Administration <small class="text-danger">Untertitel</small></h1>
+    </div></center>
 
 <label class="lead">Diese Seite ist nur dem Administator der Seite zugänglich. Sie ist durch einen PasswortHash geschützt.
     Das Passwort steht folglich nicht als Plaintext zur Verfügung.
-    Sollten sie ihre Logindaten verloren haben, können Sie neue anfordern, indem Sie auf der Loginseite 'I forgot my password' anklicken. Das Einspeisen von Immobilien lässt sich durch obiges Menu ansteuern</label>
+    Sollten sie ihre Logindaten verloren haben, können Sie neue anfordern, indem Sie auf der Loginseite 'I forgot my password' anklicken. Das Einspeisen von Immobilien u.v.m. lässt sich durch obiges Menu ansteuern.</label>
 
 <?php
 \drmabuse\slick\SlickWidget::widget([

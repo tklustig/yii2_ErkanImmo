@@ -76,6 +76,8 @@ $this->beginPage()
                         '<li class="divider"></li>',
                         ['label' => 'Kundendaten abrufen', 'url' => ['#']],
                         '<li class="divider"></li>',
+                        ['label' => 'Besichtigungstermine abrufen', 'url' => ['#']],
+                        '<li class="divider"></li>',
                         ['label' => 'Neuen Benutzer anlegen', 'url' => ['/site/signup']],
                         '<li class="divider"></li>',
                         ['label' => 'Benutzer löschen', 'url' => ['/site/deluser']],
