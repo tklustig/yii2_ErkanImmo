@@ -9,6 +9,7 @@ use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\base\DynamicModel;
 use yii\web\Session;
+use yii\data\ActiveDataProvider;
 use kartik\widgets\Growl;
 use common\models\LoginForm;
 use common\models\User;
@@ -196,6 +197,15 @@ class SiteController extends Controller {
         } catch (\Exception $error) {
             error_handling::error_without_id($error, SiteController::RenderBackInCaseOfError);
         }
+    }
+
+    public function actionShowuser() {
+        $dataProvider = new ActiveDataProvider([
+            'query' => User::find()
+        ]);
+        return $this->render('_form_user', [
+                    'dataProvider' => $dataProvider
+        ]);
     }
 
     protected function findModel_user($id) {
