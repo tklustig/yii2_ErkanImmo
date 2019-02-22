@@ -288,8 +288,10 @@ class ImmobilienController extends Controller {
 //andernfalls lösche gemäß der Angaben im Array
                 } else {
                     for ($i = 0; $i < count($ArrayOfPicName); $i++) {
-                        unlink($UrlBackend . $ArrayOfPicName[$i]);
-                        unlink($UrlFrontend . $ArrayOfPicName[$i]);
+                        if (file_exists($UrlBackend . $ArrayOfPicName[$i])) {
+                            unlink($UrlBackend . $ArrayOfPicName[$i]);
+                            unlink($UrlFrontend . $ArrayOfPicName[$i]);
+                        }
                         $session->addFlash('info', 'Der Anhang ' . $ArrayOfPicName[$i] . " wurde aus Ihrem Webverzeichnis entfernt.");
                     }
                 }
