@@ -17,12 +17,21 @@ use yii\widgets\DetailView;
         $gridColumn = [
             'id',
             'uhrzeit',
-            'Relevanz',
+            [
+                'attribute' => 'Relevanz',
+                'label' => 'Priorität hoch',
+                'format' => 'raw',
+                'value' => $model->Relevanz ? '<span class="label label-success">Ja</span>' : '<span class="label label-danger">Nein</span>',
+                'widgetOptions' => [
+                    'pluginOptions' => [
+                        'onText' => 'Ja',
+                        'offText' => 'Nein',
+                    ]
+                ],
+                'valueColOptions' => ['style' => 'width:30%']
+            ],
             'angelegt_am',
             'aktualisiert_am',
-            'angelegtVon.username',
-            'aktualisiert_von',
-            'Immobilien_id',
         ];
         echo DetailView::widget([
             'model' => $model,

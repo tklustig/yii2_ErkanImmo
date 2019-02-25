@@ -54,9 +54,13 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'attribute' => 'id',
-            'contentOptions' => ['class' => 'id_breite_css'],
+            'label' => Yii::t('app', 'Immobilien-Id'),
+            'value' => function($model) {
+                return $model->immobilien->id;
+            }
         ],
         'immobilien.stadt',
+        'immobilien.strasse',
         [
             'attribute' => '',
             'label' => Yii::t('app', 'Art'),

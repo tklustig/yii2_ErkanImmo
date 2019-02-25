@@ -53,6 +53,11 @@ class TerminController extends Controller {
         if ($model->load(Yii::$app->request->post()) && $modelKunde->load(Yii::$app->request->post())) {
             if ($modelKunde->l_plz_id == "")
                 $modelKunde->l_plz_id = null;
+            if (empty($model->telefon) && empty($model->email)) {
+                $message = "Bitte geben Sie entweder eine Telefonnumer oder eine Mailadresse an!";
+                $this->message($message, 'Warnung', 1250, Growl::TYPE_WARNING);
+                return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
+            }
             //handle ForeignKey Immobilien_id in table besichtigungstermin
             $immoId = Immobilien::findOne(['id' => $id])->id;
             $model->Immobilien_id = $immoId;
@@ -82,7 +87,7 @@ class TerminController extends Controller {
                     else
                         $bool = false;
                 }
-            }
+            }else
             if (!$bool) {
                 $message = "Die Strasse enthält keine vom Namen abgesonderte Hausnummer.";
                 $this->message($message, 'Error', 1250, Growl::TYPE_DANGER);
@@ -91,23 +96,22 @@ class TerminController extends Controller {
             $model->validate();
             if (!$model->validate()) {
                 print_r("<center><h2>ModelTermine ist invalide</h2></center>");
-                var_dump($model);
-                $bool = true;
+                $bool = false;
             }
             $modelKunde->validate();
             if (!$modelKunde->validate()) {
                 print_r("<center><h2>ModelKunde ist invalide</h2></center>");
-
-                $bool = true;
+                $bool = false;
             }
             if (!$bool) {
-                var_dump($modelKunde);
+                print_r('<br><br>');
+                print_r('Fehler während der Validierung der Datenbankklassen. Bitte informieren Sie den Softwarehersteller.');
                 var_dump($model);
                 var_dump($matches);
                 var_dump($bool);
                 die();
             }
-            //Die gesamten Schreibprozesse in die Datenbank müssen eigentlich in eine Tranaction verfrachtet werden
+            //ToDo: Die gesamten Schreibprozesse bzgl. der Datenbank müssen eigentlich in eine Tranaction verfrachtet werden
             $createdBy = $model->angelegt_von;
             $modelKunde->angelegt_von = $modelKunde->id;
             $modelKunde->save();

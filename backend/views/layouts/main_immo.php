@@ -85,7 +85,7 @@ $this->beginPage()
                         ['label' => 'Termine', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
-                                ['label' => 'Besichtigungstermine abrufen(ToDo)', 'url' => $link],
+                                ['label' => 'Besichtigungstermine abrufen', 'url' => $link],
                             ],
                         ],
                         '<li class="divider"></li>',

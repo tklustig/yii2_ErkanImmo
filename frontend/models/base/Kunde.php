@@ -4,6 +4,7 @@ namespace frontend\models\base;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 
 /**
  * This is the base model class for table "kunde".
@@ -17,6 +18,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string $strasse
  * @property string $geburtsdatum
  * @property integer $solvenz
+ * @property string $telefon
+ * @property string $email
  * @property integer $bankverbindung_id
  * @property string $angelegt_am
  * @property string $aktualisiert_am
@@ -29,17 +32,15 @@ use yii\behaviors\TimestampBehavior;
  * @property \frontend\models\User $aktualisiertVon
  * @property \frontend\models\Kundeimmobillie[] $kundeimmobillies
  */
-class Kunde extends \yii\db\ActiveRecord
-{
+class Kunde extends \yii\db\ActiveRecord {
+
     use \mootensai\relation\RelationTrait;
 
-
     /**
-    * This function helps \mootensai\relation\RelationTrait runs faster
-    * @return array relation names of this model
-    */
-    public function relationNames()
-    {
+     * This function helps \mootensai\relation\RelationTrait runs faster
+     * @return array relation names of this model
+     */
+    public function relationNames() {
         return [
             'adminbesichtigungkundes',
             'eDateianhangs',
@@ -52,96 +53,93 @@ class Kunde extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['l_plz_id', 'geschlecht', 'vorname', 'nachname', 'stadt', 'strasse'], 'required'],
             [['l_plz_id', 'bankverbindung_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['geburtsdatum', 'angelegt_am', 'aktualisiert_am'], 'safe'],
+            ['email', 'email'],
             [['geschlecht'], 'string', 'max' => 64],
             [['vorname', 'nachname', 'stadt'], 'string', 'max' => 255],
             [['strasse'], 'string', 'max' => 44],
-            [['solvenz'], 'string', 'max' => 1]
+            [['solvenz'], 'string', 'max' => 1],
+            ['telefon', 'filter', 'filter' => function ($value) {
+                    return $value;
+                }],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'kunde';
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'l_plz_id' => Yii::t('app', 'L Plz ID'),
-            'geschlecht' => Yii::t('app', 'Geschlecht'),
-            'vorname' => Yii::t('app', 'Vorname'),
-            'nachname' => Yii::t('app', 'Nachname'),
-            'stadt' => Yii::t('app', 'Stadt'),
-            'strasse' => Yii::t('app', 'Strasse'),
-            'geburtsdatum' => Yii::t('app', 'Geburtsdatum'),
-            'solvenz' => Yii::t('app', 'Solvenz'),
-            'bankverbindung_id' => Yii::t('app', 'Bankverbindung ID'),
-            'angelegt_am' => Yii::t('app', 'Angelegt Am'),
-            'aktualisiert_am' => Yii::t('app', 'Aktualisiert Am'),
-            'angelegt_von' => Yii::t('app', 'Angelegt Von'),
-            'aktualisiert_von' => Yii::t('app', 'Aktualisiert Von'),
+            'id' => 'ID',
+            'l_plz_id' => 'L Plz ID',
+            'geschlecht' => 'Geschlecht',
+            'vorname' => 'Vorname',
+            'nachname' => 'Nachname',
+            'stadt' => 'Stadt',
+            'strasse' => 'Strasse',
+            'geburtsdatum' => 'Geburtsdatum',
+            'solvenz' => 'Solvenz',
+            'telefon' => 'Telefon',
+            'email' => 'Email',
+            'bankverbindung_id' => 'Bankverbindung ID',
+            'angelegt_am' => 'Angelegt Am',
+            'aktualisiert_am' => 'Aktualisiert Am',
+            'angelegt_von' => 'Angelegt Von',
+            'aktualisiert_von' => 'Aktualisiert Von',
         ];
     }
-    
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAdminbesichtigungkundes()
-    {
+    public function getAdminbesichtigungkundes() {
         return $this->hasMany(\frontend\models\Adminbesichtigungkunde::className(), ['kunde_id' => 'id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEDateianhangs()
-    {
+    public function getEDateianhangs() {
         return $this->hasMany(\frontend\models\EDateianhang::className(), ['kunde_id' => 'id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBankverbindung()
-    {
+    public function getBankverbindung() {
         return $this->hasOne(\frontend\models\Bankverbindung::className(), ['id' => 'bankverbindung_id']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAktualisiertVon()
-    {
+    public function getAktualisiertVon() {
         return $this->hasOne(\frontend\models\User::className(), ['id' => 'aktualisiert_von']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getKundeimmobillies()
-    {
+    public function getKundeimmobillies() {
         return $this->hasMany(\frontend\models\Kundeimmobillie::className(), ['kunde_id' => 'id']);
     }
-    
+
     /**
      * @inheritdoc
      * @return array mixed
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
@@ -149,6 +147,12 @@ class Kunde extends \yii\db\ActiveRecord
                 'updatedAtAttribute' => 'aktualisiert_am',
                 'value' => new \yii\db\Expression('NOW()'),
             ],
+            'blameable' => [
+                'class' => BlameableBehavior::className(),
+                'createdByAttribute' => 'angelegt_von',
+                'updatedByAttribute' => 'aktualisiert_von',
+            ],
         ];
     }
+
 }

@@ -94,11 +94,7 @@ class BankverbindungController extends Controller {
 
     public function actionConclusion($id, $laenderkennung, $kontonummer, $blz, $institut, $bic, $iban) {
         $model = new Bankverbindung();
-        print_r('<br><br>');
-        var_dump(Yii::$app->request->post());
         if (Yii::$app->request->post()) {
-            print_r('Request succesfully send!');
-            die();
             $model->laenderkennung = $laenderkennung;
             $model->institut = $institut;
             $model->blz = $blz;
@@ -111,8 +107,6 @@ class BankverbindungController extends Controller {
               ToDO:Save record into database
              */
         } else {
-            print_r("<br><br>");
-            var_dump($id);
             return $this->render('_form_conclusion', [
                         'id' => $id,
                         'laenderkennung' => $laenderkennung,

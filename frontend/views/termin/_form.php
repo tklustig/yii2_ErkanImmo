@@ -110,7 +110,7 @@ use frontend\models\Immobilien;
                         </div>
                         <div id="collapseTwo" class="panel-collapse collapse in"> <!-- !weist der Column die JS-Id zu!-->
                             <div class="row">
-                                <div class="col-md-3">                                  
+                                <div class="col-md-4">                                  
                                     <?=
                                     $form->field($modelKunde, 'geschlecht', ['addon' => [
                                             'prepend' => ['content' => 'Geschlecht']]])->widget(\kartik\widgets\Select2::classname(), [
@@ -122,17 +122,17 @@ use frontend\models\Immobilien;
                                     ]);
                                     ?>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <?=
                                     $form->field($modelKunde, 'vorname', ['addon' => ['prepend' => ['content' => 'Vorname']]])->textInput();
                                     ?>   
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <?=
                                     $form->field($modelKunde, 'nachname', ['addon' => ['prepend' => ['content' => 'Nachname']]])->textInput();
                                     ?>   
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <?=
                                     $form->field($modelKunde, 'geburtsdatum', ['addon' => [
                                             'prepend' => ['content' => 'Geburtsdatum']]])->widget(DatePicker::classname(), [
@@ -183,6 +183,18 @@ use frontend\models\Immobilien;
                                     <?=
                                     $form->field($modelKunde, 'strasse', ['addon' => [
                                             'prepend' => ['content' => 'Strasse'], 'append' => ['content' => 'Hausnummer']]])->textInput();
+                                    ?>  
+                                </div>
+                                <div class="col-md-4">
+                                    <?=
+                                    $form->field($modelKunde, 'email', ['addon' => [
+                                            'prepend' => ['content' => 'Email'], 'append' => ['content' => 'muss valide sein']]])->textInput();
+                                    ?>  
+                                </div>
+                                <div class="col-md-4">
+                                    <?=
+                                    $form->field($modelKunde, 'telefon', ['addon' => [
+                                            'prepend' => ['content' => 'Telefon'], 'append' => ['content' => 'Handy bevorzugt']]])->textInput();
                                     ?>  
                                 </div>
                             </div>
