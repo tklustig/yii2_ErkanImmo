@@ -20,7 +20,7 @@ use yii\widgets\DetailView;
             'Relevanz',
             'angelegt_am',
             'aktualisiert_am',
-            'angelegt_von',
+            'angelegtVon.username',
             'aktualisiert_von',
             'Immobilien_id',
         ];

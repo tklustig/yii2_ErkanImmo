@@ -36,6 +36,7 @@ AssetBundle::register($this);
                             'class' => 'navbar-inverse navbar-fixed-top',
                         ],
                     ]);
+                    $link = \Yii::$app->urlManagerFrontend->baseUrl . '/termin_anzeigen';
                     $menuItems = [
                         [
                             'label' => 'Admin',
@@ -69,7 +70,7 @@ AssetBundle::register($this);
                                 ['label' => 'Termine', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
-                                        ['label' => 'Besichtigungstermine abrufen(ToDo)', 'url' => ['/site/index']],
+                                        ['label' => 'Besichtigungstermine abrufen(ToDo)', 'url' => $link],
                                     ],
                                 ],
                                 '<li class="divider"></li>',

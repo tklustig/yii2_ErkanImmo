@@ -8,18 +8,16 @@ use yii\widgets\Pjax;
 /* @var $searchModel frontend\models\TerminSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Besichtigungstermins');
+$this->title = Yii::t('app', 'Besichtigungstermin(e)');
+
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="besichtigungstermin-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+    <center>
+        <h1><?= Html::encode($this->title) ?></h1>
+    </center>
     <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Besichtigungstermin'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
     <?php
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
@@ -39,11 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'uhrzeit',
         'Relevanz',
-        'angelegt_am',
-        'aktualisiert_am',
-        'angelegt_von',
-        'aktualisiert_von',
-        'Immobilien_id',
+        'immobilien.stadt'
     ];
     ?>
     <div class="container-fluid">

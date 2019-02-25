@@ -58,6 +58,7 @@ return [
                 'termin_create' => 'termin/create',
                 'termin_update'=>'termin/update',
                 'termin_auswahl'=>'termin/auswahl',
+                'termin_anzeigen'=>'termin/index',
                 'plz_get' => 'plz/get-city-province',
                 'view_termin' => 'termin/view',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',

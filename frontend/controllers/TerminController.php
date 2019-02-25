@@ -108,7 +108,7 @@ class TerminController extends Controller {
                 die();
             }
             //Die gesamten Schreibprozesse in die Datenbank müssen eigentlich in eine Tranaction verfrachtet werden
-            $createdBy=$model->angelegt_von;
+            $createdBy = $model->angelegt_von;
             $modelKunde->angelegt_von = $modelKunde->id;
             $modelKunde->save();
             $model->angelegt_von = $modelKunde->id;
