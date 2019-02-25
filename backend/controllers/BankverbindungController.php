@@ -32,7 +32,7 @@ class BankverbindungController extends Controller {
         $searchModel = new BankverbindungSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', ['searchModel' => $searchModel,'dataProvider' => $dataProvider]);
+        return $this->render('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
     }
 
     public function actionView($id) {
@@ -40,7 +40,7 @@ class BankverbindungController extends Controller {
         $providerKunde = new \yii\data\ArrayDataProvider([
             'allModels' => $model->kundes,
         ]);
-        return $this->render('view', ['model' => $this->findModel($id),'providerKunde' => $providerKunde]);
+        return $this->render('view', ['model' => $this->findModel($id), 'providerKunde' => $providerKunde]);
     }
 
     public function actionCreate($id) {
@@ -70,7 +70,7 @@ class BankverbindungController extends Controller {
                         'showSeparator' => true,
                         'delay' => false
                     ]);
-                    return $this->render('create', ['model' => $model,'id' => $id]);
+                    return $this->render('create', ['model' => $model, 'id' => $id]);
                 }
                 if (substr($blz, -1) == ' ') {
                     $blz = substr($bla, 0, -1);
@@ -81,11 +81,11 @@ class BankverbindungController extends Controller {
                 if (!$iban) {
                     $message = 'IbanRaw hat in der gekapselten Methode CalcIban() die falsche Länge. Informieren Sie den Softwarehersteller oder überprüfen Sie Ihre Eingaben.';
                     $this->message($message, 'Error!', 250, Growl::TYPE_GROWL);
-                    return $this->render('create', ['model' => $model,'id' => $id,]);
+                    return $this->render('create', ['model' => $model, 'id' => $id,]);
                 } else
                     return $this->redirect(['conclusion', 'id' => $id, 'laenderkennung' => $laenderkennung, 'kontonummer' => $kontonummer, 'blz' => $blz, 'institut' => $institut, 'bic' => $bic, 'iban' => $iban]);
             } else {
-                return $this->render('create', ['model' => $model,'id' => $id]);
+                return $this->render('create', ['model' => $model, 'id' => $id]);
             }
         } catch (\Exception $error) {
             error_handling::error_without_id($error, BankverbindungController::RenderBackInCaseOfError);
@@ -94,14 +94,15 @@ class BankverbindungController extends Controller {
 
     public function actionConclusion($id, $laenderkennung, $kontonummer, $blz, $institut, $bic, $iban) {
         $model = new Bankverbindung();
-        var_dump($id);
-        var_dump($laenderkennung);
-        var_dump($kontonummer);
-        var_dump($blz);
-        var_dump($institut);
-        var_dump($bic);
-        var_dump($iban);
-        if ($model->loadAll(Yii::$app->request->post())) {
+        if ((Yii::$app->request->post())) {
+            $model->laenderkennung = $laenderkennung;
+            $model->institut = $institut;
+            $model->blz = $blz;
+            $model->kontoNr = $kontonummer;
+            $model->iban = $iban;
+            $model->bic = $bic;
+            $model->save();
+            $this->redirect(['/bankverbindung/index']);
             /*
               ToDO:Save record into database
              */
@@ -143,7 +144,7 @@ class BankverbindungController extends Controller {
             'allModels' => $model->kundes,
         ]);
 
-        $content = $this->renderAjax('_pdf', ['model' => $model,'providerKunde' => $providerKunde]);
+        $content = $this->renderAjax('_pdf', ['model' => $model, 'providerKunde' => $providerKunde]);
 
         $pdf = new \kartik\mpdf\Pdf([
             'mode' => \kartik\mpdf\Pdf::MODE_CORE,

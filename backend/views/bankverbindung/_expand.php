@@ -9,13 +9,6 @@ $items = [
             'model' => $model,
         ]),
     ],
-            [
-        'label' => '<i class="glyphicon glyphicon-book"></i> '. Html::encode(Yii::t('app', 'Kunde')),
-        'content' => $this->render('_dataKunde', [
-            'model' => $model,
-            'row' => $model->kundes,
-        ]),
-    ],
     ];
 echo TabsX::widget([
     'items' => $items,

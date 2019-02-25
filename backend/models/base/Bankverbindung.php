@@ -25,7 +25,7 @@ class Bankverbindung extends \yii\db\ActiveRecord {
             [['laenderkennung'], 'string', 'max' => 3],
             [['institut'], 'string', 'max' => 255],
             [['iban'], 'string', 'max' => 32],
-            [['bic'], 'string', 'max' => 8]
+            [['bic'], 'string', 'max' => 16]
         ];
     }
 
