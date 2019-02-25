@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{kunde}',
+            'template' => '{kunde},<br> {delete}',
             'buttons' => [
                 'kunde' => function ($model, $id) {
                     return Html::a('<span class="glyphicon glyphicon-home"></span>', ['/termin/link', 'id' => $id->id], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);

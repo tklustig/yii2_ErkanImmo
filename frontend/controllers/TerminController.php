@@ -138,12 +138,21 @@ class TerminController extends Controller {
     }
 
     public function actionDelete($id) {
+        $idOfAdminBesKu = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->id;
+        $this->findModelAdminBesKunde($idOfAdminBesKu)->delete();
         $this->findModel($id)->delete();
         return $this->redirect(['index']);
     }
 
     protected function findModel($id) {
         if (($model = Besichtigungstermin::findOne($id)) !== null) {
+            return $model;
+        }
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    protected function findModelAdminBesKunde($id) {
+        if (($model = Adminbesichtigungkunde::findOne($id)) !== null) {
             return $model;
         }
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
