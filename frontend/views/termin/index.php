@@ -4,12 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 
-/* @var $this yii\web\View */
-/* @var $searchModel frontend\models\TerminSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
 $this->title = Yii::t('app', 'Besichtigungstermin(e)');
-
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -20,6 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php Pjax::begin(); ?>
     <?php
     $link = \Yii::$app->urlManagerBackend->baseUrl . '/home';
+    $showLink = false;
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
         [
@@ -34,36 +30,38 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'attribute' => 'id',
-            'contentOptions' => ['class' => 'id_breite_css'],
+            'label' => Yii::t('app', 'Immobilien-Id'),
+            'value' => function($model) {
+                return $model->immobilien->id;
+            }
+        ],
+        'immobilien.stadt',
+        [
+            'attribute' => '',
+            'label' => Yii::t('app', 'Art'),
+            'value' => function($model) {
+                if ($model->immobilien->l_art_id == 1)
+                    $begriff = "Vermietobjekt";
+                else if ($model->immobilien->l_art_id == 2)
+                    $begriff = "Verkaufsobjekt";
+                return $begriff;
+            }
         ],
         'uhrzeit',
-        'Relevanz',
-        'immobilien.stadt',
+        [
+            'class' => 'kartik\grid\BooleanColumn',
+            'attribute' => 'Relevanz',
+            'trueLabel' => 'Ja',
+            'falseLabel' => 'Nein',
+            'label' => 'Priorität hoch',
+            'encodeLabel' => false,
+        ],
         [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{kunde}',
             'buttons' => [
                 'kunde' => function ($model, $id) {
-                    $output = "";
-                    $expression = new yii\db\Expression('NOW()');
-                    $now = (new \yii\db\Query)->select($expression)->scalar();
-                    $idTermin = $id->id;
-                    $idOfmodelAdminBesKu = \frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $idTermin])->id;
-                    $kundeID = \frontend\models\Adminbesichtigungkunde::findOne(['id' => $idOfmodelAdminBesKu])->kunde_id;
-                    $kundenGeschlecht = frontend\models\Kunde::findOne(['id' => $kundeID])->geschlecht;
-                    $kundenVorName = frontend\models\Kunde::findOne(['id' => $kundeID])->vorname;
-                    $kundenNachName = frontend\models\Kunde::findOne(['id' => $kundeID])->nachname;
-                    $kundeStadt = frontend\models\Kunde::findOne(['id' => $kundeID])->stadt;
-                    $kundeStrasse = frontend\models\Kunde::findOne(['id' => $kundeID])->strasse;
-                    $kundeGeburtsdatum = frontend\models\Kunde::findOne(['id' => $kundeID])->geburtsdatum;
-                    $diff = strtotime($now) - strtotime($kundeGeburtsdatum);
-                    $hours = floor($diff / (60 * 60));
-                    $year = floor($hours / 24 / 365);
-                    $output = date("d.m.Y", strtotime($kundeGeburtsdatum)) . "<br>" . $year . " Jahre alt";
-                    $giveBack=$kundenGeschlecht.' '.$kundenVorName.' '.$kundenNachName.'\n'.'wohnhaft in '.$kundeStadt. ' '.$kundeStrasse.'\n'.'Geburtsdaten:'.' '.$output;
-                    //$js = "krajeeDialog.alert('Hold On! This is a Krajee alert!');";
-                    $js="krajeeDialog.alert('$giveBack');";
-                    return Html::a('<span class="glyphicon glyphicon-user"></span>', [$this->registerJs($js)], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
+                    return Html::a('<span class="glyphicon glyphicon-home"></span>', ['/termin/link', 'id' => $id->id], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
                 },
             ],
         ],

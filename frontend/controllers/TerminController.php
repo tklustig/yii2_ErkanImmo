@@ -168,6 +168,16 @@ class TerminController extends Controller {
         return $pdf->render();
     }
 
+    public function actionLink($id) {
+        $searchModel = new TerminSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        return $this->render('showLink', [
+                    'id' => $id,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
+    }
+
     public function actionAuswahl($q = null, $id = null) {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $out = ['results' => ['id' => '', 'text' => '']];

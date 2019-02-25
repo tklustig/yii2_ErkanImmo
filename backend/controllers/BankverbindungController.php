@@ -163,20 +163,6 @@ class BankverbindungController extends Controller {
         return $pdf->render();
     }
 
-    public function actionSaveAsNew($id) {
-        $model = new Bankverbindung();
-
-        if (Yii::$app->request->post('_asnew') != '1') {
-            $model = $this->findModel($id);
-        }
-
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('saveAsNew', ['model' => $model]);
-        }
-    }
-
     protected function findModel($id) {
         if (($model = Bankverbindung::findOne($id)) !== null) {
             return $model;
