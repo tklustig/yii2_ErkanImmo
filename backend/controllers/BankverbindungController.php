@@ -48,30 +48,28 @@ class BankverbindungController extends Controller {
             $model = new Bankverbindung(['scenario' => 'create_Bankverbindung']);
             $wrongInput = false;
             if ($model->loadAll(Yii::$app->request->post())) {
+                //Sofern jquerySubmitButton gedrückt
                 if (Yii::$app->request->post('submit') != null && Yii::$app->request->post('submit') == 'submitIbanData') {
-                    if (!empty($model->iban) || !empty($model->bic) || !empty($model->institut)) {
+                    if (!empty($model->iban) || !empty($model->bic)) {
                         if (strlen($model->bic) != 8 || strlen($model->iban) != 22)
                             $wrongInput = true;
                     }
-                    /* Es sind insgesamt 2^2 Fälle zu unterscheiden
-                      Fall 1: */
                     if (!$wrongInput) {
                         if (!empty($model->institut) && !empty($model->laenderkennung)) {
                             $laenderkennung = $model->laenderkennung;
                             $institut = $model->institut;
                             $bic = $model->bic;
                             $iban = $model->iban;
-                            //ToDo:erechnet die Applikation
+                            //ToDo:errechnet die Applikation
                             $kontonummer = $model->kontoNr;
                             $blz = $model->blz;
                             var_dump($institut);
                             var_dump($laenderkennung);
                             var_dump($bic);
                             var_dump($iban);
-                            //ToDo:erechnet die Applikation
+                            //ToDo:errechnet die Applikation
                             var_dump($blz);
                             var_dump($kontonummer);
-
                             die();
                             return $this->redirect(['conclusion', 'id' => $id, 'laenderkennung' => $laenderkennung, 'kontonummer' => $kontonummer, 'blz' => $blz, 'institut' => $institut, 'bic' => $bic, 'iban' => $iban]);
                         } else {
@@ -79,19 +77,16 @@ class BankverbindungController extends Controller {
                             $this->message($message, 'Warnung', 1500, Growl::TYPE_GROWL);
                             return $this->render('create', ['model' => $model, 'id' => $id]);
                         }
-                        // Fall 2:
                     } else if ($wrongInput) {
                         $message = 'Die BIC und/oder die IBAN haben die falsche Länge. Die BIC muss genau 8-stellig, die IBAN 22-stellig sein.';
                         $this->message($message, 'Warnung', 1500, Growl::TYPE_WARNING);
                         return $this->render('create', ['model' => $model, 'id' => $id]);
                     }
                 }
+                //Sofern HauptSubmitButton gedrückt
                 $laenderkennung = $model->laenderkennung;
                 $kontonummer = $model->kontoNr;
                 $blz = $model->blz;
-                /* print_r('<br><br><br>');
-                  var_dump($wrongInput);
-                  var_dump($wrongInput_); */
                 if (empty($laenderkennung) || empty($blz) || empty($kontonummer)) {
                     $message = 'Sie müssen alle erforderlichen Daten eingeben, damit der Prozess weitergeführt werden kann.';
                     $this->message($message, 'Warnung', 1500, Growl::TYPE_GROWL);
@@ -120,12 +115,12 @@ class BankverbindungController extends Controller {
                     return $this->render('create', ['model' => $model, 'id' => $id]);
                 }
                 if (substr($blz, -1) == ' ') {
-                    $blz = substr($bla, 0, -1);
+                    $blz = substr($blz, 0, -1);
                 } else if (substr($kontonummer, -1) == ' ') {
                     $kontonummer = substr($kontonummer, 0, -1);
                 }
                 $iban = $this->CalcIban($laenderkennung, $blz, $kontonummer, $model, $id);
-                /* IBAN(22)=Ländernummer(2)+Prüfziffer(2)+BLZ(8)+KontoNr.(max.10)= DE92250501801911869221 => 
+                /* IBAN(22)=Ländernummer(2)+Prüfziffer(2)+BLZ(8)+KontoNr.(max.10)= DE92250501801911869221 =>
                   BLZ:=25050180 / KontoNr.:=1911869221 / BIC:=SPKHDE2HXXX */
                 if (!$iban) {
                     $message = 'IbanRaw hat in der gekapselten Methode CalcIban() die falsche Länge. Informieren Sie den Softwarehersteller oder überprüfen Sie Ihre Eingaben.';
@@ -284,7 +279,7 @@ class BankverbindungController extends Controller {
                         return false;
                 }
             } else {
-                print_r('Error!Error!Error<br>Länderkennung hat das falsche Format');
+                print_r('Error!Error!Error<br>Länderkennung hat das falsche Format.<br>Informieren Sie den Softwarehersteller');
                 die();
             }
         } catch (\Exception $error) {

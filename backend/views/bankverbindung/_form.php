@@ -20,7 +20,7 @@ use kartik\widgets\ActiveForm;
     <div class="col-md-12">
         <?=
         $form->field($model, 'laenderkennung', ['addon' => [
-                'prepend' => ['content' => 'Länderkennung'], 'append' => ['content' => 'in der manuellen Eingabe ist eine DropDownBox']]])->textInput(['maxlength' => true, 'placeholder' => 'Bitte die Bankleitzahl eingeben'])
+                'prepend' => ['content' => 'Länderkennung'], 'append' => ['content' => 'in der manuellen Eingabe ist eine DropDownBox. Der Value für Deutschland ist DE']]])->textInput(['maxlength' => true, 'placeholder' => 'Bitte die Länderkennung eingeben'])
         ?>
     </div>
     <div class="col-md-6">
@@ -38,19 +38,19 @@ use kartik\widgets\ActiveForm;
     <div class="col-md-4">
         <?=
         $form->field($model, 'iban', ['addon' => [
-                'prepend' => ['content' => 'IBAN'], 'append' => ['content' => 'berechnet die Applikation']]])->textInput(['maxlength' => true, 'placeholder' => 'IBAN ermittelt die Applikation', 'readonly' => true])
+                'prepend' => ['content' => 'IBAN'], 'append' => ['content' => 'berechnet die Applikation']]])->textInput(['maxlength' => true, 'readonly' => true])
         ?>
     </div>
     <div class="col-md-4">
         <?=
         $form->field($model, 'bic', ['addon' => [
-                'prepend' => ['content' => 'BIC'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true, 'placeholder' => 'BIC ermittelt die Applikation', 'readonly' => true])
+                'prepend' => ['content' => 'BIC'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true, 'readonly' => true])
         ?>
     </div>
     <div class="col-md-4">
         <?=
         $form->field($model, 'institut', ['addon' => [
-                'prepend' => ['content' => 'Institut'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true, 'placeholder' => 'Institut ermittelt die Applikation', 'readonly' => true])
+                'prepend' => ['content' => 'Institut'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true, 'readonly' => true])
         ?>
     </div>
     <div class="form-group">

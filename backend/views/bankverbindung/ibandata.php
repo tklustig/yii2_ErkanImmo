@@ -38,7 +38,7 @@ use kartik\widgets\ActiveForm;
     <div class="col-md-4">
         <?=
         $form->field($model, 'bic', ['addon' => [
-                'prepend' => ['content' => 'BIC'], 'append' => ['content' => '11-stellig']]])->textInput(['maxlength' => true, 'placeholder' => 'BIC ermittelt die Applikation'])
+                'prepend' => ['content' => 'BIC'], 'append' => ['content' => '11-stellig']]])->textInput(['maxlength' => true, 'placeholder' => 'Bitte die BIC eingeben'])
         ?>
     </div>
     <div class="col-md-4">
@@ -50,7 +50,7 @@ use kartik\widgets\ActiveForm;
     <div class="col-md-4">
         <?=
         $form->field($model, 'blz', ['addon' => [
-                'prepend' => ['content' => 'BLZ'], 'append' => ['content' => 'ermittelt die Applikation']]])->textInput(['maxlength' => true, 'placeholder' => 'BLZ ermittelt die Applikation', 'readonly' => true])
+                'prepend' => ['content' => 'BLZ'], 'append' => ['content' => 'ermittelt die Applikation']]])->textInput(['maxlength' => true, 'readonly' => true])
         ?>
     </div>
     <div class="col-md-4">
