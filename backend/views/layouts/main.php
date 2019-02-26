@@ -63,7 +63,7 @@ AssetBundle::register($this);
                                 ['label' => 'Kunden', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
-                                        ['label' => 'Kundendaten abrufen(ToDo)', 'url' => ['/site/index']]
+                                        ['label' => 'Kundendaten abrufen(ToDo)', 'url' => ['/kunde/index']]
                                     ],
                                 ],
                                 '<li class="divider"></li>',
