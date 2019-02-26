@@ -47,9 +47,13 @@ class BankverbindungController extends Controller {
         try {
             $model = new Bankverbindung();
             if ($model->loadAll(Yii::$app->request->post())) {
+                if (!empty($model->iban)) {
+                    var_dump($model->iban);
+                    die();
+                }
                 $laenderkennung = $model->laenderkennung;
-                if (empty($laenderkennung)) {
-                    $message = 'Sie müssen die Länderkennug eingeben.';
+                if (empty($laenderkennung) || empty($model->blz) || empty($model->kontoNr)) {
+                    $message = 'Sie müssen Laenderkennnug, BLZ und Kontonummer eingeben, damit der Prozess weitergeführt werden kann.';
                     $this->message($message, 'Warnung', 1500, Growl::TYPE_GROWL);
                     return $this->render('create', ['model' => $model, 'id' => $id]);
                 }
@@ -83,6 +87,7 @@ class BankverbindungController extends Controller {
                     $kontonummer = substr($kontonummer, 0, -1);
                 }
                 $iban = $this->CalcIban($laenderkennung, $blz, $kontonummer, $model, $id);
+                //Iban=DE92250501801911869221 => BLZ=
                 if (!$iban) {
                     $message = 'IbanRaw hat in der gekapselten Methode CalcIban() die falsche Länge. Informieren Sie den Softwarehersteller oder überprüfen Sie Ihre Eingaben.';
                     $this->message($message, 'Error!', 250, Growl::TYPE_GROWL);

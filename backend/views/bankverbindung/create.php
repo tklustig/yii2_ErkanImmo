@@ -27,7 +27,7 @@ $this->registerJs($search_);
     <div style="float:right;">
         <p>
             <?= Html::a(Yii::t('app', 'Kundendaten abrufen'), '#', ['class' => 'btn btn-info search-button','id'=>0]) ?>  
-            <?= Html::a(Yii::t('app', 'IBAN manuell eingeben'), '#', ['class' => 'btn btn-warning search_-button_','id'=>1]) ?>
+            <?= Html::a(Yii::t('app', 'Daten manuell eingeben'), '#', ['class' => 'btn btn-warning search_-button_','id'=>1]) ?>
         </p>
     </div>
     <div class="search-form" style="display:none">

@@ -38,13 +38,13 @@ use kartik\widgets\ActiveForm;
     <div class="col-md-6">
         <?=
         $form->field($model, 'blz', ['addon' => [
-                'prepend' => ['content' => 'BIC'], 'append' => ['content' => 'ermittelt die Applikation']]])->textInput(['maxlength' => true, 'placeholder' => 'BIC ermittelt die Applikation', 'readonly' => true])
+                'prepend' => ['content' => 'BLZ'], 'append' => ['content' => 'ermittelt die Applikation']]])->textInput(['maxlength' => true, 'placeholder' => 'BLZ ermittelt die Applikation', 'readonly' => true])
         ?>
     </div>
     <div class="col-md-6">
         <?=
         $form->field($model, 'kontoNr', ['addon' => [
-                'prepend' => ['content' => 'Institut'], 'append' => ['content' => 'ermittelt die Applikation']]])->textInput(['maxlength' => true, 'placeholder' => 'Institut ermittelt die Applikation', 'readonly' => true])
+                'prepend' => ['content' => 'Kontonummer'], 'append' => ['content' => 'ermittelt die Applikation']]])->textInput(['maxlength' => true, 'placeholder' => 'Kontonummer ermittelt die Applikation', 'readonly' => true])
         ?>
     </div>
     <div class="form-group">
