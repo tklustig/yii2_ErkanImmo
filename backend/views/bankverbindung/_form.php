@@ -17,24 +17,19 @@ use kartik\widgets\ActiveForm;
 
     <?= $form->errorSummary($model); ?>
     <br><br>
-    <div class="col-md-4">
+    <div class="col-md-12">
         <?=
-        $form->field($model, 'laenderkennung')->widget(\kartik\widgets\Select2::classname(), [
-            'data' => \yii\helpers\ArrayHelper::map(\backend\models\LLaenderkennung::find()->orderBy('code')->asArray()->all(), 'code', 'code'),
-            'options' => ['placeholder' => Yii::t('app', 'Länderkennung')],
-            'pluginOptions' => [
-                'allowClear' => true
-            ],
-        ])->label(false);
+        $form->field($model, 'laenderkennung', ['addon' => [
+                'prepend' => ['content' => 'Länderkennung'], 'append' => ['content' => 'in der manuellen Eingabe ist eine DropDownBox']]])->textInput(['maxlength' => true, 'placeholder' => 'Bitte die Bankleitzahl eingeben'])
         ?>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         <?=
         $form->field($model, 'blz', ['addon' => [
                 'prepend' => ['content' => 'BLZ']]])->textInput(['maxlength' => true, 'placeholder' => 'Bitte die Bankleitzahl eingeben'])
         ?>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         <?=
         $form->field($model, 'kontoNr', ['addon' => [
                 'prepend' => ['content' => 'Kontonummer']]])->textInput(['maxlength' => true, 'placeholder' => 'Bitte die Kontonummer eingeben'])
@@ -61,9 +56,6 @@ use kartik\widgets\ActiveForm;
     <div class="form-group">
         <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
             <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-        <?php endif; ?>
-        <?php if (Yii::$app->controller->action->id != 'create'): ?>
-            <?= Html::submitButton(Yii::t('app', 'Save As New'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
         <?php endif; ?>
         <?= Html::a(Yii::t('app', 'Cancel'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
     </div>
