@@ -68,12 +68,19 @@ $gridColumns = [
         },
     ],
     [
-        'attribute' => 'angelegtVon.username',
-        'label' => Yii::t('app', 'Angelegt von')
+        'attribute' => 'angelegtVon.nachname',
+        'label' => Yii::t('app', 'Interessent')
     ],
     [
-        'attribute' => 'aktualisiertVon.username',
-        'label' => Yii::t('app', 'Aktualisiert Von')
+        'attribute' => 'angelegt_von',
+        'label' => Yii::t('app', 'wurde vereinbart mit'),
+        'format' => 'html',
+        'value' => function($model) {
+            $giveBack1 = $model->angelegtVon->geschlecht . ' ' . $model->angelegtVon->nachname . ', ' . $model->angelegtVon->vorname . '<br>';
+            $giveBack2 = 'wohnhaft in ' . $model->angelegtVon->stadt . '<br>' . $model->angelegtVon->strasse . '<br>' . 'Geburtsdatum:' . $model->angelegtVon->geburtsdatum;
+            ($model->angelegt_von) ? $bewerber = $giveBack1 . $giveBack2 : $bewerber = NULL;
+            return $bewerber;
+        }
     ],
 ];
 

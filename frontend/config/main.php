@@ -62,6 +62,7 @@ return [
                 'termin_link' => 'termin/link',
                 'plz_get' => 'plz/get-city-province',
                 'view_termin' => 'termin/view',
+                'pdf_kunde'=>'/kunde/pdf',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',

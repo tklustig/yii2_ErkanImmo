@@ -76,21 +76,8 @@ class KundeController extends Controller {
 
     public function actionPdf($id) {
         $model = $this->findModel($id);
-        $providerAdminbesichtigungkunde = new \yii\data\ArrayDataProvider([
-            'allModels' => $model->adminbesichtigungkundes,
-        ]);
-        $providerEDateianhang = new \yii\data\ArrayDataProvider([
-            'allModels' => $model->eDateianhangs,
-        ]);
-        $providerKundeimmobillie = new \yii\data\ArrayDataProvider([
-            'allModels' => $model->kundeimmobillies,
-        ]);
-
         $content = $this->renderAjax('_pdf', [
             'model' => $model,
-            'providerAdminbesichtigungkunde' => $providerAdminbesichtigungkunde,
-            'providerEDateianhang' => $providerEDateianhang,
-            'providerKundeimmobillie' => $providerKundeimmobillie,
         ]);
 
         $pdf = new \kartik\mpdf\Pdf([
@@ -114,39 +101,6 @@ class KundeController extends Controller {
     protected function findModel($id) {
         if (($model = Kunde::findOne($id)) !== null) {
             return $model;
-        } else {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
-    }
-
-    public function actionAddAdminbesichtigungkunde() {
-        if (Yii::$app->request->isAjax) {
-            $row = Yii::$app->request->post('Adminbesichtigungkunde');
-            if ((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
-                $row[] = [];
-            return $this->renderAjax('_formAdminbesichtigungkunde', ['row' => $row]);
-        } else {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
-    }
-
-    public function actionAddEDateianhang() {
-        if (Yii::$app->request->isAjax) {
-            $row = Yii::$app->request->post('EDateianhang');
-            if ((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
-                $row[] = [];
-            return $this->renderAjax('_formEDateianhang', ['row' => $row]);
-        } else {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
-    }
-
-    public function actionAddKundeimmobillie() {
-        if (Yii::$app->request->isAjax) {
-            $row = Yii::$app->request->post('Kundeimmobillie');
-            if ((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
-                $row[] = [];
-            return $this->renderAjax('_formKundeimmobillie', ['row' => $row]);
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
