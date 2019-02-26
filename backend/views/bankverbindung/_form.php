@@ -16,7 +16,7 @@ use kartik\widgets\ActiveForm;
     ?>
 
     <?= $form->errorSummary($model); ?>
-    <br><br><br>
+    <br><br>
     <div class="col-md-4">
         <?=
         $form->field($model, 'laenderkennung')->widget(\kartik\widgets\Select2::classname(), [
@@ -52,23 +52,20 @@ use kartik\widgets\ActiveForm;
                 'prepend' => ['content' => 'BIC'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true, 'placeholder' => 'BIC ermittelt die Applikation', 'readonly' => true])
         ?>
     </div>
-</div>
-<div class="col-md-4">
-    <?=
-    $form->field($model, 'institut', ['addon' => [
-            'prepend' => ['content' => 'Institut'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true, 'placeholder' => 'Institut ermittelt die Applikation', 'readonly' => true])
-    ?>
-</div>
-<div class="form-group">
-    <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    <?php endif; ?>
-    <?php if (Yii::$app->controller->action->id != 'create'): ?>
-        <?= Html::submitButton(Yii::t('app', 'Save As New'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
-    <?php endif; ?>
-    <?= Html::a(Yii::t('app', 'Cancel'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
-</div>
-
-<?php ActiveForm::end(); ?>
-
+    <div class="col-md-4">
+        <?=
+        $form->field($model, 'institut', ['addon' => [
+                'prepend' => ['content' => 'Institut'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true, 'placeholder' => 'Institut ermittelt die Applikation', 'readonly' => true])
+        ?>
+    </div>
+    <div class="form-group">
+        <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
+            <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?php endif; ?>
+        <?php if (Yii::$app->controller->action->id != 'create'): ?>
+            <?= Html::submitButton(Yii::t('app', 'Save As New'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
+        <?php endif; ?>
+        <?= Html::a(Yii::t('app', 'Cancel'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
+    </div>
+    <?php ActiveForm::end(); ?>
 </div>

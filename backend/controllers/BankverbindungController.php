@@ -48,6 +48,11 @@ class BankverbindungController extends Controller {
             $model = new Bankverbindung();
             if ($model->loadAll(Yii::$app->request->post())) {
                 $laenderkennung = $model->laenderkennung;
+                if (empty($laenderkennung)) {
+                    $message = 'Sie müssen die Länderkennug eingeben.';
+                    $this->message($message, 'Warnung', 1500, Growl::TYPE_GROWL);
+                    return $this->render('create', ['model' => $model, 'id' => $id]);
+                }
                 $kontonummer = $model->kontoNr;
                 $blz = $model->blz;
                 $curl = curl_init();
