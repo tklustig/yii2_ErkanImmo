@@ -32,6 +32,17 @@ use yii\widgets\DetailView;
             ],
             'angelegt_am',
             'aktualisiert_am',
+            [
+                'attribute' => 'angelegt_von',
+                'label' => Yii::t('app', 'wurde vereinbart mit'),
+                'format' => 'html',
+                'value' => function($model) {
+                    $giveBack1 = $model->angelegtVon->geschlecht . ' ' . $model->angelegtVon->nachname . ', ' . $model->angelegtVon->vorname . '<br>';
+                    $giveBack2 = 'wohnhaft in ' . $model->angelegtVon->stadt . '<br>' . $model->angelegtVon->strasse . '<br>' . 'Geburtsdatum:' . $model->angelegtVon->geburtsdatum;
+                    ($model->angelegt_von) ? $bewerber = $giveBack1 . $giveBack2 : $bewerber = NULL;
+                    return $bewerber;
+                }
+            ],
         ];
         echo DetailView::widget([
             'model' => $model,

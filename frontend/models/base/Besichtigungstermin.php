@@ -93,7 +93,7 @@ class Besichtigungstermin extends \yii\db\ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getAngelegtVon() {
-        return $this->hasOne(\common\models\User::className(), ['id' => 'angelegt_von']);
+        return $this->hasOne(\frontend\models\Kunde::className(), ['id' => 'angelegt_von']);
     }
 
     /**
