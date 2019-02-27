@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+
 /* @var $this yii\web\View */
 /* @var $model frontend\modules\bewerber\models\Bewerber */
 
@@ -20,21 +21,27 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <?php
         $gridColumn = [
-        'uhrzeit',
-        'Relevanz',
-        'angelegt_am',
-        'aktualisiert_am',
-        'angelegt_von',
-        'aktualisiert_von',
-        'Immobilien_id',
+            'angelegt_am',
+            'id',
+            'uhrzeit',
+            'Relevanz',
             [
-                'attribute' => 'angelegtVon.id',
-                'label' => Yii::t('app', 'Angelegt Von')
+                'attribute' => 'angelegt_von',
+                'label' => Yii::t('app', 'Makler'),
+                'value' => function($model) {
+                    ($model->angelegt_von) ? $value = $model->angelegtVon->username : $value = 'kein Makler gewählt';
+                    return $value;
+                }
             ],
-            'aktualisiert_am',
+            'Immobilien_id',
             [
-                'attribute' => 'aktualisiertVon.id',
-                'label' => Yii::t('app', 'Aktualisiert Von')
+                'attribute' => 'Immobilien_id',
+                'label' => Yii::t('app', 'Treffpunkt'),
+                'value' => function($id, $model) {
+                    $kundenId = frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->kunde_id;
+                    $wohnortKunde = \frontend\models\Kunde::findOne(['id' => $kundenId])->stadt;
+                    return $wohnortKunde;
+                }
             ],
         ];
         echo DetailView::widget([

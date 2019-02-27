@@ -92,15 +92,12 @@ class Besichtigungstermin extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAngelegtVon() {
-        return $this->hasOne(\frontend\models\Kunde::className(), ['id' => 'angelegt_von']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getAktualisiertVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
+    }
+
+    public function getAngelegtVon() {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'angelegt_von']);
     }
 
     /**

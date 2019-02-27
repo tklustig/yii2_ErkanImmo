@@ -41,7 +41,11 @@ class TerminController extends Controller {
 
     public function actionView($id) {
         $this->layout = "main_immo";
-        return $this->render('view', ['model' => $this->findModel($id), 'id' => $id]);
+        $kundenId = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->kunde_id;
+        $wohnortKunde = Kunde::findOne(['id' => $kundenId])->stadt;
+        $immoId = Kundeimmobillie::findOne(['kunde_id' => $kundenId])->immobilien_id;
+        $immoPlace = Immobilien::findOne(['id' => $immoId])->stadt;
+        return $this->render('view', ['model' => $this->findModel($id), 'id' => $id, 'wohnortKunde' => $wohnortKunde, 'immoPlace' => $immoPlace]);
     }
 
     public function actionCreate($id) {
@@ -53,7 +57,7 @@ class TerminController extends Controller {
         if ($model->load(Yii::$app->request->post()) && $modelKunde->load(Yii::$app->request->post())) {
             if ($modelKunde->l_plz_id == "")
                 $modelKunde->l_plz_id = null;
-            if (empty($model->telefon) && empty($model->email)) {
+            if (empty($modelKunde->telefon) && empty($modelKunde->email)) {
                 $message = "Bitte geben Sie entweder eine Telefonnumer oder eine Mailadresse an!";
                 $this->message($message, 'Warnung', 1250, Growl::TYPE_WARNING);
                 return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
@@ -112,8 +116,8 @@ class TerminController extends Controller {
                 die();
             }
             //ToDo: Die gesamten Schreibprozesse bzgl. der Datenbank müssen eigentlich in eine Tranaction verfrachtet werden
-            $createdBy = $model->angelegt_von;
-            $modelKunde->angelegt_von = $modelKunde->id;
+            $maklerSollBearbeiten = $model->angelegt_von;
+            $modelKunde->angelegt_von = $maklerSollBearbeiten;
             $modelKunde->save();
             $model->angelegt_von = $modelKunde->id;
             $model->save();
@@ -121,7 +125,7 @@ class TerminController extends Controller {
             $modelKundeImmo->immobilien_id = $immoId;
             $modelKundeImmo->save();
             $modelAdminBesKunde->besichtigungstermin_id = $model->id;
-            $modelAdminBesKunde->admin_id = $createdBy;
+            $modelAdminBesKunde->admin_id = $maklerSollBearbeiten;
             $modelAdminBesKunde->kunde_id = $modelKunde->id;
             $modelAdminBesKunde->save();
             return $this->redirect(['view', 'id' => $model->id]);

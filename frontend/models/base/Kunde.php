@@ -93,11 +93,6 @@ class Kunde extends \yii\db\ActiveRecord {
                 'updatedAtAttribute' => 'aktualisiert_am',
                 'value' => new \yii\db\Expression('NOW()'),
             ],
-            'blameable' => [
-                'class' => BlameableBehavior::className(),
-                'createdByAttribute' => 'angelegt_von',
-                'updatedByAttribute' => 'aktualisiert_von',
-            ],
         ];
     }
 

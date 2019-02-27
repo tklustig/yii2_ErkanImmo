@@ -7,7 +7,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use kartik\grid\GridView;
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bewerber'), 'url' => ['index']];
@@ -15,10 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="bewerber-view">
     <div class="row">
-        <div class="col-sm-8">
-            <div class="box-body">
-                <h2><?= Yii::t('app', 'Besichtigungstermin') . ' ' . Html::encode($this->title) ?></h2>
-            </div>
+        <div class="col-sm-12">
             <div class="upper" style="margin-top: 15px">
                 <?= Html::a(Yii::t('app', 'zur Immobilie'), ['immobilien/preview'], ['class' => 'btn btn-sucess']) ?>    
                 <?=
@@ -32,9 +28,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?>                    
             </div>
         </div>
-    </div>
-
-    <div class="row">
+        <div class="col-md-12">
+            <center><h3>Unser Makler Herr/Frau <?= $model->angelegtVon->username ?> wird sich am <?= $model->uhrzeit ?> Uhr bei Ihnen vor Ort in  <?= $wohnortKunde ?> treffen, um die Immobilie in <?= $immoPlace ?> zu begutachten.</h3>
+                <p>Pushen sie auf den weiß-grauen PDF Button, um ein Dokument für Ihre Unterlagen zu erstellen.</p></center>
+        </div>
         <div class="col-md-12">
             <div class="box-body">
                 <?php
@@ -43,10 +40,24 @@ $this->params['breadcrumbs'][] = $this->title;
                     'uhrzeit',
                     'Relevanz',
                     'angelegt_am',
-                    'aktualisiert_am',
-                    'angelegt_von',
-                    'aktualisiert_von',
+                    [
+                        'attribute' => 'angelegt_von',
+                        'label' => Yii::t('app', 'Makler'),
+                        'value' => function($model) {
+                            ($model->angelegt_von) ? $value = $model->angelegtVon->username : $value = 'kein Makler gewählt';
+                            return $value;
+                        }
+                    ],
                     'Immobilien_id',
+                    [
+                        'attribute' => 'Immobilien_id',
+                        'label' => Yii::t('app', 'Treffpunkt'),
+                        'value' => function($id, $model) {
+                            $kundenId = frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->kunde_id;
+                            $wohnortKunde = \frontend\models\Kunde::findOne(['id' => $kundenId])->stadt;
+                            return $wohnortKunde;
+                        }
+                    ],
                 ];
                 echo DetailView::widget([
                     'model' => $model,
@@ -56,5 +67,4 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
-</div>
-<div class="row"></div>
+    <div class="row"></div>
