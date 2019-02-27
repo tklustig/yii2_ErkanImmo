@@ -58,6 +58,14 @@ $this->beginPage()
                     'items' => [
                         ['label' => 'Menüoptionen im Backend/Adminbereich', 'url' => ['/site/index']],
                         '<li class="divider"></li>',
+                        ['label' => 'Frontend Bilder initialisieren', 'url' => ['#'],
+                            'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
+                            'items' => [
+                                ['label' => 'Bilder laden(ToDo)', 'url' => ['#']],
+                                ['label' => 'Bilder anschauen(ToDo)', 'url' => ['#']],
+                            ],
+                        ],
+                        '<li class="divider"></li>',
                         ['label' => 'Immobilien', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
@@ -78,7 +86,9 @@ $this->beginPage()
                         ['label' => 'Kunden', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
-                                ['label' => 'Kundendaten abrufen(ToDo)', 'url' => ['/kunde/index']]
+                                ['label' => 'Kundendaten abrufen(ToLook)', 'url' => ['/kunde/index']],
+                                ['label' => 'Mails verschicken(ToDo)', 'url' => ['#']],
+                                ['label' => 'verschickte Mails anzeigen(ToDo)', 'url' => ['#']]
                             ],
                         ],
                         '<li class="divider"></li>',
