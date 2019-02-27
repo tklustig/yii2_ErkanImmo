@@ -71,11 +71,8 @@ $this->registerJs($search);
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{save-as-new} {view} {update} {delete}',
+            'template' => '{view} {update} {delete}',
             'buttons' => [
-                'save-as-new' => function ($url) {
-                    return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Save As New']);
-                },
             ],
         ],
     ];
@@ -86,28 +83,26 @@ $this->registerJs($search);
         'filterModel' => $searchModel,
         'columns' => $gridColumn,
         'pjax' => true,
-        'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container-bankverbindung']],
+        'pjaxSettings' => [
+            'neverTimeout' => true,
+        ],
+        'options' => [
+            'style' => 'overflow: auto; word-wrap: break-word;'
+        ],
+        'condensed' => true,
+        'responsiveWrap' => true,
+        'hover' => true,
+        'persistResize' => true,
         'panel' => [
             'type' => GridView::TYPE_PRIMARY,
-            'heading' => '<span class="glyphicon glyphicon-book"></span>  ' . Html::encode($this->title),
+            "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
+            'toggleDataOptions' => ['minCount' => 10],
         ],
-        // your toolbar can include the additional full export menu
         'toolbar' => [
             '{export}',
-            ExportMenu::widget([
-                'dataProvider' => $dataProvider,
-                'columns' => $gridColumn,
-                'target' => ExportMenu::TARGET_BLANK,
-                'fontAwesome' => true,
-                'dropdownOptions' => [
-                    'label' => 'Full',
-                    'class' => 'btn btn-default',
-                    'itemsBefore' => [
-                        '<li class="dropdown-header">Export All Data</li>',
-                    ],
-                ],
-            ]),
+            '{toggleData}'
         ],
+        'toggleDataOptions' => ['minCount' => 10],
     ]);
     ?>
 

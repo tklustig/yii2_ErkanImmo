@@ -60,14 +60,15 @@ class BankverbindungController extends Controller {
                             $institut = $model->institut;
                             $bic = $model->bic;
                             $iban = $model->iban;
-                            //ToDo:errechnet die Applikation
-                            $kontonummer = $model->kontoNr;
-                            $blz = $model->blz;
-                            var_dump($institut);
-                            var_dump($laenderkennung);
-                            var_dump($bic);
-                            var_dump($iban);
-                            //ToDo:errechnet die Applikation
+                            $blz = substr($iban, 4, 8);
+                            $lengthBlz = strlen($blz) + 4;
+                            $lengthIban = strlen($iban);
+                            $kontonummer = substr($iban, $lengthBlz, $lengthIban);
+                            if (!is_numeric($kontonummer) || !is_numeric($blz)) {
+                                $message = "Die BIC und/oder die IBAN haben das falsche Format. Die errechneten BLZ bzw. Kontonr. dürfen nur Zahlen enthalten.<br>BLZ:$blz<br>Kontonr.:$kontonummer";
+                                $this->message($message, 'Warnung', 1500, Growl::TYPE_WARNING);
+                                return $this->render('create', ['model' => $model, 'id' => $id]);
+                            }
                             var_dump($blz);
                             var_dump($kontonummer);
                             die();
@@ -128,7 +129,7 @@ class BankverbindungController extends Controller {
                     return $this->render('create', ['model' => $model, 'id' => $id,]);
                 } else
                     return $this->redirect(['conclusion', 'id' => $id, 'laenderkennung' => $laenderkennung, 'kontonummer' => $kontonummer, 'blz' => $blz, 'institut' => $institut, 'bic' => $bic, 'iban' => $iban]);
-            }else {
+            } else {
                 return $this->render('create', ['model' => $model, 'id' => $id]);
             }
         } catch (\Exception $error) {
