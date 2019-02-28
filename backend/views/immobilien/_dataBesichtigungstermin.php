@@ -68,17 +68,28 @@ $gridColumns = [
         },
     ],
     [
-        'attribute' => 'angelegtVon.nachname',
-        'label' => Yii::t('app', 'Interessent')
+        'attribute' => 'angelegtVon.username',
+        'label' => Yii::t('app', 'Makler')
     ],
     [
-        'attribute' => 'angelegt_von',
+        'attribute' => '',
         'label' => Yii::t('app', 'wurde vereinbart mit'),
         'format' => 'html',
-        'value' => function($model) {
-            $giveBack1 = $model->angelegtVon->geschlecht . ' ' . $model->angelegtVon->nachname . ', ' . $model->angelegtVon->vorname . '<br>';
-            $giveBack2 = 'wohnhaft in ' . $model->angelegtVon->stadt . '<br>' . $model->angelegtVon->strasse . '<br>' . 'Geburtsdatum:' . $model->angelegtVon->geburtsdatum;
-            ($model->angelegt_von) ? $bewerber = $giveBack1 . $giveBack2 : $bewerber = NULL;
+        'value' => function($model, $id) {
+            $bewerber='';
+            if (!empty(\frontend\models\Kundeimmobillie::findOne(['immobilien_id' => $model->id]))) {
+                $idKuImmo = \frontend\models\Kundeimmobillie::findOne(['immobilien_id' => $model->id])->kunde_id;
+                $geschlecht = \frontend\models\Kunde::findOne(['id' => $idKuImmo])->geschlecht;
+                $nachname = \frontend\models\Kunde::findOne(['id' => $idKuImmo])->nachname;
+                $vorname = \frontend\models\Kunde::findOne(['id' => $idKuImmo])->vorname;
+                $stadt = \frontend\models\Kunde::findOne(['id' => $idKuImmo])->stadt;
+                $strasse = \frontend\models\Kunde::findOne(['id' => $idKuImmo])->strasse;
+                $gebDat = \frontend\models\Kunde::findOne(['id' => $idKuImmo])->geburtsdatum;
+                $giveBack1 = $geschlecht . ' ' . $nachname . ', ' . $vorname . '<br>';
+                $giveBack2 = 'wohnhaft in ' . $stadt . '<br>' . $strasse . '<br>' . 'Geburtsdatum:' . $gebDat;
+                ($model->angelegt_von) ? $bewerber = $giveBack1 . $giveBack2 : $bewerber = NULL;
+            }
+
             return $bewerber;
         }
     ],

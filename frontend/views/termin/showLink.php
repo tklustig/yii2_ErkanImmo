@@ -39,7 +39,6 @@ $this->params['breadcrumbs'][] = $this->title;
     $js = "krajeeDialog.alert('$giveBack');";
     $this->registerJs($js);
     $link = \Yii::$app->urlManagerBackend->baseUrl . '/home';
-    $showLink = false;
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
         [
@@ -73,7 +72,14 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         ],
         'uhrzeit',
-        'Relevanz',
+        [
+            'class' => 'kartik\grid\BooleanColumn',
+            'attribute' => 'Relevanz',
+            'trueLabel' => 'Ja',
+            'falseLabel' => 'Nein',
+            'label' => 'Priorität hoch',
+            'encodeLabel' => false,
+        ],
         [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{kunde}',
