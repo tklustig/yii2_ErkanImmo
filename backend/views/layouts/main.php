@@ -63,7 +63,7 @@ AssetBundle::register($this);
                                     'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
-                                        ['label' => 'Bankdaten aufrufen(ToLook)', 'url' => ['/bankverbindung/index']],
+                                        ['label' => 'Bankdaten aufrufen', 'url' => ['/bankverbindung/index']],
                                         ['label' => 'Bankdaten anlegen', 'url' => ['/bankverbindung/select']],
                                     ],
                                 ],

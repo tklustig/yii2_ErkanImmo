@@ -53,6 +53,9 @@ class Bankverbindung extends \yii\db\ActiveRecord {
     public function getAktualisiertVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
     }
+        public function getAngelegtVon() {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
+    }
 
     public function getKundes() {
         return $this->hasMany(\frontend\models\Kunde::className(), ['bankverbindung_id' => 'id']);

@@ -42,33 +42,13 @@ $this->registerJs($search);
             'headerOptions' => ['class' => 'kartik-sheet-style'],
             'expandOneOnly' => true
         ],
-        ['attribute' => 'id', 'visible' => false],
+        'id',
         'laenderkennung',
         'institut',
         'blz',
         'kontoNr',
         'iban',
         'bic',
-        'angelegt_am',
-        'aktualisiert_am',
-        'angelegt_von',
-        [
-            'attribute' => 'aktualisiert_von',
-            'label' => Yii::t('app', 'Aktualisiert Von'),
-            'value' => function($model) {
-                if ($model->aktualisiertVon) {
-                    return $model->aktualisiertVon->id;
-                } else {
-                    return NULL;
-                }
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'id'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-bankverbindung-search-aktualisiert_von']
-        ],
         [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{view} {update} {delete}',
