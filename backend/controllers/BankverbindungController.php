@@ -69,9 +69,6 @@ class BankverbindungController extends Controller {
                                 $this->message($message, 'Warnung', 1500, Growl::TYPE_WARNING);
                                 return $this->render('create', ['model' => $model, 'id' => $id]);
                             }
-                            var_dump($blz);
-                            var_dump($kontonummer);
-                            die();
                             return $this->redirect(['conclusion', 'id' => $id, 'laenderkennung' => $laenderkennung, 'kontonummer' => $kontonummer, 'blz' => $blz, 'institut' => $institut, 'bic' => $bic, 'iban' => $iban]);
                         } else {
                             $message = 'Bitte geben Sie die Länderkennung und das Instutut an, damit der Prozess weitergeführt werden kann. Nutzen Sie ggf. die Haupteingabeoption!';
@@ -146,6 +143,7 @@ class BankverbindungController extends Controller {
             $model->kontoNr = $kontonummer;
             $model->iban = $iban;
             $model->bic = $bic;
+            $model->kunde_id=$id;
             $model->save();
             $this->redirect(['/bankverbindung/index']);
             /*

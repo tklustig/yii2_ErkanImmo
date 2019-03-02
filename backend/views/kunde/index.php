@@ -1,10 +1,5 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $searchModel backend\models\KundeSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
 use yii\helpers\Html;
-use kartik\export\ExportMenu;
 use kartik\grid\GridView;
 
 $this->title = Yii::t('app', 'Kunde');
@@ -42,7 +37,7 @@ $this->registerJs($search);
             'expandOneOnly' => true
         ],
         ['attribute' => 'id', 'visible' => false],
-        'l_plz_id',
+        'lPlz.plz',
         'geschlecht',
         'vorname',
         'nachname',

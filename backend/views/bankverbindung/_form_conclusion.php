@@ -32,7 +32,7 @@ $this->title = Yii::t('app', 'Zusammenfassung');
             <div class="col-md-3">
                 <p>Bankleitzahl: <?= $blz ?></p>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-12">
                 <p>Die ermittelten Webservicedaten:</p>
             </div>
             <div class="col-md-3">
@@ -43,7 +43,10 @@ $this->title = Yii::t('app', 'Zusammenfassung');
             </div>         
             <div class="col-md-3">
                 <p>IBAN: <?= $iban ?></p>
-            </div>  
+            </div> 
+            <div class="col-md-3">
+                <p>KundenId: <?= $id ?></p>
+            </div> 
         </div>
     </div>
 </div>

@@ -42,13 +42,20 @@ $this->registerJs($search);
             'headerOptions' => ['class' => 'kartik-sheet-style'],
             'expandOneOnly' => true
         ],
-        'id',
         'laenderkennung',
         'institut',
         'blz',
         'kontoNr',
         'iban',
         'bic',
+        [
+            'attribute' => 'kunde_id',
+            'label' => Yii::t('app', 'gehört zu Kunde'),
+            'value' => function($model, $id) {
+                $value = $model->kunde->geschlecht . ' ' . $model->kunde->vorname . ' ' . $model->kunde->nachname . ' (KundenID:' . $model->kunde->id . ')';
+                return $value;
+            },
+        ],
         [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{view} {update} {delete}',

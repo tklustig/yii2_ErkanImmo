@@ -18,17 +18,11 @@ use kartik\grid\GridView;
     <div class="row">
         <?php
         $gridColumn = [
-            ['attribute' => 'id', 'visible' => false],
-            'laenderkennung',
-            'institut',
-            'blz',
-            'kontoNr',
-            'iban',
-            'bic',
+            'id',
             'angelegt_am',
             'aktualisiert_am',
             [
-                'attribute' => 'aktualisiertVon.username',
+                'attribute' => 'angelegtVon.username',
                 'label' => Yii::t('app', 'Angelegt von'),
             ],
             [

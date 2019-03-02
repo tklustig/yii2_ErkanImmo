@@ -13,15 +13,16 @@ class Bankverbindung extends \yii\db\ActiveRecord {
     public function relationNames() {
         return [
             'aktualisiertVon',
+            'angelegtVon',
+            'kunde',
             'kundes'
         ];
     }
 
     public function rules() {
         return [
-            [['laenderkennung', 'blz', 'kontoNr'], 'required', 'except' => 'create_Bankverbindung'],
-            [['laenderkennung', 'blz', 'kontoNr'], 'safe', 'on' => 'create_Bankverbindung'],
-            [['blz', 'kontoNr', 'angelegt_von', 'aktualisiert_von'], 'integer'],
+            [['laenderkennung', 'blz', 'kontoNr'], 'required'],
+            [['blz', 'kontoNr', 'kunde_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
             [['laenderkennung'], 'string', 'max' => 3],
             [['institut'], 'string', 'max' => 255],
@@ -43,6 +44,7 @@ class Bankverbindung extends \yii\db\ActiveRecord {
             'kontoNr' => Yii::t('app', 'Konto Nr'),
             'iban' => Yii::t('app', 'Iban'),
             'bic' => Yii::t('app', 'Bic'),
+            'kunde_id' => Yii::t('app', 'gehört Kunde'),
             'angelegt_am' => Yii::t('app', 'Angelegt Am'),
             'aktualisiert_am' => Yii::t('app', 'Aktualisiert Am'),
             'angelegt_von' => Yii::t('app', 'Angelegt Von'),
@@ -53,8 +55,13 @@ class Bankverbindung extends \yii\db\ActiveRecord {
     public function getAktualisiertVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
     }
-        public function getAngelegtVon() {
-        return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
+
+    public function getAngelegtVon() {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'angelegt_von']);
+    }
+
+    public function getKunde() {
+        return $this->hasOne(\frontend\models\Kunde::className(), ['id' => 'kunde_id']);
     }
 
     public function getKundes() {
