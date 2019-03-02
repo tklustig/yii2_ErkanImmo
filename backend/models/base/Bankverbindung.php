@@ -21,13 +21,14 @@ class Bankverbindung extends \yii\db\ActiveRecord {
 
     public function rules() {
         return [
-            [['laenderkennung', 'blz', 'kontoNr'], 'required'],
+            [['laenderkennung', 'blz', 'kontoNr'], 'required', 'except' => 'create_Bankverbindung'],
+            [['laenderkennung', 'blz', 'kontoNr'], 'safe', 'on' => 'create_Bankverbindung'],
             [['blz', 'kontoNr', 'kunde_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
             [['laenderkennung'], 'string', 'max' => 3],
             [['institut'], 'string', 'max' => 255],
             [['iban'], 'string', 'max' => 32],
-            [['bic'], 'string', 'max' => 16]
+            [['bic'], 'string', 'max' => 16],
         ];
     }
 

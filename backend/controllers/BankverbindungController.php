@@ -5,10 +5,13 @@ namespace backend\controllers;
 use Yii;
 use backend\models\Bankverbindung;
 use backend\models\BankverbindungSearch;
+use frontend\models\Kunde;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Session;
 use yii\base\DynamicModel;
+use yii\db\IntegrityException;
 use kartik\widgets\Growl;
 use kartik\widgets\Alert;
 use common\classes\error_handling;
@@ -22,7 +25,7 @@ class BankverbindungController extends Controller {
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['post'],
+                    'delete' => ['post', 'get'],
                 ],
             ],
         ];
@@ -136,6 +139,7 @@ class BankverbindungController extends Controller {
 
     public function actionConclusion($id, $laenderkennung, $kontonummer, $blz, $institut, $bic, $iban) {
         $model = new Bankverbindung();
+        $modelKunde = $this->findModelKunde($id);
         if (Yii::$app->request->post()) {
             $model->laenderkennung = $laenderkennung;
             $model->institut = $institut;
@@ -143,12 +147,12 @@ class BankverbindungController extends Controller {
             $model->kontoNr = $kontonummer;
             $model->iban = $iban;
             $model->bic = $bic;
-            $model->kunde_id=$id;
+            $model->kunde_id = $id;
+            //ToDO:Save record into database in Transaction
             $model->save();
+            $modelKunde->bankverbindung_id = $model->id;
+            $modelKunde->save();
             $this->redirect(['/bankverbindung/index']);
-            /*
-              ToDO:Save record into database
-             */
         } else {
             return $this->render('_form_conclusion', [
                         'id' => $id,
@@ -177,8 +181,19 @@ class BankverbindungController extends Controller {
     }
 
     public function actionDelete($id) {
-        $this->findModel($id)->deleteWithRelated();
-        return $this->redirect(['index']);
+        try {
+            $session = new Session();
+            $this->findModel($id)->delete();
+            $session->addFlash('info', "Die Bankdaten der ID:$id wurden aus Ihrem System entfernt!");
+        } catch (IntegrityException $e) {
+            $modelKundeId = Kunde::findOne(['bankverbindung_id' => $id])->id;
+            $data = Kunde::findOne(['id' => $modelKundeId])->vorname . ' ' . Kunde::findOne(['id' => $modelKundeId])->nachname;
+            $message = "Das DBMS hat einen Verstoß gegen die referentielle Integrität festgestellt.<br>";
+            $message .= "Die Bankdaten der ID:$id können nicht gelöscht werden, da Sie dem Kunde $data(ID:$modelKundeId) zugeordnet sind.<br>";
+            $message .= "Bitte ändern Sie im Kundenmodul diese Verwendung ab, oder aber löschen Sie diesen Kunden aus Ihrem Pool.";
+            $session->addFlash('warnung', $message);
+        }
+        return $this->redirect(['/site/index']);
     }
 
     public function actionPdf($id) {
@@ -203,12 +218,19 @@ class BankverbindungController extends Controller {
                 'SetFooter' => ['{PAGENO}'],
             ]
         ]);
-
         return $pdf->render();
     }
 
     protected function findModel($id) {
         if (($model = Bankverbindung::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+    }
+
+    protected function findModelKunde($id) {
+        if (($model = Kunde::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
