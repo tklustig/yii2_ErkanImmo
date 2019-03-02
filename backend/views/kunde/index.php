@@ -46,7 +46,7 @@ $this->registerJs($search);
         'strasse',
         [
             'attribute' => 'geburtsdatum',
-            'format'=>'html',
+            'format' => 'html',
             'label' => Yii::t('app', 'Geburtsdatum'),
             'value' => function($model, $id) {
                 if ($model->geburtsdatum) {
@@ -62,10 +62,17 @@ $this->registerJs($search);
                 }
             },
         ],
-        'solvenz',
+        [
+            'class' => 'kartik\grid\BooleanColumn',
+            'attribute' => 'solvenz',
+            'trueLabel' => 'Ja',
+            'falseLabel' => 'Nein',
+            'label' => 'Ist Solvent',
+            'encodeLabel' => false,
+        ],
         [
             'attribute' => 'bankverbindung_id',
-            'label' => Yii::t('app', 'Bankverbindung'),
+            'label' => Yii::t('app', 'BankverbindungID'),
             'value' => function($model) {
                 if ($model->bankverbindung) {
                     return $model->bankverbindung->id;
@@ -79,26 +86,6 @@ $this->registerJs($search);
                 'pluginOptions' => ['allowClear' => true],
             ],
             'filterInputOptions' => ['placeholder' => 'Bankverbindung', 'id' => 'grid-kunde-search-bankverbindung_id']
-        ],
-        'angelegt_am',
-        'aktualisiert_am',
-        'angelegt_von',
-        [
-            'attribute' => 'aktualisiert_von',
-            'label' => Yii::t('app', 'Aktualisiert Von'),
-            'value' => function($model) {
-                if ($model->aktualisiertVon) {
-                    return $model->aktualisiertVon->id;
-                } else {
-                    return NULL;
-                }
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(common\models\User::find()->asArray()->all(), 'id', 'id'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-kunde-search-aktualisiert_von']
         ],
         [
             'class' => 'yii\grid\ActionColumn',

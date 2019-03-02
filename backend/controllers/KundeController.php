@@ -5,6 +5,8 @@ namespace backend\controllers;
 use Yii;
 use frontend\models\Kunde;
 use backend\models\KundeSearch;
+use backend\models\LPlz;
+use backend\models\Bankverbindung;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -57,13 +59,32 @@ class KundeController extends Controller {
     }
 
     public function actionUpdate($id) {
+        $model = new Bankverbindung(['scenario' => 'update_kunde']);
         $model = $this->findModel($id);
-
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
+        $plzId = $model->l_plz_id;
+        $bankId = $model->bankverbindung_id;
+        if (!empty(LPlz::findOne(['id' => $plzId])))
+            $plz = LPlz::findOne(['id' => $plzId])->plz;
+        else
+            $plz = "00000";
+        if (!empty(Bankverbindung::findOne(['id' => $bankId])))
+            $bank = Bankverbindung::findOne(['id' => $bankId])->institut;
+        else {
+            $plz = '00000';
+            $bank = '00000';
+        }
+        if ($model->loadAll(Yii::$app->request->post())) {
+            $plzID = LPlz::findOne(['plz' => $model->l_plz_id])->id;
+            $model->l_plz_id = $plzID;
+            $bankID = Bankverbindung::findOne(['id' => $model->bankverbindung_id])->id;
+            $model->bankverbindung_id = $bankID;
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                         'model' => $model,
+                        'plz' => $plz,
+                        'bank' => $bank,
             ]);
         }
     }

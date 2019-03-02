@@ -42,6 +42,7 @@ $this->registerJs($search);
             'headerOptions' => ['class' => 'kartik-sheet-style'],
             'expandOneOnly' => true
         ],
+        'id',
         'laenderkennung',
         'institut',
         'blz',

@@ -6,7 +6,6 @@ use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Kunde */
-
 ?>
 <div class="kunde-view">
 
@@ -17,33 +16,27 @@ use kartik\grid\GridView;
     </div>
 
     <div class="row">
-<?php 
-    $gridColumn = [
-        ['attribute' => 'id', 'visible' => false],
-        'l_plz_id',
-        'geschlecht',
-        'vorname',
-        'nachname',
-        'stadt',
-        'strasse',
-        'geburtsdatum',
-        'solvenz',
-        [
-            'attribute' => 'bankverbindung.id',
-            'label' => Yii::t('app', 'Bankverbindung'),
-        ],
-        'angelegt_am',
-        'aktualisiert_am',
-        'angelegt_von',
-        [
-            'attribute' => 'aktualisiertVon.id',
-            'label' => Yii::t('app', 'Aktualisiert Von'),
-        ],
-    ];
-    echo DetailView::widget([
-        'model' => $model,
-        'attributes' => $gridColumn
-    ]); 
-?>
+        <?php
+        $gridColumn = [
+            'id',
+            'angelegt_am',
+            'aktualisiert_am',
+            [
+                'attribute' => 'angelegt_von',
+                'label' => Yii::t('app', 'angelegt_von'),
+                'value' => function($model, $id) {
+                    return $model->vorname . ' ' . $model->nachname;
+                },
+            ],
+            [
+                'attribute' => 'aktualisiertVon.username',
+                'label' => Yii::t('app', 'Aktualisiert Von'),
+            ],
+        ];
+        echo DetailView::widget([
+            'model' => $model,
+            'attributes' => $gridColumn
+        ]);
+        ?>
     </div>
 </div>
