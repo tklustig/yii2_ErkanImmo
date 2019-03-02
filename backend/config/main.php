@@ -62,7 +62,7 @@ return [
                 'bankverbindung_view' => 'bankverbindung/view',
                 'bankverbindung_erzeugen' => 'bankverbindung/create',
                 'bankverbindung_aktualisieren' => 'bankverbindung/update',
-                'bankverbindung_löschen' => 'bankverbindung/delete',
+                'bankverbindung_loeschen' => 'bankverbindung/delete',
                 'bankverbindung_select' => 'bankverbindung/select',
                 'bankverbindung_conc' => 'bankverbindung/conclusion',
                 'pdf' => 'gridview/export/download',

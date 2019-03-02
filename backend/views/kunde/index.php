@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
@@ -13,7 +14,7 @@ $this->registerJs($search);
 <div class="kunde-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]);   ?>
 
     <p>
         <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-info search-button']) ?>
@@ -43,7 +44,24 @@ $this->registerJs($search);
         'nachname',
         'stadt',
         'strasse',
-        'geburtsdatum',
+        [
+            'attribute' => 'geburtsdatum',
+            'format'=>'html',
+            'label' => Yii::t('app', 'Geburtsdatum'),
+            'value' => function($model, $id) {
+                if ($model->geburtsdatum) {
+                    $expression = new yii\db\Expression('NOW()');
+                    $now = (new \yii\db\Query)->select($expression)->scalar();
+                    $diff = strtotime($now) - strtotime($model->geburtsdatum);
+                    $hours = floor($diff / (60 * 60));
+                    $year = floor($hours / 24 / 365);
+                    $output = date("d.m.Y", strtotime($model->geburtsdatum)) . '<br>' . $year . " Jahre alt";
+                    return $output;
+                } else {
+                    return NULL;
+                }
+            },
+        ],
         'solvenz',
         [
             'attribute' => 'bankverbindung_id',

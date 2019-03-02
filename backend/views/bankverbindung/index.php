@@ -60,6 +60,9 @@ $this->registerJs($search);
             'class' => 'yii\grid\ActionColumn',
             'template' => '{view} {update} {delete}',
             'buttons' => [
+                'delete' => function ($model, $id) {
+                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['/bankverbindung/delete', 'id' => $id->id], ['title' => 'Bankdaten löschen', 'data' => ['pjax' => '0']]);
+                },
             ],
         ],
     ];
