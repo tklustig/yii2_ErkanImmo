@@ -34,27 +34,10 @@ class KundeController extends Controller {
         ]);
     }
 
-    /**
-     * Displays a single Kunde model.
-     * @param integer $id
-     * @return mixed
-     */
     public function actionView($id) {
         $model = $this->findModel($id);
-        $providerAdminbesichtigungkunde = new \yii\data\ArrayDataProvider([
-            'allModels' => $model->adminbesichtigungkundes,
-        ]);
-        $providerEDateianhang = new \yii\data\ArrayDataProvider([
-            'allModels' => $model->eDateianhangs,
-        ]);
-        $providerKundeimmobillie = new \yii\data\ArrayDataProvider([
-            'allModels' => $model->kundeimmobillies,
-        ]);
         return $this->render('view', [
                     'model' => $this->findModel($id),
-                    'providerAdminbesichtigungkunde' => $providerAdminbesichtigungkunde,
-                    'providerEDateianhang' => $providerEDateianhang,
-                    'providerKundeimmobillie' => $providerKundeimmobillie,
         ]);
     }
 
@@ -63,28 +46,29 @@ class KundeController extends Controller {
         $model = $this->findModel($id);
         $plzId = $model->l_plz_id;
         $bankId = $model->bankverbindung_id;
+        //Plzstring im Formular ausgeben
         if (!empty(LPlz::findOne(['id' => $plzId])))
             $plz = LPlz::findOne(['id' => $plzId])->plz;
         else
             $plz = "00000";
-        if (!empty(Bankverbindung::findOne(['id' => $bankId])))
-            $bank = Bankverbindung::findOne(['id' => $bankId])->institut;
-        else {
-            $plz = '00000';
-            $bank = '00000';
-        }
         if ($model->loadAll(Yii::$app->request->post())) {
+            //den Plzstring in die Id zurück verwandeln
             $plzID = LPlz::findOne(['plz' => $model->l_plz_id])->id;
             $model->l_plz_id = $plzID;
-            $bankID = Bankverbindung::findOne(['id' => $model->bankverbindung_id])->id;
-            $model->bankverbindung_id = $bankID;
+            if (!empty(Bankverbindung::findOne(['id' => $model->bankverbindung_id]))) {
+                $bankID = Bankverbindung::findOne(['id' => $model->bankverbindung_id])->id;
+                $model->bankverbindung_id = $bankID;
+            }
+            /* ToDo: prüfen, ob bankverbindung_id versehentlich über die Select2Box(_form.php) doppelt gesetzt wurde. Falls ja, darf der Record
+              nicht gespeichert werden, da zwei Kunden nicht ein-und diesselbe Bankdaten haben können. Die Benachrichtigung soll über eine
+              kartikBox erfolgen, gefolgt von einem render auf actionUpdate */
             $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                         'model' => $model,
                         'plz' => $plz,
-                        'bank' => $bank,
+                        'id' => $bankId
             ]);
         }
     }
