@@ -1,0 +1,4 @@
+Zur Darstellung des ERD Modells wird folgendes Opensourcetool benötigt:
+mysql-workbench-community.
+Hier kann es bezogen werden:
+https://www.heise.de/download/product/mysql-workbench-14226/download
