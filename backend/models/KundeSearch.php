@@ -6,28 +6,27 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\Kunde;
+use frontend\models\LPlz;
 
 /**
  * backend\models\KundeSearch represents the model behind the search form about `frontend\models\Kunde`.
  */
- class KundeSearch extends Kunde
-{
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
+class KundeSearch extends Kunde {
+
+    public $choice_date;
+
+    public function rules() {
         return [
             [['id', 'l_plz_id', 'bankverbindung_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['geschlecht', 'vorname', 'nachname', 'stadt', 'strasse', 'geburtsdatum', 'solvenz', 'angelegt_am', 'aktualisiert_am'], 'safe'],
+            [['choice_date'], 'boolean']
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -39,8 +38,7 @@ use frontend\models\Kunde;
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = Kunde::find();
 
         $dataProvider = new ActiveDataProvider([
@@ -54,25 +52,33 @@ use frontend\models\Kunde;
             // $query->where('0=1');
             return $dataProvider;
         }
+        $id = '';
+        if (!empty(LPlz::findOne(['plz' => $this->l_plz_id])))
+            $id = LPlz::findOne(['plz' => $this->l_plz_id])->id;
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'l_plz_id' => $this->l_plz_id,
-            'geburtsdatum' => $this->geburtsdatum,
-            'bankverbindung_id' => $this->bankverbindung_id,
-            'angelegt_am' => $this->angelegt_am,
-            'aktualisiert_am' => $this->aktualisiert_am,
+            'l_plz_id' => $id,
+            'geschlecht' => $this->geschlecht,
             'angelegt_von' => $this->angelegt_von,
             'aktualisiert_von' => $this->aktualisiert_von,
+            'solvenz' => $this->solvenz,
         ]);
-
-        $query->andFilterWhere(['like', 'geschlecht', $this->geschlecht])
-            ->andFilterWhere(['like', 'vorname', $this->vorname])
-            ->andFilterWhere(['like', 'nachname', $this->nachname])
-            ->andFilterWhere(['like', 'stadt', $this->stadt])
-            ->andFilterWhere(['like', 'strasse', $this->strasse])
-            ->andFilterWhere(['like', 'solvenz', $this->solvenz]);
+        $query->andFilterWhere(['like', 'vorname', $this->vorname])
+                ->andFilterWhere(['like', 'nachname', $this->nachname])
+                ->andFilterWhere(['like', 'stadt', $this->stadt])
+                ->andFilterWhere(['like', 'strasse', $this->strasse]);
+        if ($this->choice_date == 0) {
+            $query->andFilterWhere(['<=', 'angelegt_am', $this->angelegt_am]);
+            $query->andFilterWhere(['<=', 'aktualisiert_am', $this->aktualisiert_am]);
+            $query->andFilterWhere(['<=', 'geburtsdatum', $this->geburtsdatum]);
+        } else if ($this->choice_date == 1) {
+            $query->andFilterWhere(['>=', 'angelegt_am', $this->angelegt_am]);
+            $query->andFilterWhere(['>=', 'aktualisiert_am', $this->aktualisiert_am]);
+            $query->andFilterWhere(['>=', 'geburtsdatum', $this->geburtsdatum]);
+        }
 
         return $dataProvider;
     }
+
 }

@@ -45,7 +45,7 @@ class Kunde extends \yii\db\ActiveRecord {
     public function attributeLabels() {
         return [
             'id' => 'ID',
-            'l_plz_id' => 'L Plz ID',
+            'l_plz_id' => 'Plz',
             'geschlecht' => 'Geschlecht',
             'vorname' => 'Vorname',
             'nachname' => 'Nachname',

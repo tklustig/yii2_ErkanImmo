@@ -17,44 +17,37 @@ use kartik\widgets\ActiveForm;
     <div class="col-md-12">
         <?= $form->field($model, 'l_plz_id')->textInput(['value' => $plz]) ?>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-4">
         <?= $form->field($model, 'geschlecht')->textInput(['maxlength' => true, 'placeholder' => 'Geschlecht']) ?>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-4">
         <?= $form->field($model, 'vorname')->textInput(['maxlength' => true, 'placeholder' => 'Vorname']) ?>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-4">
         <?= $form->field($model, 'nachname')->textInput(['maxlength' => true, 'placeholder' => 'Nachname']) ?>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-6">
         <?= $form->field($model, 'stadt')->textInput(['maxlength' => true, 'placeholder' => 'Stadt']) ?>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-6">
         <?= $form->field($model, 'strasse')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-4">
         <?=
-        $form->field($model, 'geburtsdatum')->widget(\kartik\datecontrol\DateControl::classname(), [
-            'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
-            'saveFormat' => 'php:Y-m-d',
-            'ajaxConversion' => true,
-            'options' => [
-                'pluginOptions' => [
-                    'placeholder' => Yii::t('app', 'Choose Geburtsdatum'),
-                    'autoclose' => true
-                ]
+        $form->field($model, 'geburtsdatum')->widget(\kartik\date\DatePicker::className(), [
+            'type' => kartik\datetime\DateTimePicker::TYPE_COMPONENT_PREPEND,
+            'pluginOptions' =>
+            [
+                'autoclose' => true,
+                'todayHighlight' => true,
+                'format' => 'yyyy-mm-dd'
             ],
-        ]);
-        ?>
-    </div>
-    <div class="col-md-12">
-        <?=
-        $form->field($model, 'solvenz')->widget(\kartik\checkbox\CheckboxX::classname(), [
-            'autoLabel' => true
+            'options' => [
+                'placeholder' => Yii::t('app', 'Geburtsdatum')],
         ])->label(false);
         ?>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-4">
         <?=
         $form->field($model, 'bankverbindung_id', ['addon' => [
                 'prepend' => ['content' => 'Bankinstitut']]])->widget(\kartik\widgets\Select2::classname(), [
@@ -67,7 +60,7 @@ use kartik\widgets\ActiveForm;
         ?>
 
     </div>
-    <div class="col-md-12">
+    <div class="col-md-4">
         <?=
         $form->field($model, 'aktualisiert_von')->widget(\kartik\widgets\Select2::classname(), [
             'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
@@ -76,6 +69,13 @@ use kartik\widgets\ActiveForm;
                 'allowClear' => true
             ],
         ]);
+        ?>
+    </div>
+    <div class="col-md-12">
+        <?=
+        $form->field($model, 'solvenz')->widget(\kartik\checkbox\CheckboxX::classname(), [
+            'autoLabel' => true
+        ])->label(false);
         ?>
     </div>
     <div class="form-group">

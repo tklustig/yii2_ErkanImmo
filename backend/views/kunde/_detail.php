@@ -23,14 +23,18 @@ use kartik\grid\GridView;
             'aktualisiert_am',
             [
                 'attribute' => 'angelegt_von',
-                'label' => Yii::t('app', 'angelegt_von'),
+                'label' => Yii::t('app', 'Angelegt von'),
                 'value' => function($model, $id) {
                     return $model->vorname . ' ' . $model->nachname;
                 },
             ],
             [
-                'attribute' => 'aktualisiertVon.username',
-                'label' => Yii::t('app', 'Aktualisiert Von'),
+                'attribute' => 'aktualisiert_von',
+                'label' => Yii::t('app', 'Aktualisiert von'),
+                'value' => function($model, $id) {
+                    if (!empty($model->aktualisiertVon))
+                        return 'Makler ' . $model->aktualisiertVon->username;
+                },
             ],
         ];
         echo DetailView::widget([

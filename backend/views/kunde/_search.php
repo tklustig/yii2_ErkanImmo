@@ -10,80 +10,68 @@ use yii\widgets\ActiveForm;
 
 <div class="form-kunde-search">
 
-    <?php $form = ActiveForm::begin([
-        'action' => ['index'],
-        'method' => 'get',
-    ]); ?>
-
-    <?= $form->field($model, 'id', ['template' => '{input}'])->textInput(['style' => 'display:none']); ?>
-
-    <?= $form->field($model, 'l_plz_id')->textInput(['placeholder' => 'L Plz']) ?>
-
-    <?= $form->field($model, 'geschlecht')->textInput(['maxlength' => true, 'placeholder' => 'Geschlecht']) ?>
-
-    <?= $form->field($model, 'vorname')->textInput(['maxlength' => true, 'placeholder' => 'Vorname']) ?>
-
-    <?= $form->field($model, 'nachname')->textInput(['maxlength' => true, 'placeholder' => 'Nachname']) ?>
-
-    <?php /* echo $form->field($model, 'stadt')->textInput(['maxlength' => true, 'placeholder' => 'Stadt']) */ ?>
-
-    <?php /* echo $form->field($model, 'strasse')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) */ ?>
-
-    <?php /* echo $form->field($model, 'geburtsdatum')->widget(\kartik\datecontrol\DateControl::classname(), [
-        'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
-        'saveFormat' => 'php:Y-m-d',
-        'ajaxConversion' => true,
-        'options' => [
-            'pluginOptions' => [
-                'placeholder' => Yii::t('app', 'Choose Geburtsdatum'),
-                'autoclose' => true
-            ]
-        ],
-    ]); */ ?>
-
-    <?php /* echo $form->field($model, 'solvenz')->checkbox() */ ?>
-
-    <?php /* echo $form->field($model, 'bankverbindung_id')->widget(\kartik\widgets\Select2::classname(), [
-        'data' => \yii\helpers\ArrayHelper::map(\backend\models\Bankverbindung::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-        'options' => ['placeholder' => Yii::t('app', 'Choose Bankverbindung')],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]); */ ?>
-
-    <?php /* echo $form->field($model, 'angelegt_am')->widget(\kartik\datecontrol\DateControl::classname(), [
-        'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-        'saveFormat' => 'php:Y-m-d H:i:s',
-        'ajaxConversion' => true,
-        'options' => [
-            'pluginOptions' => [
-                'placeholder' => Yii::t('app', 'Choose Angelegt Am'),
+    <?php
+    $form = ActiveForm::begin([
+                'action' => ['index'],
+                'method' => 'get',
+    ]);
+    ?>
+    <div class="col-md-12">
+        <?=
+        $form->field($model, 'choice_date')->radioList([0 => 'Vorher', 1 => 'Nachher'], ['itemOptions' => ['class' => 'choiceRadio']])->label('Grenzen Sie über diese beiden Radio Buttons Ihre Suche ein');
+        ?>
+    </div>
+    <div class="col-md-4">
+        <?=
+        $form->field($model, 'angelegt_am')->widget(\kartik\datetime\DateTimePicker::className(), [
+            'type' => kartik\datetime\DateTimePicker::TYPE_COMPONENT_PREPEND,
+            'pluginOptions' =>
+            [
                 'autoclose' => true,
-            ]
-        ],
-    ]); */ ?>
-
-    <?php /* echo $form->field($model, 'aktualisiert_am')->widget(\kartik\datecontrol\DateControl::classname(), [
-        'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-        'saveFormat' => 'php:Y-m-d H:i:s',
-        'ajaxConversion' => true,
-        'options' => [
-            'pluginOptions' => [
-                'placeholder' => Yii::t('app', 'Choose Aktualisiert Am'),
+                'todayHighlight' => true,
+                'format' => 'yyyy-mm-dd HH:ii:ss'
+            ],
+            'options' => [
+                'placeholder' => Yii::t('app', 'angelegt am ...'),],
+        ])->label(false);
+        ?>
+    </div>
+    <div class="col-md-4">
+        <?=
+        $form->field($model, 'aktualisiert_am')->widget(\kartik\datetime\DateTimePicker::className(), [
+            'type' => kartik\datetime\DateTimePicker::TYPE_COMPONENT_PREPEND,
+            'pluginOptions' =>
+            [
                 'autoclose' => true,
-            ]
-        ],
-    ]); */ ?>
-
-    <?php /* echo $form->field($model, 'angelegt_von')->textInput(['placeholder' => 'Angelegt Von']) */ ?>
-
-    <?php /* echo $form->field($model, 'aktualisiert_von')->widget(\kartik\widgets\Select2::classname(), [
-        'data' => \yii\helpers\ArrayHelper::map(\frontend\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-        'options' => ['placeholder' => Yii::t('app', 'Choose User')],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]); */ ?>
+                'todayHighlight' => true,
+                'format' => 'yyyy-mm-dd HH:ii:ss'
+            ],
+            'options' => [
+                'placeholder' => Yii::t('app', 'aktualisiert am ...'),],
+        ])->label(false);
+        ?>
+    </div>
+    <div class="col-md-4">
+        <?=
+        $form->field($model, 'geburtsdatum')->widget(\kartik\date\DatePicker::className(), [
+            'type' => kartik\datetime\DateTimePicker::TYPE_COMPONENT_PREPEND,
+            'pluginOptions' =>
+            [
+                'autoclose' => true,
+                'todayHighlight' => true,
+                'format' => 'yyyy-mm-dd'
+            ],
+            'options' => [
+                'placeholder' => Yii::t('app', 'Geburtsdatum')],
+        ])->label(false);
+        ?>
+    </div>
+    <div class="col-md-12">
+        <?= $form->field($model, 'id')->textInput(['placeholder' => 'nach ID suchen']) ?>
+    </div>
+    <div class="col-md-12">
+        <?= $form->field($model, 'l_plz_id')->textInput(['placeholder' => 'nach Plz suchen']) ?>
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
@@ -91,5 +79,4 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?php ActiveForm::end(); ?>
-
 </div>

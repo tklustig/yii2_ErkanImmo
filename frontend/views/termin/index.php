@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 
-$this->title = Yii::t('app', 'Besichtigungstermin(e)');
+$this->title = Yii::t('app', 'Alle Besichtigungstermine');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -91,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'toolbar' => [
                 ['content' =>
-                    Html::a('<span class=" fa fa-envelope-square"> zurück', $link, ['class' => 'btn btn-default', 'title' => 'zeigt alle Mails an, die von Ihnen implementiert wurden', 'data' => ['pjax' => '0']])
+                    Html::a('<span class=" fa fa-envelope-square"> zurück', $link, ['class' => 'btn btn-default', 'title' => 'rendert zum Backend zurück', 'data' => ['pjax' => '0']])
                 ],
                 '{export}',
                 '{toggleData}'

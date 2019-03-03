@@ -14,8 +14,6 @@ $this->registerJs($search);
 <div class="kunde-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]);   ?>
-
     <p>
         <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-info search-button']) ?>
     </p>
@@ -119,6 +117,7 @@ $this->registerJs($search);
     GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'filterSelector' => '.choiceRadio',
         'columns' => $gridColumn,
         'pjax' => true,
         'pjaxSettings' => [

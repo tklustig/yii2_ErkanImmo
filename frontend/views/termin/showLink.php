@@ -29,13 +29,23 @@ $this->params['breadcrumbs'][] = $this->title;
         die();
     }
     if (!empty(\frontend\models\Adminbesichtigungkunde::findOne(['id' => $idOfmodelAdminBesKu]))) {
+        $kundetelefon = null;
+        $kundemail = null;
         $kundeID = \frontend\models\Adminbesichtigungkunde::findOne(['id' => $idOfmodelAdminBesKu])->kunde_id;
         $kundenGeschlecht = frontend\models\Kunde::findOne(['id' => $kundeID])->geschlecht;
         $kundenVorName = frontend\models\Kunde::findOne(['id' => $kundeID])->vorname;
         $kundenNachName = frontend\models\Kunde::findOne(['id' => $kundeID])->nachname;
         $kundeStadt = frontend\models\Kunde::findOne(['id' => $kundeID])->stadt;
         $kundeStrasse = frontend\models\Kunde::findOne(['id' => $kundeID])->strasse;
+        if (!empty(frontend\models\Kunde::findOne(['id' => $kundeID])->telefon))
+            $kundetelefon = frontend\models\Kunde::findOne(['id' => $kundeID])->telefon;
+        if (!empty(frontend\models\Kunde::findOne(['id' => $kundeID])->mail))
+            $kundemail = frontend\models\Kunde::findOne(['id' => $kundeID])->mail;
         $kundeGeburtsdatum = frontend\models\Kunde::findOne(['id' => $kundeID])->geburtsdatum;
+        if ($kundetelefon == null)
+            $kundetelefon = 'nicht verfügbar';
+        if ($kundemail == null)
+            $kundemail = 'nicht verfügbar';
     } else {
         print_r('Die findOne()-Methode für Adminbesichtigungkunde(Zeile 31) scheint NULL zu sein. Bitte informieren Sie den Softwarehersteller!');
         die();
@@ -45,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
     $year = floor($hours / 24 / 365);
     $output = date("d.m.Y", strtotime($kundeGeburtsdatum)) . ', ' . $year . " Jahre alt";
     $einleitung = 'Folgender Interessent hat mit Ihnen für diese Immobilie einen Termin vereinbart:\n';
-    $giveBack = $einleitung . $kundenGeschlecht . ' ' . $kundenVorName . '  ' . $kundenNachName . ',\n' . 'wohnhaft in ' . $kundeStadt . ',\n' . $kundeStrasse . ',\n' . 'Geburtsdaten:' . ' ' . $output;
+    $giveBack = $einleitung . $kundenGeschlecht . ' ' . $kundenVorName . '  ' . $kundenNachName . ',\n' . 'wohnhaft in ' . $kundeStadt . ',\n' . $kundeStrasse . ',\n' . 'Geburtsdaten:' . ' ' . $output . '<br>Kontaktdaten: <span class="glyphicon glyphicon-earphone"></span> ' . $kundetelefon . ' / <span class="glyphicon glyphicon-envelope"></span> ' . $kundemail;
     $js = "krajeeDialog.alert('$giveBack');";
     $this->registerJs($js);
     $link = \Yii::$app->urlManagerBackend->baseUrl . '/home';
