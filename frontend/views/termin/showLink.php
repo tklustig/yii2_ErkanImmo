@@ -22,14 +22,24 @@ $this->params['breadcrumbs'][] = $this->title;
     $output = "";
     $expression = new yii\db\Expression('NOW()');
     $now = (new \yii\db\Query)->select($expression)->scalar();
-    $idOfmodelAdminBesKu = \frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->id;
-    $kundeID = \frontend\models\Adminbesichtigungkunde::findOne(['id' => $idOfmodelAdminBesKu])->kunde_id;
-    $kundenGeschlecht = frontend\models\Kunde::findOne(['id' => $kundeID])->geschlecht;
-    $kundenVorName = frontend\models\Kunde::findOne(['id' => $kundeID])->vorname;
-    $kundenNachName = frontend\models\Kunde::findOne(['id' => $kundeID])->nachname;
-    $kundeStadt = frontend\models\Kunde::findOne(['id' => $kundeID])->stadt;
-    $kundeStrasse = frontend\models\Kunde::findOne(['id' => $kundeID])->strasse;
-    $kundeGeburtsdatum = frontend\models\Kunde::findOne(['id' => $kundeID])->geburtsdatum;
+    if (!empty(\frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id]))) {
+        $idOfmodelAdminBesKu = \frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->id;
+    } else {
+        print_r('Die findOne()-Methode für Adminbesichtigungkunde(Zeile 25) scheint NULL zu sein. Bitte informieren Sie den Softwarehersteller!');
+        die();
+    }
+    if (!empty(\frontend\models\Adminbesichtigungkunde::findOne(['id' => $idOfmodelAdminBesKu]))) {
+        $kundeID = \frontend\models\Adminbesichtigungkunde::findOne(['id' => $idOfmodelAdminBesKu])->kunde_id;
+        $kundenGeschlecht = frontend\models\Kunde::findOne(['id' => $kundeID])->geschlecht;
+        $kundenVorName = frontend\models\Kunde::findOne(['id' => $kundeID])->vorname;
+        $kundenNachName = frontend\models\Kunde::findOne(['id' => $kundeID])->nachname;
+        $kundeStadt = frontend\models\Kunde::findOne(['id' => $kundeID])->stadt;
+        $kundeStrasse = frontend\models\Kunde::findOne(['id' => $kundeID])->strasse;
+        $kundeGeburtsdatum = frontend\models\Kunde::findOne(['id' => $kundeID])->geburtsdatum;
+    } else {
+        print_r('Die findOne()-Methode für Adminbesichtigungkunde(Zeile 31) scheint NULL zu sein. Bitte informieren Sie den Softwarehersteller!');
+        die();
+    }
     $diff = strtotime($now) - strtotime($kundeGeburtsdatum);
     $hours = floor($diff / (60 * 60));
     $year = floor($hours / 24 / 365);
@@ -84,28 +94,33 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => 'yii\grid\ActionColumn',
             'template' => '{kunde}',
             'buttons' => [
-                'kunde' => function ($model, $id) {
+                'kunde' => function ( $id, $model) {
                     $output = "";
                     $expression = new yii\db\Expression('NOW()');
                     $now = (new \yii\db\Query)->select($expression)->scalar();
-                    $idTermin = $id->id;
-                    $idOfmodelAdminBesKu = \frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $idTermin])->id;
-                    $kundeID = \frontend\models\Adminbesichtigungkunde::findOne(['id' => $idOfmodelAdminBesKu])->kunde_id;
-                    $kundenGeschlecht = frontend\models\Kunde::findOne(['id' => $kundeID])->geschlecht;
-                    $kundenVorName = frontend\models\Kunde::findOne(['id' => $kundeID])->vorname;
-                    $kundenNachName = frontend\models\Kunde::findOne(['id' => $kundeID])->nachname;
-                    $kundeStadt = frontend\models\Kunde::findOne(['id' => $kundeID])->stadt;
-                    $kundeStrasse = frontend\models\Kunde::findOne(['id' => $kundeID])->strasse;
-                    $kundeGeburtsdatum = frontend\models\Kunde::findOne(['id' => $kundeID])->geburtsdatum;
-                    $diff = strtotime($now) - strtotime($kundeGeburtsdatum);
-                    $hours = floor($diff / (60 * 60));
-                    $year = floor($hours / 24 / 365);
-                    $output = date("d.m.Y", strtotime($kundeGeburtsdatum)) . "<br>" . $year . " Jahre alt";
-                    $giveBack = $kundenGeschlecht . ' ' . $kundenVorName . ' ' . $kundenNachName . '\n' . 'wohnhaft in ' . $kundeStadt . ' ' . $kundeStrasse . '\n' . 'Geburtsdaten:' . ' ' . $output;
-                    //$js = "krajeeDialog.alert('Hold On! This is a Krajee alert!');";
-                    $js = "krajeeDialog.alert('$giveBack');";
-                    //return Html::a('<span class="glyphicon glyphicon-user"></span>', [$this->registerJs($js)], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
-                    return Html::a('<span class="glyphicon glyphicon-home"></span>', ['/termin/link', 'id' => $id->id], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
+                    $idTermin = $model->id;
+                    $idOfmodelAdminBesKu = \frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $idTermin]);
+                    if (!(empty($idOfmodelAdminBesKu))) {
+                        $kundeID = \frontend\models\Adminbesichtigungkunde::findOne(['id' => $idOfmodelAdminBesKu])->kunde_id;
+                        $kundenGeschlecht = frontend\models\Kunde::findOne(['id' => $kundeID])->geschlecht;
+                        $kundenVorName = frontend\models\Kunde::findOne(['id' => $kundeID])->vorname;
+                        $kundenNachName = frontend\models\Kunde::findOne(['id' => $kundeID])->nachname;
+                        $kundeStadt = frontend\models\Kunde::findOne(['id' => $kundeID])->stadt;
+                        $kundeStrasse = frontend\models\Kunde::findOne(['id' => $kundeID])->strasse;
+                        $kundeGeburtsdatum = frontend\models\Kunde::findOne(['id' => $kundeID])->geburtsdatum;
+                        $diff = strtotime($now) - strtotime($kundeGeburtsdatum);
+                        $hours = floor($diff / (60 * 60));
+                        $year = floor($hours / 24 / 365);
+                        $output = date("d.m.Y", strtotime($kundeGeburtsdatum)) . "<br>" . $year . " Jahre alt";
+                        $giveBack = $kundenGeschlecht . ' ' . $kundenVorName . ' ' . $kundenNachName . '\n' . 'wohnhaft in ' . $kundeStadt . ' ' . $kundeStrasse . '\n' . 'Geburtsdaten:' . ' ' . $output;
+                        //$js = "krajeeDialog.alert('Hold On! This is a Krajee alert!');";
+                        $js = "krajeeDialog.alert('$giveBack');";
+                        //return Html::a('<span class="glyphicon glyphicon-user"></span>', [$this->registerJs($js)], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
+                        return Html::a('<span class="glyphicon glyphicon-home"></span>', ['/termin/link', 'id' => $model->id], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
+                    } else {
+                        print_r('Die findOne()-Methode für Adminbesichtigungkunde(Zeile 92) scheint NULL zu sein. Bitte informieren Sie den Softwarehersteller!');
+                        die();
+                    }
                 },
             ],
         ],

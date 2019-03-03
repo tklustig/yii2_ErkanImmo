@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <h2><?= Yii::t('app', 'Bankverbindung') . ' ' . Html::encode($this->title) ?></h2>
         </div>
         <div class="upper" style="margin-top: 15px">
-            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['index', 'id' => $model->id], ['class' => 'btn btn-success ']) ?>      
+            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/site/index'], ['class' => 'btn btn-success ']) ?>      
             <?=
             Html::a('<i class="fa glyphicon glyphicon-hand-up"></i> ' . Yii::t('app', 'PDF'), ['pdf', 'id' => $model->id], [
                 'class' => 'btn btn-default',
@@ -43,10 +43,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'bic',
             'angelegt_am',
             'aktualisiert_am',
-            'angelegt_von',
             [
-                'attribute' => 'aktualisiertVon.id',
-                'label' => Yii::t('app', 'Aktualisiert Von'),
+                'attribute' => 'aktualisiertVon.username',
+                'label' => Yii::t('app', 'Angelegt von'),
+            ],
+            [
+                'attribute' => 'aktualisiertVon.username',
+                'label' => Yii::t('app', 'Aktualisiert von'),
             ],
         ];
         echo DetailView::widget([
@@ -71,12 +74,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'stadt',
                 'strasse',
                 'geburtsdatum',
-                'solvenz',
-                'angelegt_am',
-                'aktualisiert_am',
-                'angelegt_von',
                 [
-                    'attribute' => 'aktualisiertVon.id',
+                    'class' => 'kartik\grid\BooleanColumn',
+                    'attribute' => 'solvenz',
+                    'trueLabel' => 'Ja',
+                    'falseLabel' => 'Nein',
+                    'label' => 'ist Solvent',
+                    'encodeLabel' => false,
+                ],
+                'angelegt_am',
+                [
+                    'attribute' => 'aktualisiertVon.username',
                     'label' => Yii::t('app', 'Aktualisiert Von')
                 ],
             ];

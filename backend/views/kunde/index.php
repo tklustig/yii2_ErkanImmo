@@ -92,11 +92,23 @@ $this->registerJs($search);
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{bankverbindung}',
+            'template' => '{bankverbindung},{termin}',
             'buttons' => [
                 'bankverbindung' => function ($id, $model) {
                     if (!empty($model->bankverbindung_id)) {
-                        return Html::a('<span class="glyphicon glyphicon-copy"></span>', ['/bankverbindung/view', 'id' => $model->id], ['title' => 'Duplizieren']);
+                        $pk = backend\models\Bankverbindung::findOne(['id' => $model->bankverbindung_id])->id;
+                        return Html::a('<span class="glyphicon glyphicon-th-list"></span>', ['/bankverbindung/view', 'id' => $pk], ['title' => 'Bankverbindung anzeigen']);
+                    }
+                },
+                'termin' => function ($id, $model) {
+                    $data = frontend\models\Adminbesichtigungkunde::find()->all();
+                    foreach ($data as $item) {
+                        if ($item->kunde_id == $model->id) {
+                            $fk = $item->besichtigungstermin_id;
+                            $link = \Yii::$app->urlManagerFrontend->baseUrl . '/termin_viewen';
+                            $link .= '?id=' . $fk;
+                            return Html::a('<span class="glyphicon glyphicon-flag"></span>', $link, ['title' => 'zum Termin im Frontend springen']);
+                        }
                     }
                 },
             ],

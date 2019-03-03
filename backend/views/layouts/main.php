@@ -81,7 +81,7 @@ AssetBundle::register($this);
                                 ['label' => 'Kunden', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
-                                        ['label' => 'Kundendaten abrufen(ToLook)', 'url' => ['/kunde/index']],
+                                        ['label' => 'Alle Kundendaten abrufen', 'url' => ['/kunde/index']],                                      
                                         ['label' => 'Mails verschicken(ToDo)', 'url' => ['#']],
                                         ['label' => 'verschickte Mails anzeigen(ToDo)', 'url' => ['#']]
                                     ],
@@ -90,7 +90,8 @@ AssetBundle::register($this);
                                 ['label' => 'Termine', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
-                                        ['label' => 'Besichtigungstermine abrufen', 'url' => $link],
+                                        ['label' => 'Alle Besichtigungstermine abrufen', 'url' => $link],
+                                        ['label' => 'Besichtigungstermine nach/je Makler abrufen(ToDo)', 'url' => '#'],
                                     ],
                                 ],
                                 '<li class="divider"></li>',

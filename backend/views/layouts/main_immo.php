@@ -96,7 +96,7 @@ $this->beginPage()
                         ['label' => 'Kunden', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
-                                ['label' => 'Kundendaten abrufen(ToLook)', 'url' => ['/kunde/index']],
+                                ['label' => 'Kundendaten abrufen', 'url' => ['/kunde/index']],
                                 ['label' => 'Mails verschicken(ToDo)', 'url' => ['#']],
                                 ['label' => 'verschickte Mails anzeigen(ToDo)', 'url' => ['#']]
                             ],
@@ -106,6 +106,7 @@ $this->beginPage()
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Besichtigungstermine abrufen', 'url' => $link],
+                                ['label' => 'Besichtigungstermine je Makler abrufen(ToDo)', 'url' => '#'],
                             ],
                         ],
                         '<li class="divider"></li>',
