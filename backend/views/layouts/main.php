@@ -57,6 +57,7 @@ AssetBundle::register($this);
                                         ['label' => 'Rechnung erstellen(ToDo)', 'url' => ['#']],
                                         ['label' => 'erstellte Rechnungen anzeigen(ToDo)', 'url' => ['#']],
                                         ['label' => 'erstellte Rechnungen drucken(ToDo)', 'url' => ['#']],
+                                        ['label' => 'Rechnungskopf aufrufen(ToDo)', 'url' => ['#']],
                                     ],
                                 ],
                                 '<li class="divider"></li>',
