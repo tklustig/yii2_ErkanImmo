@@ -58,7 +58,7 @@ use kartik\widgets\ActiveForm;
         <?=
         $form->field($model, 'bankverbindung_id', ['addon' => [
                 'prepend' => ['content' => 'Bankinstitut']]])->widget(\kartik\widgets\Select2::classname(), [
-            'data' => \yii\helpers\ArrayHelper::map(frontend\models\Bankverbindung::find()->asArray()->all(), 'id', 'institut'),
+            'data' => \yii\helpers\ArrayHelper::map(backend\models\Bankverbindung::find()->asArray()->all(), 'id', 'institut'),
             'options' => ['placeholder' => Yii::t('app', 'Bankverbindung selektieren')],
             'pluginOptions' => [
                 'allowClear' => true

@@ -72,7 +72,7 @@ class Kunde extends \yii\db\ActiveRecord {
     }
 
     public function getBankverbindung() {
-        return $this->hasOne(\frontend\models\Bankverbindung::className(), ['id' => 'bankverbindung_id']);
+        return $this->hasOne(\backend\models\Bankverbindung::className(), ['id' => 'bankverbindung_id']);
     }
 
     public function getAktualisiertVon() {

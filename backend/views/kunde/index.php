@@ -81,7 +81,7 @@ $this->registerJs($search);
                 }
             },
             'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\frontend\models\Bankverbindung::find()->asArray()->all(), 'id', 'id'),
+            'filter' => \yii\helpers\ArrayHelper::map(\backend\models\Bankverbindung::find()->asArray()->all(), 'id', 'id'),
             'filterWidgetOptions' => [
                 'pluginOptions' => ['allowClear' => true],
             ],
@@ -89,6 +89,17 @@ $this->registerJs($search);
         ],
         [
             'class' => 'yii\grid\ActionColumn',
+        ],
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '{bankverbindung}',
+            'buttons' => [
+                'bankverbindung' => function ($id, $model) {
+                    if (!empty($model->bankverbindung_id)) {
+                        return Html::a('<span class="glyphicon glyphicon-copy"></span>', ['/bankverbindung/view', 'id' => $model->id], ['title' => 'Duplizieren']);
+                    }
+                },
+            ],
         ],
     ];
     ?>

@@ -44,7 +44,7 @@ use yii\widgets\ActiveForm;
     <?php /* echo $form->field($model, 'solvenz')->checkbox() */ ?>
 
     <?php /* echo $form->field($model, 'bankverbindung_id')->widget(\kartik\widgets\Select2::classname(), [
-        'data' => \yii\helpers\ArrayHelper::map(\frontend\models\Bankverbindung::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
+        'data' => \yii\helpers\ArrayHelper::map(\backend\models\Bankverbindung::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
         'options' => ['placeholder' => Yii::t('app', 'Choose Bankverbindung')],
         'pluginOptions' => [
             'allowClear' => true
