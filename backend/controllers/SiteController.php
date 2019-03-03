@@ -16,6 +16,7 @@ use common\models\User;
 use backend\models\PasswordResetRequestForm;
 use backend\models\ResetPasswordForm;
 use backend\models\SignupForm;
+use backend\models\Kopf;
 use common\classes\error_handling;
 
 class SiteController extends Controller {
@@ -105,6 +106,9 @@ class SiteController extends Controller {
     public function actionSignup() {
         $this->layout = "reset_main";
         $ModelUser = User::find()->all();
+        $kopfId = Kopf::find()->min('id');
+        $data = Kopf::findOne(['id' => $kopfId])->data;
+        $modelKopf = new Kopf();
         foreach ($ModelUser as $user) {
             $telefon = $user->telefon;
         }
@@ -114,6 +118,10 @@ class SiteController extends Controller {
             if ($user = $model->signup()) {
                 if (Yii::$app->getUser()->login($user)) {
                     $session->addFlash('info', "Ein neuer Benutzer der Bezeichnung $model->username wurde soeben neu angelegt!");
+                    $fk = $user->id;
+                    $modelKopf->data = $data;
+                    $modelKopf->user_id = $fk;
+                    $modelKopf->save();
                     return $this->goHome();
                 }
             }
@@ -186,6 +194,8 @@ class SiteController extends Controller {
             $DynamicModel->addRule(['id_user'], 'integer');
             $DynamicModel->addRule(['id_user'], 'required');
             if ($DynamicModel->load(Yii::$app->request->post())) {
+                $kopfId = Kopf::findOne(['user_id' => $DynamicModel->id_user])->id;
+                $this->findModel_kopf($kopfId)->delete();
                 $this->findModel_user($DynamicModel->id_user)->delete();
                 $session->addFlash('info', "Der User mit der Id $DynamicModel->id_user wurde soeben gelöscht. Sie können sich mit dessen Logindaten zukünftig nicht mehr einloggen.");
                 return $this->redirect(['/site/index']);
@@ -213,6 +223,18 @@ class SiteController extends Controller {
             $user = User::findOne($id); //findAll() gibt ein array aus Objekten zurück.findOne() gibt ein einzelnes Objekt zurück
             if ($user != NULL)
                 return $user;
+            else
+                throw new NotFoundHttpException(Yii::t('app', 'Die Tabelle user konnte nicht geladen werden. Informieren Sie den Softwarehersteller'));
+        } catch (\Exception $e) {
+            throw new NotFoundHttpException(Yii::t('app', "$e"));
+        }
+    }
+
+    protected function findModel_kopf($id) {
+        try {
+            $kopf = Kopf::findOne($id); //findAll() gibt ein array aus Objekten zurück.findOne() gibt ein einzelnes Objekt zurück
+            if ($kopf != NULL)
+                return $kopf;
             else
                 throw new NotFoundHttpException(Yii::t('app', 'Die Tabelle user konnte nicht geladen werden. Informieren Sie den Softwarehersteller'));
         } catch (\Exception $e) {
