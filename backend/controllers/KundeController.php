@@ -5,7 +5,7 @@ namespace backend\controllers;
 use Yii;
 use frontend\models\Kunde;
 use backend\models\KundeSearch;
-use backend\models\LPlz;
+use frontend\models\LPlz;
 use backend\models\Bankverbindung;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

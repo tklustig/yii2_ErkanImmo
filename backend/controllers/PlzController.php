@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use Yii;
-use backend\models\LPlz;
+use frontend\models\LPlz;
 use yii\web\Controller;
 use yii\helpers\Json;
 

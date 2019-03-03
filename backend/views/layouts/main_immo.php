@@ -66,6 +66,15 @@ $this->beginPage()
                             ],
                         ],
                         '<li class="divider"></li>',
+                        ['label' => 'Rechnungen', 'url' => ['#'],
+                            'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
+                            'items' => [
+                                ['label' => 'Rechnung erstellen(ToDo)', 'url' => ['#']],
+                                ['label' => 'erstellte Rechnungen anzeigen(ToDo)', 'url' => ['#']],
+                                ['label' => 'erstellte Rechnungen drucken(ToDo)', 'url' => ['#']],
+                            ],
+                        ],
+                        '<li class="divider"></li>',
                         ['label' => 'Immobilien', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
