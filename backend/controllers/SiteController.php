@@ -73,7 +73,7 @@ class SiteController extends Controller {
                 'type' => Growl::TYPE_GROWL,
                 'title' => 'Warning',
                 'icon' => 'glyphicon glyphicon-ok-sign',
-                'body' => 'Da Sie offensichtlich den User gelöscht hatten, mit dem Sie sich eingeloggt haten, ist momentan kein User mehr angemeldet. Betätigen Sie bitte die Loginoption, rechts oben im Menu!',
+                'body' => 'Da Sie offensichtlich einen User gelöscht hatten, ist momentan kein User mehr angemeldet. Betätigen Sie bitte die Loginoption, rechts oben im Menu!',
                 'showSeparator' => true,
                 'delay' => 1500,
                 'pluginOptions' => [
