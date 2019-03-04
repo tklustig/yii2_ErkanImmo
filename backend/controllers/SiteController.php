@@ -14,6 +14,7 @@ use yii\db\Query;
 use yii\db\Expression;
 use yii\web\UploadedFile;
 use kartik\widgets\Growl;
+use kartik\widgets\Alert;
 use common\models\LoginForm;
 use common\models\User;
 use backend\models\PasswordResetRequestForm;
@@ -319,8 +320,23 @@ class SiteController extends Controller {
         $DynamicModel->addRule(['art'], 'integer');
         $DynamicModel->addRule(['art'], 'required');
         $max = LDateianhangArt::find()->max('id');
-        $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => $max]);
+        //$arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => $max]);
         if ($DynamicModel->load(Yii::$app->request->post())) {
+            if (empty($DynamicModel->bez) || empty($DynamicModel->file)) {
+                $message = "Bitte alle(!) Felder ausfüllen";
+                echo Alert::widget([
+                    'type' => Alert::TYPE_DANGER,
+                    'title' => 'Importan Message',
+                    'icon' => 'fas fa-info-circle',
+                    'body' => $message,
+                    'showSeparator' => true,
+                    'delay' => 2500
+                ]);
+                return $this->render('_form_picsforfrontend', [
+                            'DynamicModel' => $DynamicModel,
+                            'max' => $max,
+                ]);
+            }
             //ToDo
             $pathTo = Yii::getAlias('@pictures');
             $pathFrom = Yii::getAlias('@uploading');
@@ -334,7 +350,6 @@ class SiteController extends Controller {
             return $this->render('_form_picsforfrontend', [
                         'DynamicModel' => $DynamicModel,
                         'max' => $max,
-                        'arrayOfObjectsForAnhang' => $arrayOfObjectsForAnhang
             ]);
         }
     }

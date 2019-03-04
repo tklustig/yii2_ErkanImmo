@@ -36,7 +36,7 @@ $max = frontend\models\base\LDateianhangArt::find()->max('id');
         ]);
         ?>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-12">
         <?=
         $form->field($model, 'l_dateianhang_art_id')->widget(\kartik\widgets\Select2::classname(), [
             'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LDateianhangArt::find()->where(['id' => $max])->asArray()->all(), 'id', 'bezeichnung'),
@@ -50,7 +50,7 @@ $max = frontend\models\base\LDateianhangArt::find()->max('id');
     <?php
     if ($model->isNewRecord) {
         ?>
-        <div class="col-md-4">
+        <div class="col-md-6">
 
             <?=
             $form->field($model, 'angelegt_am', ['addon' => [
@@ -62,7 +62,7 @@ $max = frontend\models\base\LDateianhangArt::find()->max('id');
             ]);
             ?>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <?=
             $form->field($model, 'angelegt_von', ['addon' => [
                     'prepend' => ['content' => 'angelegt von'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\widgets\Select2::classname(), [
@@ -75,7 +75,7 @@ $max = frontend\models\base\LDateianhangArt::find()->max('id');
         <?php
     } else {
         ?>
-        <div class="col-md-4">
+        <div class="col-md-6">
 
             <?=
             $form->field($model, 'aktualisert_am', ['addon' => [
@@ -86,7 +86,7 @@ $max = frontend\models\base\LDateianhangArt::find()->max('id');
             ]);
             ?>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <?=
             $form->field($model, 'aktualisert_von', ['addon' => [
                     'prepend' => ['content' => 'aktualisert von']]])->widget(\kartik\widgets\Select2::classname(), [

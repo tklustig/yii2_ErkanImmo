@@ -1,20 +1,14 @@
-<center><h2>Graphical Frontendinitialisation</h2></center>
 <?php
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = 'Benutzer löschen';
+$this->title = 'Graphical Frontendinitialisation';
 $this->params['breadcrumbs'][] = $this->title;
-?>
-<?php
-foreach ($arrayOfObjectsForAnhang as $item) {
-    
-}
 ?>
 <div class="jumbotron">
     <div class="container">
-        <div class="page-header"><h2><?= Html::encode($this->title) ?><small>Wählen Sie den Benutzer über die DropDown-Box</small></h2></div>
+        <div class="page-header"><h2><?= Html::encode($this->title) ?><small>Wählen Sie Ihre Frontendeinstellungen über die DropDown-Box</small></h2></div>
         <div class="row">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
             <div class="col-md-12">

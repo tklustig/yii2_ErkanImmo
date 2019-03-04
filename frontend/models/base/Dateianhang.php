@@ -17,7 +17,9 @@ class Dateianhang extends \yii\db\ActiveRecord {
     public function relationNames() {
         return [
             'eDateianhang',
-            'lDateianhangArt'
+            'lDateianhangArt',
+            'angelegtVon',
+            'aktualisiertVon'
         ];
     }
 
@@ -65,17 +67,18 @@ class Dateianhang extends \yii\db\ActiveRecord {
         return $this->hasOne(\frontend\models\EDateianhang::className(), ['id' => 'e_dateianhang_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getLDateianhangArt() {
         return $this->hasOne(\frontend\models\LDateianhangArt::className(), ['id' => 'l_dateianhang_art_id']);
     }
 
-    /**
-     * @inheritdoc
-     * @return array mixed
-     */
+    public function getAktualisiertVon() {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
+    }
+
+    public function getAngelegtVon() {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'angelegt_von']);
+    }
+
     public function behaviors() {
         return [
             'timestamp' => [
@@ -130,8 +133,8 @@ class Dateianhang extends \yii\db\ActiveRecord {
         }
         return false;
     }
-    
-        public function uploadFrontend($model) {
+
+    public function uploadFrontend($model) {
         $x = 0;
         $valid = $this->validate();
         if (!$valid) {
