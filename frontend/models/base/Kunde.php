@@ -4,31 +4,36 @@ namespace frontend\models\base;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use yii\behaviors\BlameableBehavior;
 
 class Kunde extends \yii\db\ActiveRecord {
 
     use \mootensai\relation\RelationTrait;
 
+    /**
+     * This function helps \mootensai\relation\RelationTrait runs faster
+     * @return array relation names of this model
+     */
     public function relationNames() {
         return [
             'adminbesichtigungkundes',
             'eDateianhangs',
             'bankverbindung',
             'aktualisiertVon',
-            'kundeimmobillies'
+            'kundeimmobillies',
+            'lPlz',
+            'geschlecht0',
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function rules() {
         return [
-            [['bankverbindung_id'], 'integer', 'except' => 'update_kunde'],
-            [['bankverbindung_id',], 'string', 'on' => 'update_kunde'],
             [['l_plz_id', 'geschlecht', 'vorname', 'nachname', 'stadt', 'strasse'], 'required'],
-            [['l_plz_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
+            [['l_plz_id', 'angelegt_von', 'aktualisiert_von', 'geschlecht'], 'integer'],
             [['geburtsdatum', 'angelegt_am', 'aktualisiert_am'], 'safe'],
             ['email', 'email'],
-            [['geschlecht'], 'string', 'max' => 64],
             [['vorname', 'nachname', 'stadt'], 'string', 'max' => 255],
             [['strasse'], 'string', 'max' => 44],
             [['solvenz'], 'string', 'max' => 1],
@@ -38,28 +43,34 @@ class Kunde extends \yii\db\ActiveRecord {
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public static function tableName() {
         return 'kunde';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function attributeLabels() {
         return [
-            'id' => 'ID',
-            'l_plz_id' => 'Plz',
-            'geschlecht' => 'Geschlecht',
-            'vorname' => 'Vorname',
-            'nachname' => 'Nachname',
-            'stadt' => 'Stadt',
-            'strasse' => 'Strasse',
-            'geburtsdatum' => 'Geburtsdatum',
-            'solvenz' => 'Solvenz',
-            'telefon' => 'Telefon',
-            'email' => 'Email',
-            'bankverbindung_id' => 'Bankverbindung ID',
-            'angelegt_am' => 'Angelegt Am',
-            'aktualisiert_am' => 'Aktualisiert Am',
-            'angelegt_von' => 'Angelegt Von',
-            'aktualisiert_von' => 'Aktualisiert Von',
+            'id' => Yii::t('app', 'ID'),
+            'l_plz_id' => Yii::t('app', 'PLZ'),
+            'geschlecht' => Yii::t('app', 'Geschlecht'),
+            'vorname' => Yii::t('app', 'Vorname'),
+            'nachname' => Yii::t('app', 'Nachname'),
+            'stadt' => Yii::t('app', 'Stadt'),
+            'strasse' => Yii::t('app', 'Strasse'),
+            'geburtsdatum' => Yii::t('app', 'Geburtsdatum'),
+            'solvenz' => Yii::t('app', 'Solvenz'),
+            'telefon' => Yii::t('app', 'Telefon'),
+            'email' => Yii::t('app', 'Email'),
+            'bankverbindung_id' => Yii::t('app', 'Bankverbindung ID'),
+            'angelegt_am' => Yii::t('app', 'Angelegt Am'),
+            'aktualisiert_am' => Yii::t('app', 'Aktualisiert Am'),
+            'angelegt_von' => Yii::t('app', 'Angelegt Von'),
+            'aktualisiert_von' => Yii::t('app', 'Aktualisiert Von'),
         ];
     }
 
@@ -85,6 +96,10 @@ class Kunde extends \yii\db\ActiveRecord {
 
     public function getLPlz() {
         return $this->hasOne(\frontend\models\LPlz::className(), ['id' => 'l_plz_id']);
+    }
+
+    public function getGeschlecht0() {
+        return $this->hasOne(\backend\models\LGeschlecht::className(), ['id' => 'geschlecht']);
     }
 
     public function behaviors() {

@@ -42,7 +42,7 @@ class KundeController extends Controller {
     }
 
     public function actionUpdate($id) {
-        $model = new Bankverbindung(['scenario' => 'update_kunde']);
+        $model = new Bankverbindung();
         $model = $this->findModel($id);
         $plzId = $model->l_plz_id;
         $bankId = $model->bankverbindung_id;

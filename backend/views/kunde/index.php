@@ -36,8 +36,20 @@ $this->registerJs($search);
             'expandOneOnly' => true
         ],
         ['attribute' => 'id', 'visible' => false],
-        'lPlz.plz',
-        'geschlecht',
+        [
+            'attribute' => 'l_plz_id',
+            'label' => Yii::t('app', 'Plz'),
+            'value' => function($model, $id) {
+                return $model->l_plz_id ? $model->lPlz->plz : null;
+            },
+        ],
+        [
+            'attribute' => 'geschlecht',
+            'label' => Yii::t('app', 'Geschlecht'),
+            'value' => function($model, $id) {
+                return $model->geschlecht ? $model->geschlecht0->typus : null;
+            },
+        ],
         'vorname',
         'nachname',
         'stadt',

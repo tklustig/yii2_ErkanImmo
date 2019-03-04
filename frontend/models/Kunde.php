@@ -15,13 +15,10 @@ class Kunde extends BaseKunde {
      */
     public function rules() {
         return array_replace_recursive(parent::rules(), [
-            [['bankverbindung_id'], 'integer', 'except' => 'update_kunde'],
-            [['bankverbindung_id',], 'string', 'on' => 'update_kunde'],
             [['l_plz_id', 'geschlecht', 'vorname', 'nachname', 'stadt', 'strasse'], 'required'],
-            [['l_plz_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
+            [['l_plz_id', 'angelegt_von', 'aktualisiert_von', 'geschlecht'], 'integer'],
             [['geburtsdatum', 'angelegt_am', 'aktualisiert_am'], 'safe'],
             ['email', 'email'],
-            [['geschlecht'], 'string', 'max' => 64],
             [['vorname', 'nachname', 'stadt'], 'string', 'max' => 255],
             [['strasse'], 'string', 'max' => 44],
             [['solvenz'], 'string', 'max' => 1],
