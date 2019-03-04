@@ -53,7 +53,7 @@ class Dateianhang extends \yii\db\ActiveRecord {
             'aktualisert_am' => Yii::t('app', 'aktualisert am'),
             'angelegt_von' => Yii::t('app', 'angelegt von'),
             'aktualisiert_von' => Yii::t('app', 'aktualisiert von'),
-            'l_dateianhang_art_id' => Yii::t('app', 'Dateianhangssrt'),
+            'l_dateianhang_art_id' => Yii::t('app', 'Dateianhangsart'),
             'e_dateianhang_id' => Yii::t('app', 'e_dateianhang_id'),
         ];
     }
@@ -123,6 +123,34 @@ class Dateianhang extends \yii\db\ActiveRecord {
             $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
             $uploaded_file->saveAs(Yii::getAlias('@pictures') . "/" . $uploaded_file->name);
             copy(Yii::getAlias('@pictures') . "/" . $uploaded_file->name, $url . "/" . $uploaded_file->name);
+            $x++;
+        }
+        if ($x > 0) {
+            return true;
+        }
+        return false;
+    }
+    
+        public function uploadFrontend($model) {
+        $x = 0;
+        $valid = $this->validate();
+        if (!$valid) {
+            $error_dateianhang = $model->getErrors();
+            foreach ($error_dateianhang as $values) {
+                foreach ($values as $ausgabe) {
+                    var_dump($ausgabe);
+                    throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
+                }
+            }
+        }
+        foreach ($this->attachement as $uploaded_file) {
+            $url = $_SERVER["DOCUMENT_ROOT"] . '/yii2_ErkanImmo/frontend/web/img';
+            //Umlaute im Dateinamen ersetzen
+            $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+            $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+            $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
+            $uploaded_file->saveAs(Yii::getAlias('@uploading') . "/" . $uploaded_file->name);
+            copy(Yii::getAlias('@uploading') . "/" . $uploaded_file->name, $url . "/" . $uploaded_file->name);
             $x++;
         }
         if ($x > 0) {

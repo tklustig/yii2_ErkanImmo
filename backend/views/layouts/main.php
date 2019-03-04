@@ -46,8 +46,8 @@ AssetBundle::register($this);
                                 ['label' => 'Frontend Bilder initialisieren', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
-                                        ['label' => 'Bilder laden(ToDo)', 'url' => ['#']],
-                                        ['label' => 'Bilder anschauen(ToDo)', 'url' => ['#']],
+                                        ['label' => 'Bilder hochladen(ToDo)', 'url' => ['/site/create']],
+                                        ['label' => 'Bilder auswählen(ToDo)', 'url' => ['#']],
                                     ],
                                 ],
                                 '<li class="divider"></li>',
@@ -81,7 +81,7 @@ AssetBundle::register($this);
                                 ['label' => 'Kunden', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
-                                        ['label' => 'Alle Kundendaten abrufen', 'url' => ['/kunde/index']],                                      
+                                        ['label' => 'Alle Kundendaten abrufen', 'url' => ['/kunde/index']],
                                         ['label' => 'Mails verschicken(ToDo)', 'url' => ['#']],
                                         ['label' => 'verschickte Mails anzeigen(ToDo)', 'url' => ['#']]
                                     ],

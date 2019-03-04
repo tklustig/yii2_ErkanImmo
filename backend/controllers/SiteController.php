@@ -10,6 +10,9 @@ use yii\web\NotFoundHttpException;
 use yii\base\DynamicModel;
 use yii\web\Session;
 use yii\data\ActiveDataProvider;
+use yii\db\Query;
+use yii\db\Expression;
+use yii\web\UploadedFile;
 use kartik\widgets\Growl;
 use common\models\LoginForm;
 use common\models\User;
@@ -17,6 +20,9 @@ use backend\models\PasswordResetRequestForm;
 use backend\models\ResetPasswordForm;
 use backend\models\SignupForm;
 use backend\models\Kopf;
+use frontend\models\Dateianhang;
+use frontend\models\EDateianhang;
+use frontend\models\LDateianhangArt;
 use common\classes\error_handling;
 
 class SiteController extends Controller {
@@ -216,6 +222,86 @@ class SiteController extends Controller {
         return $this->render('_form_user', [
                     'dataProvider' => $dataProvider
         ]);
+    }
+
+    public function actionCreate() {
+        $model = new Dateianhang(['scenario' => 'create_Dateianhang']);
+        $modelE = new EDateianhang();
+        $session = new Session();
+        $FkInEDatei = array();
+        $files = array();
+        $connection = \Yii::$app->db;
+        $expression = new Expression('NOW()');
+        $max = LDateianhangArt::find()->max('id');
+        $now = (new \yii\db\Query)->select($expression)->scalar();
+        if ($model->loadAll(Yii::$app->request->post())) {
+            $model->attachement = UploadedFile::getInstances($model, 'attachement');
+            if (empty($model->l_dateianhang_art_id)) {
+                echo Growl::widget([
+                    'type' => Growl::TYPE_GROWL,
+                    'title' => 'Warning',
+                    'icon' => 'glyphicon glyphicon-ok-sign',
+                    'body' => 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.',
+                    'showSeparator' => true,
+                    'delay' => 1500,
+                    'pluginOptions' => [
+                        'showProgressbar' => true,
+                        'placement' => [
+                            'from' => 'top',
+                            'align' => 'center',
+                        ]
+                    ]
+                ]);
+                return $this->render('_form_bilder', [
+                            'model' => $model,
+                ]);
+            } else {
+                if ($model->uploadFrontend($model)) {
+                    foreach ($model->attachement as $uploaded_file) {
+                        $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+                        $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+                        array_push($files, $uploaded_file->name);
+                        $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
+                        $session->addFlash('info', "Das Bild $uploaded_file->name wurde soeben hochgeladen! Sie können es jetzt im Frontend verwenden");
+                    }
+                    /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
+                    $EDateianhang = EDateianhang::find()->all();
+                    foreach ($EDateianhang as $treffer) {
+                        array_push($FkInEDatei, $treffer->user_id);
+                    }
+                    /* falls nicht */
+                    $UserId=Yii::$app->user->identity->id;
+                    if (!in_array($UserId, $FkInEDatei)) {
+                        $modelE->user_id = $UserId;
+                        $modelE->save();
+                        $fk = $modelE->id;
+                        /* falls doch */
+                    } else {
+                        $fk = EDateianhang::findOne(['user_id' => $model->id]);
+                        var_dump($fk);
+                        die();
+                    }
+                    /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
+                      Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+                    $bezeichnung="Bilder für das Frontend";
+                    for ($i = 0; $i < count($files); $i++) {
+                        $connection->createCommand()
+                                ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
+                                    [$fk, $max, $bezeichnung, $files[$i], $now, Yii::$app->user->identity->id],
+                                ])
+                                ->execute();
+                    }
+                    $this->redirect(['/site/index']);
+                } else {
+                    var_dump($model);
+                    die();
+                }
+            }
+        } else {
+            return $this->render('_form_bilder', [
+                        'model' => $model,
+            ]);
+        }
     }
 
     protected function findModel_user($id) {
