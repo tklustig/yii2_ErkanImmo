@@ -309,6 +309,36 @@ class SiteController extends Controller {
         }
     }
 
+    public function actionShow() {
+        $session = new Session();
+        $DynamicModel = new DynamicModel(['bez', 'file', 'art']);
+        $DynamicModel->addRule(['bez'], 'string');
+        $DynamicModel->addRule(['bez'], 'required');
+        $DynamicModel->addRule(['file'], 'string');
+        $DynamicModel->addRule(['file'], 'required');
+        $DynamicModel->addRule(['art'], 'integer');
+        $DynamicModel->addRule(['art'], 'required');
+        $max = LDateianhangArt::find()->max('id');
+        $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => $max]);
+        if ($DynamicModel->load(Yii::$app->request->post())) {
+            //ToDo
+            $pathTo = Yii::getAlias('@pictures');
+            $pathFrom = Yii::getAlias('@uploading');
+            $filename = $DynamicModel->file;
+            $fp = fopen($pathFrom . '/' . $filename, 'w');
+            fwrite($fp, $pathTo . '/' . $filename);
+            rename($pathTo . '/' . $filename, $pathTo . '/Theme.jpg');
+            $session->addFlash('success', "Herzlichen Glückwunsch. Das Theme $filename wird ab jetzt im Frontend verwendet.");
+            return $this->redirect(['/site/index']);
+        } else {
+            return $this->render('_form_picsforfrontend', [
+                        'DynamicModel' => $DynamicModel,
+                        'max' => $max,
+                        'arrayOfObjectsForAnhang' => $arrayOfObjectsForAnhang
+            ]);
+        }
+    }
+
     protected function findModel_user($id) {
         try {
             $user = User::findOne($id); //findAll() gibt ein array aus Objekten zurück.findOne() gibt ein einzelnes Objekt zurück

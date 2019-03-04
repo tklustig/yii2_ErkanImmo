@@ -4,7 +4,7 @@ return [
     'aliases' =>
     [
         '@uploading' => '@app/uploadedfiles',
-        '@pictures' => '@app/web/img',
+        '@pictures' => '@frontend/web/img',
     ],
     'modules' => [
         'datecontrol' => [

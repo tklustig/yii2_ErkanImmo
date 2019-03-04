@@ -47,7 +47,7 @@ AssetBundle::register($this);
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
                                         ['label' => 'Bilder hochladen', 'url' => ['/site/create']],
-                                        ['label' => 'Bilder auswählen(ToDo)', 'url' => ['#']],
+                                        ['label' => 'Bilder anzeigen/auswählen/löschen(ToDo)', 'url' => ['/site/show']],
                                     ],
                                 ],
                                 '<li class="divider"></li>',
