@@ -40,11 +40,9 @@ class KundeSearch extends Kunde {
      */
     public function search($params) {
         $query = Kunde::find();
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-
         $this->load($params);
 
         if (!$this->validate()) {
@@ -62,9 +60,20 @@ class KundeSearch extends Kunde {
                 'l_plz_id' => $id,
             ]);
         }
+        if (!empty($this->geschlecht) && !empty(LGeschlecht::findOne(['typus' => $this->geschlecht])->id)) {
+            $id = LGeschlecht::findOne(['typus' => $this->geschlecht])->id;
+            $query->andFilterWhere([
+                'geschlecht' => $id,
+            ]);
+        }
+        if (!empty($this->geschlecht) && empty(LGeschlecht::findOne(['typus' => $this->geschlecht])->id)) {  
+            $id = 0;
+            $query->andFilterWhere([
+                'geschlecht' => $id,
+            ]);
+        }
         $query->andFilterWhere([
             'id' => $this->id,
-            'geschlecht' => $this->geschlecht,
             'angelegt_von' => $this->angelegt_von,
             'aktualisiert_von' => $this->aktualisiert_von,
             'solvenz' => $this->solvenz,
@@ -73,7 +82,7 @@ class KundeSearch extends Kunde {
                 ->andFilterWhere(['like', 'nachname', $this->nachname])
                 ->andFilterWhere(['like', 'stadt', $this->stadt])
                 ->andFilterWhere(['like', 'strasse', $this->strasse]);
-        
+
         if ($this->choice_date == 0) {
             $query->andFilterWhere(['<=', 'angelegt_am', $this->angelegt_am]);
             $query->andFilterWhere(['<=', 'aktualisiert_am', $this->aktualisiert_am]);

@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use kartik\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\KundeSearch */
@@ -66,11 +66,23 @@ use yii\widgets\ActiveForm;
         ])->label(false);
         ?>
     </div>
-    <div class="col-md-12">
-        <?= $form->field($model, 'id')->textInput(['placeholder' => 'nach ID suchen']) ?>
+    <div class="col-md-4">
+        <?= $form->field($model, 'id')->textInput(['placeholder' => 'nach ID suchen'])->label(false) ?>
     </div>
-    <div class="col-md-12">
-        <?= $form->field($model, 'l_plz_id')->textInput(['placeholder' => 'nach Plz suchen']) ?>
+    <div class="col-md-4">
+        <?= $form->field($model, 'l_plz_id')->textInput(['placeholder' => 'nach Plz suchen'])->label(false) ?>
+    </div>
+    <div class="col-md-4">
+        <?=
+        $form->field($model, 'geschlecht', ['addon' => [
+                'prepend' => ['content' => 'Sexual']]])->widget(\kartik\widgets\Select2::classname(), [
+            'data' => \yii\helpers\ArrayHelper::map(\backend\models\LGeschlecht::find()->asArray()->all(), 'typus', 'typus'),
+            'options' => ['placeholder' => Yii::t('app', 'Geschlecht wählen')],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ])->label(false);
+        ?>
     </div>
 
     <div class="form-group">
