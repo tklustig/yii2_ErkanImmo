@@ -322,28 +322,12 @@ class SiteController extends Controller {
         $max = LDateianhangArt::find()->max('id');
         //$arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => $max]);
         if ($DynamicModel->load(Yii::$app->request->post())) {
-            if (empty($DynamicModel->bez) || empty($DynamicModel->file)) {
-                $message = "Bitte alle(!) Felder ausfüllen";
-                echo Alert::widget([
-                    'type' => Alert::TYPE_DANGER,
-                    'title' => 'Importan Message',
-                    'icon' => 'fas fa-info-circle',
-                    'body' => $message,
-                    'showSeparator' => true,
-                    'delay' => 2500
-                ]);
-                return $this->render('_form_picsforfrontend', [
-                            'DynamicModel' => $DynamicModel,
-                            'max' => $max,
-                ]);
-            }
-            //ToDo
             $pathTo = Yii::getAlias('@pictures');
             $pathFrom = Yii::getAlias('@uploading');
             $filename = $DynamicModel->file;
-            $fp = fopen($pathFrom . '/' . $filename, 'w');
-            fwrite($fp, $pathTo . '/' . $filename);
-            rename($pathTo . '/' . $filename, $pathTo . '/Theme.jpg');
+            $theme = 'Theme.jpg';
+            copy($pathFrom . '/' . $filename, $pathTo . '/' . $filename);
+            rename($pathTo . '/' . $filename, $pathTo . '/' . $theme);
             $session->addFlash('success', "Herzlichen Glückwunsch. Das Theme $filename wird ab jetzt im Frontend verwendet.");
             return $this->redirect(['/site/index']);
         } else {

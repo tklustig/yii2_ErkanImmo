@@ -147,13 +147,13 @@ class Dateianhang extends \yii\db\ActiveRecord {
             }
         }
         foreach ($this->attachement as $uploaded_file) {
-            $url = $_SERVER["DOCUMENT_ROOT"] . '/yii2_ErkanImmo/frontend/web/img';
+            //$url = $_SERVER["DOCUMENT_ROOT"] . '/yii2_ErkanImmo/frontend/web/img';
             //Umlaute im Dateinamen ersetzen
             $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
             $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
             $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
             $uploaded_file->saveAs(Yii::getAlias('@uploading') . "/" . $uploaded_file->name);
-            copy(Yii::getAlias('@uploading') . "/" . $uploaded_file->name, $url . "/" . $uploaded_file->name);
+            //copy(Yii::getAlias('@uploading') . "/" . $uploaded_file->name, $url . "/" . $uploaded_file->name);
             $x++;
         }
         if ($x > 0) {

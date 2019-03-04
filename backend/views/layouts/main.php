@@ -46,8 +46,9 @@ AssetBundle::register($this);
                                 ['label' => 'Frontend Bilder initialisieren', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
-                                        ['label' => 'Bilder hochladen', 'url' => ['/site/create']],
-                                        ['label' => 'Bilder anzeigen/auswählen/löschen(ToDo)', 'url' => ['/site/show']],
+                                        ['label' => 'Theme hochladen', 'url' => ['/site/create']],
+                                        ['label' => 'Theme initialiseren', 'url' => ['/site/show']],
+                                        ['label' => 'Theme löschen', 'url' => ['#']],
                                     ],
                                 ],
                                 '<li class="divider"></li>',

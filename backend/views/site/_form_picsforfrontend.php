@@ -8,7 +8,9 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="jumbotron">
     <div class="container">
-        <div class="page-header"><h2><?= Html::encode($this->title) ?><small>Wählen Sie Ihre Frontendeinstellungen über die DropDown-Box</small></h2></div>
+        <div class="page-header"><h2><?= Html::encode($this->title) ?><small>Sie können genau ein Theme über die DropDown-Box initialisieren</small></h2>
+            <span class="badge badge-light">Das von ihnen initialiserte Bild wird im Frontend als theme.jpg jedesmal überschrieben</span>     
+        </div>
         <div class="row">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
             <div class="col-md-12">
