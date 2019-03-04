@@ -8,7 +8,7 @@ $form = ActiveForm::begin([
             'id' => 'dynamic-form',
             'type' => ActiveForm::TYPE_VERTICAL,
             'formConfig' => [
-                'showLabels' => true
+                'showLabels' => false
         ]]);
 ?>
 <?= $form->errorSummary($model); ?>
@@ -36,7 +36,7 @@ $max = frontend\models\base\LDateianhangArt::find()->max('id');
         ]);
         ?>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <?=
         $form->field($model, 'l_dateianhang_art_id')->widget(\kartik\widgets\Select2::classname(), [
             'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LDateianhangArt::find()->where(['id' => $max])->asArray()->all(), 'id', 'bezeichnung'),
@@ -50,11 +50,11 @@ $max = frontend\models\base\LDateianhangArt::find()->max('id');
     <?php
     if ($model->isNewRecord) {
         ?>
-        <div class="col-md-6">
+        <div class="col-md-4">
 
             <?=
             $form->field($model, 'angelegt_am', ['addon' => [
-                    'prepend' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                    'prepend' => ['content' => 'angelegt am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
                 'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
                 'disabled' => true,
                 'saveFormat' => 'php:Y-m-d H:i:s',
@@ -62,30 +62,48 @@ $max = frontend\models\base\LDateianhangArt::find()->max('id');
             ]);
             ?>
         </div>
+        <div class="col-md-4">
+            <?=
+            $form->field($model, 'angelegt_von', ['addon' => [
+                    'prepend' => ['content' => 'angelegt von'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\widgets\Select2::classname(), [
+                'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
+                'disabled' => true,
+                'id' => 'id_X'
+            ]);
+            ?>
+        </div>
         <?php
     } else {
         ?>
-        <div class="col-md-6">
+        <div class="col-md-4">
 
             <?=
             $form->field($model, 'aktualisert_am', ['addon' => [
-                    'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                    'prepend' => ['content' => 'aktualisert am']]])->widget(\kartik\datecontrol\DateControl::classname(), [
                 'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-                'disabled' => true,
                 'saveFormat' => 'php:Y-m-d H:i:s',
                 'ajaxConversion' => true,
             ]);
             ?>
-            <?php
-        }
-        ?>
-    </div>
+        </div>
+        <div class="col-md-4">
+            <?=
+            $form->field($model, 'aktualisert_von', ['addon' => [
+                    'prepend' => ['content' => 'aktualisert von']]])->widget(\kartik\widgets\Select2::classname(), [
+                'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
+                'id' => 'id_X'
+            ]);
+            ?>
+        </div>
+        <?php
+    }
+    ?>
 </div>
 <div class="form-group">
     <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Erzeugen') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     <?php endif; ?>
-<?= Html::a(Yii::t('app', 'Abbruch'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
+    <?= Html::a(Yii::t('app', 'Abbruch'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
 </div>
 <?php ActiveForm::end(); ?>
 

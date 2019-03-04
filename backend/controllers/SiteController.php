@@ -283,7 +283,7 @@ class SiteController extends Controller {
                         $fk = $modelE->id;
                         /* falls doch */
                     } else {
-                        $fk = EDateianhang::findOne(['user_id' => $UserId]);
+                        $fk = EDateianhang::findOne(['user_id' => $UserId])->id;
                     }
                     /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
                       Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */

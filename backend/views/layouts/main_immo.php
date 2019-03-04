@@ -61,7 +61,7 @@ $this->beginPage()
                         ['label' => 'Frontend Bilder initialisieren', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
-                                             ['label' => 'Bilder hochladen(ToDo)', 'url' => ['/site/create']],
+                                             ['label' => 'Bilder hochladen', 'url' => ['/site/create']],
                                         ['label' => 'Bilder auswählen(ToDo)', 'url' => ['#']],
                             ],
                         ],
