@@ -224,7 +224,9 @@ class SiteController extends Controller {
         ]);
     }
 
+//Methode zum Hochladen von Bildern in den Ordner backend/uploadefiles. Dieser Folder muss physikalisch greifbar sein!
     public function actionCreate() {
+        $bezeichnung = "Bilder für das Frontend";
         $model = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $modelE = new EDateianhang();
         $session = new Session();
@@ -233,9 +235,11 @@ class SiteController extends Controller {
         $connection = \Yii::$app->db;
         $expression = new Expression('NOW()');
         $max = LDateianhangArt::find()->max('id');
-        $now = (new \yii\db\Query)->select($expression)->scalar();
+        $now = (new Query)->select($expression)->scalar();
+        $UserId = Yii::$app->user->identity->id;
         if ($model->loadAll(Yii::$app->request->post())) {
             $model->attachement = UploadedFile::getInstances($model, 'attachement');
+            //DropdownValues selektiert? Wenn nein....
             if (empty($model->l_dateianhang_art_id)) {
                 echo Growl::widget([
                     'type' => Growl::TYPE_GROWL,
@@ -255,45 +259,46 @@ class SiteController extends Controller {
                 return $this->render('_form_bilder', [
                             'model' => $model,
                 ]);
+                //wenn ja ...
             } else {
+                //prüfe den Rückgabewert des eigentlichen Uploads. Falls true...
                 if ($model->uploadFrontend($model)) {
                     foreach ($model->attachement as $uploaded_file) {
                         $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
                         $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
-                        array_push($files, $uploaded_file->name);
                         $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
+                        array_push($files, $uploaded_file->name);
                         $session->addFlash('info', "Das Bild $uploaded_file->name wurde soeben hochgeladen! Sie können es jetzt im Frontend verwenden");
                     }
-                    /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
+                    /* Alle FK's(user_id) in ein Array verfrachten */
                     $EDateianhang = EDateianhang::find()->all();
                     foreach ($EDateianhang as $treffer) {
                         array_push($FkInEDatei, $treffer->user_id);
                     }
-                    /* falls nicht */
-                    $UserId=Yii::$app->user->identity->id;
+                    /* Prüfen, ob in EDateianhang bereits ein Eintrag ist: 
+                      falls nicht */
                     if (!in_array($UserId, $FkInEDatei)) {
                         $modelE->user_id = $UserId;
                         $modelE->save();
                         $fk = $modelE->id;
                         /* falls doch */
                     } else {
-                        $fk = EDateianhang::findOne(['user_id' => $model->id]);
-                        var_dump($fk);
-                        die();
+                        $fk = EDateianhang::findOne(['user_id' => $UserId]);
                     }
                     /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
                       Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
-                    $bezeichnung="Bilder für das Frontend";
                     for ($i = 0; $i < count($files); $i++) {
                         $connection->createCommand()
                                 ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
-                                    [$fk, $max, $bezeichnung, $files[$i], $now, Yii::$app->user->identity->id],
+                                    [$fk, $max, $bezeichnung, $files[$i], $now, $UserId]
                                 ])
                                 ->execute();
                     }
                     $this->redirect(['/site/index']);
+                    //...falss False
                 } else {
-                    var_dump($model);
+                    print_r('Während des Uploads ging etwas schief. Bitte informieren Sie den Softwarehersteller über folgende Ausgabe:');
+                    var_dump($model->getErrors());
                     die();
                 }
             }
