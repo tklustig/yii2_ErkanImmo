@@ -36,7 +36,8 @@
         "kartik-v/yii2-widget-growl": "*",
         "kartik-v/yii2-slider": "*",
         "raoul2000/yii2-twbsmaxlength-widget": "*",
-        "drmabuse/yii2-slick-carousel": "*"
+        "drmabuse/yii2-slick-carousel": "*",
+        "insolita/yii2-migration-generator": "~3.1"
     },
     "require-dev": {
         "mootensai/yii2-enhanced-gii": "dev-master",
