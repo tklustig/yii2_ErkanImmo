@@ -48,17 +48,22 @@ class KundeSearch extends Kunde {
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
-        $id = '';
-        if (!empty(LPlz::findOne(['plz' => $this->l_plz_id])))
+        if (!empty($this->l_plz_id) && !empty(LPlz::findOne(['plz' => $this->l_plz_id])->id)) {
             $id = LPlz::findOne(['plz' => $this->l_plz_id])->id;
-
+            $query->andFilterWhere([
+                'l_plz_id' => $id,
+            ]);
+        }
+        if (!empty($this->l_plz_id) && empty(LPlz::findOne(['plz' => $this->l_plz_id])->id)) {
+            $id = 0;
+            $query->andFilterWhere([
+                'l_plz_id' => $id,
+            ]);
+        }
         $query->andFilterWhere([
             'id' => $this->id,
-            'l_plz_id' => $id,
             'geschlecht' => $this->geschlecht,
             'angelegt_von' => $this->angelegt_von,
             'aktualisiert_von' => $this->aktualisiert_von,
@@ -68,6 +73,7 @@ class KundeSearch extends Kunde {
                 ->andFilterWhere(['like', 'nachname', $this->nachname])
                 ->andFilterWhere(['like', 'stadt', $this->stadt])
                 ->andFilterWhere(['like', 'strasse', $this->strasse]);
+        
         if ($this->choice_date == 0) {
             $query->andFilterWhere(['<=', 'angelegt_am', $this->angelegt_am]);
             $query->andFilterWhere(['<=', 'aktualisiert_am', $this->aktualisiert_am]);
