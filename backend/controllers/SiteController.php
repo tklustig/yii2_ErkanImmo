@@ -14,7 +14,6 @@ use yii\db\Query;
 use yii\db\Expression;
 use yii\web\UploadedFile;
 use kartik\widgets\Growl;
-use kartik\widgets\Alert;
 use common\models\LoginForm;
 use common\models\User;
 use backend\models\PasswordResetRequestForm;
@@ -269,7 +268,7 @@ class SiteController extends Controller {
                         $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
                         $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
                         array_push($files, $uploaded_file->name);
-                        $session->addFlash('info', "Das Bild $uploaded_file->name wurde soeben hochgeladen! Sie können es jetzt im Frontend verwenden");
+                        $session->addFlash('info', "Das Bild $uploaded_file->name wurde soeben hochgeladen! Sie müssen es vorher noch initialisieren.");
                     }
                     /* Alle FK's(user_id) in ein Array verfrachten */
                     $EDateianhang = EDateianhang::find()->all();
@@ -311,6 +310,7 @@ class SiteController extends Controller {
     }
 
     public function actionShow() {
+        $arrayOfFileNames = array();
         $session = new Session();
         $DynamicModel = new DynamicModel(['bez', 'file', 'art']);
         $DynamicModel->addRule(['bez'], 'string');
@@ -320,7 +320,10 @@ class SiteController extends Controller {
         $DynamicModel->addRule(['art'], 'integer');
         $DynamicModel->addRule(['art'], 'required');
         $max = LDateianhangArt::find()->max('id');
-        //$arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => $max]);
+        $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => $max]);
+        foreach ($arrayOfObjectsForAnhang as $item) {
+            array_push($arrayOfFileNames, $item->dateiname);
+        }
         if ($DynamicModel->load(Yii::$app->request->post())) {
             $pathTo = Yii::getAlias('@pictures');
             $pathFrom = Yii::getAlias('@uploading');
@@ -334,6 +337,7 @@ class SiteController extends Controller {
             return $this->render('_form_picsforfrontend', [
                         'DynamicModel' => $DynamicModel,
                         'max' => $max,
+                        'arrayOfFileNames' => $arrayOfFileNames
             ]);
         }
     }

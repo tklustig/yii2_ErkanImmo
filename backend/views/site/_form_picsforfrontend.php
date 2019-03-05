@@ -13,6 +13,23 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="row">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
+            <?php
+            $url = Yii::getAlias('@web/img/');
+            ?>
+            <div class="col-md-12">
+                <table class="table table-bordered table-responsive">
+                    <tr>
+                        <?php
+                        for ($i = 0; $i < count($arrayOfFileNames); $i++) {
+                            ?><th><?=
+                                $arrayOfFileNames[$i];
+                                ?><td style="text-align:center" ><?=
+                                    Html::img($url . $arrayOfFileNames[$i], ['alt' => 'Pic not found', 'class' => 'img-circle', 'style' => 'width:125px;height:125px']);
+                                }
+                                ?> 
+                    </tr>
+                </table>
+            </div>
             <div class="col-md-12">
                 <?=
                 $form->field($DynamicModel, 'bez')->widget(\kartik\widgets\Select2::classname(), [
