@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
+use frontend\models\Adminbesichtigungkunde;
+use frontend\models\Kunde;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\TerminSearch */
@@ -22,32 +24,32 @@ $this->params['breadcrumbs'][] = $this->title;
     $output = "";
     $expression = new yii\db\Expression('NOW()');
     $now = (new \yii\db\Query)->select($expression)->scalar();
-    if (!empty(\frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id]))) {
-        $idOfmodelAdminBesKu = \frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->id;
+    if (!empty(Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id]))) {
+        $idOfmodelAdminBesKu = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->id;
     } else {
-        print_r('Die findOne()-Methode für Adminbesichtigungkunde(Zeile 25) scheint NULL zu sein. Bitte informieren Sie den Softwarehersteller!');
+        print_r('Die findOne()-Methode für Adminbesichtigungkunde(Zeile 27) scheint NULL zu sein. Bitte informieren Sie den Softwarehersteller!');
         die();
     }
-    if (!empty(\frontend\models\Adminbesichtigungkunde::findOne(['id' => $idOfmodelAdminBesKu]))) {
+    if (!empty(Adminbesichtigungkunde::findOne(['id' => $idOfmodelAdminBesKu]))) {
         $kundetelefon = null;
         $kundemail = null;
-        $kundeID = \frontend\models\Adminbesichtigungkunde::findOne(['id' => $idOfmodelAdminBesKu])->kunde_id;
-        $kundenGeschlecht = frontend\models\Kunde::findOne(['id' => $kundeID])->geschlecht;
-        $kundenVorName = frontend\models\Kunde::findOne(['id' => $kundeID])->vorname;
-        $kundenNachName = frontend\models\Kunde::findOne(['id' => $kundeID])->nachname;
-        $kundeStadt = frontend\models\Kunde::findOne(['id' => $kundeID])->stadt;
-        $kundeStrasse = frontend\models\Kunde::findOne(['id' => $kundeID])->strasse;
-        if (!empty(frontend\models\Kunde::findOne(['id' => $kundeID])->telefon))
-            $kundetelefon = frontend\models\Kunde::findOne(['id' => $kundeID])->telefon;
-        if (!empty(frontend\models\Kunde::findOne(['id' => $kundeID])->mail))
-            $kundemail = frontend\models\Kunde::findOne(['id' => $kundeID])->mail;
-        $kundeGeburtsdatum = frontend\models\Kunde::findOne(['id' => $kundeID])->geburtsdatum;
+        $kundeID = Adminbesichtigungkunde::findOne(['id' => $idOfmodelAdminBesKu])->kunde_id;
+        $kundenGeschlecht = Kunde::findOne(['id' => $kundeID])->geschlecht0->typus;
+        $kundenVorName = Kunde::findOne(['id' => $kundeID])->vorname;
+        $kundenNachName = Kunde::findOne(['id' => $kundeID])->nachname;
+        $kundeStadt = Kunde::findOne(['id' => $kundeID])->stadt;
+        $kundeStrasse = Kunde::findOne(['id' => $kundeID])->strasse;
+        if (!empty(Kunde::findOne(['id' => $kundeID])->telefon))
+            $kundetelefon = Kunde::findOne(['id' => $kundeID])->telefon;
+        if (!empty(Kunde::findOne(['id' => $kundeID])->mail))
+            $kundemail = Kunde::findOne(['id' => $kundeID])->mail;
+        $kundeGeburtsdatum = Kunde::findOne(['id' => $kundeID])->geburtsdatum;
         if ($kundetelefon == null)
             $kundetelefon = 'nicht verfügbar';
         if ($kundemail == null)
             $kundemail = 'nicht verfügbar';
     } else {
-        print_r('Die findOne()-Methode für Adminbesichtigungkunde(Zeile 31) scheint NULL zu sein. Bitte informieren Sie den Softwarehersteller!');
+        print_r('Die findOne()-Methode für Adminbesichtigungkunde(Zeile 33) scheint NULL zu sein. Bitte informieren Sie den Softwarehersteller!');
         die();
     }
     $diff = strtotime($now) - strtotime($kundeGeburtsdatum);
