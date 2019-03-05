@@ -13,6 +13,7 @@ return [
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',
+            'enableCsrfValidation' => false,
         ],
         'user' => [
             'identityClass' => 'common\models\User',
@@ -50,6 +51,8 @@ return [
                 'show_user' => 'site/showuser',
                 'load_pictures' => 'site/create',
                 'use_pictures' => 'site/show',
+                'deleteAll_pictures' => 'site/deleteall',
+                'picture2delete' => 'site/delete',
                 'delete_pictures' => 'site/deletion',
                 'plz_get' => 'plz/get-city-province',
                 'auswahl' => 'immobilien/auswahl',

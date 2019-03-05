@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'toolbar' => [
             ['content' =>
-                Html::a('<span class=" fa fa-cut"> Alle löschen <span class="fa fa-cut">', ['/site/deleteall'], ['class' => 'btn btn-success', 'title' => 'löscht alle Themes auf einen Schlag', 'data' => ['pjax' => '0']])
+                Html::a('<span class=" fa fa-cut"> Alle löschen <span class="fa fa-cut">', ['/site/deleteall'], ['class' => 'btn btn-warning', 'title' => 'löscht alle Themes auf einen Schlag', 'data' => ['pjax' => '0']])
             ],
             '{toggleData}'
         ],

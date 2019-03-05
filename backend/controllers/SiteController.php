@@ -341,6 +341,16 @@ class SiteController extends Controller {
         ]);
     }
 
+    public function actionDelete($id) {
+        print_r("<h3>Id of record 2be deleted is:$id</h3>");
+        die();
+    }
+
+    public function actionDeleteall() {
+        print_r('<h3>All themes will be deleted after having finished coding respectively programming this modul.</h3>');
+        die();
+    }
+
     /* private methods without doing any actionRendering 
       protected: access only for own class members or inherits.
       private: access only for own class members. Inherits can't acess this kind of methods.
