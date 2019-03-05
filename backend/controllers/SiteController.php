@@ -13,6 +13,8 @@ use yii\data\ActiveDataProvider;
 use yii\db\Query;
 use yii\db\Expression;
 use yii\web\UploadedFile;
+use yii\helpers\FileHelper;
+use yii\helpers\Html;
 use kartik\widgets\Growl;
 use common\models\LoginForm;
 use common\models\User;
@@ -73,23 +75,8 @@ class SiteController extends Controller {
     public function actionIndex() {
         if (Yii::$app->user->isGuest) {
             $MenuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-?><?=
-
-            Growl::widget([
-                'type' => Growl::TYPE_GROWL,
-                'title' => 'Warning',
-                'icon' => 'glyphicon glyphicon-ok-sign',
-                'body' => 'Da Sie offensichtlich einen User gelöscht hatten, ist momentan kein User mehr angemeldet. Betätigen Sie bitte die Loginoption, rechts oben im Menu!',
-                'showSeparator' => true,
-                'delay' => 1500,
-                'pluginOptions' => [
-                    'showProgressbar' => true,
-                    'placement' => [
-                        'from' => 'top',
-                        'align' => 'center',
-                    ]
-                ]
-            ]);
+            $message = 'Da Sie offensichtlich einen User gelöscht hatten, ist momentan kein User mehr angemeldet. Betätigen Sie bitte die Loginoption, rechts oben im Menu!';
+            $this->Ausgabe($message, 'Warnung', 1500, Growl::TYPE_WARNING);
         }
         return $this->render('index');
     }
@@ -241,34 +228,19 @@ class SiteController extends Controller {
             $model->attachement = UploadedFile::getInstances($model, 'attachement');
             //DropdownValues selektiert? Wenn nein....
             if (empty($model->l_dateianhang_art_id)) {
-                echo Growl::widget([
-                    'type' => Growl::TYPE_GROWL,
-                    'title' => 'Warning',
-                    'icon' => 'glyphicon glyphicon-ok-sign',
-                    'body' => 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.',
-                    'showSeparator' => true,
-                    'delay' => 1500,
-                    'pluginOptions' => [
-                        'showProgressbar' => true,
-                        'placement' => [
-                            'from' => 'top',
-                            'align' => 'center',
-                        ]
-                    ]
-                ]);
+                $message = 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.';
+                $this->Ausgabe($message, 'Info', 2000, Growl::TYPE_GROWL);
                 return $this->render('_form_bilder', [
                             'model' => $model,
                 ]);
-                //wenn ja ...
+                //Wenn ja ...
             } else {
-                //prüfe den Rückgabewert des eigentlichen Uploads. Falls true...
+                //prüfe den Rückgabewert des eigentlichen Uploads. Falls TRUE...
                 if ($model->uploadFrontend($model)) {
-                    foreach ($model->attachement as $uploaded_file) {
-                        $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
-                        $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
-                        $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
-                        array_push($files, $uploaded_file->name);
-                        $session->addFlash('info', "Das Bild $uploaded_file->name wurde soeben hochgeladen! Sie müssen es vorher noch initialisieren.");
+                    foreach ($model->attachement as $uploadedFile) {
+                        $this->Ersetzen($uploadedFile->name);
+                        array_push($files, $uploadedFile->name);
+                        $session->addFlash('info', "Das Bild $uploadedFile->name wurde soeben hochgeladen! Sie müssen es vorher noch initialisieren.");
                     }
                     /* Alle FK's(user_id) in ein Array verfrachten */
                     $EDateianhang = EDateianhang::find()->all();
@@ -276,17 +248,18 @@ class SiteController extends Controller {
                         array_push($FkInEDatei, $treffer->user_id);
                     }
                     /* Prüfen, ob in EDateianhang bereits ein Eintrag ist: 
-                      falls nicht */
+                      Falls nicht... */
                     if (!in_array($UserId, $FkInEDatei)) {
                         $modelE->user_id = $UserId;
                         $modelE->save();
                         $fk = $modelE->id;
-                        /* falls doch */
+                        /* ...falls doch */
                     } else {
                         $fk = EDateianhang::findOne(['user_id' => $UserId])->id;
                     }
-                    /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
-                      Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+                    /*  Speichere Records, abhängig von dem Array($files) in die Datenbank.
+                      Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht.
+                      Stattdessen wird batchInsert() verwendet */
                     for ($i = 0; $i < count($files); $i++) {
                         $connection->createCommand()
                                 ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
@@ -295,10 +268,16 @@ class SiteController extends Controller {
                                 ->execute();
                     }
                     $this->redirect(['/site/index']);
-                    //...falss False
-                } else {
-                    print_r('Während des Uploads ging etwas schief. Bitte informieren Sie den Softwarehersteller über folgende Ausgabe:');
+                } else {  //...falls FALSE
+                    print_r('Während des Uploads ging etwas schief. Bitte informieren Sie den Softwarehersteller über folgende Ausgabe:<br>');
+                    print_r('Inhalt des Uploadmodels:');
                     var_dump($model->getErrors());
+                    if (count($model->getErrors()) == 0)
+                        print_r('. Vermutlich haben Sie keine oder falsche Themes hochgeladen? Erwartet werden übliche Bilddateien(-endungen)!<br>');
+                    else
+                        print_r('<br>');
+?><?= Html::a('back', ['/site/create'], ['title' => 'zurück']) ?><?php
+
                     die();
                 }
             }
@@ -310,23 +289,33 @@ class SiteController extends Controller {
     }
 
     public function actionShow() {
+        $pathFrom = Yii::getAlias('@uploading');
+        $files = FileHelper::findFiles($pathFrom);
+        if (count($files) < 2) {
+            $message = 'Laden Sie zuerst eines oder mehrere Themes hoch. Derzeit können Sie dem Frontend nock kein Theme zuweisen!';
+            $this->Ausgabe($message, 'Info', 2000, Growl::TYPE_WARNING);
+        }
         $arrayOfFileNames = array();
         $session = new Session();
         $DynamicModel = new DynamicModel(['bez', 'file', 'art']);
-        $DynamicModel->addRule(['bez'], 'string');
-        $DynamicModel->addRule(['bez'], 'required');
-        $DynamicModel->addRule(['file'], 'string');
-        $DynamicModel->addRule(['file'], 'required');
-        $DynamicModel->addRule(['art'], 'integer');
-        $DynamicModel->addRule(['art'], 'required');
+        $DynamicModel->addRule('file', 'string');
+        $DynamicModel->addRule('file', 'required');
         $max = LDateianhangArt::find()->max('id');
         $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => $max]);
         foreach ($arrayOfObjectsForAnhang as $item) {
             array_push($arrayOfFileNames, $item->dateiname);
         }
         if ($DynamicModel->load(Yii::$app->request->post())) {
+            if (empty($DynamicModel->file)) {
+                $message = 'Bitte selektieren Sie in jeder DropDownbox einen Wert ihrer Wahl';
+                $this->Ausgabe($message, 'Warnung', 1000, Growl::TYPE_INFO);
+                return $this->render('_form_picsforfrontend', [
+                            'DynamicModel' => $DynamicModel,
+                            'max' => $max,
+                            'arrayOfFileNames' => $arrayOfFileNames
+                ]);
+            }
             $pathTo = Yii::getAlias('@pictures');
-            $pathFrom = Yii::getAlias('@uploading');
             $filename = $DynamicModel->file;
             $theme = 'Theme.jpg';
             copy($pathFrom . '/' . $filename, $pathTo . '/' . $filename);
@@ -364,6 +353,31 @@ class SiteController extends Controller {
         } catch (\Exception $e) {
             throw new NotFoundHttpException(Yii::t('app', "$e"));
         }
+    }
+
+    private function Ausgabe($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
+        echo Growl::widget([
+            'type' => $type,
+            'title' => $typus,
+            'icon' => 'glyphicon glyphicon-exclamation-sign',
+            'body' => $message,
+            'showSeparator' => true,
+            'delay' => $delay,
+            'pluginOptions' => [
+                'showProgressbar' => true,
+                'placement' => [
+                    'from' => 'top',
+                    'align' => 'center',
+                ]
+            ]
+        ]);
+    }
+
+    private function Ersetzen($string) {
+        $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+        $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+        $string = str_replace($umlaute, $ersetzen, $string);
+        return $string;
     }
 
 }

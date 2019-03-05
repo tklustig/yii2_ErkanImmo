@@ -6,6 +6,7 @@ use yii\web\Session;
 
 //Hier werden alle Flashnachrichten ausgegeben
 $session = new Session();
+$link = \Yii::$app->urlManagerFrontend->baseUrl . '/home';
 if (!empty($session->getAllFlashes())) {
     foreach ($session->getAllFlashes() as $flash) {
         foreach ($flash as $ausgabe) {
@@ -37,7 +38,7 @@ $fieldOptions2 = [
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
-        <p class="login-box-msg">Sign in or reset Password</p>
+        <p class="login-box-msg">Sign in or reset Password or go  <?= Html::a('back', $link, ['title' => 'zurück']) ?></p>
         <?php $form = ActiveForm::begin(['id' => 'login-form', 'enableClientValidation' => false]); ?>
 
         <?= $form->field($model, 'username', $fieldOptions1)->label(false)->textInput(['placeholder' => $model->getAttributeLabel('username')]);
@@ -60,6 +61,7 @@ $fieldOptions2 = [
                 using Facebook</a>
             <a href="https://accounts.google.com/signin/v2/identifier?hl=de&flowName=GlifWebSignIn&flowEntry=ServiceLogin" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-google-plus"></i> Sign
                 in using Google+</a>
+
         </div>
         <?= Html::a('I forgot my password respectively username', ['site/request-password-reset'], ['class' => 'btn btn-block btn-danger']) ?>
     </div>

@@ -14,6 +14,8 @@ class Dateianhang extends \yii\db\ActiveRecord {
 
     public $attachement;
 
+    const path = 'yii2_ErkanImmo';
+
     public function relationNames() {
         return [
             'eDateianhang',
@@ -118,14 +120,14 @@ class Dateianhang extends \yii\db\ActiveRecord {
                 }
             }
         }
-        foreach ($this->attachement as $uploaded_file) {
-            $url = $_SERVER["DOCUMENT_ROOT"] . '/yii2_ErkanImmo/frontend/web/img';
+        foreach ($this->attachement as $uploadedFile) {
+            $url = $_SERVER["DOCUMENT_ROOT"] . '/' . Dateianhang::path . '/backend/web/img/';
             //Umlaute im Dateinamen ersetzen
             $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
             $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
-            $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
-            $uploaded_file->saveAs(Yii::getAlias('@pictures') . "/" . $uploaded_file->name);
-            copy(Yii::getAlias('@pictures') . "/" . $uploaded_file->name, $url . "/" . $uploaded_file->name);
+            $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
+            $uploadedFile->saveAs(Yii::getAlias('@pictures') . "/" . $uploadedFile->name);
+            copy(Yii::getAlias('@pictures') . "/" . $uploadedFile->name, $url . "/" . $uploadedFile->name);
             $x++;
         }
         if ($x > 0) {
@@ -146,14 +148,25 @@ class Dateianhang extends \yii\db\ActiveRecord {
                 }
             }
         }
-        foreach ($this->attachement as $uploaded_file) {
-            $url = $_SERVER["DOCUMENT_ROOT"] . '/yii2_ErkanImmo/backend/web/img/';
+        foreach ($this->attachement as $uploadedFile) {
+            $endungen = array('jpg', 'jpeg', 'tiff', 'gif', 'bmp', 'png', 'svg', 'ico');
+            for ($i = 0; $i < count($endungen); $i++) {
+                if ($uploadedFile->extension != $endungen[$i])
+                    $bool = false;
+                else {
+                    $bool = true;
+                    break;
+                }
+            }
+            if (!$bool)
+                return false;
+            $url = $_SERVER["DOCUMENT_ROOT"] . '/' . Dateianhang::path . '/backend/web/img/';
             //Umlaute im Dateinamen ersetzen
             $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
             $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
-            $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
-            $uploaded_file->saveAs(Yii::getAlias('@uploading') . "/" . $uploaded_file->name);
-            copy(Yii::getAlias('@uploading') . "/" . $uploaded_file->name, $url . $uploaded_file->name);
+            $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
+            $uploadedFile->saveAs(Yii::getAlias('@uploading') . "/" . $uploadedFile->name);
+            copy(Yii::getAlias('@uploading') . "/" . $uploadedFile->name, $url . $uploadedFile->name);
             $x++;
         }
         if ($x > 0) {
