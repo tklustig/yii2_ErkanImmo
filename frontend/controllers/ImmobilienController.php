@@ -240,8 +240,6 @@ class ImmobilienController extends Controller {
                     // if (preg_match($bmp, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($tif, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($png, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($psd, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($pcx, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($gif, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($jpeg, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($jpg, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname) || preg_match($ico, Dateianhang::findOne(['e_dateianhang_id' => $ArrayOfEDatei[$i]])->dateiname)) {
                     //}
                 }
-                var_dump($ArrayOfObjAnh);
-                die();
                 foreach ($ArrayOfObjAnh as $object) {
                     foreach ($object as $value) {
                         if (preg_match($bmp, $value->dateiname) || preg_match($tif, $value->dateiname) || preg_match($png, $value->dateiname) || preg_match($psd, $value->dateiname) || preg_match($pcx, $value->dateiname) || preg_match($gif, $value->dateiname) || preg_match($jpeg, $value->dateiname) || preg_match($jpg, $value->dateiname) || preg_match($ico, $value->dateiname)) {
