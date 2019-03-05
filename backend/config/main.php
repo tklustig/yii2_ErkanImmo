@@ -50,6 +50,7 @@ return [
                 'show_user' => 'site/showuser',
                 'load_pictures' => 'site/create',
                 'use_pictures' => 'site/show',
+                'delete_pictures' => 'site/deletion',
                 'plz_get' => 'plz/get-city-province',
                 'auswahl' => 'immobilien/auswahl',
                 'immobilien' => 'immobilien/index',

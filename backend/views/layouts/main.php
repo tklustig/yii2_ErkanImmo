@@ -48,7 +48,7 @@ AssetBundle::register($this);
                                     'items' => [
                                         ['label' => 'Theme hochladen', 'url' => ['/site/create']],
                                         ['label' => 'Theme initialiseren', 'url' => ['/site/show']],
-                                        ['label' => 'Theme löschen(ToDo)', 'url' => ['#']],
+                                        ['label' => 'Theme löschen(ToComplete)', 'url' => ['/site/deletion']],
                                     ],
                                 ],
                                 '<li class="divider"></li>',

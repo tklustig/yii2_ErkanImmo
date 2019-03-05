@@ -108,6 +108,17 @@ class Dateianhang extends \yii\db\ActiveRecord {
         }
     }
 
+    public static function GetTheme($model) {
+        try {
+            return Dateianhang::find()
+                            ->leftJoin('e_dateianhang', 'dateianhang.e_dateianhang_id =e_dateianhang.id')
+                            ->where(['>=', 'e_dateianhang.user_id', 1])->all();
+        } catch (\Exception $error) {
+            print_r("System Error. Bitte den Softwarehersteller kontaktieren:<br>$error");
+            die();
+        }
+    }
+
     public function upload($model) {
         $x = 0;
         $valid = $this->validate();

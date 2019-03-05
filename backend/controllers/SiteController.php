@@ -25,6 +25,7 @@ use backend\models\Kopf;
 use frontend\models\Dateianhang;
 use frontend\models\EDateianhang;
 use frontend\models\LDateianhangArt;
+use frontend\models\DateianhangSearch;
 use common\classes\error_handling;
 
 class SiteController extends Controller {
@@ -331,7 +332,21 @@ class SiteController extends Controller {
         }
     }
 
-    protected function findModel_user($id) {
+    public function actionDeletion() {
+        $searchModel = new DateianhangSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        return $this->render('_form_delete', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /* private methods without doing any actionRendering 
+      protected: access only for own class members or inherits.
+      private: access only for own class members. Inherits can't acess this kind of methods.
+     */
+
+    private function findModel_user($id) {
         try {
             $user = User::findOne($id); //findAll() gibt ein array aus Objekten zurück.findOne() gibt ein einzelnes Objekt zurück
             if ($user != NULL)
@@ -343,7 +358,7 @@ class SiteController extends Controller {
         }
     }
 
-    protected function findModel_kopf($id) {
+    private function findModel_kopf($id) {
         try {
             $kopf = Kopf::findOne($id); //findAll() gibt ein array aus Objekten zurück.findOne() gibt ein einzelnes Objekt zurück
             if ($kopf != NULL)
@@ -355,7 +370,7 @@ class SiteController extends Controller {
         }
     }
 
-    private function Ausgabe($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
+    protected function Ausgabe($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
         echo Growl::widget([
             'type' => $type,
             'title' => $typus,
@@ -373,7 +388,7 @@ class SiteController extends Controller {
         ]);
     }
 
-    private function Ersetzen($string) {
+    protected function Ersetzen($string) {
         $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
         $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
         $string = str_replace($umlaute, $ersetzen, $string);
