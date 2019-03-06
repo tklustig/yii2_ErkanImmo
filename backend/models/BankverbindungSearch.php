@@ -7,40 +7,21 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\models\Bankverbindung;
 
-/**
- * backend\models\BankverbindungSearch represents the model behind the search form about `backend\models\Bankverbindung`.
- */
- class BankverbindungSearch extends Bankverbindung
-{
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
+class BankverbindungSearch extends Bankverbindung {
+
+    public function rules() {
         return [
             [['id', 'blz', 'kontoNr', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['laenderkennung', 'institut', 'iban', 'bic', 'angelegt_am', 'aktualisiert_am'], 'safe'],
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
-    public function search($params)
-    {
+    public function search($params) {
         $query = Bankverbindung::find();
 
         $dataProvider = new ActiveDataProvider([
@@ -50,8 +31,6 @@ use backend\models\Bankverbindung;
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
@@ -66,10 +45,11 @@ use backend\models\Bankverbindung;
         ]);
 
         $query->andFilterWhere(['like', 'laenderkennung', $this->laenderkennung])
-            ->andFilterWhere(['like', 'institut', $this->institut])
-            ->andFilterWhere(['like', 'iban', $this->iban])
-            ->andFilterWhere(['like', 'bic', $this->bic]);
+                ->andFilterWhere(['like', 'institut', $this->institut])
+                ->andFilterWhere(['like', 'iban', $this->iban])
+                ->andFilterWhere(['like', 'bic', $this->bic]);
 
         return $dataProvider;
     }
+
 }

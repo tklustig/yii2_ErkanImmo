@@ -8,9 +8,6 @@ use yii\data\ActiveDataProvider;
 use frontend\models\Kunde;
 use frontend\models\LPlz;
 
-/**
- * backend\models\KundeSearch represents the model behind the search form about `frontend\models\Kunde`.
- */
 class KundeSearch extends Kunde {
 
     public $choice_date;
@@ -23,21 +20,10 @@ class KundeSearch extends Kunde {
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function scenarios() {
-        // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params) {
         $query = Kunde::find();
         $dataProvider = new ActiveDataProvider([
@@ -66,7 +52,7 @@ class KundeSearch extends Kunde {
                 'geschlecht' => $id,
             ]);
         }
-        if (!empty($this->geschlecht) && empty(LGeschlecht::findOne(['typus' => $this->geschlecht])->id)) {  
+        if (!empty($this->geschlecht) && empty(LGeschlecht::findOne(['typus' => $this->geschlecht])->id)) {
             $id = 0;
             $query->andFilterWhere([
                 'geschlecht' => $id,
@@ -92,7 +78,6 @@ class KundeSearch extends Kunde {
             $query->andFilterWhere(['>=', 'aktualisiert_am', $this->aktualisiert_am]);
             $query->andFilterWhere(['>=', 'geburtsdatum', $this->geburtsdatum]);
         }
-
         return $dataProvider;
     }
 

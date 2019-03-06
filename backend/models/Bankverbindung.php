@@ -5,14 +5,8 @@ namespace backend\models;
 use Yii;
 use \backend\models\base\Bankverbindung as BaseBankverbindung;
 
-/**
- * This is the model class for table "bankverbindung".
- */
 class Bankverbindung extends BaseBankverbindung {
 
-    /**
-     * @inheritdoc
-     */
     public function rules() {
         return array_replace_recursive(parent::rules(), [
             [['laenderkennung', 'blz', 'kontoNr'], 'required', 'except' => 'create_Bankverbindung'],

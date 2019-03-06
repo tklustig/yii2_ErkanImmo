@@ -6,49 +6,10 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 
-/**
- * This is the base model class for table "immobilien".
- *
- * @property integer $id
- * @property integer $id_bild
- * @property string $bezeichnung
- * @property string $sonstiges
- * @property string $strasse
- * @property integer $wohnflaeche
- * @property integer $raeume
- * @property string $geldbetrag
- * @property integer $k_grundstuecksgroesse
- * @property string $k_provision
- * @property string $v_nebenkosten
- * @property integer $balkon_vorhanden
- * @property integer $fahrstuhl_vorhanden
- * @property integer $l_plz_id
- * @property string $stadt
- * @property integer $user_id
- * @property integer $l_art_id
- * @property integer $l_heizungsart_id
- * @property string $angelegt_am
- * @property string $aktualisiert_am
- * @property integer $angelegt_von
- * @property integer $aktualisiert_von
- *
- * @property \backend\models\Besichtigungstermin[] $besichtigungstermins
- * @property \backend\models\EDateianhang[] $eDateianhangs
- * @property \backend\models\LArt $lArt
- * @property \backend\models\User $user
- * @property \backend\models\User $angelegtVon
- * @property \backend\models\User $aktualisiertVon
- * @property \backend\models\LHeizungsart $lHeizungsart
- * @property \backend\models\Kundeimmobillie[] $kundeimmobillies
- */
 class Immobilien extends \yii\db\ActiveRecord {
 
     use \mootensai\relation\RelationTrait;
 
-    /**
-     * This function helps \mootensai\relation\RelationTrait runs faster
-     * @return array relation names of this model
-     */
     public function relationNames() {
         return [
             'besichtigungstermins',
@@ -62,9 +23,6 @@ class Immobilien extends \yii\db\ActiveRecord {
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules() {
         return [
             [['wohnflaeche', 'raeume', 'k_grundstuecksgroesse', 'l_plz_id', 'user_id', 'l_art_id', 'l_heizungsart_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
@@ -78,16 +36,10 @@ class Immobilien extends \yii\db\ActiveRecord {
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function tableName() {
         return 'immobilien';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
@@ -114,51 +66,30 @@ class Immobilien extends \yii\db\ActiveRecord {
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getBesichtigungstermins() {
         return $this->hasMany(\frontend\models\Besichtigungstermin::className(), ['Immobilien_id' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getEDateianhangs() {
         return $this->hasMany(\frontend\models\EDateianhang::className(), ['immobilien_id' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getLArt() {
         return $this->hasOne(\frontend\models\LArt::className(), ['id' => 'l_art_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getUser() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'user_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getAngelegtVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'angelegt_von']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getAktualisiertVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getLHeizungsart() {
         return $this->hasOne(\frontend\models\LHeizungsart::className(), ['id' => 'l_heizungsart_id']);
     }
@@ -167,17 +98,10 @@ class Immobilien extends \yii\db\ActiveRecord {
         return $this->hasOne(\frontend\models\LPlz::className(), ['id' => 'l_plz_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getKundeimmobillies() {
         return $this->hasMany(\frontend\models\Kundeimmobillie::className(), ['immobilien_id' => 'id']);
     }
 
-    /**
-     * @inheritdoc
-     * @return array mixed
-     */
     public function behaviors() {
         return [
             'timestamp' => [

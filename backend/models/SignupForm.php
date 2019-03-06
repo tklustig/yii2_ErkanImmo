@@ -6,9 +6,6 @@ use yii\base\Model;
 use common\models\User;
 use kartik\password\StrengthValidator;
 
-/**
- * Signup form
- */
 class SignupForm extends Model {
 
     public $username;
@@ -16,9 +13,6 @@ class SignupForm extends Model {
     public $password;
     public $telefon;
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules() {
         return [
             ['username', 'trim'],
@@ -39,11 +33,6 @@ class SignupForm extends Model {
         ];
     }
 
-    /**
-     * Signs user up.
-     *
-     * @return User|null the saved model or null if saving fails
-     */
     public function signup() {
         if (!$this->validate()) {
             return null;
