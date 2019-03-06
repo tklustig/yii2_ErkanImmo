@@ -1,10 +1,6 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $searchModel backend\models\BankverbindungSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 
 use yii\helpers\Html;
-use kartik\export\ExportMenu;
 use kartik\grid\GridView;
 
 $this->title = Yii::t('app', 'Bankverbindung');
@@ -18,10 +14,8 @@ $this->registerJs($search);
 <div class="bankverbindung-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
 
     <p>
-        <?php // echo Html::a(Yii::t('app', 'Create Bankverbindung'), ['create'], ['class' => 'btn btn-success'])  ?>
         <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-info search-button']) ?>
     </p>
     <div class="search-form" style="display:none">

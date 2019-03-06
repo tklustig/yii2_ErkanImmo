@@ -4,9 +4,6 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 use kartik\grid\GridView;
 
-/* @var $this yii\web\View */
-/* @var $model backend\models\Bankverbindung */
-
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bankverbindung'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
