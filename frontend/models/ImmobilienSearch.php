@@ -6,7 +6,6 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\Immobilien;
-use kartik\widgets\Growl;
 
 class ImmobilienSearch extends Immobilien {
 
@@ -57,25 +56,25 @@ class ImmobilienSearch extends Immobilien {
         if ($art == 1) {
             $query = Immobilien::find()->where(['l_art_id' => 1, 'id' => $id]);
 
-            $DataProvider = new ActiveDataProvider([
+            $dataProvider = new ActiveDataProvider([
                 'query' => $query,
             ]);
 
             $this->load($params);
             $query->andFilterWhere(['=', 'fahrstuhl_vorhanden', $this->fahrstuhl_vorhanden]);
             $query->andFilterWhere(['=', 'balkon_vorhanden', $this->balkon_vorhanden]);
-            return $DataProvider;
+            return $dataProvider;
         } else if ($art == 2) {
             $query = Immobilien::find()->where(['l_art_id' => 2, 'id' => $id]);
 
-            $DataProvider = new ActiveDataProvider([
+            $dataProvider = new ActiveDataProvider([
                 'query' => $query,
             ]);
 
             $this->load($params);
             $query->andFilterWhere(['=', 'fahrstuhl_vorhanden', $this->fahrstuhl_vorhanden]);
             $query->andFilterWhere(['=', 'balkon_vorhanden', $this->balkon_vorhanden]);
-            return $DataProvider;
+            return $dataProvider;
         }
     }
 

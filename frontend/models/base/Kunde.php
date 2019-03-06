@@ -9,10 +9,6 @@ class Kunde extends \yii\db\ActiveRecord {
 
     use \mootensai\relation\RelationTrait;
 
-    /**
-     * This function helps \mootensai\relation\RelationTrait runs faster
-     * @return array relation names of this model
-     */
     public function relationNames() {
         return [
             'adminbesichtigungkundes',
@@ -25,9 +21,6 @@ class Kunde extends \yii\db\ActiveRecord {
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules() {
         return [
             [['l_plz_id', 'geschlecht', 'vorname', 'nachname', 'stadt', 'strasse'], 'required'],
@@ -43,16 +36,10 @@ class Kunde extends \yii\db\ActiveRecord {
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function tableName() {
         return 'kunde';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),

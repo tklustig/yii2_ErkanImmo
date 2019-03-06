@@ -6,7 +6,6 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 use yii\web\NotAcceptableHttpException;
-use frontend\models\EDateianhang;
 
 class Dateianhang extends \yii\db\ActiveRecord {
 
@@ -15,6 +14,7 @@ class Dateianhang extends \yii\db\ActiveRecord {
     public $attachement;
 
     const path = 'yii2_ErkanImmo';
+    const path2img = '/backend/web/img/';
 
     public function relationNames() {
         return [
@@ -25,29 +25,20 @@ class Dateianhang extends \yii\db\ActiveRecord {
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules() {
         return [
             [['angelegt_am', 'aktualisert_am'], 'safe'],
             [['angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'integer'],
             [['bezeichnung', 'dateiname'], 'string'],
             [['dateiname', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'required', 'except' => 'create_Dateianhang'],
-            [['attachement'], 'file', 'skipOnEmpty' => true, 'maxSize' => 10 * 1024000, 'tooBig' => 'Maximal erlaubte Dateigröße:10 MByte', 'maxFiles' => 10],
+            [['attachement'], 'file', 'skipOnEmpty' => true, 'maxSize' => 5 * 1024000, 'tooBig' => 'Maximal erlaubte Dateigröße:5 MByte', 'maxFiles' => 10],
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function tableName() {
         return 'dateianhang';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
@@ -62,9 +53,6 @@ class Dateianhang extends \yii\db\ActiveRecord {
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getEDateianhang() {
         return $this->hasOne(\frontend\models\EDateianhang::className(), ['id' => 'e_dateianhang_id']);
     }
@@ -108,6 +96,10 @@ class Dateianhang extends \yii\db\ActiveRecord {
         }
     }
 
+    /*  wird derzeit nicht (mehr) genutzt. Verbleibt allerdings im Repositorie, da aufgezeigt wird, wie man in einer find()->leftJoin()
+      ->where()-Klausel eine Relation auf einen Statischen Wert prüft(SELECT * FROM tbl1 JOIN tbl2 ON... where user_id>=1)
+     */
+
     public static function GetTheme($model) {
         try {
             return Dateianhang::find()
@@ -123,8 +115,8 @@ class Dateianhang extends \yii\db\ActiveRecord {
         $x = 0;
         $valid = $this->validate();
         if (!$valid) {
-            $error_dateianhang = $model->getErrors();
-            foreach ($error_dateianhang as $values) {
+            $errorDateianhang = $model->getErrors();
+            foreach ($errorDateianhang as $values) {
                 foreach ($values as $ausgabe) {
                     var_dump($ausgabe);
                     throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
@@ -132,13 +124,10 @@ class Dateianhang extends \yii\db\ActiveRecord {
             }
         }
         foreach ($this->attachement as $uploadedFile) {
-            $url = $_SERVER["DOCUMENT_ROOT"] . '/' . Dateianhang::path . '/backend/web/img/';
-            //Umlaute im Dateinamen ersetzen
-            $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
-            $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
-            $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
-            $uploadedFile->saveAs(Yii::getAlias('@pictures') . "/" . $uploadedFile->name);
-            copy(Yii::getAlias('@pictures') . "/" . $uploadedFile->name, $url . "/" . $uploadedFile->name);
+            $url = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . Dateianhang::path . Dateianhang::path2img;
+            $uploadedFile->name = $this->Ersetzen($uploadedFile->name);
+            $uploadedFile->saveAs(Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+            copy(Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name, $url . $uploadedFile->name);
             $x++;
         }
         if ($x > 0) {
@@ -151,8 +140,8 @@ class Dateianhang extends \yii\db\ActiveRecord {
         $x = 0;
         $valid = $this->validate();
         if (!$valid) {
-            $error_dateianhang = $model->getErrors();
-            foreach ($error_dateianhang as $values) {
+            $errorDateianhang = $model->getErrors();
+            foreach ($errorDateianhang as $values) {
                 foreach ($values as $ausgabe) {
                     var_dump($ausgabe);
                     throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
@@ -171,19 +160,23 @@ class Dateianhang extends \yii\db\ActiveRecord {
             }
             if (!$bool)
                 return false;
-            $url = $_SERVER["DOCUMENT_ROOT"] . '/' . Dateianhang::path . '/backend/web/img/';
-            //Umlaute im Dateinamen ersetzen
-            $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
-            $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
-            $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
-            $uploadedFile->saveAs(Yii::getAlias('@uploading') . "/" . $uploadedFile->name);
-            copy(Yii::getAlias('@uploading') . "/" . $uploadedFile->name, $url . $uploadedFile->name);
+            $url = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . Dateianhang::path . Dateianhang::path2img;
+            $uploadedFile->name = $this->Ersetzen($uploadedFile->name);
+            $uploadedFile->saveAs(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+            copy(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name, $url . $uploadedFile->name);
             $x++;
         }
         if ($x > 0) {
             return true;
         }
         return false;
+    }
+
+    private function Ersetzen($string) {
+        $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+        $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+        $string = str_replace($umlaute, $ersetzen, $string);
+        return $string;
     }
 
 }

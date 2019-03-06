@@ -7,9 +7,6 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\Dateianhang;
 
-/**
- * frontend\models\DateianhangSearch represents the model behind the search form about `frontend\models\Dateianhang`.
- */
 class DateianhangSearch extends Dateianhang {
 
     public function rules() {
