@@ -40,10 +40,8 @@ AssetBundle::register($this);
                     $menuItems = [
                         [
                             'label' => 'Admin',
-                            'items' => [
-                                ['label' => 'Menüoptionen im Backend/Adminbereich', 'url' => ['/site/index']],
-                                '<li class="divider"></li>',
-                                ['label' => 'Frontend Bilder initialisieren', 'url' => ['#'],
+                            'items' => [                              
+                                ['label' => '+++++++Frontend Bilder initialisieren+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
                                         ['label' => 'Theme hochladen', 'url' => ['/site/create']],
@@ -52,7 +50,15 @@ AssetBundle::register($this);
                                     ],
                                 ],
                                 '<li class="divider"></li>',
-                                ['label' => 'Rechnungen', 'url' => ['#'],
+                                ['label' => '+++++++Impressum initialiseren+++++++', 'url' => ['#'],
+                                    'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
+                                    'items' => [
+                                        ['label' => 'Begriffe festlegen(ToDo)', 'url' => ['#']],
+                                        ['label' => 'Theme initialisieren(ToDo)', 'url' => ['#']],
+                                    ],
+                                ],
+                                '<li class="divider"></li>',
+                                ['label' => '+++++++Rechnungen+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
                                         ['label' => 'Rechnung erstellen(ToDo)', 'url' => ['#']],
@@ -62,7 +68,7 @@ AssetBundle::register($this);
                                     ],
                                 ],
                                 '<li class="divider"></li>',
-                                ['label' => 'Immobilien', 'url' => ['#'],
+                                ['label' => '+++++++Immobilien+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
                                         ['label' => 'Neue Immobilie anlegen', 'url' => ['/immobilien/decide']],
@@ -70,7 +76,7 @@ AssetBundle::register($this);
                                     ],
                                 ],
                                 '<li class="divider"></li>',
-                                ['label' => 'Bankverbindungen',
+                                ['label' => '+++++++Bankverbindungen+++++++',
                                     'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
@@ -79,7 +85,7 @@ AssetBundle::register($this);
                                     ],
                                 ],
                                 '<li class="divider"></li>',
-                                ['label' => 'Kunden', 'url' => ['#'],
+                                ['label' => '+++++++Kunden+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
                                         ['label' => 'Alle Kundendaten abrufen', 'url' => ['/kunde/index']],
@@ -88,7 +94,7 @@ AssetBundle::register($this);
                                     ],
                                 ],
                                 '<li class="divider"></li>',
-                                ['label' => 'Termine', 'url' => ['#'],
+                                ['label' => '+++++++Termine+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
                                         ['label' => 'Alle Besichtigungstermine abrufen', 'url' => $link],
@@ -96,7 +102,7 @@ AssetBundle::register($this);
                                     ],
                                 ],
                                 '<li class="divider"></li>',
-                                ['label' => 'User',
+                                ['label' => '+++++++User+++++++',
                                     'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
@@ -105,12 +111,26 @@ AssetBundle::register($this);
                                         ['label' => 'Benutzer anzeigen', 'url' => ['/site/showuser']],
                                     ],
                                 ],
-                                '<li class="divider"></li>',
-                                ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
-                                '<li class="divider"></li>',
                             ],
                         ],
                     ];
+
+                    $Interna = [
+                        [
+                            'label' => 'Programmiertools',
+                            'items' => [
+                                ['label' => 'Basis-Url im Backend/Adminbereich', 'url' => ['/site/index']],
+                                '<li class="divider"></li>',
+                                ['label' => 'Tools', 'url' => ['#'],
+                                    'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
+                                    'items' => [
+                                        ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ];
+
                     if (Yii::$app->user->isGuest) {
                         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
                     } else {
@@ -124,10 +144,15 @@ AssetBundle::register($this);
                     }
                     echo Nav::widget([
                         'options' => ['class' => 'navbar-nav navbar-right'],
-                        'items' => $menuItems,
+                        'items' => $menuItems
+                    ]);
+                    echo Nav::widget([
+                        'options' => ['class' => 'navbar-nav navbar-left'],
+                        'items' => $Interna
                     ]);
                     NavBar::end();
                     ?>
+                    <br><br>
                     <?= $content ?>
                 </div>
             </div>

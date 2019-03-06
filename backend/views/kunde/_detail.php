@@ -19,6 +19,8 @@ use kartik\grid\GridView;
         <?php
         $gridColumn = [
             'id',
+            'telefon',
+            'email',
             'angelegt_am',
             'aktualisiert_am',
             [

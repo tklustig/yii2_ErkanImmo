@@ -41,8 +41,8 @@ $this->params['breadcrumbs'][] = $this->title;
         $kundeStrasse = Kunde::findOne(['id' => $kundeID])->strasse;
         if (!empty(Kunde::findOne(['id' => $kundeID])->telefon))
             $kundetelefon = Kunde::findOne(['id' => $kundeID])->telefon;
-        if (!empty(Kunde::findOne(['id' => $kundeID])->mail))
-            $kundemail = Kunde::findOne(['id' => $kundeID])->mail;
+        if (!empty(Kunde::findOne(['id' => $kundeID])->email))
+            $kundemail = Kunde::findOne(['id' => $kundeID])->email;
         $kundeGeburtsdatum = Kunde::findOne(['id' => $kundeID])->geburtsdatum;
         if ($kundetelefon == null)
             $kundetelefon = 'nicht verfügbar';

@@ -55,15 +55,21 @@ $this->beginPage()
             $menuItems = [
                 [
                     'label' => 'Admin',
-                    'items' => [
-                        ['label' => 'Menüoptionen im Backend/Adminbereich', 'url' => ['/site/index']],
-                        '<li class="divider"></li>',
+                    'items' => [                      
                         ['label' => 'Frontend Bilder initialisieren', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Theme hochladen', 'url' => ['/site/create']],
                                 ['label' => 'Theme initialiseren', 'url' => ['/site/show']],
                                 ['label' => 'Theme löschen(ToComplete)', 'url' => ['/site/deletion']],
+                            ],
+                        ],
+                        '<li class="divider"></li>',
+                        ['label' => 'Impressum initialiseren', 'url' => ['#'],
+                            'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
+                            'items' => [
+                                ['label' => 'Begriffe festlegen(ToDo)', 'url' => ['#']],
+                                ['label' => 'Theme initialisieren(ToDo)', 'url' => ['#']],
                             ],
                         ],
                         '<li class="divider"></li>',
@@ -120,9 +126,7 @@ $this->beginPage()
                                 ['label' => 'Benutzer anzeigen', 'url' => ['/site/showuser']],
                             ],
                         ],
-                        '<li class="divider"></li>',
-                        ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
-                        '<li class="divider"></li>',
+                        ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']]
                     ],
                 ],
             ];
