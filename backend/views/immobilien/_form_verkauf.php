@@ -167,7 +167,7 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                     </div> <div class="col-md-4">
                         <?=
                         $form->field($model, 'stadt', ['addon' => [
-                                'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'placeholder' => 'Applikation füllt die Stadt gemäß der Postleitzahl','readOnly'=>true])
+                                'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'placeholder' => 'Applikation füllt die Stadt gemäß der Postleitzahl', 'readOnly' => true])
                         ?>
 
                     </div>
@@ -204,9 +204,9 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                     </div>
                     <div class="col-md-6">
 
-                        <?=
+                       <?=
                                 $form->field($model, 'wohnflaeche', ['addon' => [
-                                        'prepend' => ['content' => 'Wohnfläche']]])
+                                        'prepend' => ['content' => 'Wohnfläche']]])->widget(TwbsMaxlength::className())
                                 ->textInput(['maxlength' => true, 'placeholder' => 'Bitte die maximale Nutzfläche']);
                         ?>
                     </div>

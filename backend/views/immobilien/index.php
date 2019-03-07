@@ -1,10 +1,4 @@
-
-
-
 <?php
-/* @var $this yii\web\View */
-/* @var $searchModel frontend\models\ImmobilienSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
@@ -42,8 +36,6 @@ $this->registerJs($search);
     ?>
     <h1><?= Html::encode($this->title) ?></h1>
     <center><h2>Verkaufsobjekte</h2></center>
-    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
-
     <p>
         <?= Html::a(Yii::t('app', 'Tiefergehende Suche'), '#', ['class' => 'btn btn-warning search-button']) ?>
     </p>

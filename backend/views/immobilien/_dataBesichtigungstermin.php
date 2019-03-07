@@ -76,7 +76,7 @@ $gridColumns = [
         'label' => Yii::t('app', 'wurde vereinbart mit'),
         'format' => 'html',
         'value' => function($model, $id) {
-            $bewerber='';
+            $bewerber = '';
             if (!empty(\frontend\models\Kundeimmobillie::findOne(['immobilien_id' => $model->id]))) {
                 $idKuImmo = \frontend\models\Kundeimmobillie::findOne(['immobilien_id' => $model->id])->kunde_id;
                 $geschlecht = \frontend\models\Kunde::findOne(['id' => $idKuImmo])->geschlecht;
