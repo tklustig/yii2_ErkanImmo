@@ -1,29 +1,12 @@
 <?php
+
 use yii\helpers\Html;
 use common\widgets\Alert;
 ?>
 <?php
 //Hier werden alle Flashnachrichten ausgegeben
-$alert=new Alert();
+$alert = new Alert();
 $alert->run();
-/*$session = new Session();
-if (!empty($session->getAllFlashes())) {
-    foreach ($session->getAllFlashes() as $flash) {
-        foreach ($flash as $ausgabe) {
-            ?><?=
-            Alert::widget([
-                'type' => Alert::TYPE_SUCCESS,
-                'title' => 'Information',
-                'icon' => 'glyphicon glyphicon-exclamation-sign',
-                'body' => $ausgabe,
-                'showSeparator' => true,
-                'delay' => false
-            ]);
-        }
-    }
-}
-
- */
 ?>
 <center><div class="page-header">
         <h1 class="text-purple">Administration <small class="text-danger">Untertitel</small></h1>
