@@ -20,8 +20,8 @@ use Yii;
  * Yii::$app->session->setFlash('error', ['Error 1', 'Error 2']);
  * ```
  *
- * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @author Alexander Makarov <sam@rmcreative.ru>
+  @author Kartik Visweswaran <kartikv2@gmail.com>
+  @author Alexander Makarov <sam@rmcreative.ru>
  */
 class Alert extends \yii\bootstrap\Widget {
 
@@ -32,7 +32,6 @@ class Alert extends \yii\bootstrap\Widget {
         'info' => 'alert-info',
         'warning' => 'alert-warning'
     ];
-
     public $closeButton = [];
 
     public function run() {
