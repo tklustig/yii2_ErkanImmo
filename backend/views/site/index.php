@@ -1,12 +1,12 @@
 <?php
-
-use kartik\alert\Alert;
 use yii\helpers\Html;
-use yii\web\Session;
+use common\widgets\Alert;
 ?>
 <?php
 //Hier werden alle Flashnachrichten ausgegeben
-$session = new Session();
+$alert=new Alert();
+$alert->run();
+/*$session = new Session();
 if (!empty($session->getAllFlashes())) {
     foreach ($session->getAllFlashes() as $flash) {
         foreach ($flash as $ausgabe) {
@@ -22,6 +22,8 @@ if (!empty($session->getAllFlashes())) {
         }
     }
 }
+
+ */
 ?>
 <center><div class="page-header">
         <h1 class="text-purple">Administration <small class="text-danger">Untertitel</small></h1>

@@ -2,9 +2,11 @@
 
 use yii\helpers\Html;
 use yii\web\Session;
-use kartik\widgets\Alert;
+use common\widgets\Alert;
 ?>
 <?php
+$alert=new Alert();
+$alert->run();
 $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
 //Hier werden alle Flashnachrichten ausgegeben
 $session = new Session();
