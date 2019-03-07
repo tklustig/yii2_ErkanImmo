@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use kartik\tabs\TabsX;
-use yii\helpers\Url;
 
 $items = [
     [

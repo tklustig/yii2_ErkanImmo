@@ -2,10 +2,6 @@
 
 use yii\helpers\Html;
 use kartik\widgets\ActiveForm;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\KundeSearch */
-/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="form-kunde-search">

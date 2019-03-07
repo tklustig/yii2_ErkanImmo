@@ -2,10 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use kartik\grid\GridView;
-
-/* @var $this yii\web\View */
-/* @var $model frontend\models\Kunde */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Kunde'), 'url' => ['index']];
@@ -35,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php
         $gridColumn = [
             ['attribute' => 'id', 'visible' => false],
-            'l_plz_id',
+            'lPlz.ort',
             'geschlecht',
             'vorname',
             'nachname',
@@ -44,16 +40,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'geburtsdatum',
             'solvenz',
             [
-                'attribute' => 'bankverbindung.id',
+                'attribute' => 'bankverbindung.institut',
                 'label' => Yii::t('app', 'Bankverbindung'),
             ],
             'angelegt_am',
             'aktualisiert_am',
-            'angelegt_von',
-            [
-                'attribute' => 'aktualisiertVon.id',
-                'label' => Yii::t('app', 'Aktualisiert Von'),
-            ],
         ];
         echo DetailView::widget([
             'model' => $model,
