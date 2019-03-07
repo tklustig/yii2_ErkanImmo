@@ -40,7 +40,7 @@ AssetBundle::register($this);
                     $menuItems = [
                         [
                             'label' => 'Admin',
-                            'items' => [                              
+                            'items' => [
                                 ['label' => '+++++++Frontend Bilder initialisieren+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
