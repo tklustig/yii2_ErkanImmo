@@ -1,7 +1,4 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \frontend\models\SignupForm */
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
@@ -26,7 +23,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?>
             </div>
         </div>
-
         <div class="form-group">
             <?= Html::submitButton('Delete', ['class' => 'btn btn-success', 'name' => 'signup-button']) ?>
         </div>

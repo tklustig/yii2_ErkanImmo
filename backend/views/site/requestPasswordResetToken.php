@@ -1,7 +1,4 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \frontend\models\PasswordResetRequestForm */
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
@@ -25,13 +22,12 @@ $this->title = 'Request password reset';
                 </div>
                 <div class="form-group">
                     <?= Html::submitButton('Send', ['class' => 'btn btn-primary']) ?>
+                    <?php ActiveForm::end(); ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<?php ActiveForm::end(); ?>
 
 
 
