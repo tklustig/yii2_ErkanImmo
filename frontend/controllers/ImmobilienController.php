@@ -49,31 +49,31 @@ class ImmobilienController extends Controller {
         $model_dateianhang = Dateianhang::find()->all();
         $model_e = EDateianhang::find()->all();
         $modelImmobilien = Immobilien::find()->all();
-		// Eruiere die jenigen Immobilien-Ids, die kein Bild haben
+        // Eruiere die jenigen Immobilien-Ids, die kein Bild haben
         foreach ($model_e as $id) {
             array_push($ArrayOfE, $id->immobilien_id);
         }
         foreach ($modelImmobilien as $id) {
             array_push($ArrayOfImmoAll, $id->id);
         }
-		//verfrachte diese Id in ein Array
+        //verfrachte diese Id in ein Array
         $ArrayOfDifference = array_diff($ArrayOfImmoAll, $ArrayOfE);
 
-		/*	Eruiere alle Immobilien-Ids, die ein Bild haben und
-			verfrachte den Dateinamen des jeweiligen Bildes...*/
+        /* 	Eruiere alle Immobilien-Ids, die ein Bild haben und
+          verfrachte den Dateinamen des jeweiligen Bildes... */
         foreach ($model_dateianhang as $filename) {
             if (preg_match($bmp, $filename->dateiname) || preg_match($tif, $filename->dateiname) || preg_match($png, $filename->dateiname) || preg_match($psd, $filename->dateiname) || preg_match($pcx, $filename->dateiname) || preg_match($gif, $filename->dateiname) || preg_match($jpeg, $filename->dateiname) || preg_match($jpg, $filename->dateiname) || preg_match($ico, $filename->dateiname)) {
                 array_push($ArrayOfFilename, $filename->dateiname);
                 array_push($ArrayOfId, $filename->e_dateianhang_id);
             }
         }
-		//...und dessen ID in Arrays
+        //...und dessen ID in Arrays
         for ($i = 0; $i < count($ArrayOfId); $i++) {
             array_push($ArrayOfImmo, EDateianhang::findOne(['id' => $ArrayOfId[$i]])->immobilien_id);
         }
-		//zähle alle gefundenen Datensätze
+        //zähle alle gefundenen Datensätze
         $count = Immobilien::find()->count();
-		//eruiere alle Attribute, die je nach Suchrequest angezeigt werden sollen und verfrachte sie in Arrays
+        //eruiere alle Attribute, die je nach Suchrequest angezeigt werden sollen und verfrachte sie in Arrays
         $ArrayOfArt = array();
         $ArrayOfMoney = array();
         $ArrayOfTown = array();
@@ -114,15 +114,16 @@ class ImmobilienController extends Controller {
                 array_push($ArrayOfRooms, $immoAttribute->raeume);
             }
         }
-		//sofern ein Suchrequest abgefeuert wurde,übergebe an das Searchmodel die Parameter...
+        //sofern ein Suchrequest abgefeuert wurde,übergebe an das Searchmodel die Parameter...
         if ($searchPreview == 1) {
-            /*	Hier noch prüfen, ob dataProvider nur Null-Werte(der Request wurde zwar abgefeuert, 
-				allerdings ohne Suchangaben) enthält. Wenn ja, dann 'zurück rendern' */
+            /* 	Hier noch prüfen, ob dataProvider nur Null-Werte(der Request wurde zwar abgefeuert, 
+              allerdings ohne Suchangaben) enthält. Wenn ja, dann 'zurück rendern' */
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams, NULL, NULL, $searchPreview);
             if ($dataProvider['plz'][0] == null && $dataProvider['Kosten'][0] == null && $dataProvider['raeume'][0] == null) {
-				$message='Ein Suchrequest abzufeuern ohne Suchparameter feszulegen erzeugt unnötigen Traffic. Bitte selektieren Sie Suchparameter!';
-				?><?=
-				$this->Ausgabe($message, 'Hinweis', 2000, Growl::TYPE_CUSTOM);
+                $message = 'Ein Suchrequest abzufeuern ohne Suchparameter feszulegen erzeugt unnötigen Traffic. Bitte selektieren Sie Suchparameter!';
+?><?=
+
+                $this->Ausgabe($message, 'Hinweis', 2000, Growl::TYPE_CUSTOM);
                 $dataProvider = $searchModel->search(NULL, NULL, NULL, NULL);
                 return $this->render('_index', [
                             'count' => $count,
@@ -142,11 +143,12 @@ class ImmobilienController extends Controller {
                 ]);
             }
 
-			//sofern Suchangaben unvollständig
+            //sofern Suchangaben unvollständig
             if ($dataProvider['operator'][0] == null && $dataProvider['Kosten'][0] != null) {
-				$message='Wenn Sie nach einem Kaufpreis/Miete suchen, müssen Sie entweder Höher als oder Weniger als auswählen.';
-?><?=				
-				$this->Ausgabe($message, 'Hinweis', 2000, Growl::TYPE_WARNING,'glyphicon glyphicon-flag');
+                $message = 'Wenn Sie nach einem Kaufpreis/Miete suchen, müssen Sie entweder Höher als oder Weniger als auswählen.';
+?><?=
+
+                $this->Ausgabe($message, 'Hinweis', 2000, Growl::TYPE_WARNING, 'glyphicon glyphicon-flag');
                 $dataProvider = $searchModel->search(NULL, NULL, NULL, NULL);
                 return $this->render('_index', [
                             'count' => $count,
@@ -165,7 +167,7 @@ class ImmobilienController extends Controller {
                             'dataProvider' => $dataProvider,
                 ]);
             }
-			//lösche alle Arrays, sofern ein Suchrequest abgefeuert wurde
+            //lösche alle Arrays, sofern ein Suchrequest abgefeuert wurde
             $ArrayOfFilename = array();
             $ArrayOfId = array();
             $ArrayOfImmo = array();
@@ -179,36 +181,36 @@ class ImmobilienController extends Controller {
             $ArrayOfPlz = array();
             $ArrayOfStreet = array();
             $ArrayOfDifference = array();
-			//füge neue Arrays hinzu
+            //füge neue Arrays hinzu
             $ArrayOfObjAnh = array();
             $ArrayOfObjImmo = array();
-            /*	bei 2^3 Suchparameter muss es folglich 2^3-1 Konditionen geben. 
-			1.Kondition:Sofern Suchrequestparameter enthält plz */
+            /* 	bei 2^3 Suchparameter muss es folglich 2^3-1 Konditionen geben. 
+              1.Kondition:Sofern Suchrequestparameter enthält plz */
             if ($dataProvider['plz'][0] != null) {
                 $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->all();
             }
-			//2.Kondition:Sofern Suchrequestparameter enthält Kohle
+            //2.Kondition:Sofern Suchrequestparameter enthält Kohle
             if ($dataProvider['Kosten'][0] != null) {
                 $operator = $dataProvider['operator'][0];
                 $model_I = Immobilien::find()->where(["$operator", 'geldbetrag', $dataProvider['Kosten'][0]])->all();
             }
-			//3.Kondition:Sofern Suchrequestparameter enthält Räume
+            //3.Kondition:Sofern Suchrequestparameter enthält Räume
             if ($dataProvider['raeume'][0] != null) {
                 $model_I = Immobilien::find()->where([">=", 'raeume', $dataProvider['raeume'][0]])->all();
             }
-			//4.Kondition:Sofern Suchrequestparameter enthält plz und Kohle
+            //4.Kondition:Sofern Suchrequestparameter enthält plz und Kohle
             if ($dataProvider['plz'][0] != null && $dataProvider['Kosten'][0] != null) {
                 $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->andWhere(["$operator", 'geldbetrag', $dataProvider['Kosten'][0]])->all();
             }
-			//5.Kondition:Sofern Suchrequestparameter enthält plz und Räume
+            //5.Kondition:Sofern Suchrequestparameter enthält plz und Räume
             if ($dataProvider['plz'][0] != null && $dataProvider['raeume'][0] != null) {
                 $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->andWhere([">=", 'raeume', $dataProvider['raeume'][0]])->all();
             }
-			//6.Kondition:Sofern Suchrequestparameter enthält Kohle und Räume
+            //6.Kondition:Sofern Suchrequestparameter enthält Kohle und Räume
             if ($dataProvider['Kosten'][0] != null && $dataProvider['raeume'][0] != null) {
                 $model_I = Immobilien::find()->where(["$operator", 'geldbetrag', $dataProvider['Kosten'][0]])->andWhere([">=", 'raeume', $dataProvider['raeume'][0]])->all();
             }
-			//7.Kondition:Sofern Suchrequestparameter enthält Kohle und Räume und plz
+            //7.Kondition:Sofern Suchrequestparameter enthält Kohle und Räume und plz
             if ($dataProvider['Kosten'][0] != null && $dataProvider['raeume'][0] != null && $dataProvider['plz'][0] != null) {
                 $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->andWhere(["$operator", 'geldbetrag', $dataProvider['Kosten'][0]])->andWhere([">=", 'raeume', $dataProvider['raeume'][0]])->all();
             }
@@ -274,11 +276,9 @@ class ImmobilienController extends Controller {
                         }
                     }
                 }
-                if (!empty($ArrayOfMoney))
-                    $count = count($ArrayOfMoney);
+                if (!empty($ArrayOfObjImmo))
+                    $count = count($ArrayOfObjImmo);
             }
-            if (!empty($model_I) && empty($ArrayOfMoney))
-                $count = count($model_I);
             if (empty($ArrayOfImmo)) {
                 $count = 0;
 ?><?=
@@ -308,7 +308,7 @@ class ImmobilienController extends Controller {
                         'searchModel' => $searchModel,
                         'dataProvider' => $dataProvider,
             ]);
-		//...andernfalls übergebe keine Parameter
+            //...andernfalls übergebe keine Parameter
         } else {
             $dataProvider = $searchModel->search(NULL, NULL, NULL, NULL);
             return $this->render('_index', [
@@ -385,30 +385,31 @@ class ImmobilienController extends Controller {
         }
         return $out;
     }
-	//gekapselte Methoden
-	    protected function findModel($id) {
+
+    //gekapselte Methoden
+    protected function findModel($id) {
         if (($model = Immobilien::findOne(['id' => $id])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
-	
-	    protected function Ausgabe($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL, $art='glyphicon glyphicon-refresh') {
+
+    protected function Ausgabe($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL, $art = 'glyphicon glyphicon-refresh') {
         return Growl::widget([
-            'type' => $type,
-            'title' => $typus,
-            'icon' => $art,
-            'body' => $message,
-            'showSeparator' => true,
-            'delay' => $delay,
-            'pluginOptions' => [
-                'showProgressbar' => true,
-                'placement' => [
-                    'from' => 'top',
-                    'align' => 'center',
-                ]
-            ]
+                    'type' => $type,
+                    'title' => $typus,
+                    'icon' => $art,
+                    'body' => $message,
+                    'showSeparator' => true,
+                    'delay' => $delay,
+                    'pluginOptions' => [
+                        'showProgressbar' => true,
+                        'placement' => [
+                            'from' => 'top',
+                            'align' => 'center',
+                        ]
+                    ]
         ]);
     }
 

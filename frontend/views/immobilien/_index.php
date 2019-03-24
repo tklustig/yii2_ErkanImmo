@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 ?>
 <?php
+$iterationCounter = count($ArrayOfPlz);
 $search = "$('.search-button').click(function(){
 	$('.search-form').toggle(1000);
 	return false;
@@ -25,7 +26,7 @@ $this->registerJs($search);
         </div>
         <div class="row">
             <?php
-            for ($i = 0; $i < count($ArrayOfFilename); $i++) {
+            for ($i = 0; $i < $iterationCounter; $i++) {
                 ?>
                 <div class="col-md-3">
                     <?=
