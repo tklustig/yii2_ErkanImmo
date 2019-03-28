@@ -5,7 +5,7 @@ use yii\web\Session;
 use common\widgets\Alert;
 ?>
 <?php
-$alert=new Alert();
+$alert = new Alert();
 $alert->run();
 $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
 //Hier werden alle Flashnachrichten ausgegeben
@@ -93,9 +93,9 @@ $url = Yii::getAlias("@web") . '/img/';
                 </div>
             </div>
             <div style="text-align: center; margin: 7% 20%;">
-                <h4 style="color: #9e7b4e;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4></div>
-            <div style="text-align: left; margin: 13% 29%;">
-                <p style="color:#0B173B;font-family:cursive"> Vom 1-Zimmer-Appartement für Studenten bis hin zu<br>Luxus-Villas für gehobenere Ansprüche:<br>Kanat Immobilien ist der ideale Vermittlungsmarkler.<br><?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact']) ?> Sie uns, oder inspizieren Sie unsere <?= Html::a(Yii::t('app', 'Angebote'), ['/immobilien/preview']) ?> <p>
+                <h4 style="color: #FF0040;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4></div>
+            <div style="text-align: left; margin: 13% 23%;">
+                <p style="color:#0404B4;font-family:cursive"> Vom 1-Zimmer-Appartement für Studenten bis hin zu<br>Luxus-Villas für gehobenere Ansprüche:<br>Kanat Immobilien ist der ideale Vermittlungsmarkler.<br><?= Html::a(Yii::t('app', 'Kontaktieren'), ['/site/contact'], ['style' => 'color:#088A08;']) ?> Sie uns, oder inspizieren Sie unsere <?= Html::a(Yii::t('app', 'Angebote'), ['/immobilien/preview'], ['style' => 'color:#088A08;']) ?> <p>
             </div>
 
 

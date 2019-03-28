@@ -7,6 +7,8 @@ use kartik\widgets\DateTimePicker;
 use kartik\widgets\DatePicker;
 use yii\web\JsExpression;
 use frontend\models\Immobilien;
+use backend\models\LGeschlecht;
+use common\models\User;
 ?>
 
 <div class="immobilien-form"><br><br><br>
@@ -18,7 +20,7 @@ use frontend\models\Immobilien;
                 'formConfig' => [
                     'showLabels' => false
     ]]);
-    $arrayGeschlecht = array('Herr' => 'Herr', 'Frau' => 'Frau', 'Other' => 'Sonstiges');
+    $arrayGeschlecht = array('Herr' => 0, 'Frau' => 1, 'Other' => 'Sonstiges');
     ?>
     <?= $form->errorSummary($model); ?>
     <?php
@@ -81,7 +83,7 @@ use frontend\models\Immobilien;
                                     <?=
                                     $form->field($model, 'angelegt_von', ['addon' => [
                                             'prepend' => ['content' => 'soll bearbeitet werden von']]])->widget(\kartik\widgets\Select2::classname(), [
-                                        'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username')
+                                        'data' => \yii\helpers\ArrayHelper::map(User::find()->orderBy('id')->asArray()->all(), 'id', 'username')
                                     ]);
                                     ?>
                                 </div>
@@ -114,8 +116,8 @@ use frontend\models\Immobilien;
                                     <?=
                                     $form->field($modelKunde, 'geschlecht', ['addon' => [
                                             'prepend' => ['content' => 'Geschlecht']]])->widget(\kartik\widgets\Select2::classname(), [
-                                        'data' => $arrayGeschlecht,
-                                        'options' => ['placeholder' => Yii::t('app', 'Geschlechtwählen')],
+                                        'data' => \yii\helpers\ArrayHelper::map(LGeschlecht::find()->asArray()->all(), 'id', 'typus'),
+                                        'options' => ['placeholder' => Yii::t('app', 'Geschlecht wählen')],
                                         'pluginOptions' => [
                                             'allowClear' => true
                                         ],
@@ -219,7 +221,7 @@ use frontend\models\Immobilien;
                             <?=
                             $form->field($model, 'aktualisiert_von', ['addon' => [
                                     'prepend' => ['content' => 'aktualisert von'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\widgets\Select2::classname(), [
-                                'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
+                                'data' => \yii\helpers\ArrayHelper::map(User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
                                 'options' => ['placeholder' => Yii::t('app', 'Choose User')],
                                 'disabled' => true,
                             ]);

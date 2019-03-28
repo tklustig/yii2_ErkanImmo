@@ -343,25 +343,7 @@ class ImmobilienController extends Controller {
     }
 
     public function actionTermin($id) {
-        $art = Immobilien::findOne(['id' => $id])->l_art_id;
-        $searchModel = new ImmobilienSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $id, $art);
-?><?=
-
-        Alert::widget([
-            'type' => Alert::TYPE_DANGER,
-            'title' => 'Access Denied',
-            'icon' => 'glyphicon glyphicon-remove-sign',
-            'body' => 'In der Demoversion lassen sich keine Termine vereinbaren. Erwerben Sie eine Lizenz oder schreiben Sie mir eine Nachricht über die Downloadseite.',
-            'showSeparator' => true,
-            'delay' => false
-        ]);
-        return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
-                    'art' => $art,
-                    'id' => $id
-        ]);
+        return $this->redirect(['/termin/create', 'id' => $id]);
     }
 
     public function actionShow($filename) {
