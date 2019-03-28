@@ -290,9 +290,10 @@ class SiteController extends Controller {
     }
 
     public function actionShow() {
-        $pathFrom = Yii::getAlias('@picturesBackend');
+        $pathFrom = Yii::getAlias('@uploading');
         $files = FileHelper::findFiles($pathFrom);
-        if (count($files) < 1) {
+
+        if (count($files) < 2) {
             $message = 'Laden Sie zuerst eines oder mehrere Themes hoch. Derzeit können Sie dem Frontend nock kein Theme zuweisen!';
             $this->Ausgabe($message, 'Info', 2000, Growl::TYPE_WARNING);
         }
@@ -345,7 +346,9 @@ class SiteController extends Controller {
         $session = new Session();
         $dateiname = Dateianhang::findOne(['id' => $id])->dateiname;
         $path = Yii::getAlias('@picturesBackend');
+        $pathFrom = Yii::getAlias('@uploading');
         unlink($path . $dateiname);
+        unlink($pathFrom . DIRECTORY_SEPARATOR . $dateiname);
         $model = $this->findModel_dateianhang($id)->delete();
         $session->addFlash('info', "Das Theme mit der ID:$id wurde soeben sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
         return $this->redirect(['/site/index']);
@@ -374,8 +377,10 @@ class SiteController extends Controller {
         }
         //lösche alle im Array vorhandenen Bilder anhand der Dateinamen aus backend/web/img(@picturesBackend)
         $path = Yii::getAlias('@picturesBackend');
+        $pathFrom = Yii::getAlias('@uploading');
         for ($i = 0; $i < count($arrayOfFilenames); $i++) {
             unlink($path . $arrayOfFilenames[$i]);
+            unlink($pathFrom . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
         }
         $session->addFlash('info', "Sämtliche Themes wurden sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
         return $this->redirect(['/site/index']);

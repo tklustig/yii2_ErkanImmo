@@ -64,7 +64,7 @@ if (!empty($session->getAllFlashes())) {
 <?php
 $url = Yii::getAlias("@web") . '/img/';
 ?>
-<div style="background:url(<?= $url ?>accept_all_you_see-wallpaper-1680x1050_copy.jpg);  background-repeat: no-repeat;  background-size: 100% 100%;">
+<div style="background:url(<?= $url ?>Theme.jpg);  background-repeat: no-repeat;  background-size: 100% 100%;">
     <div class="section_wrapper mcb-section-inner">
         <div class="wrap mcb-wrap one  valign-top clearfix" style="">
             <div class="column mcb-column one column_column  column-margin-">
