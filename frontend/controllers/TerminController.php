@@ -9,10 +9,12 @@ use frontend\models\TerminSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use frontend\models\Immobilien;
-use frontend\models\LPlz;
+use yii\base\DynamicModel;
 use yii\db\Query;
 use kartik\growl\Growl;
+//eigene Klassen
+use frontend\models\Immobilien;
+use frontend\models\LPlz;
 use common\models\User;
 use frontend\models\Kundeimmobillie;
 use frontend\models\Adminbesichtigungkunde;
@@ -30,7 +32,11 @@ class TerminController extends Controller {
         ];
     }
 
-    public function actionIndex() {
+    public function actionIndex($id = NULL) {
+        if ($id != null) {
+            print_r("Übergebene MaklerId:$id<br> Damit werden nur diejenigen Termine angezeigt, die dem Makler zugeordnet wurden!");
+            die();
+        }
         $searchModel = new TerminSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('index', [
@@ -40,8 +46,16 @@ class TerminController extends Controller {
     }
 
     public function actionPreselect() {
-        print_r("Diese Seite ist noch eine Baustelle");
-        print_r('<br>' . ' ' . get_class());
+        $DynamicModel = new DynamicModel(['id_user']);
+        $DynamicModel->addRule(['id_user'], 'integer');
+        $DynamicModel->addRule(['id_user'], 'required');
+        if ($DynamicModel->load(Yii::$app->request->post())) {
+            return $this->redirect(['/termin/index', 'id' => $DynamicModel->id_user]);
+        } else {
+            return $this->render('_form_terminpreselect', [
+                        'DynamicModel' => $DynamicModel
+            ]);
+        }
     }
 
     public function actionView($id) {
