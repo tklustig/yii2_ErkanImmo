@@ -61,7 +61,7 @@ $this->beginPage()
                             'items' => [
                                 ['label' => 'Theme hochladen', 'url' => ['/site/create']],
                                 ['label' => 'Theme initialiseren', 'url' => ['/site/show']],
-                                ['label' => 'Theme löschen(ToComplete)', 'url' => ['/site/deletion']],
+                                ['label' => 'Theme löschen', 'url' => ['/site/deletion']],
                             ],
                         ],
                         '<li class="divider"></li>',

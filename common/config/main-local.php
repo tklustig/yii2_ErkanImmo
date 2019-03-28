@@ -5,6 +5,7 @@ return [
     [
         '@uploading' => '@app/uploadedfiles',
         '@pictures' => '@frontend/web/img',
+        '@picturesBackend'=>'@backend/web/img/'
     ],
     'modules' => [
         'datecontrol' => [

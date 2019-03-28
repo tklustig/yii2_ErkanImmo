@@ -290,9 +290,9 @@ class SiteController extends Controller {
     }
 
     public function actionShow() {
-        $pathFrom = Yii::getAlias('@uploading');
+        $pathFrom = Yii::getAlias('@picturesBackend');
         $files = FileHelper::findFiles($pathFrom);
-        if (count($files) < 2) {
+        if (count($files) < 1) {
             $message = 'Laden Sie zuerst eines oder mehrere Themes hoch. Derzeit können Sie dem Frontend nock kein Theme zuweisen!';
             $this->Ausgabe($message, 'Info', 2000, Growl::TYPE_WARNING);
         }
@@ -342,13 +342,43 @@ class SiteController extends Controller {
     }
 
     public function actionDelete($id) {
-        print_r("<h3>Id of record 2be deleted is:$id</h3>");
-        die();
+        $session = new Session();
+        $dateiname = Dateianhang::findOne(['id' => $id])->dateiname;
+        $path = Yii::getAlias('@picturesBackend');
+        unlink($path . $dateiname);
+        $model = $this->findModel_dateianhang($id)->delete();
+        $session->addFlash('info', "Das Theme mit der ID:$id wurde soeben sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
+        return $this->redirect(['/site/index']);
     }
 
     public function actionDeleteall() {
-        print_r('<h3>All themes will be deleted after having finished coding respectively programming this modul.</h3>');
-        die();
+        $session = new Session();
+        $eDateianhang = EDateianhang::find()->all();
+        $arrayOfFk = array();
+        $arrayOfFilenames = array();
+        //Eruiere zunächst alle Fremdschlüsseleinträge in e_dateianhang für user_id und verfachte die Treffer in ein Array
+        foreach ($eDateianhang as $item) {
+            if ($item->user_id != null)
+                array_push($arrayOfFk, $item->user_id);
+        }
+        /*  Itetriere über das Array, eruiere den PK, ermittle den Dateinamen und lösche sodann den Record aus e_dateianhang. Aufgrund der RI werden alle
+          korresponiderenden Records mitgelöscht */
+        for ($i = 0; $i < count($arrayOfFk); $i++) {
+            $pk = EDateianhang::findOne(['user_id' => $arrayOfFk[$i]])->id;
+            $modelDateianhang = Dateianhang::find()->all();
+            foreach ($modelDateianhang as $item) {
+                if ($item->e_dateianhang_id == $pk)
+                    array_push($arrayOfFilenames, $item->dateiname);
+            }
+            $this->findModel_eDateianhang($pk)->deleteWithRelated();
+        }
+        //lösche alle im Array vorhandenen Bilder anhand der Dateinamen aus backend/web/img(@picturesBackend)
+        $path = Yii::getAlias('@picturesBackend');
+        for ($i = 0; $i < count($arrayOfFilenames); $i++) {
+            unlink($path . $arrayOfFilenames[$i]);
+        }
+        $session->addFlash('info', "Sämtliche Themes wurden sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
+        return $this->redirect(['/site/index']);
     }
 
     /* private methods without doing any actionRendering 
@@ -375,6 +405,30 @@ class SiteController extends Controller {
                 return $kopf;
             else
                 throw new NotFoundHttpException(Yii::t('app', 'Die Tabelle user konnte nicht geladen werden. Informieren Sie den Softwarehersteller'));
+        } catch (\Exception $e) {
+            throw new NotFoundHttpException(Yii::t('app', "$e"));
+        }
+    }
+
+    private function findModel_dateianhang($id) {
+        try {
+            $dateianhang = Dateianhang::findOne($id); //findAll() gibt ein array aus Objekten zurück.findOne() gibt ein einzelnes Objekt zurück
+            if ($dateianhang != NULL)
+                return $dateianhang;
+            else
+                throw new NotFoundHttpException(Yii::t('app', 'Die Tabelle Dateianhang konnte nicht geladen werden. Informieren Sie den Softwarehersteller'));
+        } catch (\Exception $e) {
+            throw new NotFoundHttpException(Yii::t('app', "$e"));
+        }
+    }
+
+    private function findModel_eDateianhang($id) {
+        try {
+            $eDateianhang = EDateianhang::findOne($id); //findAll() gibt ein array aus Objekten zurück.findOne() gibt ein einzelnes Objekt zurück
+            if ($eDateianhang != NULL)
+                return $eDateianhang;
+            else
+                throw new NotFoundHttpException(Yii::t('app', 'Die Tabelle eDateianhang konnte nicht geladen werden. Informieren Sie den Softwarehersteller'));
         } catch (\Exception $e) {
             throw new NotFoundHttpException(Yii::t('app', "$e"));
         }

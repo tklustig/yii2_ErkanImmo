@@ -164,6 +164,7 @@ class Dateianhang extends \yii\db\ActiveRecord {
             $uploadedFile->name = $this->Ersetzen($uploadedFile->name);
             $uploadedFile->saveAs(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name);
             copy(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name, $url . $uploadedFile->name);
+            unlink((Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name));
             $x++;
         }
         if ($x > 0) {
