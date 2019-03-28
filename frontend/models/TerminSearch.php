@@ -8,9 +8,11 @@ use frontend\models\Besichtigungstermin;
 
 class TerminSearch extends Besichtigungstermin {
 
+    public $foreignKeys;
+
     public function rules() {
         return [
-            [['id', 'Relevanz', 'angelegt_von', 'aktualisiert_von', 'Immobilien_id'], 'integer'],
+            [['Relevanz', 'angelegt_von', 'aktualisiert_von', 'Immobilien_id'], 'integer'],
             [['uhrzeit', 'angelegt_am', 'aktualisiert_am'], 'safe'],
         ];
     }
@@ -21,6 +23,7 @@ class TerminSearch extends Besichtigungstermin {
     }
 
     public function search($params) {
+
         $query = Besichtigungstermin::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -31,7 +34,9 @@ class TerminSearch extends Besichtigungstermin {
         if (!$this->validate()) {
             return $dataProvider;
         }
-
+        if ($this->foreignKeys != NULL) {
+            $this->id = $this->foreignKeys;
+        }
         $query->andFilterWhere([
             'id' => $this->id,
             'uhrzeit' => $this->uhrzeit,

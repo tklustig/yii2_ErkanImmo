@@ -15,8 +15,8 @@ $link = \Yii::$app->urlManagerBackend->baseUrl . '/home';
             <div class="col-md-12">
                 <?=
                 $form->field($DynamicModel, 'id_user')->widget(\kartik\widgets\Select2::classname(), [
-                    'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
-                    'options' => ['placeholder' => Yii::t('app', '')],
+                    'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->asArray()->all(), 'id', 'username'),
+                    'options' => ['placeholder' => Yii::t('app', 'Bitte Makler selektieren')],
                     'pluginOptions' => [
                         'allowClear' => true
                     ],

@@ -212,7 +212,6 @@ class SiteController extends Controller {
         ]);
     }
 
-//Methode zum Hochladen von Bildern in den Ordner backend/uploadefiles. Dieser Folder muss physikalisch greifbar sein!
     public function actionCreate() {
         $bezeichnung = "Bilder für das Frontend";
         $model = new Dateianhang(['scenario' => 'create_Dateianhang']);
@@ -255,12 +254,11 @@ class SiteController extends Controller {
                         $modelE->save();
                         $fk = $modelE->id;
                         /* ...falls doch */
-                    } else {
+                    } else
                         $fk = EDateianhang::findOne(['user_id' => $UserId])->id;
-                    }
                     /*  Speichere Records, abhängig von dem Array($files) in die Datenbank.
-                      Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht.
-                      Stattdessen wird batchInsert() verwendet */
+                        Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht.
+                        Stattdessen wird batchInsert() verwendet */
                     for ($i = 0; $i < count($files); $i++) {
                         $connection->createCommand()
                                 ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
@@ -271,14 +269,13 @@ class SiteController extends Controller {
                     $this->redirect(['/site/index']);
                 } else {  //...falls FALSE
                     print_r('Während des Uploads ging etwas schief. Bitte informieren Sie den Softwarehersteller über folgende Ausgabe:<br>');
-                    print_r('Inhalt des Uploadmodels:');
-                    var_dump($model->getErrors());
                     if (count($model->getErrors()) == 0)
-                        print_r('. Vermutlich haben Sie keine oder falsche Themes hochgeladen? Erwartet werden übliche Bilddateien(-endungen)!<br>');
-                    else
-                        print_r('<br>');
-?><?= Html::a('back', ['/site/create'], ['title' => 'zurück']) ?><?php
-
+                        print_r('<br><br>Vermutlich haben Sie keine oder falsche Themes hochgeladen? Erwartet werden übliche Bilddateien(-endungen)!<br>');
+                    else {
+                        print_r('<strong>Inhalt des Uploadmodels:</strong><br>');
+                        var_dump($model->getErrors());
+                    }
+                    echo Html::a('back', ['/site/create'], ['title' => 'zurück']);
                     die();
                 }
             }

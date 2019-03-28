@@ -4,7 +4,11 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 
-$this->title = Yii::t('app', 'Alle Besichtigungstermine');
+if (!empty($header))
+    $this->title = Yii::t('app', $header);
+else
+    $this->title = Yii::t('app', 'Alle Besichtigungstermine anzeigen');
+
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

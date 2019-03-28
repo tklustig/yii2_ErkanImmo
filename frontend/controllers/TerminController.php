@@ -33,19 +33,46 @@ class TerminController extends Controller {
     }
 
     public function actionIndex($id = NULL) {
-        if ($id != null) {
-            print_r("Übergebene MaklerId:$id<br> Damit werden nur diejenigen Termine angezeigt, die dem Makler zugeordnet wurden!");
-            die();
-        }
+        /*  ToDo:Wenn von der View index.php die Methode actionLink('termin_link' => 'termin/link') aufgerufen wird, müssen im Falle,dass 
+            das Array $arrayofFk nicht leer ist, $makler mit übergeben werden, damit nicht wieder die 'alle Besivhtigungstermine - Option'
+            eingebelendet wird:
+         */
         $searchModel = new TerminSearch();
+        //sofern eine Maklerid übergeben wurde, zeige nur diejenigen Records an, deren PK als FK in adminbesichtigungkunde vorhanden ist
+        $arrayOfFk = array();
+        if ($id != null) {
+            $modeladminBesKu = Adminbesichtigungkunde::find()->all();
+            foreach ($modeladminBesKu as $item) {
+                if ($item->admin_id == $id)
+                    array_push($arrayOfFk, $item->besichtigungstermin_id);
+            }
+            if (!empty($arrayOfFk))
+                $searchModel->foreignKeys = $arrayOfFk;
+        }
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
-        ]);
+        //wurden keine Besichtigungstermine gefunden, aber danach gesucht?
+        if ($id != null && empty($arrayOfFk)) {
+            $message = 'Für diesen Makler wurde noch kein Besichtigungstermin festgelegt. Wir raten zur umgehender Kündigung dieser faulen Ratte';
+            $this->message($message, 'Warnung!', 2000, Growl::TYPE_WARNING);
+            return $this->redirect(['/termin/preselect', 'message' => $message]);
+        } else if ($id != null && !empty($arrayOfFk)) {
+            $makler = User::findOne(['id' => $id])->username;
+            $header = "Besichtigungstermine für Makler $makler anzeigen";
+            return $this->render('index', [
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+                        'header' => $header
+            ]);
+        } else
+            return $this->render('index', [
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+            ]);
     }
 
-    public function actionPreselect() {
+    public function actionPreselect($message = NULL) {
+        if ($message != NULL)
+            $this->message($message, 'Warnung!', 2000, Growl::TYPE_WARNING);
         $DynamicModel = new DynamicModel(['id_user']);
         $DynamicModel->addRule(['id_user'], 'integer');
         $DynamicModel->addRule(['id_user'], 'required');

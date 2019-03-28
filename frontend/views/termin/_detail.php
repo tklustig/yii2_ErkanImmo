@@ -32,11 +32,6 @@ use yii\widgets\DetailView;
             ],
             'angelegt_am',
             'aktualisiert_am',
-            [
-                'attribute' => 'angelegt_von',
-                'label' => Yii::t('app', 'wurde vereinbart mit'),
-                'value' => $model->angelegt_von ? 'Makler '.$model->angelegtVon->username : NULL,
-            ],
         ];
         echo DetailView::widget([
             'model' => $model,
