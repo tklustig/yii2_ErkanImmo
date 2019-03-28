@@ -36,7 +36,7 @@ class Kopf extends \yii\db\ActiveRecord {
     }
 
     public function getUser() {
-        return $this->hasOne(\backend\models\User::className(), ['id' => 'user_id']);
+        return $this->hasOne(\common\models\User::className(), ['id' => 'user_id']);
     }
 
     public function getRechnungs() {

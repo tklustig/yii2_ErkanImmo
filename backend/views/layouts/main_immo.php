@@ -65,7 +65,7 @@ $this->beginPage()
                             ],
                         ],
                         '<li class="divider"></li>',
-                        ['label' => 'Impressum initialiseren', 'url' => ['#'],
+                        ['label' => '+++++++Impressum/Index initialiseren+++++++', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Begriffe festlegen(ToDo)', 'url' => ['#']],
