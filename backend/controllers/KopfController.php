@@ -9,13 +9,9 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-/**
- * KopfController implements the CRUD actions for Kopf model.
- */
-class KopfController extends Controller
-{
-    public function behaviors()
-    {
+class KopfController extends Controller {
+
+    public function behaviors() {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -26,67 +22,43 @@ class KopfController extends Controller
         ];
     }
 
-    /**
-     * Lists all Kopf models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $searchModel = new KopfSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
-    /**
-     * Displays a single Kopf model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
+    public function actionView($id) {
         $model = $this->findModel($id);
         $providerRechnung = new \yii\data\ArrayDataProvider([
             'allModels' => $model->rechnungs,
         ]);
         return $this->render('view', [
-            'model' => $this->findModel($id),
-            'providerRechnung' => $providerRechnung,
+                    'model' => $this->findModel($id),
+                    'providerRechnung' => $providerRechnung,
         ]);
     }
 
-    /**
-     * Creates a new Kopf model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
+    public function actionCreate() {
         $model = new Kopf();
 
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
 
-    /**
-     * Updates an existing Kopf model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id) {
         if (Yii::$app->request->post('_asnew') == '1') {
             $model = new Kopf();
-        }else{
+        } else {
             $model = $this->findModel($id);
         }
 
@@ -94,30 +66,17 @@ class KopfController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
 
-    /**
-     * Deletes an existing Kopf model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
+    public function actionDelete($id) {
         $this->findModel($id)->deleteWithRelated();
 
         return $this->redirect(['index']);
     }
-    
-    /**
-     * 
-     * Export Kopf information into PDF format.
-     * @param integer $id
-     * @return mixed
-     */
+
     public function actionPdf($id) {
         $model = $this->findModel($id);
         $providerRechnung = new \yii\data\ArrayDataProvider([
@@ -147,63 +106,39 @@ class KopfController extends Controller
         return $pdf->render();
     }
 
-    /**
-    * Creates a new Kopf model by another data,
-    * so user don't need to input all field from scratch.
-    * If creation is successful, the browser will be redirected to the 'view' page.
-    *
-    * @param mixed $id
-    * @return mixed
-    */
     public function actionSaveAsNew($id) {
         $model = new Kopf();
 
         if (Yii::$app->request->post('_asnew') != '1') {
             $model = $this->findModel($id);
         }
-    
+
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('saveAsNew', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
-    
-    /**
-     * Finds the Kopf model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Kopf the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
+
+    protected function findModel($id) {
         if (($model = Kopf::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
-    
-    /**
-    * Action to load a tabular form grid
-    * for Rechnung
-    * @author Yohanes Candrajaya <moo.tensai@gmail.com>
-    * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
-    *
-    * @return mixed
-    */
-    public function actionAddRechnung()
-    {
+
+    public function actionAddRechnung() {
         if (Yii::$app->request->isAjax) {
             $row = Yii::$app->request->post('Rechnung');
-            if((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
+            if ((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
                 $row[] = [];
             return $this->renderAjax('_formRechnung', ['row' => $row]);
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
+
 }

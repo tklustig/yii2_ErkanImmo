@@ -3,9 +3,6 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model backend\models\KopfSearch */
-/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="form-kopf-search">
@@ -20,7 +17,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'data')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'user_id')->widget(\kartik\widgets\Select2::classname(), [
-        'data' => \yii\helpers\ArrayHelper::map(\backend\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
+        'data' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
         'options' => ['placeholder' => Yii::t('app', 'Choose User')],
         'pluginOptions' => [
             'allowClear' => true

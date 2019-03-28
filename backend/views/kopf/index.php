@@ -1,5 +1,4 @@
 <?php
-
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\KopfSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -19,16 +18,16 @@ $this->registerJs($search);
 <div class="kopf-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
 
     <p>
         <?= Html::a(Yii::t('app', 'Create Kopf'), ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-info search-button']) ?>
     </p>
     <div class="search-form" style="display:none">
-        <?=  $this->render('_search', ['model' => $searchModel]); ?>
+        <?= $this->render('_search', ['model' => $searchModel]); ?>
     </div>
-    <?php 
+    <?php
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
         [
@@ -46,18 +45,18 @@ $this->registerJs($search);
         ['attribute' => 'id', 'visible' => false],
         'data:ntext',
         [
-                'attribute' => 'user_id',
-                'label' => Yii::t('app', 'User'),
-                'value' => function($model){                   
-                    return $model->user->id;                   
-                },
-                'filterType' => GridView::FILTER_SELECT2,
-                'filter' => \yii\helpers\ArrayHelper::map(\backend\models\User::find()->asArray()->all(), 'id', 'id'),
-                'filterWidgetOptions' => [
-                    'pluginOptions' => ['allowClear' => true],
-                ],
-                'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-kopf-search-user_id']
+            'attribute' => 'user_id',
+            'label' => Yii::t('app', 'User'),
+            'value' => function($model) {
+                return $model->user->id;
+            },
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'id'),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
             ],
+            'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-kopf-search-user_id']
+        ],
         [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{save-as-new} {view} {update} {delete}',
@@ -67,35 +66,36 @@ $this->registerJs($search);
                 },
             ],
         ],
-    ]; 
+    ];
     ?>
-    <?= GridView::widget([
+    <?=
+    GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => $gridColumn,
         'pjax' => true,
-        'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container-kopf']],
+        'pjaxSettings' => [
+            'neverTimeout' => true,
+        ],
+        'options' => [
+            'style' => 'overflow: auto; word-wrap: break-word;'
+        ],
+        'condensed' => true,
+        'responsiveWrap' => true,
+        'hover' => true,
+        'persistResize' => true,
         'panel' => [
             'type' => GridView::TYPE_PRIMARY,
-            'heading' => '<span class="glyphicon glyphicon-book"></span>  ' . Html::encode($this->title),
+            "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
+            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/kopf/index'], ['class' => 'btn btn-warning', 'title' => 'Setzt die GridView zurück']),
+            'toggleDataOptions' => ['minCount' => 10],
         ],
-        // your toolbar can include the additional full export menu
         'toolbar' => [
             '{export}',
-            ExportMenu::widget([
-                'dataProvider' => $dataProvider,
-                'columns' => $gridColumn,
-                'target' => ExportMenu::TARGET_BLANK,
-                'fontAwesome' => true,
-                'dropdownOptions' => [
-                    'label' => 'Full',
-                    'class' => 'btn btn-default',
-                    'itemsBefore' => [
-                        '<li class="dropdown-header">Export All Data</li>',
-                    ],
-                ],
-            ]) ,
+            '{toggleData}'
         ],
-    ]); ?>
+        'toggleDataOptions' => ['minCount' => 10],
+    ]);
+    ?>
 
 </div>
