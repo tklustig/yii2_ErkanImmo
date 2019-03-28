@@ -52,6 +52,7 @@ $this->beginPage()
                 ],
             ]);
             $link = \Yii::$app->urlManagerFrontend->baseUrl . '/termin_anzeigen';
+            $link_=\Yii::$app->urlManagerFrontend->baseUrl . '/termin_selektieren';
             $menuItems = [
                 [
                     'label' => 'Admin',
@@ -79,7 +80,7 @@ $this->beginPage()
                                 ['label' => 'Rechnung erstellen(ToDo)', 'url' => ['#']],
                                 ['label' => 'erstellte Rechnungen anzeigen(ToDo)', 'url' => ['#']],
                                 ['label' => 'erstellte Rechnungen drucken(ToDo)', 'url' => ['#']],
-                                ['label' => 'Rechnungskopf aufrufen(ToDo)', 'url' => ['/kopf/index']],
+                                ['label' => 'Rechnungskopf aufrufen(ToComplete)', 'url' => ['/kopf/index']],
                             ],
                         ],
                         '<li class="divider"></li>',
@@ -113,7 +114,7 @@ $this->beginPage()
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Alle Besichtigungstermine abrufen', 'url' => $link],
-                                ['label' => 'Besichtigungstermine nach/je Makler abrufen(ToDo)', 'url' => '#'],
+                                ['label' => 'Besichtigungstermine nach/je Makler abrufen(ToComplete)', 'url' => $link_],
                             ],
                         ],
                         '<li class="divider"></li>',

@@ -39,6 +39,11 @@ class TerminController extends Controller {
         ]);
     }
 
+    public function actionPreselect() {
+        print_r("Diese Seite ist noch eine Baustelle");
+        print_r('<br>' . ' ' . get_class());
+    }
+
     public function actionView($id) {
         $this->layout = "main_immo";
         $kundenId = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->kunde_id;
