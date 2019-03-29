@@ -10,6 +10,9 @@ use backend\models\Bankverbindung;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\db\IntegrityException;
+use yii\web\Session;
+use kartik\growl\Growl;
 
 class KundeController extends Controller {
 
@@ -25,6 +28,12 @@ class KundeController extends Controller {
     }
 
     public function actionIndex() {
+        $countKunde = Kunde::find()->count('id');
+        if ($countKunde == 0) {
+            $session = new Session();
+            $session->addFlash('info', 'Es exisitert noch kein Kunde in der Datenbank. Steigern Sie Ihre Kundenaqkuise!');
+            return $this->redirect(['/site/index']);
+        }
         $searchModel = new KundeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -74,9 +83,21 @@ class KundeController extends Controller {
     }
 
     public function actionDelete($id) {
-        $this->findModel($id)->deleteWithRelated();
-
-        return $this->redirect(['index']);
+        try {
+            $session = new Session();
+            $this->findModel($id)->delete();
+            $session->addFlash('info', "Der Kunde mit der Id:$id wurde aus der Datenbank entfernt!");
+            return $this->redirect(['/site/index']);
+        } catch (IntegrityException $er) {
+            $message = "Der Kunde mit der Id:$id kann nicht gelöscht werden, da das gegen die referentielle Integrität verstößt. Löschen Sie zunächst die korrespondierenden Bankdaten!";
+            $this->message($message, 'Error', 1500, Growl::TYPE_DANGER);
+            $searchModel = new KundeSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            return $this->render('index', [
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+            ]);
+        }
     }
 
     public function actionPdf($id) {
@@ -109,6 +130,24 @@ class KundeController extends Controller {
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
+    }
+
+    private function message($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
+        echo Growl::widget([
+            'type' => $type,
+            'title' => $typus,
+            'icon' => 'glyphicon glyphicon-exclamation-sign',
+            'body' => $message,
+            'showSeparator' => true,
+            'delay' => $delay,
+            'pluginOptions' => [
+                'showProgressbar' => true,
+                'placement' => [
+                    'from' => 'top',
+                    'align' => 'center',
+                ]
+            ]
+        ]);
     }
 
 }

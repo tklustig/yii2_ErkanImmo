@@ -73,7 +73,11 @@ class SiteController extends Controller {
 
     /* Displays homepage. */
 
-    public function actionIndex() {
+    public function actionIndex($message = NULL) {
+        if ($message != null) {
+            $session = new Session();
+            $session->addFlash('info', $message);
+        }
         if (Yii::$app->user->isGuest) {
             $MenuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
             $message = 'Da Sie offensichtlich einen User gelöscht hatten, ist momentan kein User mehr angemeldet. Betätigen Sie bitte die Loginoption, rechts oben im Menu!';

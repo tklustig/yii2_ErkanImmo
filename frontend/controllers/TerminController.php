@@ -11,6 +11,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\base\DynamicModel;
 use yii\db\Query;
+use yii\web\Session;
+use yii\helpers\Url;
 use kartik\growl\Growl;
 //eigene Klassen
 use frontend\models\Immobilien;
@@ -33,12 +35,17 @@ class TerminController extends Controller {
     }
 
     public function actionIndex($id = NULL) {
-        /*  ToDo:Wenn von der View index.php die Methode actionLink('termin_link' => 'termin/link') aufgerufen wird, müssen im Falle,dass 
-          das Array $arrayofFk nicht leer ist, $makler mit übergeben werden, damit nicht wieder die 'alle Besivhtigungstermine - Option'
-          eingebelendet wird:
-         */
+        //keine Termine vorhanden?
+        $countTermine = Besichtigungstermin::find()->count('id');
+        if ($countTermine == 0) {
+            $message = 'Es exisitieren noch keine Besichtigungstermine  in der Datenbank. Steigern Sie Ihre Kundenaqkuise!';
+            $link = \Yii::$app->urlManagerBackend->baseUrl . '/home';
+            $zusatz = '?message=Es+exisitieren+noch+keine+Besichtigungstermine++in+der+Datenbank.+Steigern+Sie+Ihre+Kundenaqkuise%21';
+            return $this->redirect($link . $zusatz);
+        }
         $searchModel = new TerminSearch();
-        //sofern eine Maklerid übergeben wurde, zeige nur diejenigen Records an, deren PK als FK in adminbesichtigungkunde vorhanden ist
+        /*  sofern eine Maklerid übergeben wurde, zeige nur diejenigen Records an, deren PK als FK(besichtigungstermin_id) 
+          in adminbesichtigungkunde vorhanden ist */
         $arrayOfFk = array();
         if ($id != null) {
             $modeladminBesKu = Adminbesichtigungkunde::find()->all();
@@ -46,8 +53,8 @@ class TerminController extends Controller {
                 if ($item->admin_id == $id)
                     array_push($arrayOfFk, $item->besichtigungstermin_id);
             }
-            /*  sofern Array nicht leer, lege eine Session an, da nur so der Wert an actionLink(), die über eine Anonymous Function aufgerufen wird,
-              übergeben werden kann
+            /*  sofern das Array nicht leer, lege eine Session an, da nur so der Wert an die Methode actionLink(), die in der index über eine 
+              Anonymous Function aufgerufen wird, übergeben werden kann
              */
             if (!empty($arrayOfFk)) {
                 $searchModel->foreignKeys = $arrayOfFk;
@@ -63,6 +70,7 @@ class TerminController extends Controller {
             $message = 'Für diesen Makler wurde noch kein Besichtigungstermin festgelegt. Wir raten zur umgehender Kündigung dieser faulen Ratte.';
             $this->message($message, 'Warnung!', 2000, Growl::TYPE_WARNING);
             return $this->redirect(['/termin/preselect', 'message' => $message]);
+            //wurden Besichtigungstermine gefunden, dann erstelle den Header für den entsprechenden Makler(intern:User)
         } else if ($id != null && !empty($arrayOfFk)) {
             $makler = User::findOne(['id' => $id])->username;
             $header = "Besichtigungstermine für Makler $makler anzeigen";
@@ -71,6 +79,7 @@ class TerminController extends Controller {
                         'dataProvider' => $dataProvider,
                         'header' => $header
             ]);
+            //nix traf zu? Dann render die index ohne Einschränkungen
         } else
             return $this->render('index', [
                         'searchModel' => $searchModel,
@@ -196,9 +205,12 @@ class TerminController extends Controller {
     }
 
     public function actionDelete($id) {
+        $session = new Session();
         $idOfAdminBesKu = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->id;
+        // die RI gewährleistet, dass keine Datenbankanomalien entstehen.
         $this->findModelAdminBesKunde($idOfAdminBesKu)->delete();
         $this->findModel($id)->delete();
+        $session->addFlash('info', "Der Termin mit der Id $id wurde mitsamt seinen Relationen gelöscht");
         return $this->redirect(['index']);
     }
 

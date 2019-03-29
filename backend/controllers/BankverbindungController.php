@@ -32,9 +32,14 @@ class BankverbindungController extends Controller {
     }
 
     public function actionIndex() {
+        $countBankverbindung = Bankverbindung::find()->count('id');
+        if ($countBankverbindung == 0) {
+            $session = new Session();
+            $session->addFlash('info', 'Es exisitieren noch keine Bankverbindungen in der Datenbank. Steigern Sie Ihre Kundenaqkuise oder hinterlegen Sie deren Bankdaten!');
+            return $this->redirect(['/site/index']);
+        }
         $searchModel = new BankverbindungSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
     }
 
@@ -181,18 +186,9 @@ class BankverbindungController extends Controller {
     }
 
     public function actionDelete($id) {
-        try {
-            $session = new Session();
-            $this->findModel($id)->delete();
-            $session->addFlash('info', "Die Bankdaten der ID:$id wurden aus Ihrem System entfernt!");
-        } catch (IntegrityException $e) {
-            $modelKundeId = Kunde::findOne(['bankverbindung_id' => $id])->id;
-            $data = Kunde::findOne(['id' => $modelKundeId])->vorname . ' ' . Kunde::findOne(['id' => $modelKundeId])->nachname;
-            $message = "Das DBMS hat einen Verstoß gegen die referentielle Integrität festgestellt.<br>";
-            $message .= "Die Bankdaten der ID:$id können nicht gelöscht werden, da Sie dem Kunde $data(ID:$modelKundeId) zugeordnet sind.<br>";
-            $message .= "Bitte ändern Sie im Kundenmodul diese Verwendung ab, oder aber löschen Sie diesen Kunden aus Ihrem Pool.";
-            $session->addFlash('warnung', $message);
-        }
+        $session = new Session();
+        $this->findModel($id)->delete();
+        $session->addFlash('info', "Die Bankdaten der ID:$id wurden aus Ihrem System entfernt!");
         return $this->redirect(['/site/index']);
     }
 
@@ -251,8 +247,8 @@ class BankverbindungController extends Controller {
                 return $this->render('_form_select', ['DynamicModel' => $DynamicModel]);
             }
         } else {
-            $string = 'Es exisitert noch kein Kunde in der Datenbank. Steigern Sie Ihre Kundenaqkuise!';
-            $this->message($message);
+            $session = new Session();
+            $session->addFlash('info', 'Es exisitert noch kein Kunde in der Datenbank. Steigern Sie Ihre Kundenaqkuise!');
             return $this->redirect(['site/index']);
         }
     }
