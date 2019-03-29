@@ -5,20 +5,45 @@ namespace frontend\models\base;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 
-class Besichtigungstermin extends \yii\db\ActiveRecord {
-
+/**
+ * This is the base model class for table "besichtigungstermin".
+ *
+ * @property integer $id
+ * @property string $uhrzeit
+ * @property integer $Relevanz
+ * @property string $angelegt_am
+ * @property string $aktualisiert_am
+ * @property integer $angelegt_von
+ * @property integer $aktualisiert_von
+ * @property integer $Immobilien_id
+ *
+ * @property \frontend\models\Adminbesichtigungkunde[] $adminbesichtigungkundes
+ * @property \frontend\models\Immobilien $immobilien
+ * @property \frontend\models\Kunde $angelegtVon
+ */
+class Besichtigungstermin extends \yii\db\ActiveRecord
+{
     use \mootensai\relation\RelationTrait;
 
-    public function relationNames() {
+
+    /**
+    * This function helps \mootensai\relation\RelationTrait runs faster
+    * @return array relation names of this model
+    */
+    public function relationNames()
+    {
         return [
             'adminbesichtigungkundes',
             'immobilien',
-            'angelegtVon',
-            'aktualisiertVon'
+            'angelegtVon'
         ];
     }
 
-    public function rules() {
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
         return [
             [['uhrzeit', 'Immobilien_id'], 'required'],
             [['uhrzeit', 'angelegt_am', 'aktualisiert_am'], 'safe'],
@@ -27,11 +52,19 @@ class Besichtigungstermin extends \yii\db\ActiveRecord {
         ];
     }
 
-    public static function tableName() {
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
         return 'besichtigungstermin';
     }
 
-    public function attributeLabels() {
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
         return [
             'id' => Yii::t('app', 'ID'),
             'uhrzeit' => Yii::t('app', 'Uhrzeit'),
@@ -43,32 +76,44 @@ class Besichtigungstermin extends \yii\db\ActiveRecord {
             'Immobilien_id' => Yii::t('app', 'Immobilien ID'),
         ];
     }
-
-    public function getAdminbesichtigungkundes() {
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAdminbesichtigungkundes()
+    {
         return $this->hasMany(\frontend\models\Adminbesichtigungkunde::className(), ['besichtigungstermin_id' => 'id']);
     }
-
-    public function getImmobilien() {
+        
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getImmobilien()
+    {
         return $this->hasOne(\frontend\models\Immobilien::className(), ['id' => 'Immobilien_id']);
     }
-
-    public function getAktualisiertVon() {
-        return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
+        
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAngelegtVon()
+    {
+        return $this->hasOne(\frontend\models\Kunde::className(), ['id' => 'angelegt_von']);
     }
-
-    public function getAngelegtVon() {
-        return $this->hasOne(\common\models\User::className(), ['id' => 'angelegt_von']);
-    }
-
-    public function behaviors() {
+    
+    /**
+     * @inheritdoc
+     * @return array mixed
+     */
+    public function behaviors()
+    {
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
                 'createdAtAttribute' => 'angelegt_am',
                 'updatedAtAttribute' => 'aktualisiert_am',
                 'value' => new \yii\db\Expression('NOW()'),
-            ]
+            ],
         ];
     }
-
 }

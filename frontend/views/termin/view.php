@@ -29,7 +29,14 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <div class="col-md-12">
-            <center><h3>Unser Makler Herr/Frau <?= $model->angelegtVon->username ?> wird sich am <?= $model->uhrzeit ?> Uhr bei Ihnen vor Ort in  <?= $wohnortKunde ?> treffen, um die Immobilie in <?= $immoPlace ?> zu begutachten.</h3>
+            <?php
+            if (!empty(\frontend\models\Adminbesichtigungkunde::findOne(['kunde_id' => $model->angelegt_von]))) {
+                $maklerId = \frontend\models\Adminbesichtigungkunde::findOne(['kunde_id' => $model->angelegt_von])->admin_id;
+                $maklerName = \common\models\User::findOne(['id' => $maklerId])->username;
+            } else
+                $maklerName = "Unknown";
+            ?>
+            <center><h3>Unser Makler Herr/Frau <?= $maklerName ?> wird sich am <?= $model->uhrzeit ?> Uhr bei Ihnen vor Ort in  <?= $wohnortKunde ?> treffen, um die Immobilie in <?= $immoPlace ?> zu begutachten.</h3>
                 <p>Pushen sie auf den weiß-grauen PDF Button, um ein Dokument für Ihre Unterlagen zu erstellen.</p></center>
         </div>
         <div class="col-md-12">
@@ -42,9 +49,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     'angelegt_am',
                     [
                         'attribute' => 'angelegt_von',
-                        'label' => Yii::t('app', 'Makler'),
+                        'label' => Yii::t('app', 'Kunde'),
                         'value' => function($model) {
-                            ($model->angelegt_von) ? $value = $model->angelegtVon->username : $value = 'kein Makler gewählt';
+                            ($model->angelegt_von) ? $value = $model->angelegtVon->nachname . ", " . $model->angelegtVon->vorname : $value = 'kein Kunde vorhanden';
                             return $value;
                         }
                     ],

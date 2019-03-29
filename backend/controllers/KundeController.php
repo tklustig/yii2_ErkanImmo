@@ -89,7 +89,7 @@ class KundeController extends Controller {
             $session->addFlash('info', "Der Kunde mit der Id:$id wurde aus der Datenbank entfernt!");
             return $this->redirect(['/site/index']);
         } catch (IntegrityException $er) {
-            $message = "Der Kunde mit der Id:$id kann nicht gelöscht werden, da das gegen die referentielle Integrität verstößt. Löschen Sie zunächst die korrespondierenden Bankdaten!";
+            $message = "Der Kunde mit der Id:$id kann nicht gelöscht werden, da das gegen die referentielle Integrität verstößt. Löschen Sie zunächst die korrespondierenden Bankdaten und/oder Besichtigungstermine!";
             $this->message($message, 'Error', 1500, Growl::TYPE_DANGER);
             $searchModel = new KundeSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

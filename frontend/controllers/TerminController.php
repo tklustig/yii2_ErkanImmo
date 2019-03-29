@@ -205,6 +205,7 @@ class TerminController extends Controller {
     }
 
     public function actionDelete($id) {
+        die();
         $session = new Session();
         $idOfAdminBesKu = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->id;
         // die RI gewährleistet, dass keine Datenbankanomalien entstehen.

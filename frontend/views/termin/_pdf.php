@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'angelegt_von',
                 'label' => Yii::t('app', 'Makler'),
                 'value' => function($model) {
-                    ($model->angelegt_von) ? $value = $model->angelegtVon->username : $value = 'kein Makler gewählt';
+                    ($model->angelegt_von) ? $value = $model->angelegtVon->nachname . ', ' . $model->angelegtVon->vorname : $value = 'kein Kunde vorhanden';
                     return $value;
                 }
             ],
