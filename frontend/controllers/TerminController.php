@@ -112,6 +112,7 @@ class TerminController extends Controller {
     }
 
     public function actionCreate($id) {
+        $arrayOfErrors = array();
         $this->layout = "main_immo";
         $model = new Besichtigungstermin();
         $modelKunde = new Kunde();
@@ -154,7 +155,7 @@ class TerminController extends Controller {
                     else
                         $bool = false;
                 }
-            } else
+            }
             if (!$bool) {
                 $message = "Die Strasse enthält keine vom Namen abgesonderte Hausnummer.";
                 $this->message($message, 'Error', 1250, Growl::TYPE_DANGER);
@@ -162,20 +163,25 @@ class TerminController extends Controller {
             }
             $model->validate();
             if (!$model->validate()) {
-                print_r("<center><h2>ModelTermine ist invalide</h2></center>");
+                $arrayOfErrors[0] = '<center><h2>ModelBesichtigungstermin ist invalide</h2></center>';
                 $bool = false;
             }
             $modelKunde->validate();
             if (!$modelKunde->validate()) {
-                print_r("<center><h2>ModelKunde ist invalide</h2></center>");
+                if (count($arrayOfErrors) == 1)
+                    $arrayOfErrors[1] = '<center><h2>ModelKunde ist invalide</h2></center>';
+                else
+                    $arrayOfErrors[0] = '<center><h2>ModelKunde ist invalide</h2></center>';
                 $bool = false;
             }
             if (!$bool) {
                 print_r('<br><br>');
                 print_r('Fehler während der Validierung der Datenbankklassen. Bitte informieren Sie den Softwarehersteller.');
-                var_dump($model);
-                var_dump($matches);
-                var_dump($bool);
+                for ($i = 0; $i < count($arrayOfErrors); $i++) {
+                    print_r($arrayOfErrors[$i]);
+                }
+                var_dump('Modelerrors:' . $model->getErrors());
+                var_dump('Matches' . $matches);
                 die();
             }
             //ToDo: Die gesamten Schreibprozesse bzgl. der Datenbank müssen eigentlich in eine Tranaction verfrachtet werden
@@ -205,14 +211,14 @@ class TerminController extends Controller {
     }
 
     public function actionDelete($id) {
-        die();
-        $session = new Session();
         $idOfAdminBesKu = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->id;
         // die RI gewährleistet, dass keine Datenbankanomalien entstehen.
         $this->findModelAdminBesKunde($idOfAdminBesKu)->delete();
         $this->findModel($id)->delete();
-        $session->addFlash('info', "Der Termin mit der Id $id wurde mitsamt seinen Relationen gelöscht");
-        return $this->redirect(['index']);
+        $message = 'Es exisitieren noch keine Besichtigungstermine  in der Datenbank. Steigern Sie Ihre Kundenaqkuise!';
+        $link = \Yii::$app->urlManagerBackend->baseUrl . '/home';
+        $zusatz = '?message=Der+Termin+wurde+mitsamt+seinen++Relationen+gelöscht%21';
+        return $this->redirect($link . $zusatz);
     }
 
     protected function findModel($id) {

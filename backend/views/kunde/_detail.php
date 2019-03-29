@@ -13,10 +13,27 @@ use yii\widgets\DetailView;
         <?php
         $gridColumn = [
             'id',
-            'telefon',
-            'email',
-            'angelegt_am',
-            'aktualisiert_am',
+            [
+                'attribute' => 'telefon',
+                'label' => Yii::t('app', 'Telefonnummer'),
+                'value' => function($model, $id) {
+                    return $model->telefon ? $model->telefon : 'wurde nicht hinterlegt';
+                },
+            ],
+            [
+                'attribute' => 'email',
+                'label' => Yii::t('app', 'Mailadresse'),
+                'value' => function($model, $id) {
+                    return $model->email ? $model->email : 'wurde nicht hinterlegt';
+                },
+            ],
+            [
+                'attribute' => 'bankverbindung_id',
+                'label' => Yii::t('app', 'Bankdaten hinterlegt'),
+                'value' => function($model, $id) {
+                    return $model->bankverbindung_id ? 'wurden hinterlegt' : 'wurden nicht hinterlegt';
+                },
+            ],
             [
                 'attribute' => 'angelegt_von',
                 'label' => Yii::t('app', 'Angelegt von'),
@@ -32,6 +49,8 @@ use yii\widgets\DetailView;
                         return 'Makler ' . $model->aktualisiertVon->username;
                 },
             ],
+            'angelegt_am',
+            'aktualisiert_am',
         ];
         echo DetailView::widget([
             'model' => $model,

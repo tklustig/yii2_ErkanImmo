@@ -80,23 +80,25 @@ $this->registerJs($search);
             'label' => 'Ist Solvent',
             'encodeLabel' => false,
         ],
-        [
-            'attribute' => 'bankverbindung_id',
-            'label' => Yii::t('app', 'BankverbindungID'),
-            'value' => function($model) {
-                if ($model->bankverbindung) {
-                    return $model->bankverbindung->id;
-                } else {
-                    return NULL;
-                }
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\backend\models\Bankverbindung::find()->asArray()->all(), 'id', 'id'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'Bankverbindung', 'id' => 'grid-kunde-search-bankverbindung_id']
-        ],
+        /*
+          [
+          'attribute' => 'bankverbindung_id',
+          'label' => Yii::t('app', 'BankverbindungID'),
+          'value' => function($model) {
+          if ($model->bankverbindung) {
+          return $model->bankverbindung->id;
+          } else {
+          return NULL;
+          }
+          },
+          'filterType' => GridView::FILTER_SELECT2,
+          'filter' => \yii\helpers\ArrayHelper::map(\backend\models\Bankverbindung::find()->asArray()->all(), 'id', 'id'),
+          'filterWidgetOptions' => [
+          'pluginOptions' => ['allowClear' => true],
+          ],
+          'filterInputOptions' => ['placeholder' => 'Bankverbindung', 'id' => 'grid-kunde-search-bankverbindung_id']
+          ],
+         */
         [
             'class' => 'yii\grid\ActionColumn',
         ],

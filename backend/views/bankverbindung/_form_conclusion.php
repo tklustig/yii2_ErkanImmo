@@ -53,7 +53,7 @@ $this->title = Yii::t('app', 'Zusammenfassung');
 <div class="form-group">              
     <?= Html::submitButton(Yii::t('app', 'Weiter'), ['class' => 'btn btn-info']) ?>
     <?= Html::a(Yii::t('app', 'Cancel'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
-    <?php ActiveForm::end(); ?>
 </div>
+<?php ActiveForm::end(); ?>
 
 

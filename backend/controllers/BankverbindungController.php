@@ -145,6 +145,8 @@ class BankverbindungController extends Controller {
     public function actionConclusion($id, $laenderkennung, $kontonummer, $blz, $institut, $bic, $iban) {
         $model = new Bankverbindung();
         $modelKunde = $this->findModelKunde($id);
+        print_r('<br><br><br>');
+        var_dump(Yii::$app->request->post());
         if (Yii::$app->request->post()) {
             $model->laenderkennung = $laenderkennung;
             $model->institut = $institut;

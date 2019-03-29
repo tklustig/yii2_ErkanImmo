@@ -36,6 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $kundenGeschlecht = Kunde::findOne(['id' => $kundeID])->geschlecht0->typus;
         $kundenVorName = Kunde::findOne(['id' => $kundeID])->vorname;
         $kundenNachName = Kunde::findOne(['id' => $kundeID])->nachname;
+        $kundenPlz = Kunde::findOne(['id' => $kundeID])->lPlz->plz;
         $kundeStadt = Kunde::findOne(['id' => $kundeID])->stadt;
         $kundeStrasse = Kunde::findOne(['id' => $kundeID])->strasse;
         if (!empty(Kunde::findOne(['id' => $kundeID])->telefon))
@@ -56,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
     $year = floor($hours / 24 / 365);
     $output = date("d.m.Y", strtotime($kundeGeburtsdatum)) . ', ' . $year . " Jahre alt";
     $einleitung = 'Folgender Interessent hat mit Ihnen für diese Immobilie einen Termin vereinbart:\n';
-    $giveBack = $einleitung . $kundenGeschlecht . ' ' . $kundenVorName . '  ' . $kundenNachName . ',\n' . 'wohnhaft in ' . $kundeStadt . ',\n' . $kundeStrasse . ',\n' . 'Geburtsdaten:' . ' ' . $output . '<br>Kontaktdaten: <span class="glyphicon glyphicon-earphone"></span> ' . $kundetelefon . ' / <span class="glyphicon glyphicon-envelope"></span> ' . $kundemail;
+    $giveBack = $einleitung . $kundenGeschlecht . ' ' . $kundenVorName . '  ' . $kundenNachName . ',\n' . 'wohnhaft in ' . $kundenPlz . ' ' . $kundeStadt . ',\n' . $kundeStrasse . ',\n' . 'Geburtsdaten:' . ' ' . $output . '<br>Kontaktdaten: <span class="glyphicon glyphicon-earphone"></span> ' . $kundetelefon . ' / <span class="glyphicon glyphicon-envelope"></span> ' . $kundemail;
     $js = "krajeeDialog.alert('$giveBack');";
     $this->registerJs($js);
     $link = \Yii::$app->urlManagerBackend->baseUrl . '/home';
