@@ -3,11 +3,12 @@
 use yii\helpers\Html;
 use kartik\widgets\ActiveForm;
 
-ActiveForm::begin([
-    'type' => ActiveForm::TYPE_VERTICAL,
-    'formConfig' => [
-        'showLabels' => false
-]]);
+$form = ActiveForm::begin([
+            'id' => 'dynamic-form',
+            'type' => ActiveForm::TYPE_VERTICAL,
+            'formConfig' => [
+                'showLabels' => false
+        ]]);
 $this->title = Yii::t('app', 'Zusammenfassung');
 ?>
 <div class="page-header">
@@ -24,27 +25,45 @@ $this->title = Yii::t('app', 'Zusammenfassung');
                 <p>Ihre eingegebenen Daten:</p>
             </div>
             <div class="col-md-3">
-                <p>Länderkennung: <?= $laenderkennung ?></p>
+                <?=
+                $form->field($model, 'laenderkennung', ['addon' => [
+                        'prepend' => ['content' => 'Länderkennung']]])->textInput(['maxlength' => true, 'value' => $laenderkennung, 'readOnly' => true])
+                ?>
             </div>
             <div class="col-md-3">
-                <p>Kontonummer: <?= $kontonummer ?></p>
+                <?=
+                $form->field($model, 'kontonummer', ['addon' => [
+                        'prepend' => ['content' => 'Kontonummer']]])->textInput(['maxlength' => true, 'value' => $kontonummer, 'readOnly' => true])
+                ?>
             </div>
             <div class="col-md-3">
-                <p>Bankleitzahl: <?= $blz ?></p>
+                <?=
+                $form->field($model, 'blz', ['addon' => [
+                        'prepend' => ['content' => 'Bankleitzahl']]])->textInput(['maxlength' => true, 'value' => $blz, 'readOnly' => true])
+                ?>
             </div>
             <div class="col-md-12">
                 <p>Die ermittelten Webservicedaten:</p>
             </div>
-            <div class="col-md-3">
-                <p>Institut: <?= $institut ?></p>
+            <div class="col-md-4">
+                <?=
+                $form->field($model, 'institut', ['addon' => [
+                        'prepend' => ['content' => 'Bankinstitut']]])->textInput(['maxlength' => true, 'value' => $institut, 'readOnly' => true])
+                ?>
             </div>  
-            <div class="col-md-3">
-                <p>BIC: <?= $bic ?></p>
+            <div class="col-md-4">
+                <?=
+                $form->field($model, 'bic', ['addon' => [
+                        'prepend' => ['content' => 'BIC']]])->textInput(['maxlength' => true, 'value' => $bic, 'readOnly' => true])
+                ?>
             </div>         
-            <div class="col-md-3">
-                <p>IBAN: <?= $iban ?></p>
+            <div class="col-md-4">
+                <?=
+                $form->field($model, 'iban', ['addon' => [
+                        'prepend' => ['content' => 'IBAN']]])->textInput(['maxlength' => true, 'value' => $iban, 'readOnly' => true])
+                ?>             
             </div> 
-            <div class="col-md-3">
+            <div class="col-md-12">
                 <p>KundenId: <?= $id ?></p>
             </div> 
         </div>
