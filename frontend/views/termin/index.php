@@ -4,10 +4,16 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 
-if (!empty($header))
+$sessionPHP = Yii::$app->session;
+if (!empty($header)) {
     $this->title = Yii::t('app', $header);
-else
+    $sessionPHP->open();
+    $sessionPHP['header'] = $header;
+    $sessionPHP->close();
+} else {
     $this->title = Yii::t('app', 'Alle Besichtigungstermine anzeigen');
+    $sessionPHP->destroy();
+}
 
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -65,7 +71,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'template' => '{kunde},<br> {delete}',
             'buttons' => [
                 'kunde' => function ($model, $id) {
-                    return Html::a('<span class="glyphicon glyphicon-home"></span>', ['/termin/link', 'id' => $id->id], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
+                    $sessionPHP = Yii::$app->session;
+                    $sessionPHP->open();
+                    $header = $sessionPHP['header'];
+                    $sessionPHP->close();
+                    return Html::a('<span class="glyphicon glyphicon-home"></span>', ['/termin/link', 'id' => $id->id, 'header' => $header], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
                 },
             ],
         ],

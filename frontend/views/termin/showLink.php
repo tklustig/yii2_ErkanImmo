@@ -6,11 +6,10 @@ use yii\widgets\Pjax;
 use frontend\models\Adminbesichtigungkunde;
 use frontend\models\Kunde;
 
-/* @var $this yii\web\View */
-/* @var $searchModel frontend\models\TerminSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = Yii::t('app', 'Besichtigungstermin(e)');
+if (!empty($header))
+    $this->title = Yii::t('app', $header);
+else
+    $this->title = Yii::t('app', 'Besichtigungstermin(e)');
 
 $this->params['breadcrumbs'][] = $this->title;
 ?>

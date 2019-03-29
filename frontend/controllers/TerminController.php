@@ -34,8 +34,8 @@ class TerminController extends Controller {
 
     public function actionIndex($id = NULL) {
         /*  ToDo:Wenn von der View index.php die Methode actionLink('termin_link' => 'termin/link') aufgerufen wird, müssen im Falle,dass 
-            das Array $arrayofFk nicht leer ist, $makler mit übergeben werden, damit nicht wieder die 'alle Besivhtigungstermine - Option'
-            eingebelendet wird:
+          das Array $arrayofFk nicht leer ist, $makler mit übergeben werden, damit nicht wieder die 'alle Besivhtigungstermine - Option'
+          eingebelendet wird:
          */
         $searchModel = new TerminSearch();
         //sofern eine Maklerid übergeben wurde, zeige nur diejenigen Records an, deren PK als FK in adminbesichtigungkunde vorhanden ist
@@ -46,13 +46,21 @@ class TerminController extends Controller {
                 if ($item->admin_id == $id)
                     array_push($arrayOfFk, $item->besichtigungstermin_id);
             }
-            if (!empty($arrayOfFk))
+            /*  sofern Array nicht leer, lege eine Session an, da nur so der Wert an actionLink(), die über eine Anonymous Function aufgerufen wird,
+              übergeben werden kann
+             */
+            if (!empty($arrayOfFk)) {
                 $searchModel->foreignKeys = $arrayOfFk;
+                $sessionPHP = Yii::$app->session;
+                $sessionPHP->open();
+                $sessionPHP['foreignKeys'] = $arrayOfFk;
+                $sessionPHP->close();
+            }
         }
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         //wurden keine Besichtigungstermine gefunden, aber danach gesucht?
         if ($id != null && empty($arrayOfFk)) {
-            $message = 'Für diesen Makler wurde noch kein Besichtigungstermin festgelegt. Wir raten zur umgehender Kündigung dieser faulen Ratte';
+            $message = 'Für diesen Makler wurde noch kein Besichtigungstermin festgelegt. Wir raten zur umgehender Kündigung dieser faulen Ratte.';
             $this->message($message, 'Warnung!', 2000, Growl::TYPE_WARNING);
             return $this->redirect(['/termin/preselect', 'message' => $message]);
         } else if ($id != null && !empty($arrayOfFk)) {
@@ -137,7 +145,7 @@ class TerminController extends Controller {
                     else
                         $bool = false;
                 }
-            }else
+            } else
             if (!$bool) {
                 $message = "Die Strasse enthält keine vom Namen abgesonderte Hausnummer.";
                 $this->message($message, 'Error', 1250, Growl::TYPE_DANGER);
@@ -231,14 +239,28 @@ class TerminController extends Controller {
         return $pdf->render();
     }
 
-    public function actionLink($id) {
+    public function actionLink($id, $header = null) {
         $searchModel = new TerminSearch();
+        $sessionPHP = Yii::$app->session;
+        $sessionPHP->open();
+        if (!empty($sessionPHP['foreignKeys'])) {
+            $searchModel->foreignKeys = $sessionPHP['foreignKeys'];
+        }
+        $sessionPHP->close();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        return $this->render('showLink', [
-                    'id' => $id,
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
-        ]);
+        if ($header != null)
+            return $this->render('showLink', [
+                        'id' => $id,
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+                        'header' => $header
+            ]);
+        else
+            return $this->render('showLink', [
+                        'id' => $id,
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider
+            ]);
     }
 
     public function actionAuswahl($q = null, $id = null) {

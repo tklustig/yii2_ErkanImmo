@@ -114,7 +114,7 @@ $this->beginPage()
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Alle Besichtigungstermine abrufen', 'url' => $link],
-                                ['label' => 'Besichtigungstermine nach/je Makler abrufen(ToComplete)', 'url' => $link_],
+                                ['label' => 'Besichtigungstermine nach/je Makler abrufen', 'url' => $link_],
                             ],
                         ],
                         '<li class="divider"></li>',
