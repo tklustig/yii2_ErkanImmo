@@ -23,7 +23,7 @@ else if ($model->solvenz == false)
     $solvenz = "Kunde ist insolvent und aliquide";
 ?>
 <ul>
-    <li><?= $model->geschlecht . ' ' . $model->vorname . ' ' . $model->nachname ?></li>
+    <li><?= $model->geschlecht0->typus . ' ' . $model->vorname . ' ' . $model->nachname ?></li>
     <li>wohnhaft in <?= $plz . ' ' . $model->stadt . ', ' . $model->strasse ?></li>
     <li> <?= $output ?></li>
     <li>Zahlungskräfigkeit: <?= $solvenz ?></li>
