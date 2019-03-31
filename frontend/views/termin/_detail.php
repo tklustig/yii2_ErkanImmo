@@ -32,6 +32,15 @@ use yii\widgets\DetailView;
             ],
             'angelegt_am',
             'aktualisiert_am',
+            [
+                'attribute' => 'aktualisiert_von',
+                'label' => Yii::t('app', 'Aktualisiert von'),
+                'value' => function($model, $id) {
+                    $adminId = frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $model->id])->admin_id;
+                    $makler = common\models\User::findOne(['id' => $adminId])->username;
+                    return $model->aktualisiert_von ? $makler : 'wurde nicht hinterlegt';
+                },
+            ],
         ];
         echo DetailView::widget([
             'model' => $model,

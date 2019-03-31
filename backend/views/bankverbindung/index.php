@@ -47,7 +47,7 @@ $this->registerJs($search);
             'attribute' => 'kunde_id',
             'label' => Yii::t('app', 'gehört zu Kunde'),
             'value' => function($model, $id) {
-                $value = $model->kunde->geschlecht . ' ' . $model->kunde->vorname . ' ' . $model->kunde->nachname . ' (KundenID:' . $model->kunde->id . ')';
+                $value = $model->kunde->geschlecht0->typus . ' ' . $model->kunde->vorname . ' ' . $model->kunde->nachname . ' (KundenID:' . $model->kunde->id . ')';
                 return $value;
             },
         ],

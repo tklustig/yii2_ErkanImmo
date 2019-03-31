@@ -68,18 +68,15 @@ $gridColumns = [
         },
     ],
     [
-        'attribute' => 'angelegtVon.username',
-        'label' => Yii::t('app', 'Makler')
-    ],
-    [
         'attribute' => '',
         'label' => Yii::t('app', 'wurde vereinbart mit'),
         'format' => 'html',
         'value' => function($model, $id) {
             $bewerber = '';
-            if (!empty(\frontend\models\Kundeimmobillie::findOne(['immobilien_id' => $model->id]))) {
-                $idKuImmo = \frontend\models\Kundeimmobillie::findOne(['immobilien_id' => $model->id])->kunde_id;
-                $geschlecht = \frontend\models\Kunde::findOne(['id' => $idKuImmo])->geschlecht;
+            if (!empty(\frontend\models\Besichtigungstermin::findOne(['id' => $model->id]))) {
+                $immoId = \frontend\models\Besichtigungstermin::findOne(['id' => $model->id])->Immobilien_id;
+                $idKuImmo = \frontend\models\Kundeimmobillie::findOne(['immobilien_id' => $immoId])->kunde_id;
+                $geschlecht = \frontend\models\Kunde::findOne(['id' => $idKuImmo])->geschlecht0->typus;
                 $nachname = \frontend\models\Kunde::findOne(['id' => $idKuImmo])->nachname;
                 $vorname = \frontend\models\Kunde::findOne(['id' => $idKuImmo])->vorname;
                 $stadt = \frontend\models\Kunde::findOne(['id' => $idKuImmo])->stadt;

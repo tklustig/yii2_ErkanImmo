@@ -11,7 +11,8 @@ use kartik\widgets\ActiveForm;
                 'type' => ActiveForm::TYPE_VERTICAL,
                 'formConfig' => [
                     'showLabels' => true
-    ]]);
+                ]
+    ]);
     ?>
     <?= $form->errorSummary($model); ?>
     <div class="row">

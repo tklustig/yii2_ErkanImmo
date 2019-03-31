@@ -68,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{kunde},<br> {delete}',
+            'template' => '{kunde}<br>{delete}<br>{update}',
             'buttons' => [
                 'kunde' => function ($model, $id) {
                     $sessionPHP = Yii::$app->session;
@@ -76,6 +76,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     $header = $sessionPHP['header'];
                     $sessionPHP->close();
                     return Html::a('<span class="glyphicon glyphicon-home"></span>', ['/termin/link', 'id' => $id->id, 'header' => $header], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
+                },
+                'update' => function ($model, $id) {
+                    return Html::a('<span class="glyphicon glyphicon-pencil"></span>', ['/termin/update', 'id' => $id->id], ['title' => 'Bearbeiten']);
                 },
             ],
         ],

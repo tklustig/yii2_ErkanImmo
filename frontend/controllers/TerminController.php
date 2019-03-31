@@ -203,11 +203,22 @@ class TerminController extends Controller {
     }
 
     public function actionUpdate($id) {
+        $this->layout = "main_immo";
+        $KundenId = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->kunde_id;
         $model = $this->findModel($id);
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $modelKunde = $this->findModelKunde($KundenId);
+        if ($model->load(Yii::$app->request->post()) && $modelKunde->load(Yii::$app->request->post())) {
+            if (empty($model->aktualisiert_von)) {
+                $message = 'Bitte über die DropDownBox den Makler auswählen, der diesen Record aktualisiert hat';
+                $this->message($message);
+                return $this->render('update', ['model' => $model, 'id' => $id, 'modelKunde' => $modelKunde]);
+            }
+            $model->save();
+            $modelKunde->save();
+            $link = \Yii::$app->urlManagerBackend->baseUrl . '/home';
+            return $this->redirect($link);
         }
-        return $this->render('update', ['model' => $model,]);
+        return $this->render('update', ['model' => $model, 'id' => $id, 'modelKunde' => $modelKunde]);
     }
 
     public function actionDelete($id) {
@@ -219,6 +230,13 @@ class TerminController extends Controller {
         $link = \Yii::$app->urlManagerBackend->baseUrl . '/home';
         $zusatz = '?message=Der+Termin+wurde+mitsamt+seinen++Relationen+gelöscht%21';
         return $this->redirect($link . $zusatz);
+    }
+
+    protected function findModelKunde($id) {
+        if (($model = Kunde::findOne($id)) !== null) {
+            return $model;
+        }
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 
     protected function findModel($id) {

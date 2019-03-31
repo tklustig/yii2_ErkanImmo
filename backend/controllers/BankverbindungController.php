@@ -11,7 +11,6 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Session;
 use yii\base\DynamicModel;
-use yii\db\IntegrityException;
 use kartik\widgets\Growl;
 use kartik\widgets\Alert;
 use common\classes\error_handling;

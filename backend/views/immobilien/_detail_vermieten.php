@@ -58,10 +58,10 @@ use yii\widgets\DetailView;
                 'attribute' => 'stadt',
                 'label' => Yii::t('app', 'Stadt'),
             ],
-            [
+            /*[
                 'attribute' => 'user.username',
                 'label' => Yii::t('app', 'User'),
-            ],
+            ],*/
             [
                 'attribute' => 'lHeizungsart.bezeichnung',
                 'label' => Yii::t('app', 'Heizungsart'),

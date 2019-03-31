@@ -5,31 +5,11 @@ namespace frontend\models\base;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 
-/**
- * This is the base model class for table "besichtigungstermin".
- *
- * @property integer $id
- * @property string $uhrzeit
- * @property integer $Relevanz
- * @property string $angelegt_am
- * @property string $aktualisiert_am
- * @property integer $angelegt_von
- * @property integer $aktualisiert_von
- * @property integer $Immobilien_id
- *
- * @property \frontend\models\Adminbesichtigungkunde[] $adminbesichtigungkundes
- * @property \frontend\models\Immobilien $immobilien
- * @property \frontend\models\Kunde $angelegtVon
- */
+
 class Besichtigungstermin extends \yii\db\ActiveRecord
 {
     use \mootensai\relation\RelationTrait;
 
-
-    /**
-    * This function helps \mootensai\relation\RelationTrait runs faster
-    * @return array relation names of this model
-    */
     public function relationNames()
     {
         return [
@@ -39,9 +19,7 @@ class Besichtigungstermin extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
+
     public function rules()
     {
         return [
@@ -52,17 +30,12 @@ class Besichtigungstermin extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
+
     public static function tableName()
     {
         return 'besichtigungstermin';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels()
     {
         return [
@@ -76,35 +49,22 @@ class Besichtigungstermin extends \yii\db\ActiveRecord
             'Immobilien_id' => Yii::t('app', 'Immobilien ID'),
         ];
     }
-    
-    /**
-     * @return \yii\db\ActiveQuery
-     */
+
     public function getAdminbesichtigungkundes()
     {
         return $this->hasMany(\frontend\models\Adminbesichtigungkunde::className(), ['besichtigungstermin_id' => 'id']);
     }
-        
-    /**
-     * @return \yii\db\ActiveQuery
-     */
+
     public function getImmobilien()
     {
         return $this->hasOne(\frontend\models\Immobilien::className(), ['id' => 'Immobilien_id']);
     }
-        
-    /**
-     * @return \yii\db\ActiveQuery
-     */
+
     public function getAngelegtVon()
     {
         return $this->hasOne(\frontend\models\Kunde::className(), ['id' => 'angelegt_von']);
     }
-    
-    /**
-     * @inheritdoc
-     * @return array mixed
-     */
+
     public function behaviors()
     {
         return [
