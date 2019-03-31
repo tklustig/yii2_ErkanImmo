@@ -8,6 +8,7 @@ use backend\models\KopfSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use kartik\alert\Alert;
 
 class KopfController extends Controller {
 
@@ -25,9 +26,6 @@ class KopfController extends Controller {
     public function actionIndex() {
         $searchModel = new KopfSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        print_r('<br><br><br>');
-        var_dump(Yii::$app->request->queryParams);
-        print_r('<p> Entweder muss geklärt werden, warum das Array immer leer ist, oder aber die Suchfunktion muss rausgenommen werden!</p>');
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
@@ -73,9 +71,22 @@ class KopfController extends Controller {
     }
 
     public function actionDelete($id) {
-        $this->findModel($id)->deleteWithRelated();
-
-        return $this->redirect(['index']);
+        $this->findModel($id)->delete();
+        $message = "Der Rechnungskopf mit der Id:$id wurde aus Ihrer Datenbank entfernt";
+        echo Alert::widget([
+            'type' => Alert::TYPE_INFO,
+            'title' => 'Importan Message',
+            'icon' => 'fas fa-info-circle',
+            'body' => $message,
+            'showSeparator' => true,
+            'delay' => false
+        ]);
+        $searchModel = new KopfSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        return $this->render('index', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
     }
 
     public function actionPdf($id) {

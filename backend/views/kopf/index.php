@@ -1,24 +1,14 @@
 <?php
+
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
 $this->title = Yii::t('app', 'Rechnungskopf');
 $this->params['breadcrumbs'][] = $this->title;
-$search = "$('.search-button').click(function(){
-	$('.search-form').toggle(1000);
-	return true;
-});";
-$this->registerJs($search);
 ?>
 <div class="kopf-index">
-
     <h1><?= Html::encode($this->title) ?></h1>
-    <p>
-        <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-info search-button']) ?>
-    </p>
-    <div class="search-form" style="display:none">
-        <?= $this->render('_search', ['model' => $searchModel]); ?>
-    </div>
+
     <?php
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
