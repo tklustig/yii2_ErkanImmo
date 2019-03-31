@@ -52,7 +52,7 @@ $this->beginPage()
                 ],
             ]);
             $link = \Yii::$app->urlManagerFrontend->baseUrl . '/termin_anzeigen';
-            $link_=\Yii::$app->urlManagerFrontend->baseUrl . '/termin_selektieren';
+            $link_ = \Yii::$app->urlManagerFrontend->baseUrl . '/termin_selektieren';
             $menuItems = [
                 [
                     'label' => 'Admin',
@@ -74,11 +74,11 @@ $this->beginPage()
                             ],
                         ],
                         '<li class="divider"></li>',
-                        ['label' => 'Rechnungen', 'url' => ['#'],
+                        ['label' => '+++++++Rechnungen+++++++', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
-                                ['label' => 'Rechnung anzeigen/erstellen(ToComplete)', 'url' => ['#']],
-                                ['label' => 'erstellte Rechnungen drucken(ToDo)', 'url' => ['#']],
+                                ['label' => 'Rechnung anzeigen/drucken(ToComplete)', 'url' => ['/rechnung/index']],
+                                ['label' => 'Rechnung erstellen(ToComplete)', 'url' => ['/rechnung/create']],
                                 ['label' => 'Rechnungskopf aufrufen', 'url' => ['/kopf/index']],
                             ],
                         ],
