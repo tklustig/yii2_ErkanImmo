@@ -31,7 +31,7 @@ class Kopf extends \yii\db\ActiveRecord {
         return [
             'id' => Yii::t('app', 'ID'),
             'data' => Yii::t('app', 'Data'),
-            'user_id' => Yii::t('app', 'UserID'),
+            'user_id' => Yii::t('app', 'MaklerID'),
         ];
     }
 

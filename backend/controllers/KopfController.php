@@ -25,7 +25,9 @@ class KopfController extends Controller {
     public function actionIndex() {
         $searchModel = new KopfSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        print_r('<br><br><br>');
+        var_dump(Yii::$app->request->queryParams);
+        print_r('<p> Entweder muss geklärt werden, warum das Array immer leer ist, oder aber die Suchfunktion muss rausgenommen werden!</p>');
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
@@ -45,7 +47,6 @@ class KopfController extends Controller {
 
     public function actionCreate() {
         $model = new Kopf();
-
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {

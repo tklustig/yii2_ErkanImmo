@@ -1,17 +1,12 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $searchModel backend\models\KopfSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
 use yii\helpers\Html;
-use kartik\export\ExportMenu;
 use kartik\grid\GridView;
 
 $this->title = Yii::t('app', 'Rechnungskopf');
 $this->params['breadcrumbs'][] = $this->title;
 $search = "$('.search-button').click(function(){
 	$('.search-form').toggle(1000);
-	return false;
+	return true;
 });";
 $this->registerJs($search);
 ?>
