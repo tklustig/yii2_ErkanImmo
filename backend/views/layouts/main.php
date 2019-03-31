@@ -62,10 +62,9 @@ AssetBundle::register($this);
                                 ['label' => '+++++++Rechnungen+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
-                                        ['label' => 'Rechnung erstellen(ToDo)', 'url' => ['#']],
-                                        ['label' => 'erstellte Rechnungen anzeigen(ToDo)', 'url' => ['#']],
+                                        ['label' => 'Rechnung anzeigen/erstellen(ToComplete)', 'url' => ['#']],     
                                         ['label' => 'erstellte Rechnungen drucken(ToDo)', 'url' => ['#']],
-                                        ['label' => 'Rechnungskopf aufrufen(ToComplete)', 'url' => ['/kopf/index']],
+                                        ['label' => 'Rechnungskopf aufrufen', 'url' => ['/kopf/index']],
                                     ],
                                 ],
                                 '<li class="divider"></li>',
