@@ -76,6 +76,7 @@ return [
                 'kopf_erzeugen' => 'kopf/create',
                 'kopf_aktualisieren' => 'kopf/update',
                 'kopf_loeschen' => 'kopf/delete',
+                'baustein' => 'kopf/baustein',
                 'rechnung' => 'rechnung/index',
                 'rechnung_view' => 'rechnung/view',
                 'rechnung_erzeugen' => 'rechnung/create',

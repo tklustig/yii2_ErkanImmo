@@ -15,6 +15,7 @@ use yii\db\Expression;
 use yii\web\UploadedFile;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
+use yii\db\IntegrityException;
 use kartik\widgets\Growl;
 use common\models\LoginForm;
 use common\models\User;
@@ -115,7 +116,7 @@ class SiteController extends Controller {
         if ($model->load(Yii::$app->request->post())) {
             if ($user = $model->signup()) {
                 if (Yii::$app->getUser()->login($user)) {
-                    $session->addFlash('info', "Ein neuer Benutzer der Bezeichnung $model->username wurde soeben neu angelegt!");
+                    $session->addFlash('info', "Ein neuer Makler der Bezeichnung $model->username wurde soeben neu angelegt!");
                     $fk = $user->id;
                     $modelKopf->data = $data;
                     $modelKopf->user_id = $fk;
@@ -192,9 +193,15 @@ class SiteController extends Controller {
             $DynamicModel->addRule(['id_user'], 'integer');
             $DynamicModel->addRule(['id_user'], 'required');
             if ($DynamicModel->load(Yii::$app->request->post())) {
-                $kopfId = Kopf::findOne(['user_id' => $DynamicModel->id_user])->id;
-                $this->findModel_kopf($kopfId)->delete();
-                $this->findModel_user($DynamicModel->id_user)->delete();
+                //$kopfId = Kopf::findOne(['user_id' => $DynamicModel->id_user])->id;
+                //$this->findModel_kopf($kopfId)->delete();
+                try {
+                    $this->findModel_user($DynamicModel->id_user)->delete();
+                } catch (IntegrityException $er) {
+                    $message = "Der Benutzer kann nicht gelöscht werden, da das gegen die referentielle Integrität verstößt. Löschen Sie zunächst die korrespondierenden Rechnungskopfdaten!";
+                    $this->Ausgabe($message, 'Error', 1500, Growl::TYPE_DANGER);
+                    return $this->render('index');
+                }
                 $session->addFlash('info', "Der User mit der Id $DynamicModel->id_user wurde soeben gelöscht. Sie können sich mit dessen Logindaten zukünftig nicht mehr einloggen.");
                 return $this->redirect(['/site/index']);
             } else {

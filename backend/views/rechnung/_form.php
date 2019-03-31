@@ -2,11 +2,14 @@
 
 use yii\helpers\Html;
 use kartik\widgets\ActiveForm;
+use backend\models\Kopf;
+use common\models\User;
 ?>
 
 <div class="rechnung-form">
 
     <?php
+    $fk = Kopf::findOne(['user_id' => Yii::$app->user->identity->id])->user->username;
     $form = ActiveForm::begin([
                 'id' => 'dynamic-form',
                 'type' => ActiveForm::TYPE_VERTICAL,
@@ -20,15 +23,17 @@ use kartik\widgets\ActiveForm;
         <div class="col-md-12">
             <?=
             $form->field($model, 'beschreibung', ['addon' => [
-                    'prepend' => ['content' => 'Beschreibung'], 'append' => ['content' => 'Kopf']]])->textarea(['rows' => 6])
+                    'prepend' => ['content' => 'Beschreibung'], 'append' => ['content' => 'Kopf']]])->textarea(['id' => 'IDText', 'rows' => 6])
             ?>
         </div>
         <div class="col-md-4">
             <?=
             $form->field($model, 'kopf_id', ['addon' => [
                     'prepend' => ['content' => 'Rechnungskopf'], 'append' => ['content' => 'wird in die Beschreibung übernommen']]])->widget(\kartik\widgets\Select2::classname(), [
-                'data' => \yii\helpers\ArrayHelper::map(\backend\models\Kopf::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-                'options' => ['placeholder' => Yii::t('app', 'Choose Kopf')],
+                'data' => \yii\helpers\ArrayHelper::map(Kopf::find()->orderBy('id')->asArray()->all(), 'id', 'user_id'),
+                'options' => ['placeholder' => Yii::t('app', 'SELECT'),
+                    'id' => 'bez'
+                ],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],
@@ -119,8 +124,33 @@ use kartik\widgets\ActiveForm;
         <?php if (Yii::$app->controller->action->id != 'create'): ?>
             <?= Html::submitButton(Yii::t('app', 'Save As New'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
         <?php endif; ?>
-        <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer, ['class' => 'btn btn-danger']) ?>
+        <?= Html::a(Yii::t('app', 'Cancel'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 </div>
+<?php
+$data = Kopf::findOne(['user_id' => Yii::$app->user->identity->id])->data;
+$ersetzenMitName = User::findOne(['id' => Yii::$app->user->identity->id])->username;
+$ersetzenMitMail = User::findOne(['id' => Yii::$app->user->identity->id])->email;
+$ersetzenMitTelefon = User::findOne(['id' => Yii::$app->user->identity->id])->telefon;
+$replaceMaklerName = str_replace('****', $ersetzenMitName, $data);
+$replaceMaklerName = str_replace('++++', $ersetzenMitTelefon, $replaceMaklerName);
+$replaceMaklerName = str_replace('::::', $ersetzenMitMail, $replaceMaklerName);
+$finalOutput = preg_replace("#[\r\n]#", '', $replaceMaklerName);
+$script = <<< JS
+    $('#bez').change(function(){
+        var finalData = '<?php echo $finalOutput; ?>'; 
+        var textId=$(this).val();
+        var ausgabe='Die Tabellendaten werden auschliesslich für den aktuell angemeldeten Makler ersetzt. Um Mißbrauch vorzubeugen, unterstützt die Applikation nicht Rechnungsköpfe anderer Makler';
+        alert(ausgabe);
+        $.get('kopf/baustein',{textId:textId},function(data){
+            var result = data.replace(data, finalData);
+            result=result.substr(11);
+            result=result.substr(0, result.length-5);
+            $('#IDText').val(result);      
+        });
+    });
+JS;
+$this->registerJS($script);
+?>

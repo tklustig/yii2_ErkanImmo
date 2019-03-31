@@ -153,4 +153,10 @@ class KopfController extends Controller {
         }
     }
 
+    public function actionBaustein($textId) {
+        $text = Kopf::findOne($textId)->data;
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return $text;
+    }
+
 }
