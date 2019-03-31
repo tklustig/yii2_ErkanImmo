@@ -12,7 +12,7 @@ class Rechnung extends BaseRechnung
     {
         return array_replace_recursive(parent::rules(),
 	    [
-            [['datumerstellung', 'datumfaellig', 'geldbetrag', 'kunde_id', 'makler_id'], 'required'],
+            [['datumerstellung', 'datumfaellig', 'geldbetrag', 'kunde_id', 'makler_id','beschreibung'], 'required'],
             [['datumerstellung', 'datumfaellig', 'angelegt_am', 'aktualisiert_am'], 'safe'],
             [['beschreibung'], 'string'],
             [['geldbetrag'], 'number'],

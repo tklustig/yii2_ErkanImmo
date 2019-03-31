@@ -23,7 +23,7 @@ class Rechnung extends \yii\db\ActiveRecord {
 
     public function rules() {
         return [
-            [['datumerstellung', 'datumfaellig', 'geldbetrag', 'kunde_id', 'makler_id'], 'required'],
+            [['datumerstellung', 'datumfaellig', 'geldbetrag', 'kunde_id', 'makler_id','beschreibung'], 'required'],
             [['datumerstellung', 'datumfaellig', 'angelegt_am', 'aktualisiert_am'], 'safe'],
             [['beschreibung'], 'string'],
             [['geldbetrag'], 'number'],
@@ -59,11 +59,11 @@ class Rechnung extends \yii\db\ActiveRecord {
     }
 
     public function getKunde() {
-        return $this->hasOne(\backend\models\Kunde::className(), ['id' => 'kunde_id']);
+        return $this->hasOne(\frontend\models\Kunde::className(), ['id' => 'kunde_id']);
     }
 
     public function getMakler() {
-        return $this->hasOne(\backend\models\User::className(), ['id' => 'makler_id']);
+        return $this->hasOne(\common\models\User::className(), ['id' => 'makler_id']);
     }
 
     public function getMwst() {
@@ -71,11 +71,11 @@ class Rechnung extends \yii\db\ActiveRecord {
     }
 
     public function getAngelegtVon() {
-        return $this->hasOne(\backend\models\User::className(), ['id' => 'angelegt_von']);
+        return $this->hasOne(\common\models\User::className(), ['id' => 'angelegt_von']);
     }
 
     public function getAktualisiertVon() {
-        return $this->hasOne(\backend\models\User::className(), ['id' => 'aktualisiert_von']);
+        return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
     }
 
     public function behaviors() {
