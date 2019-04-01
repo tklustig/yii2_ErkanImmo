@@ -65,7 +65,7 @@ AssetBundle::register($this);
                                         ['label' => 'Rechnung anzeigen/drucken(ToComplete)', 'url' => ['/rechnung/index']],
                                         ['label' => 'Rechnung erstellen(ToComplete)', 'url' => ['/rechnung/create']],
                                         ['label' => 'LRechnungsrumpf bearbeiten', 'url' => ['/kopf/index']],
-                                        ['label' => 'LRechnungsart bearbeiten(ToComplete)', 'url' => ['/lrechnungsart/index']],
+                                        ['label' => 'LRechnungsart bearbeiten(ToComplete)', 'url' => ['/rechnungsart/index']],
                                     ],
                                 ],
                                 '<li class="divider"></li>',

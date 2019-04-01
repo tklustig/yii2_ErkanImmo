@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'type' => GridView::TYPE_PRIMARY,
             "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
             'before' => Html::a(Yii::t('app', 'Rechnungsart erstellen'), ['/rechnungsart/create'], ['class' => 'btn btn-success', 'title' => 'Erstellt einen neuen Rechnungskopf']),
-            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/kopf/index'], ['class' => 'btn btn-warning', 'title' => 'Setzt die GridView zurück']),
+            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/rechnungsart/index'], ['class' => 'btn btn-warning', 'title' => 'Setzt die GridView zurück']),
             'toggleDataOptions' => ['minCount' => 10],
         ],
         'toolbar' => [

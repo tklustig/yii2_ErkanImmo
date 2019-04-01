@@ -2,10 +2,7 @@
 
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $model backend\models\LRechnungsart */
-
-$this->title = Yii::t('app', 'Update {modelClass}: ', [
+$this->title = Yii::t('app', 'Aktualisiere {modelClass}: ', [
     'modelClass' => 'L Rechnungsart',
 ]) . ' ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'L Rechnungsart'), 'url' => ['index']];
