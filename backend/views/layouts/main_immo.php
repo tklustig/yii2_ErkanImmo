@@ -79,7 +79,8 @@ $this->beginPage()
                             'items' => [
                                 ['label' => 'Rechnung anzeigen/drucken(ToComplete)', 'url' => ['/rechnung/index']],
                                 ['label' => 'Rechnung erstellen(ToComplete)', 'url' => ['/rechnung/create']],
-                                ['label' => 'Rechnungskopf aufrufen', 'url' => ['/kopf/index']],
+                                ['label' => 'LRechnungsrumpf bearbeiten', 'url' => ['/kopf/index']],
+                                ['label' => 'LRechnungsart bearbeiten(ToComplete)', 'url' => ['/lrechnungsart/index']],
                             ],
                         ],
                         '<li class="divider"></li>',
