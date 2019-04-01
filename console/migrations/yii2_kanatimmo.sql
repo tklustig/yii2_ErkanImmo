@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 04. Mrz 2019 um 19:41
+-- Erstellungszeit: 01. Apr 2019 um 13:12
 -- Server-Version: 10.1.37-MariaDB
--- PHP-Version: 7.2.13
+-- PHP-Version: 7.1.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -15676,7 +15676,11 @@ CREATE TABLE `rechnung` (
   `mwst_id` int(11) DEFAULT NULL,
   `kunde_id` int(11) NOT NULL,
   `makler_id` int(11) NOT NULL,
-  `kopf_id` int(11) DEFAULT NULL
+  `kopf_id` int(11) DEFAULT NULL,
+  `aktualisiert_von` int(11) DEFAULT NULL,
+  `angelegt_von` int(11) DEFAULT NULL,
+  `aktualisiert_am` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `angelegt_am` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_german2_ci;
 
 -- --------------------------------------------------------
@@ -15849,7 +15853,9 @@ ALTER TABLE `rechnung`
   ADD KEY `mwst` (`mwst_id`) USING BTREE COMMENT 'FK',
   ADD KEY `kopf` (`kopf_id`) USING BTREE COMMENT 'FK',
   ADD KEY `makler` (`makler_id`) USING BTREE COMMENT 'FK',
-  ADD KEY `kunde` (`kunde_id`) USING BTREE COMMENT 'FK';
+  ADD KEY `kunde` (`kunde_id`) USING BTREE COMMENT 'FK',
+  ADD KEY `aktualisiertVon` (`aktualisiert_von`),
+  ADD KEY `angelegtVon` (`angelegt_von`);
 
 --
 -- Indizes für die Tabelle `user`
@@ -15971,64 +15977,64 @@ ALTER TABLE `user`
 -- Constraints der Tabelle `adminbesichtigungkunde`
 --
 ALTER TABLE `adminbesichtigungkunde`
-  ADD CONSTRAINT `adminbesichtigungkunde_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `adminbesichtigungkunde_ibfk_2` FOREIGN KEY (`besichtigungstermin_id`) REFERENCES `besichtigungstermin` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `adminbesichtigungkunde_ibfk_3` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `adminbesichtigungkunde_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `adminbesichtigungkunde_ibfk_2` FOREIGN KEY (`besichtigungstermin_id`) REFERENCES `besichtigungstermin` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `adminbesichtigungkunde_ibfk_3` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `bankverbindung`
 --
 ALTER TABLE `bankverbindung`
-  ADD CONSTRAINT `bankverbindung_ibfk_1` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `bankverbindung_ibfk_2` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `bankverbindung_ibfk_1` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `bankverbindung_ibfk_2` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `bankverbindung_ibfk_3` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`);
 
 --
 -- Constraints der Tabelle `besichtigungstermin`
 --
 ALTER TABLE `besichtigungstermin`
-  ADD CONSTRAINT `besichtigungstermin_ibfk_1` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `besichtigungstermin_ibfk_2` FOREIGN KEY (`Immobilien_id`) REFERENCES `immobilien` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `besichtigungstermin_ibfk_3` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`);
+  ADD CONSTRAINT `besichtigungstermin_ibfk_1` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `besichtigungstermin_ibfk_2` FOREIGN KEY (`Immobilien_id`) REFERENCES `immobilien` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `besichtigungstermin_ibfk_3` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints der Tabelle `dateianhang`
 --
 ALTER TABLE `dateianhang`
-  ADD CONSTRAINT `dateianhang_ibfk_1` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `dateianhang_ibfk_2` FOREIGN KEY (`e_dateianhang_id`) REFERENCES `e_dateianhang` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `dateianhang_ibfk_3` FOREIGN KEY (`l_dateianhang_art_id`) REFERENCES `l_dateianhang_art` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `dateianhang_ibfk_4` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`);
+  ADD CONSTRAINT `dateianhang_ibfk_1` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `dateianhang_ibfk_2` FOREIGN KEY (`e_dateianhang_id`) REFERENCES `e_dateianhang` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `dateianhang_ibfk_3` FOREIGN KEY (`l_dateianhang_art_id`) REFERENCES `l_dateianhang_art` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `dateianhang_ibfk_4` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints der Tabelle `e_dateianhang`
 --
 ALTER TABLE `e_dateianhang`
-  ADD CONSTRAINT `e_dateianhang_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `e_dateianhang_ibfk_2` FOREIGN KEY (`immobilien_id`) REFERENCES `immobilien` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `e_dateianhang_ibfk_3` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `e_dateianhang_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `e_dateianhang_ibfk_2` FOREIGN KEY (`immobilien_id`) REFERENCES `immobilien` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `e_dateianhang_ibfk_3` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `immobilien`
 --
 ALTER TABLE `immobilien`
-  ADD CONSTRAINT `immobilien_ibfk_1` FOREIGN KEY (`l_art_id`) REFERENCES `l_art` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `immobilien_ibfk_2` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `immobilien_ibfk_3` FOREIGN KEY (`l_heizungsart_id`) REFERENCES `l_heizungsart` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `immobilien_ibfk_4` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`);
+  ADD CONSTRAINT `immobilien_ibfk_1` FOREIGN KEY (`l_art_id`) REFERENCES `l_art` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `immobilien_ibfk_2` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `immobilien_ibfk_3` FOREIGN KEY (`l_heizungsart_id`) REFERENCES `l_heizungsart` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `immobilien_ibfk_4` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints der Tabelle `kopf`
 --
 ALTER TABLE `kopf`
-  ADD CONSTRAINT `kopf_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+  ADD CONSTRAINT `kopf_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 --
 -- Constraints der Tabelle `kunde`
 --
 ALTER TABLE `kunde`
-  ADD CONSTRAINT `kunde_ibfk_1` FOREIGN KEY (`bankverbindung_id`) REFERENCES `bankverbindung` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `kunde_ibfk_2` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `kunde_ibfk_1` FOREIGN KEY (`bankverbindung_id`) REFERENCES `bankverbindung` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `kunde_ibfk_2` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `kunde_ibfk_3` FOREIGN KEY (`l_plz_id`) REFERENCES `l_plz` (`id`),
   ADD CONSTRAINT `kunde_ibfk_4` FOREIGN KEY (`geschlecht`) REFERENCES `l_geschlecht` (`id`);
 
@@ -16036,8 +16042,8 @@ ALTER TABLE `kunde`
 -- Constraints der Tabelle `kundeimmobillie`
 --
 ALTER TABLE `kundeimmobillie`
-  ADD CONSTRAINT `kundeimmobillie_ibfk_1` FOREIGN KEY (`immobilien_id`) REFERENCES `immobilien` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `kundeimmobillie_ibfk_2` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `kundeimmobillie_ibfk_1` FOREIGN KEY (`immobilien_id`) REFERENCES `immobilien` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `kundeimmobillie_ibfk_2` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `rechnung`
@@ -16046,7 +16052,9 @@ ALTER TABLE `rechnung`
   ADD CONSTRAINT `rechnung_ibfk_1` FOREIGN KEY (`kopf_id`) REFERENCES `kopf` (`id`),
   ADD CONSTRAINT `rechnung_ibfk_2` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`),
   ADD CONSTRAINT `rechnung_ibfk_3` FOREIGN KEY (`makler_id`) REFERENCES `user` (`id`),
-  ADD CONSTRAINT `rechnung_ibfk_4` FOREIGN KEY (`mwst_id`) REFERENCES `l_mwst` (`id`);
+  ADD CONSTRAINT `rechnung_ibfk_4` FOREIGN KEY (`mwst_id`) REFERENCES `l_mwst` (`id`),
+  ADD CONSTRAINT `rechnung_ibfk_5` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `rechnung_ibfk_6` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -17,23 +17,29 @@ class Rechnung extends \yii\db\ActiveRecord {
             'makler',
             'mwst',
             'angelegtVon',
-            'aktualisiertVon'
+            'aktualisiertVon',
+            'rechungsart'
         ];
     }
 
     public function rules() {
         return [
-            [['datumerstellung', 'datumfaellig', 'geldbetrag', 'kunde_id', 'makler_id','beschreibung'], 'required'],
-            [['datumerstellung', 'datumfaellig', 'angelegt_am', 'aktualisiert_am'], 'safe'],
-            [['beschreibung'], 'string'],
+            [['datumerstellung', 'datumfaellig', 'geldbetrag', 'kunde_id', 'makler_id'], 'required'],
+            [['datumerstellung', 'datumfaellig', 'aktualisiert_am', 'angelegt_am'], 'safe'],
+            [['beschreibung', 'vorlage'], 'string'],
             [['geldbetrag'], 'number'],
-            [['mwst_id', 'kunde_id', 'makler_id', 'kopf_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
-            [['aktualisiert_von'], 'unique']
+            [['mwst_id', 'kunde_id', 'makler_id', 'kopf_id', 'rechungsart_id', 'aktualisiert_von', 'angelegt_von'], 'integer'],
+            [['lock'], 'default', 'value' => '0'],
+            [['lock'], 'mootensai\components\OptimisticLockValidator']
         ];
     }
 
     public static function tableName() {
         return 'rechnung';
+    }
+
+    public function optimisticLock() {
+        return 'lock';
     }
 
     public function attributeLabels() {
@@ -42,15 +48,17 @@ class Rechnung extends \yii\db\ActiveRecord {
             'datumerstellung' => Yii::t('app', 'Datumerstellung'),
             'datumfaellig' => Yii::t('app', 'Datumfaellig'),
             'beschreibung' => Yii::t('app', 'Beschreibung'),
+            'vorlage' => Yii::t('app', 'Vorlage'),
             'geldbetrag' => Yii::t('app', 'Geldbetrag'),
             'mwst_id' => Yii::t('app', 'Mwst ID'),
             'kunde_id' => Yii::t('app', 'Kunde ID'),
             'makler_id' => Yii::t('app', 'Makler ID'),
             'kopf_id' => Yii::t('app', 'Kopf ID'),
-            'angelegt_von' => Yii::t('app', 'Angelegt Von'),
+            'rechungsart_id' => Yii::t('app', 'Rechungsart ID'),
             'aktualisiert_von' => Yii::t('app', 'Aktualisiert Von'),
-            'angelegt_am' => Yii::t('app', 'Angelegt Am'),
+            'angelegt_von' => Yii::t('app', 'Angelegt Von'),
             'aktualisiert_am' => Yii::t('app', 'Aktualisiert Am'),
+            'angelegt_am' => Yii::t('app', 'Angelegt Am'),
         ];
     }
 
@@ -76,6 +84,10 @@ class Rechnung extends \yii\db\ActiveRecord {
 
     public function getAktualisiertVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
+    }
+
+    public function getRechungsart() {
+        return $this->hasOne(\backend\models\LRechnungsart::className(), ['id' => 'rechungsart_id']);
     }
 
     public function behaviors() {
