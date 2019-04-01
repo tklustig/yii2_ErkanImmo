@@ -25,7 +25,7 @@ class RechnungController extends Controller {
 
     public function actionIndex() {
         $countRechnung = Rechnung::find()->count('id');
-        if ($countRechnung== 0) {
+        if ($countRechnung == 0) {
             $session = new Session();
             $session->addFlash('info', 'Es exisitieren noch keine Rechnungen in der Datenbank. Steigern Sie Ihre Kundenaqkuise oder hinterlegen Sie deren Rechnungen!');
             return $this->redirect(['/site/index']);
@@ -48,8 +48,8 @@ class RechnungController extends Controller {
 
     public function actionCreate() {
         $model = new Rechnung();
-
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
+        if ($model->loadAll(Yii::$app->request->post())) {
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [

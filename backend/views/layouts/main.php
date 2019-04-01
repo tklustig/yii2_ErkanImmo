@@ -63,7 +63,7 @@ AssetBundle::register($this);
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
                                         ['label' => 'Rechnung anzeigen/drucken(ToComplete)', 'url' => ['/rechnung/index']],
-                                        ['label' => 'Rechnung erstellen(ToComplete)', 'url' => ['/rechnung/create']],
+                                        ['label' => 'Rechnung erstellen', 'url' => ['/rechnung/create']],
                                         ['label' => 'LRechnungsrumpf bearbeiten', 'url' => ['/kopf/index']],
                                         ['label' => 'LRechnungsart bearbeiten', 'url' => ['/rechnungsart/index']],
                                     ],

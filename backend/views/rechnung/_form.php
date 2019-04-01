@@ -30,7 +30,7 @@ use backend\models\LRechnungsart;
         <div class="col-md-6">
             <?=
             $form->field($model, 'vorlage', ['addon' => [
-                    'prepend' => ['content' => 'Vorlage'], 'append' => ['content' => 'Vorlagenart']]])->textarea(['id' => 'IDText', 'rows' => 6])
+                    'prepend' => ['content' => 'Vorlage'], 'append' => ['content' => 'Vorlagenart']]])->textarea(['id' => 'IDText_', 'rows' => 6])
             ?>
         </div>
         <div class="col-md-6">
@@ -53,6 +53,7 @@ use backend\models\LRechnungsart;
                     'prepend' => ['content' => 'Vorlagenart'], 'append' => ['content' => 'wird in die Vorlage übernommen']]])->widget(\kartik\widgets\Select2::classname(), [
                 'data' => \yii\helpers\ArrayHelper::map(LRechnungsart::find()->orderBy('id')->asArray()->all(), 'id', 'art'),
                 'options' => ['placeholder' => Yii::t('app', 'Art wählen'),
+                        'id' => 'bez_'
                 ],
                 'pluginOptions' => [
                     'allowClear' => true
@@ -180,4 +181,16 @@ $script = <<< JS
     });
 JS;
 $this->registerJS($script);
+?>
+<?php
+$script_ = <<< JS
+    $('#bez_').change(function(){
+        var textId=$(this).val();
+        alert(textId);
+        $.get('rechnungsart/baustein',{textId:textId},function(data){
+            $('#IDText_').val(data);      
+        });
+    });
+JS;
+$this->registerJS($script_);
 ?>

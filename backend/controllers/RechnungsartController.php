@@ -9,9 +9,6 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-/**
- * LRechnungsartController implements the CRUD actions for LRechnungsart model.
- */
 class RechnungsartController extends Controller
 {
     public function behaviors()
@@ -26,10 +23,6 @@ class RechnungsartController extends Controller
         ];
     }
 
-    /**
-     * Lists all LRechnungsart models.
-     * @return mixed
-     */
     public function actionIndex()
     {
         $searchModel = new LRechnungsartSearch();
@@ -41,11 +34,6 @@ class RechnungsartController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single LRechnungsart model.
-     * @param integer $id
-     * @return mixed
-     */
     public function actionView($id)
     {
         $model = $this->findModel($id);
@@ -58,11 +46,6 @@ class RechnungsartController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new LRechnungsart model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
     public function actionCreate()
     {
         $model = new LRechnungsart();
@@ -76,12 +59,6 @@ class RechnungsartController extends Controller
         }
     }
 
-    /**
-     * Updates an existing LRechnungsart model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
     public function actionUpdate($id)
     {
         if (Yii::$app->request->post('_asnew') == '1') {
@@ -99,25 +76,13 @@ class RechnungsartController extends Controller
         }
     }
 
-    /**
-     * Deletes an existing LRechnungsart model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
     public function actionDelete($id)
     {
         $this->findModel($id)->deleteWithRelated();
 
         return $this->redirect(['index']);
     }
-    
-    /**
-     * 
-     * Export LRechnungsart information into PDF format.
-     * @param integer $id
-     * @return mixed
-     */
+
     public function actionPdf($id) {
         $model = $this->findModel($id);
         $providerRechnung = new \yii\data\ArrayDataProvider([
@@ -147,14 +112,6 @@ class RechnungsartController extends Controller
         return $pdf->render();
     }
 
-    /**
-    * Creates a new LRechnungsart model by another data,
-    * so user don't need to input all field from scratch.
-    * If creation is successful, the browser will be redirected to the 'view' page.
-    *
-    * @param mixed $id
-    * @return mixed
-    */
     public function actionSaveAsNew($id) {
         $model = new LRechnungsart();
 
@@ -170,14 +127,7 @@ class RechnungsartController extends Controller
             ]);
         }
     }
-    
-    /**
-     * Finds the LRechnungsart model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return LRechnungsart the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
     protected function findModel($id)
     {
         if (($model = LRechnungsart::findOne($id)) !== null) {
@@ -186,24 +136,9 @@ class RechnungsartController extends Controller
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
-    
-    /**
-    * Action to load a tabular form grid
-    * for Rechnung
-    * @author Yohanes Candrajaya <moo.tensai@gmail.com>
-    * @author Jiwantoro Ndaru <jiwanndaru@gmail.com>
-    *
-    * @return mixed
-    */
-    public function actionAddRechnung()
-    {
-        if (Yii::$app->request->isAjax) {
-            $row = Yii::$app->request->post('Rechnung');
-            if((Yii::$app->request->post('isNewRecord') && Yii::$app->request->post('_action') == 'load' && empty($row)) || Yii::$app->request->post('_action') == 'add')
-                $row[] = [];
-            return $this->renderAjax('_formRechnung', ['row' => $row]);
-        } else {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+    public function actionBaustein($textId) {
+        $text = LRechnungsart::findOne($textId)->data;
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return $text;
     }
 }
