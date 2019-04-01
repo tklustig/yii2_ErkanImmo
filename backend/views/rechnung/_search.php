@@ -3,9 +3,6 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model backend\models\RechnungSearch */
-/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="form-rechnung-search">
@@ -23,7 +20,7 @@ use yii\widgets\ActiveForm;
         'ajaxConversion' => true,
         'options' => [
             'pluginOptions' => [
-                'placeholder' => Yii::t('app', 'Choose Datumerstellung'),
+                'placeholder' => Yii::t('app', 'Datum wählen'),
                 'autoclose' => true
             ]
         ],
@@ -35,15 +32,26 @@ use yii\widgets\ActiveForm;
         'ajaxConversion' => true,
         'options' => [
             'pluginOptions' => [
-                'placeholder' => Yii::t('app', 'Choose Datumfaellig'),
+                'placeholder' => Yii::t('app', 'Datum wählen'),
+                'autoclose' => true
+            ]
+        ],
+    ]); ?>
+    
+        <?= $form->field($model, 'angelegt_am')->widget(\kartik\datecontrol\DateControl::classname(), [
+        'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
+        'saveFormat' => 'php:Y-m-d',
+        'ajaxConversion' => true,
+        'options' => [
+            'pluginOptions' => [
+                'placeholder' => Yii::t('app', 'Datum wählen'),
                 'autoclose' => true
             ]
         ],
     ]); ?>
 
-    <?= $form->field($model, 'beschreibung')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'rechnungPlain')->textInput(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'geldbetrag')->textInput(['maxlength' => true, 'placeholder' => 'Geldbetrag']) ?>
 
     <?php /* echo $form->field($model, 'mwst_id')->widget(\kartik\widgets\Select2::classname(), [
         'data' => \yii\helpers\ArrayHelper::map(\backend\models\LMwst::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
@@ -92,10 +100,6 @@ use yii\widgets\ActiveForm;
             'allowClear' => true
         ],
     ]); */ ?>
-
-    <?php /* echo $form->field($model, 'angelegt_am')->textInput(['placeholder' => 'Angelegt Am']) */ ?>
-
-    <?php /* echo $form->field($model, 'aktualisiert_am')->textInput(['placeholder' => 'Aktualisiert Am']) */ ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>

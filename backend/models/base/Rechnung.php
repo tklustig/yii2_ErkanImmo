@@ -6,12 +6,11 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 
-class Rechnung extends \yii\db\ActiveRecord
-{
+class Rechnung extends \yii\db\ActiveRecord {
+
     use \mootensai\relation\RelationTrait;
 
-    public function relationNames()
-    {
+    public function relationNames() {
         return [
             'kopf',
             'kunde',
@@ -23,8 +22,7 @@ class Rechnung extends \yii\db\ActiveRecord
         ];
     }
 
-    public function rules()
-    {
+    public function rules() {
         return [
             [['datumerstellung', 'datumfaellig', 'geldbetrag', 'kunde_id', 'makler_id', 'rechnungPlain'], 'required'],
             [['datumerstellung', 'datumfaellig', 'aktualisiert_am', 'angelegt_am'], 'safe'],
@@ -34,20 +32,18 @@ class Rechnung extends \yii\db\ActiveRecord
         ];
     }
 
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'rechnung';
     }
 
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
-            'datumerstellung' => Yii::t('app', 'Datumerstellung'),
-            'datumfaellig' => Yii::t('app', 'Datumfaellig'),
+            'datumerstellung' => Yii::t('app', 'Erstellungsdatum'),
+            'datumfaellig' => Yii::t('app', 'Fälligkeitsdatum'),
             'beschreibung' => Yii::t('app', 'Beschreibung'),
             'vorlage' => Yii::t('app', 'Vorlage'),
-            'geldbetrag' => Yii::t('app', 'Geldbetrag'),
+            'geldbetrag' => Yii::t('app', 'Geldbetrag(in €)'),
             'mwst_id' => Yii::t('app', 'Mwst ID'),
             'kunde_id' => Yii::t('app', 'Kunde ID'),
             'makler_id' => Yii::t('app', 'Makler ID'),
@@ -61,43 +57,35 @@ class Rechnung extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getKopf()
-    {
+    public function getKopf() {
         return $this->hasOne(\backend\models\Kopf::className(), ['id' => 'kopf_id']);
     }
 
-    public function getKunde()
-    {
+    public function getKunde() {
         return $this->hasOne(\frontend\models\Kunde::className(), ['id' => 'kunde_id']);
     }
 
-    public function getMakler()
-    {
+    public function getMakler() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'makler_id']);
     }
 
-    public function getMwst()
-    {
+    public function getMwst() {
         return $this->hasOne(\backend\models\LMwst::className(), ['id' => 'mwst_id']);
     }
 
-    public function getAngelegtVon()
-    {
+    public function getAngelegtVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'angelegt_von']);
     }
 
-    public function getAktualisiertVon()
-    {
+    public function getAktualisiertVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
     }
 
-    public function getRechungsart()
-    {
+    public function getRechungsart() {
         return $this->hasOne(\backend\models\LRechnungsart::className(), ['id' => 'rechungsart_id']);
     }
 
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
@@ -112,4 +100,5 @@ class Rechnung extends \yii\db\ActiveRecord
             ],
         ];
     }
+
 }

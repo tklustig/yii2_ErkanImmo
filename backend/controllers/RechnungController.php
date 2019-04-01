@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Session;
+use kartik\growl\Growl;
 
 class RechnungController extends Controller {
 
@@ -49,6 +50,18 @@ class RechnungController extends Controller {
     public function actionCreate() {
         $model = new Rechnung();
         if ($model->loadAll(Yii::$app->request->post())) {
+            $arrayContent = array();
+            $arrayContent[0] = "Reklamationen";
+            $arrayContent[1] = "688";
+            $arrayContent[2] = "Zivilprozessordnung";
+            $arrayContent[3] = "Widerspruchsregelungen";
+            if (!$this->CheckIfStringContainsElement($model->rechnungPlain, $arrayContent)) {
+                $message = 'Die Rechnung muss den gestzlichen Normen entsprechen. Erstellen Sie die Rechnung, indem Sie per Copy&Paste Die Inhalte der Felder Zusatz und Vorlage einfügen!';
+                $this->Ausgabe($message);
+                return $this->render('create', [
+                            'model' => $model,
+                ]);
+            }
             $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -127,6 +140,32 @@ class RechnungController extends Controller {
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
+    }
+
+    private function CheckIfStringContainsElement($strBegriff, $arrContent) {
+        foreach ($arrContent as $item) {
+            if (strpos($strBegriff, $item) !== false)
+                return true;
+        }
+        return false;
+    }
+
+    private function Ausgabe($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
+        echo Growl::widget([
+            'type' => $type,
+            'title' => $typus,
+            'icon' => 'glyphicon glyphicon-exclamation-sign',
+            'body' => $message,
+            'showSeparator' => true,
+            'delay' => $delay,
+            'pluginOptions' => [
+                'showProgressbar' => true,
+                'placement' => [
+                    'from' => 'top',
+                    'align' => 'center',
+                ]
+            ]
+        ]);
     }
 
 }

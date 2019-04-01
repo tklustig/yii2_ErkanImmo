@@ -6,7 +6,6 @@ use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Rechnung */
-
 ?>
 <div class="rechnung-view">
 
@@ -17,44 +16,55 @@ use kartik\grid\GridView;
     </div>
 
     <div class="row">
-<?php 
-    $gridColumn = [
-        'id',
-        'datumerstellung',
-        'datumfaellig',
-        'beschreibung:ntext',
-        'geldbetrag',
-        [
-            'attribute' => 'mwst.id',
-            'label' => Yii::t('app', 'Mwst'),
-        ],
-        [
-            'attribute' => 'kunde.id',
-            'label' => Yii::t('app', 'Kunde'),
-        ],
-        [
-            'attribute' => 'makler.id',
-            'label' => Yii::t('app', 'Makler'),
-        ],
-        [
-            'attribute' => 'kopf.id',
-            'label' => Yii::t('app', 'Kopf'),
-        ],
-        [
-            'attribute' => 'angelegtVon.id',
-            'label' => Yii::t('app', 'Angelegt Von'),
-        ],
-        [
-            'attribute' => 'aktualisiertVon.id',
-            'label' => Yii::t('app', 'Aktualisiert Von'),
-        ],
-        'angelegt_am',
-        'aktualisiert_am',
-    ];
-    echo DetailView::widget([
-        'model' => $model,
-        'attributes' => $gridColumn
-    ]); 
-?>
+        <?php
+        $gridColumn = [
+            [
+                'attribute' => 'angelegt_von',
+                'label' => Yii::t('app', 'Angelegt von'),
+                'value' => function($model, $id) {
+                    return $model->angelegt_von ? 'Makler ' . $model->angelegtVon->username : 'nicht vorhanden';
+                },
+            ],
+            [
+                'attribute' => 'aktualisiert_von',
+                'label' => Yii::t('app', 'Aktualisiert von'),
+                'value' => function($model, $id) {
+                    return $model->aktualisiert_von ? 'Makler ' . $model->aktualisiertVon->username : 'nicht vorhanden';
+                },
+            ],
+            [
+                'attribute' => 'angelegt_am',
+                'label' => 'Angelegt am',
+                'value' => function($model, $id) {
+                    if (!empty($model->angelegt_am)) {
+                        $datetime = $model->angelegt_am;
+                        $giveBackValue = date('d-m-Y H:i:s', strtotime($datetime));
+                    } else {
+                        $giveBackValue = "nicht vorhanden";
+                    }
+                    return $giveBackValue;
+                },
+            ],
+            [
+                'attribute' => 'aktualisiert_am',
+                'label' => 'Aktualisiert am',
+                'value' => function($model, $id) {
+                    if (!empty($model->aktualisiert_am)) {
+                        $datetime = $model->aktualisiert_am;
+                        $giveBackValue = date('d-m-Y H:i:s', strtotime($datetime));
+                    } else {
+                        $giveBackValue = "nicht vorhanden";
+                    }
+                    return $giveBackValue;
+                },
+            ],
+            'rechnungPlain:html',
+            'beschreibung:html'
+        ];
+        echo DetailView::widget([
+            'model' => $model,
+            'attributes' => $gridColumn
+        ]);
+        ?>
     </div>
 </div>
