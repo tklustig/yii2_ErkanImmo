@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\widgets\ActiveForm;
 use backend\models\Kopf;
 use common\models\User;
+use backend\models\LRechnungsart;
 ?>
 
 <div class="rechnung-form">
@@ -14,24 +15,30 @@ use common\models\User;
                 'id' => 'dynamic-form',
                 'type' => ActiveForm::TYPE_VERTICAL,
                 'formConfig' => [
-                    'showLabels' => true
+                    'showLabels' => false
                 ]
     ]);
     ?>
     <?= $form->errorSummary($model); ?>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <?=
             $form->field($model, 'beschreibung', ['addon' => [
-                    'prepend' => ['content' => 'Beschreibung'], 'append' => ['content' => 'Kopf']]])->textarea(['id' => 'IDText', 'rows' => 6])
+                    'prepend' => ['content' => 'Zusatz'], 'append' => ['content' => 'Rumpf']]])->textarea(['id' => 'IDText', 'rows' => 6])
             ?>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
+            <?=
+            $form->field($model, 'vorlage', ['addon' => [
+                    'prepend' => ['content' => 'Vorlage'], 'append' => ['content' => 'Vorlagenart']]])->textarea(['id' => 'IDText', 'rows' => 6])
+            ?>
+        </div>
+        <div class="col-md-6">
             <?=
             $form->field($model, 'kopf_id', ['addon' => [
-                    'prepend' => ['content' => 'Rechnungskopf'], 'append' => ['content' => 'wird in die Beschreibung übernommen']]])->widget(\kartik\widgets\Select2::classname(), [
+                    'prepend' => ['content' => 'Rechnungsrumpf'], 'append' => ['content' => 'wird in den Zusatz übernommen']]])->widget(\kartik\widgets\Select2::classname(), [
                 'data' => \yii\helpers\ArrayHelper::map(Kopf::find()->orderBy('id')->asArray()->all(), 'id', 'user_id'),
-                'options' => ['placeholder' => Yii::t('app', 'SELECT'),
+                'options' => ['placeholder' => Yii::t('app', 'Rumpf wählen'),
                     'id' => 'bez'
                 ],
                 'pluginOptions' => [
@@ -40,8 +47,28 @@ use common\models\User;
             ]);
             ?>
         </div>
+        <div class="col-md-6">
+            <?=
+            $form->field($model, 'rechungsart_id', ['addon' => [
+                    'prepend' => ['content' => 'Vorlagenart'], 'append' => ['content' => 'wird in die Vorlage übernommen']]])->widget(\kartik\widgets\Select2::classname(), [
+                'data' => \yii\helpers\ArrayHelper::map(LRechnungsart::find()->orderBy('id')->asArray()->all(), 'id', 'art'),
+                'options' => ['placeholder' => Yii::t('app', 'Art wählen'),
+                ],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
+            ?>
+        </div>
+        <div class="col-md-12">
+            <?=
+            $form->field($model, 'rechnungPlain', ['addon' => [
+                    'prepend' => ['content' => 'eigentliche Rechnung']]])->widget(\dosamigos\ckeditor\CKEditor::className(), [
+                'preset' => 'full', 'clientOptions' => ['height' => 400],
+            ])
+            ?>
+        </div>
         <div class="col-md-4">
-
             <?=
             $form->field($model, 'datumerstellung', ['addon' => [
                     'prepend' => ['content' => 'Rechnungsdatum']]])->widget(\kartik\datecontrol\DateControl::classname(), [
@@ -83,8 +110,8 @@ use common\models\User;
             <?=
             $form->field($model, 'mwst_id', ['addon' => [
                     'prepend' => ['content' => 'MwSt-Satz']]])->widget(\kartik\widgets\Select2::classname(), [
-                'data' => \yii\helpers\ArrayHelper::map(\backend\models\LMwst::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-                'options' => ['placeholder' => Yii::t('app', 'MwSt wählen')],
+                'data' => \yii\helpers\ArrayHelper::map(\backend\models\LMwst::find()->orderBy('id')->asArray()->all(), 'id', 'satz'),
+                'options' => ['placeholder' => Yii::t('app', 'MwSt wählen(in %)')],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],
@@ -95,7 +122,7 @@ use common\models\User;
             <?=
             $form->field($model, 'kunde_id', ['addon' => [
                     'prepend' => ['content' => 'für Kunde']]])->widget(\kartik\widgets\Select2::classname(), [
-                'data' => \yii\helpers\ArrayHelper::map(frontend\models\Kunde::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
+                'data' => \yii\helpers\ArrayHelper::map(frontend\models\Kunde::find()->orderBy('id')->asArray()->all(), 'id', 'nachname'),
                 'options' => ['placeholder' => Yii::t('app', 'Kunde wählen')],
                 'pluginOptions' => [
                     'allowClear' => true
@@ -103,7 +130,7 @@ use common\models\User;
             ]);
             ?>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <?=
             $form->field($model, 'makler_id', ['addon' => [
                     'prepend' => ['content' => 'von Makler']]])->widget(\kartik\widgets\Select2::classname(), [
