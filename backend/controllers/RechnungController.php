@@ -134,6 +134,11 @@ class RechnungController extends Controller {
         }
     }
 
+    public function actionPrint($id) {
+        print_r("Dieses Modul ist noch eine Baustelle<br> Übergeben wurde die Id:$id<br>Wir befinden uns in der Klasse " . get_class());
+        die();
+    }
+
     protected function findModel($id) {
         if (($model = Rechnung::findOne($id)) !== null) {
             return $model;

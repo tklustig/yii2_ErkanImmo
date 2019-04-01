@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
+use kartik\widgets\ActiveForm;
 
 $this->title = Yii::t('app', 'Rechnung');
 $this->params['breadcrumbs'][] = $this->title;
@@ -12,6 +13,11 @@ $search = "$('.search-button').click(function(){
 $this->registerJs($search);
 ?>
 <div class="rechnung-index">
+    <?php $form = ActiveForm::begin(); ?>
+    <?= $form->field($searchModel, 'choice_date')->radioList([0 => 'Vorher', 1 => 'Nachher'], ['itemOptions' => ['class' => 'choiceRadio']])->label('Grenzen Sie über diese beiden Radio Buttons Ihre Suche in AdvancedSearch ein'); ?>
+    <?php
+    ActiveForm::end();
+    ?>
 
     <h1><?= Html::encode($this->title) ?></h1>
     <p>
@@ -61,8 +67,24 @@ $this->registerJs($search);
         [
             'attribute' => 'kunde_id',
             'label' => Yii::t('app', 'Kunde'),
+            'format' => 'html',
             'value' => function($model, $id) {
-                return $model->kunde->id;
+                $kundeGeschlecht = frontend\models\Kunde::findOne(['id' => $model->kunde->id])->geschlecht0->typus;
+                $kundeVorname = frontend\models\Kunde::findOne(['id' => $model->kunde->id])->vorname;
+                $kundeNachname = frontend\models\Kunde::findOne(['id' => $model->kunde->id])->nachname;
+                $kundeBirthday = frontend\models\Kunde::findOne(['id' => $model->kunde->id])->geburtsdatum;
+                $expression = new yii\db\Expression('NOW()');
+                $now = (new \yii\db\Query)->select($expression)->scalar();
+                $diff = strtotime($now) - strtotime($kundeBirthday);
+                $hours = floor($diff / (60 * 60));
+                $year = floor($hours / 24 / 365);
+                $output = $year . " Jahre alt";
+                $kundeBirthday = $output;
+                $kundePlz = frontend\models\Kunde::findOne(['id' => $model->kunde->id])->lPlz->plz;
+                $kundeStadt = frontend\models\Kunde::findOne(['id' => $model->kunde->id])->stadt;
+                $givaBackValue = $kundeGeschlecht . ' ' . $kundeVorname . ' ' . $kundeNachname . '<br>' . $kundeBirthday . '<br>wohnhaft in ' . $kundePlz . ' ' . $kundeStadt;
+                return $givaBackValue;
+                //return $modelKunde;
             },
             'filterType' => GridView::FILTER_SELECT2,
             'filter' => \yii\helpers\ArrayHelper::map(frontend\models\Kunde::find()->asArray()->all(), 'id', 'nachname'),
@@ -138,10 +160,13 @@ $this->registerJs($search);
          */
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{save-as-new} {view} {update} {delete}',
+            'template' => '{save-as-new} {view} {update} {delete}<br>{print}',
             'buttons' => [
                 'save-as-new' => function ($url) {
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Save As New']);
+                },
+                'print' => function ($model, $id) {
+                    return Html::a('<span class="glyphicon glyphicon-print"></span>', ['/rechnung/print', 'id' => $id->id], ['title' => 'Rechnung drucken', 'data' => ['pjax' => '0']]);
                 },
             ],
         ],
@@ -151,13 +176,14 @@ $this->registerJs($search);
     GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'filterSelector' => '.choiceRadio',
         'columns' => $gridColumn,
         'pjax' => true,
         'pjaxSettings' => [
             'neverTimeout' => true,
         ],
         'options' => [
-            'style' => 'overflow: auto; word-wrap: break-word;'
+        //'style' => 'overflow: auto; word-wrap: break-word;'
         ],
         'condensed' => true,
         'responsiveWrap' => true,
@@ -167,7 +193,7 @@ $this->registerJs($search);
             'type' => GridView::TYPE_PRIMARY,
             "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
             'before' => Html::a(Yii::t('app', 'Rechnungsart erstellen'), ['/rechnungsart/create'], ['class' => 'btn btn-success', 'title' => 'Erstellt einen neuen Rechnungskopf']),
-            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/rechnungsart/index'], ['class' => 'btn btn-warning', 'title' => 'Setzt die GridView zurück']),
+            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/rechnung/index'], ['class' => 'btn btn-warning', 'title' => 'Setzt die GridView zurück']),
             'toggleDataOptions' => ['minCount' => 10],
         ],
         'toolbar' => [
@@ -177,5 +203,4 @@ $this->registerJs($search);
         'toggleDataOptions' => ['minCount' => 10],
     ]);
     ?>
-
 </div>

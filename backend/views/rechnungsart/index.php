@@ -1,7 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-use kartik\export\ExportMenu;
 use kartik\grid\GridView;
 
 $this->title = Yii::t('app', 'Rechnungsart');

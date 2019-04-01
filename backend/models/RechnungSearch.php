@@ -7,41 +7,24 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\models\Rechnung;
 
-/**
- * backend\models\RechnungSearch represents the model behind the search form about `backend\models\Rechnung`.
- */
- class RechnungSearch extends Rechnung
-{
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
+class RechnungSearch extends Rechnung {
+
+    public $choice_date;
+
+    public function rules() {
         return [
-            [['id', 'mwst_id', 'kunde_id', 'makler_id', 'kopf_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
-            [['datumerstellung', 'datumfaellig', 'beschreibung', 'angelegt_am', 'aktualisiert_am'], 'safe'],
+            [['id', 'mwst_id', 'kunde_id', 'makler_id', 'kopf_id', 'rechungsart_id', 'aktualisiert_von', 'angelegt_von'], 'integer'],
+            [['datumerstellung', 'datumfaellig', 'beschreibung', 'vorlage', 'rechnungPlain', 'aktualisiert_am', 'angelegt_am'], 'safe'],
             [['geldbetrag'], 'number'],
+            [['choice_date'], 'boolean'],
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function scenarios()
-    {
-        // bypass scenarios() implementation in the parent class
+    public function scenarios() {
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
-    public function search($params)
-    {
+    public function search($params) {
         $query = Rechnung::find();
 
         $dataProvider = new ActiveDataProvider([
@@ -50,29 +33,36 @@ use backend\models\Rechnung;
 
         $this->load($params);
 
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+        if (!$this->validate())
             return $dataProvider;
+        if ($this->choice_date == 0) {
+            $query->andFilterWhere(['<=', 'datumerstellung', $this->datumerstellung]);
+            $query->andFilterWhere(['<=', 'datumfaellig', $this->datumfaellig]);
+            //$query->andFilterWhere(['<=', 'angelegt_am', $this->angelegt_am]);
+        } else {
+            $query->andFilterWhere(['>=', 'datumerstellung', $this->datumerstellung]);
+            $query->andFilterWhere(['>=', 'datumfaellig', $this->datumfaellig]);
+            //$query->andFilterWhere(['>=', 'angelegt_am', $this->angelegt_am]);
         }
-
         $query->andFilterWhere([
             'id' => $this->id,
-            'datumerstellung' => $this->datumerstellung,
-            'datumfaellig' => $this->datumfaellig,
             'geldbetrag' => $this->geldbetrag,
             'mwst_id' => $this->mwst_id,
             'kunde_id' => $this->kunde_id,
             'makler_id' => $this->makler_id,
             'kopf_id' => $this->kopf_id,
-            'angelegt_von' => $this->angelegt_von,
+            'rechungsart_id' => $this->rechungsart_id,
             'aktualisiert_von' => $this->aktualisiert_von,
-            'angelegt_am' => $this->angelegt_am,
+            'angelegt_von' => $this->angelegt_von,
             'aktualisiert_am' => $this->aktualisiert_am,
+            'angelegt_am' => $this->angelegt_am,
         ]);
 
-        $query->andFilterWhere(['like', 'beschreibung', $this->beschreibung]);
+        $query->andFilterWhere(['like', 'beschreibung', $this->beschreibung])
+                ->andFilterWhere(['like', 'vorlage', $this->vorlage])
+                ->andFilterWhere(['like', 'rechnungPlain', $this->rechnungPlain]);
 
         return $dataProvider;
     }
+
 }
