@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 01. Apr 2019 um 20:27
+-- Erstellungszeit: 02. Apr 2019 um 18:53
 -- Server-Version: 10.1.37-MariaDB
 -- PHP-Version: 7.2.13
 
@@ -15925,13 +15925,13 @@ ALTER TABLE `besichtigungstermin`
 -- AUTO_INCREMENT für Tabelle `dateianhang`
 --
 ALTER TABLE `dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT für Tabelle `e_dateianhang`
 --
 ALTER TABLE `e_dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT für Tabelle `immobilien`
