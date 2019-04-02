@@ -1,6 +1,5 @@
 <?php
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 class m190402_122905_Mass extends Migration
@@ -215,15 +214,7 @@ class m190402_122905_Mass extends Migration
             'data'=> $this->text()->notNull(),
             'art'=> $this->string(32)->notNull(),
         ], $tableOptions);
-
-
-        $this->createTable('{{%migration}}',[
-            'version'=> $this->string(180)->notNull(),
-            'apply_time'=> $this->integer(11)->null()->defaultValue(null),
-        ], $tableOptions);
-
-        $this->addPrimaryKey('pk_on_migration','{{%migration}}',['version']);
-
+        
         $this->createTable('{{%rechnung}}',[
             'id'=> $this->primaryKey(11),
             'datumerstellung'=> $this->date()->notNull(),
