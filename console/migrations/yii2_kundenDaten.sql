@@ -13,13 +13,15 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 
--- --------------------------------------------------------
 --
--- Daten für Tabelle `user`
+-- Daten für Tabelle `user` passwort:123abcABC$
 --
 
 INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `telefon`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'QwTXQChoyjcgmbVy1HmRPIWjZUyUJ8qo', '$2y$13$sIc4a4LZQYImRPrtRGYQOuSq.4ChJJeM.ubzKk.261ff.gxhHMSRS', NULL, 'admin@web.de', '0176/2237687', 10, 1549701768, 1549701768),
+(1, 'admin', 'X7J-22cjz-YsYEFeBdDIjk-_H3BqnpjK', '$2y$13$T78FDlTEVgYC4curFdZqaOYb5kEv/Fyg5snEDxmb0J2hmC82WT73a', NULL, 'admin@hotmail.com', '01224/3347890', 10, 1554214088, 1554214088);
+
+INSERT INTO `kopf` (`id`, `data`, `user_id`) VALUES
+(1, 'Diese Rechnung wurde unter Zuhilfenahme eines lizenzierten Webtools von unserem Makler **** erstellt. Im Falle von Reklamationen wenden Sie sich bitte telefonisch an ++++ oder per Mail an ::::. \r\nHinweise:\r\nAchten Sie auf das Fälligkeitsdatum der Rechnung.\r\n\r\nIn den Paragraphen ab 688 der Zivilprozessordnung (ZPO) sind Widerspruchsregelungen enthalten. ', 1);
 
 
 -- --------------------------------------------------------
