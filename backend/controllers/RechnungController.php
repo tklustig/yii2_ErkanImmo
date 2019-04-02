@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Session;
 use kartik\growl\Growl;
+use kartik\mpdf\Pdf;
 
 class RechnungController extends Controller {
 
@@ -100,11 +101,11 @@ class RechnungController extends Controller {
             'model' => $model,
         ]);
 
-        $pdf = new \kartik\mpdf\Pdf([
-            'mode' => \kartik\mpdf\Pdf::MODE_CORE,
-            'format' => \kartik\mpdf\Pdf::FORMAT_A4,
-            'orientation' => \kartik\mpdf\Pdf::ORIENT_PORTRAIT,
-            'destination' => \kartik\mpdf\Pdf::DEST_BROWSER,
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_CORE,
+            'format' => Pdf::FORMAT_A4,
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            'destination' => Pdf::DEST_BROWSER,
             'content' => $content,
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
             'cssInline' => '.kv-heading-1{font-size:18px}',
@@ -114,7 +115,6 @@ class RechnungController extends Controller {
                 'SetFooter' => ['{PAGENO}'],
             ]
         ]);
-
         return $pdf->render();
     }
 
@@ -135,8 +135,28 @@ class RechnungController extends Controller {
     }
 
     public function actionPrint($id) {
-        print_r("Dieses Modul ist noch eine Baustelle<br> Übergeben wurde die Id:$id<br>Wir befinden uns in der Klasse " . get_class());
-        die();
+        $data = Rechnung::findOne(['id' => $id])->rechnungPlain;
+        $rechnungVon = 'Rechnung/Unterlagen von Makler ' . Rechnung::findOne(['id' => $id])->makler->username . ' an ';
+        $geschlecht = Rechnung::findOne(['id' => $id])->kunde->geschlecht0->typus;
+        $vorname = Rechnung::findOne(['id' => $id])->kunde->vorname;
+        $nachname = Rechnung::findOne(['id' => $id])->kunde->nachname;
+        $rechnungAn = $geschlecht . ' ' . $vorname . ' ' . $nachname;
+        $rechnungTitle = $rechnungVon . ' ' . $rechnungAn;
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_CORE,
+            'format' => Pdf::FORMAT_A4,
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            'destination' => Pdf::DEST_BROWSER,
+            'content' => $data,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+            'options' => ['title' => $rechnungTitle],
+            'methods' => [
+                'SetHeader' => $rechnungTitle,
+                'SetFooter' => ['{PAGENO}'],
+            ]
+        ]);
+        return $pdf->render(array($pdf->render(), 'target' => '_blank'));
     }
 
     protected function findModel($id) {
