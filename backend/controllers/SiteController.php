@@ -198,7 +198,7 @@ class SiteController extends Controller {
                 try {
                     $this->findModel_user($DynamicModel->id_user)->delete();
                 } catch (IntegrityException $er) {
-                    $message = "Der Benutzer kann nicht gelöscht werden, da das gegen die referentielle Integrität verstößt. Löschen Sie zunächst die korrespondierenden Rechnungskopfdaten!";
+                    $message = "Der Benutzer kann nicht gelöscht werden, da das gegen die referentielle Integrität verstößt. Löschen Sie zunächst die korrespondierenden Rechnungsrumpfdaten!";
                     $this->Ausgabe($message, 'Error', 1500, Growl::TYPE_DANGER);
                     return $this->render('index');
                 }
@@ -342,6 +342,14 @@ class SiteController extends Controller {
     }
 
     public function actionDeletion() {
+        $session=new Session();
+        $connection = \Yii::$app->db;
+        $record = $connection->createCommand("SELECT COUNT(id) FROM dateianhang WHERE bezeichnung='Bilder für das Frontend'");
+        $countRecords = $record->queryScalar();
+        if ($countRecords == 0) {
+            $session->addFlash("warning", "Derzeit sind keinerlei Themes im System vermerkt. Laden Sie welche hoch, um sie ggf. löschen zu können!");
+            return $this->redirect(['/site/index']);
+        }
         $searchModel = new DateianhangSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('_form_delete', [
@@ -352,6 +360,15 @@ class SiteController extends Controller {
 
     public function actionDelete($id) {
         $session = new Session();
+        $connection = \Yii::$app->db;
+        $record = $connection->createCommand("SELECT COUNT(id) FROM dateianhang WHERE bezeichnung='Bilder für das Frontend'");
+        $countRecords = $record->queryScalar();
+        var_dump($countRecords);
+        die();
+        if ($countRecords == 0) {
+            $session->addFlash("warning", "Derzeit sind keinerlei Themes im System vermerkt. Laden Sie welche hoch, um sie ggf. löschen zu können!");
+            return $this->redirect(['/site/index']);
+        }
         $dateiname = Dateianhang::findOne(['id' => $id])->dateiname;
         $path = Yii::getAlias('@picturesBackend');
         $pathFrom = Yii::getAlias('@uploading');
