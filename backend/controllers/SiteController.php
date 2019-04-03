@@ -317,13 +317,14 @@ class SiteController extends Controller {
             array_push($arrayOfBez, $item->bezeichnung);
         }
         for ($i = 0; $i < count($arrayOfBez); $i++) {
-            if (!empty($arrayOfBez) && $arrayOfBez[$i] == "Frontendbilder")
+            if (!empty($arrayOfBez) && $arrayOfBez[$i] == "Frontendbilder") {
                 $hasPics = true;
-            break;
+                break;
+            }
         }
         if (!$hasPics) {
             $session = new Session();
-            $session->addFlash('warning', "Solange keine Themes für das Impressum hochgeladen wurden, können diese nicht initialisert werden. Laden Sie welche hoch!");
+            $session->addFlash('warning', "Solange keine Themes für das Frontend hochgeladen wurden, können diese nicht initialisert werden. Laden Sie welche hoch!");
             return $this->render('index');
         }
         if ($DynamicModel->load(Yii::$app->request->post())) {
@@ -376,9 +377,10 @@ class SiteController extends Controller {
             array_push($arrayOfBez, $item->bezeichnung);
         }
         for ($i = 0; $i < count($arrayOfBez); $i++) {
-            if (!empty($arrayOfBez) && $arrayOfBez[$i] == "Impressumbilder")
+            if (!empty($arrayOfBez) && $arrayOfBez[$i] == "Impressumbilder") {
                 $hasPics = true;
-            break;
+                break;
+            }
         }
         if (!$hasPics) {
             $session = new Session();
@@ -398,7 +400,7 @@ class SiteController extends Controller {
             }
             $pathTo = Yii::getAlias('@pictures');
             $filename = $DynamicModel->file;
-            $theme = 'Theme.jpg';
+            $theme = 'themeImpressum.jpg';
             copy($pathFrom . '/' . $filename, $pathTo . '/' . $filename);
             rename($pathTo . '/' . $filename, $pathTo . '/' . $theme);
             $session->addFlash('success', "Herzlichen Glückwunsch. Das Theme $filename wird ab jetzt im Frontend verwendet.");

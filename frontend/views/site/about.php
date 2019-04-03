@@ -5,13 +5,14 @@ use yii\helpers\Html;
 
 $this->title = 'About';
 $this->params['breadcrumbs'][] = $this->title;
+$url = Yii::getAlias("@web") . '/img/';
 ?>
 <div id="Wrapper">
     <div id="Content">
         <div class="content_wrapper clearfix">
             <div class="sections_group">
                 <div class="entry-content" itemprop="mainContentOfPage">
-                    <div class="section mcb-section "style="background-color:#121315; background-image:url(../img/smoke_men-wallpaper-1680x1050.jpg); background-repeat:no-repeat; background-position:center top;-webkit-background-size:">
+                    <div style="background:url(<?= $url ?>themeImpressum.jpg);  background-repeat: no-repeat;  background-size: 100% 100%;">
                         <div class="section_wrapper mcb-section-inner">
                             <div class="wrap mcb-wrap one-second  valign-top clearfix" style="padding:0 4% 0 0 ">
                                 <div class="mcb-wrap-inner">
