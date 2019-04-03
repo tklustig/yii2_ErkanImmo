@@ -69,7 +69,7 @@ $this->beginPage()
                         ['label' => '+++++++Impressum initialiseren+++++++', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
-                                ['label' => 'Begriffe festlegen(ToComplete)', 'url' => ['/begriffe/index']],
+                                ['label' => 'Begriffe festlegen', 'url' => ['/begriffe/index']],
                                 ['label' => 'Theme initialisieren', 'url' => ['/site/initialize']],
                             ],
                         ],

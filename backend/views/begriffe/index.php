@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?php 
+    <?php
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
         'id',
@@ -18,14 +18,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'data',
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{save-as-new} {view} {update} {delete}',
-            'buttons' => [
-                'save-as-new' => function ($url) {
-                    return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Save As New']);
-                },
-            ],
+            'template' => '{view} {update}',
+        /*
+          'buttons' => [
+          'save-as-new' => function ($url) {
+          return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Save As New']);
+          },
+          ], */
         ],
-    ]; 
+    ];
     ?>
     <?=
     GridView::widget([
@@ -47,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'panel' => [
             'type' => GridView::TYPE_PRIMARY,
             "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
-            'before' => Html::a(Yii::t('app', 'Begriffe erstellen'), ['/begriffe/create'], ['class' => 'btn btn-success', 'title' => 'Erstellt einen neuen Rechnungskopf']),
+            //'before' => Html::a(Yii::t('app', 'Begriffe erstellen'), ['/begriffe/create'], ['class' => 'btn btn-success', 'title' => 'Erstellt einen neuen Rechnungskopf']),
             'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/rechnung/index'], ['class' => 'btn btn-warning', 'title' => 'Setzt die GridView zurück']),
             'toggleDataOptions' => ['minCount' => 10],
         ],

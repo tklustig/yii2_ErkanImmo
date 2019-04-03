@@ -9,10 +9,9 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-class BegriffeController extends Controller
-{
-    public function behaviors()
-    {
+class BegriffeController extends Controller {
+
+    public function behaviors() {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -23,43 +22,43 @@ class BegriffeController extends Controller
         ];
     }
 
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $searchModel = new LBegriffeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
-    public function actionView($id)
-    {
+    public function actionView($id) {
         $model = $this->findModel($id);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+                    'model' => $this->findModel($id),
         ]);
     }
 
-    public function actionCreate()
-    {
-        $model = new LBegriffe();
+    /*
+      public function actionCreate()
+      {
+      $model = new LBegriffe();
 
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
+      if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
+      return $this->redirect(['view', 'id' => $model->id]);
+      } else {
+      return $this->render('create', [
+      'model' => $model,
+      ]);
+      }
+      }
 
-    public function actionUpdate($id)
-    {
+     */
+
+    public function actionUpdate($id) {
         if (Yii::$app->request->post('_asnew') == '1') {
             $model = new LBegriffe();
-        }else{
+        } else {
             $model = $this->findModel($id);
         }
 
@@ -67,65 +66,70 @@ class BegriffeController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
 
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->deleteWithRelated();
+    /*
+      public function actionDelete($id) {
+      $this->findModel($id)->deleteWithRelated();
 
-        return $this->redirect(['index']);
-    }
-    
-    public function actionPdf($id) {
-        $model = $this->findModel($id);
+      return $this->redirect(['index']);
+      }
 
-        $content = $this->renderAjax('_pdf', [
-            'model' => $model,
-        ]);
+      public function actionPdf($id) {
+      $model = $this->findModel($id);
 
-        $pdf = new \kartik\mpdf\Pdf([
-            'mode' => \kartik\mpdf\Pdf::MODE_CORE,
-            'format' => \kartik\mpdf\Pdf::FORMAT_A4,
-            'orientation' => \kartik\mpdf\Pdf::ORIENT_PORTRAIT,
-            'destination' => \kartik\mpdf\Pdf::DEST_BROWSER,
-            'content' => $content,
-            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
-            'cssInline' => '.kv-heading-1{font-size:18px}',
-            'options' => ['title' => \Yii::$app->name],
-            'methods' => [
-                'SetHeader' => [\Yii::$app->name],
-                'SetFooter' => ['{PAGENO}'],
-            ]
-        ]);
+      $content = $this->renderAjax('_pdf', [
+      'model' => $model,
+      ]);
 
-        return $pdf->render();
-    }
+      $pdf = new \kartik\mpdf\Pdf([
+      'mode' => \kartik\mpdf\Pdf::MODE_CORE,
+      'format' => \kartik\mpdf\Pdf::FORMAT_A4,
+      'orientation' => \kartik\mpdf\Pdf::ORIENT_PORTRAIT,
+      'destination' => \kartik\mpdf\Pdf::DEST_BROWSER,
+      'content' => $content,
+      'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+      'cssInline' => '.kv-heading-1{font-size:18px}',
+      'options' => ['title' => \Yii::$app->name],
+      'methods' => [
+      'SetHeader' => [\Yii::$app->name],
+      'SetFooter' => ['{PAGENO}'],
+      ]
+      ]);
 
-    public function actionSaveAsNew($id) {
-        $model = new LBegriffe();
+      return $pdf->render();
+      }
 
-        if (Yii::$app->request->post('_asnew') != '1') {
-            $model = $this->findModel($id);
-        }
-    
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('saveAsNew', [
-                'model' => $model,
-            ]);
-        }
-    }
+     */
 
-    protected function findModel($id)
-    {
+    /*
+      public function actionSaveAsNew($id) {
+      $model = new LBegriffe();
+
+      if (Yii::$app->request->post('_asnew') != '1') {
+      $model = $this->findModel($id);
+      }
+
+      if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
+      return $this->redirect(['view', 'id' => $model->id]);
+      } else {
+      return $this->render('saveAsNew', [
+      'model' => $model,
+      ]);
+      }
+      }
+
+     */
+
+    protected function findModel($id) {
         if (($model = LBegriffe::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
+
 }
