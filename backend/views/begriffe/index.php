@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
-$this->title = Yii::t('app', 'Begriffe');
+$this->title = Yii::t('app', 'Impressumbegriffe');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lbegriffe-index">
