@@ -79,6 +79,24 @@ INSERT INTO `l_heizungsart` (`id`, `bezeichnung`) VALUES
 (3, 'Kohle'),
 (4, 'Sonstiges');
 
+--
+-- Daten für Tabelle `l_begriffe`
+--
+
+INSERT INTO `l_begriffe` (`id`, `typ`) VALUES
+(1, 'Firmenname'),
+(2, 'Strasse'),
+(3, 'PLZ'),
+(4, 'Ort'),
+(5, 'vertreten durch'),
+(6, 'Telefon'),
+(7, 'Fax'),
+(8, 'Mail'),
+(9, 'Umsatzsteuer/Identifikationsnummer'),
+(10, 'Aufsichtsbehörde');
+
+-- --------------------------------------------------------
+
 -- --------------------------------------------------------
 --
 -- Daten für Tabelle `l_laenderkennung`
