@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\LBegriffe */
 
-$this->title = Yii::t('app', 'Update {modelClass}: ', [
-    'modelClass' => 'L Begriffe',
+$this->title = Yii::t('app', 'Aktualisiere {modelClass}: ', [
+    'modelClass' => 'Begriffe',
 ]) . ' ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'L Begriffe'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];

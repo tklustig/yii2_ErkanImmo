@@ -18,7 +18,15 @@ use kartik\widgets\ActiveForm;
     <?= $form->errorSummary($model); ?>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
+            <?=
+            $form->field($model, 'typ', ['addon' => [
+                    'prepend' => ['content' => 'Typ']]])->widget(\dosamigos\ckeditor\CKEditor::className(), [
+                'preset' => 'full', 'clientOptions' => ['height' => 400],
+            ])
+            ?>
+        </div>
+        <div class="col-md-6">
             <?=
             $form->field($model, 'data', ['addon' => [
                     'prepend' => ['content' => 'Inhalt']]])->widget(\dosamigos\ckeditor\CKEditor::className(), [
@@ -41,3 +49,5 @@ use kartik\widgets\ActiveForm;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+
