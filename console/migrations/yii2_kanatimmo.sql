@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 03. Apr 2019 um 16:38
+-- Erstellungszeit: 03. Apr 2019 um 22:33
 -- Server-Version: 10.1.37-MariaDB
--- PHP-Version: 7.1.26
+-- PHP-Version: 7.2.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -72,7 +72,7 @@ CREATE TABLE `bankverbindung` (
 
 INSERT INTO `bankverbindung` (`id`, `laenderkennung`, `institut`, `blz`, `kontoNr`, `iban`, `bic`, `kunde_id`, `angelegt_am`, `aktualisiert_am`, `angelegt_von`, `aktualisiert_von`) VALUES
 (5, 'DE', 'Sparkasse Hannover Hannover', 25050180, 1911869221, 'DE92250501801911869221', 'SPKHDE2HXXX', 3, '2019-03-02 18:27:30', '2019-03-02 18:27:30', NULL, NULL),
-(14, 'DE', 'Raiffeisenbank Südhardt Durmersheim Durmersheim', 66562053, 2147483647, 'DE53665620537725890045', 'GENODE61DUR', 1, '2019-04-03 14:47:32', '2019-04-03 14:47:32', 4, 4);
+(14, 'DE', 'Raiffeisenbank Südhardt Durmersheim Durmersheim', 66562053, 2147483647, 'DE53665620537725890045', 'GENODE61DUR', 1, '2019-04-03 14:47:32', '2019-04-03 19:55:40', 4, 4);
 
 -- --------------------------------------------------------
 
@@ -98,7 +98,7 @@ CREATE TABLE `besichtigungstermin` (
 INSERT INTO `besichtigungstermin` (`id`, `uhrzeit`, `Relevanz`, `angelegt_am`, `aktualisiert_am`, `angelegt_von`, `aktualisiert_von`, `Immobilien_id`) VALUES
 (1, '2019-03-13 13:30:42', 1, '2019-02-16 09:23:34', '2019-02-16 09:23:34', 3, NULL, 6),
 (2, '2019-04-01 17:30:39', NULL, '2019-02-16 09:27:53', '2019-02-16 09:27:53', 3, NULL, 1),
-(3, '2019-02-27 17:30:16', NULL, '2019-02-27 19:18:35', '2019-02-27 19:18:35', 4, NULL, 2),
+(3, '2019-02-27 17:30:16', NULL, '2019-02-27 19:18:35', '2019-04-03 21:34:02', 4, 4, 2),
 (4, '2019-02-04 10:30:18', NULL, '2019-02-27 20:10:06', '2019-02-27 20:10:06', 4, NULL, 4);
 
 -- --------------------------------------------------------
@@ -189,7 +189,7 @@ CREATE TABLE `immobilien` (
 --
 
 INSERT INTO `immobilien` (`id`, `bezeichnung`, `sonstiges`, `strasse`, `wohnflaeche`, `raeume`, `geldbetrag`, `k_grundstuecksgroesse`, `k_provision`, `v_nebenkosten`, `balkon_vorhanden`, `fahrstuhl_vorhanden`, `l_plz_id`, `stadt`, `user_id`, `l_art_id`, `l_heizungsart_id`, `angelegt_am`, `aktualisiert_am`, `angelegt_von`, `aktualisiert_von`) VALUES
-(1, '<p><u><strong>Objektbeschreibung:</strong></u></p>\r\n\r\n<p>Dieses idyllisch gelegene Objekt<br />\r\nbefindet sich in bevorzugter,<br />\r\nruhiger Lage und bietet<br />\r\nmit seinen 6-7 Wohnungen<br />\r\njede Menge Platz. Somit<br />\r\neignet es sich perfekt<br />\r\nf&uuml;r die gro&szlig;e Familie<br />\r\noder auch f&uuml;r die Untervermietung.</p>\r\n\r\n<p>Die Gesamtfl&auml;che betr&auml;gt ca. 600 qm.</p>\r\n\r\n<p>Das riesige idyllische Gartengrundst&uuml;ck<br />\r\nvon ca. 7.500 qm verf&uuml;gt &uuml;ber einen<br />\r\nBrunnen,mehrere Teiche, einen gro&szlig;z&uuml;gigen Baumbestand,<br />\r\nB&auml;che, verschieden angelegte G&auml;rten<br />\r\nund eignet sich aufgrund der<br />\r\nGr&ouml;&szlig;e und Beschaffenheit ideal<br />\r\nf&uuml;r Tierhaltung.<br />\r\nDas Grundst&uuml;ck beinhaltet ca. 6500<br />\r\nqm Gartenland und ca. 1000 qm<br />\r\nBauland. Es befinden sich auch noch freie<br />\r\nFl&auml;chen die gegebenenfalls noch bebaut werden k&ouml;nnen.<br />\r\nAuf dem Grundst&uuml;ck befinden sich<br />\r\nau&szlig;erdem mehrere Unterstellm&ouml;glichkeiten f&uuml;r<br />\r\nTierhaltung und Fahrzeuge.<br />\r\nVor dem Haus befindet sich eine<br />\r\ngepflasterte Hoffl&auml;che. Das Grundst&uuml;ck ist<br />\r\n&uuml;ber eine Einfahrt befahrbar.<br />\r\nBei dem Haus handelte es sich<br />\r\nurspr&uuml;nglich um eine im Jahre 1890<br />\r\nerrichtetes Fachwerkhaus. Dieses wurde nach<br />\r\nund nach renoviert und erweitert.<br />\r\nBei den Fenstern handelt es sich<br />\r\num doppelt verglaste Holz- und Kunststofffenster.<br />\r\nEin Schornstein in dem bereits<br />\r\nbeide Z&uuml;ge verrohrt sind bietet<br />\r\ndie M&ouml;glichkeit auf eine andere Heizungsart umzur&uuml;sten.<br />\r\nBei der Zufahrtstr. Handelt es sich<br />\r\num eine Privatstr. Welche zu 1/3 zum Grundst&uuml;ck geh&ouml;rt.</p>\r\n', '<p><u><strong>Energieausweis:</strong></u></p>\r\n\r\n<p>Art: Bedarfsausweis<br />\r\nG&uuml;ltig bis: 20.05.2028<br />\r\nEndenergiebedarf: 270.70 kWh/(m&sup2;*a)<br />\r\nBaujahr lt. Energieausweis: 1979<br />\r\nWesentlicher Energietr&auml;ger: &Ouml;l</p>\r\n\r\n<p><u><strong>Lage:</strong></u></p>\r\n\r\n<p>Der Ortsteil Fohlenplacken liegt als kleines<br />\r\nDorf rund 1,5 km (Luftlinie) nordwestlich<br />\r\nvom Ortskern Neuhaus entfernt.<br />\r\nDas Haus befindet sich in unmittelbarer<br />\r\nN&auml;he vom Flusslauf der Holzminde.<br />\r\nDas Objekt zeichnet sich durch<br />\r\nseine N&auml;he zur der sch&ouml;nen Natur aus.<br />\r\nAngrenzende Naturschutzgebiete machen das Wohnen<br />\r\nund Leben zu einem echten Erlebnis.<br />\r\nDie benachbarte Stadt Holzminden verf&uuml;gt<br />\r\n&uuml;ber eine gute Infrastruktur.<br />\r\nSchulen, Kinderg&auml;rten, Einkaufsm&ouml;glichkeiten, Vereine<br />\r\nund &Auml;rzte befinden sich in unmittelbarer N&auml;he.<br />\r\nDie Bundesstra&szlig;e ist mit dem Auto gut zu erreichen.</p>\r\n', 'Lerchenweg 12', 225, 8, '1880000', 330, '4.25', NULL, 1, 1, 8168, 'Asbach', 4, 2, 1, '2019-02-16 09:00:21', '2019-02-16 09:00:21', NULL, NULL),
+(1, '<p><u><strong>Objektbeschreibung:</strong></u></p>\r\n\r\n<p>Dieses idyllisch gelegene Objekt<br />\r\nbefindet sich in bevorzugter,<br />\r\nruhiger Lage und bietet<br />\r\nmit seinen 6-7 Wohnungen<br />\r\njede Menge Platz. Somit<br />\r\neignet es sich perfekt<br />\r\nf&uuml;r die gro&szlig;e Familie<br />\r\noder auch f&uuml;r die Untervermietung.</p>\r\n\r\n<p>Die Gesamtfl&auml;che betr&auml;gt ca. 600 qm.</p>\r\n\r\n<p>Das riesige idyllische Gartengrundst&uuml;ck<br />\r\nvon ca. 7.500 qm verf&uuml;gt &uuml;ber einen<br />\r\nBrunnen,mehrere Teiche, einen gro&szlig;z&uuml;gigen Baumbestand,<br />\r\nB&auml;che, verschieden angelegte G&auml;rten<br />\r\nund eignet sich aufgrund der<br />\r\nGr&ouml;&szlig;e und Beschaffenheit ideal<br />\r\nf&uuml;r Tierhaltung.<br />\r\nDas Grundst&uuml;ck beinhaltet ca. 6500<br />\r\nqm Gartenland und ca. 1000 qm<br />\r\nBauland. Es befinden sich auch noch freie<br />\r\nFl&auml;chen die gegebenenfalls noch bebaut werden k&ouml;nnen.<br />\r\nAuf dem Grundst&uuml;ck befinden sich<br />\r\nau&szlig;erdem mehrere Unterstellm&ouml;glichkeiten f&uuml;r<br />\r\nTierhaltung und Fahrzeuge.<br />\r\nVor dem Haus befindet sich eine<br />\r\ngepflasterte Hoffl&auml;che. Das Grundst&uuml;ck ist<br />\r\n&uuml;ber eine Einfahrt befahrbar.<br />\r\nBei dem Haus handelte es sich<br />\r\nurspr&uuml;nglich um eine im Jahre 1890<br />\r\nerrichtetes Fachwerkhaus. Dieses wurde nach<br />\r\nund nach renoviert und erweitert.<br />\r\nBei den Fenstern handelt es sich<br />\r\num doppelt verglaste Holz- und Kunststofffenster.<br />\r\nEin Schornstein in dem bereits<br />\r\nbeide Z&uuml;ge verrohrt sind bietet<br />\r\ndie M&ouml;glichkeit auf eine andere Heizungsart umzur&uuml;sten.<br />\r\nBei der Zufahrtstr. Handelt es sich<br />\r\num eine Privatstr. Welche zu 1/3 zum Grundst&uuml;ck geh&ouml;rt.</p>\r\n', '<p><u><strong>Energieausweis:</strong></u></p>\r\n\r\n<p>Art: Bedarfsausweis<br />\r\nG&uuml;ltig bis: 20.05.2028<br />\r\nEndenergiebedarf: 270.70 kWh/(m&sup2;*a)<br />\r\nBaujahr lt. Energieausweis: 1979<br />\r\nWesentlicher Energietr&auml;ger: &Ouml;l</p>\r\n\r\n<p><u><strong>Lage:</strong></u></p>\r\n\r\n<p>Der Ortsteil Fohlenplacken liegt als kleines<br />\r\nDorf rund 1,5 km (Luftlinie) nordwestlich<br />\r\nvom Ortskern Neuhaus entfernt.<br />\r\nDas Haus befindet sich in unmittelbarer<br />\r\nN&auml;he vom Flusslauf der Holzminde.<br />\r\nDas Objekt zeichnet sich durch<br />\r\nseine N&auml;he zur der sch&ouml;nen Natur aus.<br />\r\nAngrenzende Naturschutzgebiete machen das Wohnen<br />\r\nund Leben zu einem echten Erlebnis.<br />\r\nDie benachbarte Stadt Holzminden verf&uuml;gt<br />\r\n&uuml;ber eine gute Infrastruktur.<br />\r\nSchulen, Kinderg&auml;rten, Einkaufsm&ouml;glichkeiten, Vereine<br />\r\nund &Auml;rzte befinden sich in unmittelbarer N&auml;he.<br />\r\nDie Bundesstra&szlig;e ist mit dem Auto gut zu erreichen.</p>\r\n', 'Lerchenweg 12', 225, 8, '1880000', 330, '4.25', NULL, 1, 1, 8168, 'Asbach', 4, 2, 1, '2019-02-16 09:00:21', '2019-04-03 19:45:10', NULL, 4),
 (2, '<p><u><strong>Objektbeschreibung:</strong></u></p>\r\n\r\n<p>Willkommen im Architekturhimmel<br />\r\nf&uuml;r allerh&ouml;chste Anspr&uuml;che...<br />\r\nDiese Wohnresidenz bietet traumhaften<br />\r\nWohnkomfort auf 255 qm mit<br />\r\nherrlichem Blick ins Naturschutzgebiet.<br />\r\nH&ouml;chste Qualit&auml;t, edelste Materalien und<br />\r\nviel Liebe zum Detail schaffen meisterhaft<br />\r\ninszenierte R&auml;ume mit Deckenh&ouml;hen von 3,00 m.<br />\r\nDie gro&szlig;z&uuml;gigen Loggien sind<br />\r\nso angeordnet, dass sie ein Maximum<br />\r\nan Privatsph&auml;re und an Ausblick bieten....<br />\r\n3 PKW-Stellpl&auml;tze in der Tiefgarage<br />\r\nk&ouml;nnen f&uuml;r je 80 &euro; / Monat dazugemietet werden.<br />\r\nF&uuml;hlen Sie sich angesprochen?</p>\r\n', '<p><u><strong>Energieausweis</strong></u></p>\r\n\r\n<p>Art: Bedarfsausweis<br />\r\nG&uuml;ltig bis: 15.10.2025<br />\r\nEndenergiebedarf: 39.00 kWh/(m&sup2;*a)<br />\r\nWesentlicher Energietr&auml;ger: Gas<br />\r\nKlasse: A</p>\r\n\r\n<p><u><strong>Lage:</strong></u></p>\r\n\r\n<p>HIMMLISCHE RUHE UND VIEL GR&Uuml;N....<br />\r\nIsernhagen-S&uuml;d z&auml;hlt zu den besten<br />\r\nund begehrtesten Wohnlagen Hannovers.&nbsp;<br />\r\nDer besondere Vorzug ist die Symbiose aus<br />\r\nhervorragender st&auml;dtischer Infrastruktur<br />\r\nund l&auml;ndlicher Lage.<br />\r\nEinkaufsm&ouml;glichkeiten, &Auml;rzte und Kindergarten<br />\r\nsowie<br />\r\ndie Stadtbahn sind fu&szlig;l&auml;ufig zu erreichen.</p>\r\n', 'An der krummen Lanke 4F', 225, 12, '990000', 310, '3.75', NULL, 1, 0, 5436, 'Surwold', 4, 2, 2, '2019-02-16 09:04:21', '2019-02-16 09:04:21', NULL, NULL),
 (3, '<p><strong><u>Objektbeschreibung</u></strong></p>\r\n\r\n<ul>\r\n	<li>Asylanten-oder Gastarbeiterunterkunft</li>\r\n	<li>WC und Dusche seperat (auf der Etage)</li>\r\n	<li>Gemeinschaftsk&uuml;che</li>\r\n	<li>Schimmelbefall im Bad und in der K&uuml;che</li>\r\n</ul>\r\n', '<p><u><strong>Energieausweise: </strong></u>keine vorhanden</p>\r\n\r\n<p>&nbsp;</p>\r\n', 'Buchholzer Kirchweg 25', 18, 1, '220', NULL, NULL, '80.00', 0, 0, 5853, 'Bothfeld, Groß Buchholz, List,Misburg-Nord', 4, 1, 3, '2019-02-16 09:07:36', '2019-02-16 09:07:36', NULL, NULL),
 (4, '<p><u><strong>Objektbeschreibung:</strong></u></p>\r\n\r\n<p>Gro&szlig;z&uuml;giges Reihenhaus mit offener Architektur in Misburg!<br />\r\nSie suchen Ihr neues Zuhause in toller Lage?<br />\r\nDann haben wir hier genau das Richtige f&uuml;r Sie.<br />\r\nDas Objekt wurde 1983 erbaut, jedoch laufend modernisiert.<br />\r\nBesonders interessant ist bei der Lage<br />\r\ndie ausgesprochen niedrige Erbpacht von<br />\r\n&euro; 1.680 j&auml;hrlich. Der Erbbaurechtsvertrag<br />\r\nhat noch eine Laufzeit bis 2070.<br />\r\nTreten Sie ein und sp&uuml;ren Sie Schritt f&uuml;r<br />\r\nSchritt, warum das Wohnen hier so angenehm ist</p>\r\n', '<p><u><strong>Energieausweis</strong></u><br />\r\nArt: Verbrauchsausweis<br />\r\nG&uuml;ltig bis: 19.03.2027<br />\r\nEndenergieverbrauch: 126.25 kWh/(m&sup2;*a)<br />\r\nBaujahr lt. Energieausweis: 2007<br />\r\nWesentlicher Energietr&auml;ger: Gas</p>\r\n\r\n<p><u><strong>Lage:</strong></u></p>\r\n\r\n<p>Misburg-Nord liegt an der &ouml;stlichen<br />\r\nStadtgrenze von Hannover.&nbsp;<br />\r\nEs ist der gr&ouml;&szlig;te Stadtteil<br />\r\nmit Bezirk Misburg-Anderten, verf&uuml;gt &uuml;ber<br />\r\neine gute Infrastruktur und wirkt<br />\r\nfast schon wie eine unabh&auml;ngige Kleinstadt.&nbsp;<br />\r\n&Uuml;ber die n&ouml;rdlich des Wohngebietes<br />\r\nverlaufende A2<br />\r\nund den Messeschnellweg kommt man mit<br />\r\ndem PKW schnell in das<br />\r\nUmland oder das Stadtzentrum von Hannover,<br />\r\n&Ouml;ffentliche Verkehrsmittel stehen ebenfalls zur Verf&uuml;gung.&nbsp;<br />\r\nDer riesige Misburger Wald und der Blaue See<br />\r\nsorgen f&uuml;r einen hohen Naherholungswert.</p>\r\n', 'Große Freiheit 48', 350, 6, '830000', 430, '3.75', NULL, 1, 0, 12307, 'Haag in Oberbayern', 3, 2, 1, '2019-02-16 09:11:40', '2019-02-16 09:11:40', NULL, NULL),
@@ -247,7 +247,7 @@ CREATE TABLE `kunde` (
 
 INSERT INTO `kunde` (`id`, `l_plz_id`, `geschlecht`, `vorname`, `nachname`, `stadt`, `strasse`, `geburtsdatum`, `solvenz`, `telefon`, `email`, `bankverbindung_id`, `angelegt_am`, `aktualisiert_am`, `angelegt_von`, `aktualisiert_von`) VALUES
 (1, 5855, 1, 'Michael', 'Krenz', 'Bothfeld, Groß Buchholz, Lahe ', 'Klein Buchholzer Kirchweg  14C', '1961-03-21', 0, '0152/37389041', 'michael@gmx.net', 14, '2019-02-16 09:23:34', '2019-03-03 23:33:35', 3, 3),
-(2, 285, 2, 'Susanne', 'Albrecht', 'Cottbus', 'Krumme Lanke 30', '1983-09-20', 1, '03445/667832', 'albrecht@web.de', NULL, '2019-02-16 09:27:53', '2019-03-04 01:06:23', 4, 3),
+(2, 285, 2, 'Susanne', 'Albrecht', 'Cottbus', 'Krumme Lanke 30', '1983-09-20', 1, '03445/667832', 'albrecht@web.de', NULL, '2019-02-16 09:27:53', '2019-04-03 19:55:56', 4, 3),
 (3, 9915, 4, 'Lydia', 'Scholz', 'Ennepetal', 'Goethestr. 12', '1975-02-17', 0, '01542567880', 'lydia@gmx.net', 5, '2019-02-27 19:18:35', '2019-03-04 00:59:38', 4, NULL),
 (4, 2502, 10, 'Friedrich', 'Schubert', 'Bliesdorf', 'Schwalbengasse 23', '1985-02-02', 1, '', 'friedrich@gmail.com', NULL, '2019-02-27 20:10:06', '2019-03-02 20:11:31', 3, NULL);
 
@@ -15703,6 +15703,27 @@ INSERT INTO `l_rechnungsart` (`id`, `data`, `art`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `mailserver`
+--
+
+CREATE TABLE `mailserver` (
+  `id` int(11) NOT NULL,
+  `serverURL` varchar(15) COLLATE utf8_german2_ci DEFAULT NULL,
+  `serverHost` varchar(64) COLLATE utf8_german2_ci DEFAULT NULL,
+  `username` varchar(32) COLLATE utf8_german2_ci NOT NULL,
+  `password` varchar(32) COLLATE utf8_german2_ci NOT NULL,
+  `port` smallint(6) NOT NULL,
+  `useEncryption` tinyint(1) NOT NULL,
+  `encryption` varchar(6) COLLATE utf8_german2_ci NOT NULL,
+  `angelegt_von` int(11) DEFAULT NULL,
+  `aktualisiert_von` int(11) DEFAULT NULL,
+  `angelegt_am` timestamp NULL DEFAULT NULL,
+  `aktualisiert_am` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_german2_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `migration`
 --
 
@@ -15863,12 +15884,6 @@ ALTER TABLE `l_art`
   ADD PRIMARY KEY (`id`) USING BTREE COMMENT 'PK';
 
 --
--- Indizes für die Tabelle `l_begriffe`
---
-ALTER TABLE `l_begriffe`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indizes für die Tabelle `l_dateianhang_art`
 --
 ALTER TABLE `l_dateianhang_art`
@@ -15909,6 +15924,14 @@ ALTER TABLE `l_plz`
 --
 ALTER TABLE `l_rechnungsart`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indizes für die Tabelle `mailserver`
+--
+ALTER TABLE `mailserver`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `angelegtVon` (`angelegt_von`) USING BTREE,
+  ADD KEY `aktualisiertVon` (`aktualisiert_von`) USING BTREE;
 
 --
 -- Indizes für die Tabelle `migration`
@@ -15961,13 +15984,13 @@ ALTER TABLE `besichtigungstermin`
 -- AUTO_INCREMENT für Tabelle `dateianhang`
 --
 ALTER TABLE `dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT für Tabelle `e_dateianhang`
 --
 ALTER TABLE `e_dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT für Tabelle `immobilien`
@@ -15998,12 +16021,6 @@ ALTER TABLE `kundeimmobillie`
 --
 ALTER TABLE `l_art`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT für Tabelle `l_begriffe`
---
-ALTER TABLE `l_begriffe`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT für Tabelle `l_dateianhang_art`
@@ -16040,6 +16057,12 @@ ALTER TABLE `l_plz`
 --
 ALTER TABLE `l_rechnungsart`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT für Tabelle `mailserver`
+--
+ALTER TABLE `mailserver`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `rechnung`
@@ -16128,6 +16151,13 @@ ALTER TABLE `kunde`
 ALTER TABLE `kundeimmobillie`
   ADD CONSTRAINT `kundeimmobillie_ibfk_1` FOREIGN KEY (`immobilien_id`) REFERENCES `immobilien` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `kundeimmobillie_ibfk_2` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `mailserver`
+--
+ALTER TABLE `mailserver`
+  ADD CONSTRAINT `mailserver_ibfk_1` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `mailserver_ibfk_2` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `rechnung`
