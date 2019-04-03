@@ -15,6 +15,7 @@ use yii\filters\AccessControl;
 use yii\web\Session;
 use frontend\models\ContactForm;
 use kartik\widgets\Alert;
+use backend\models\LBegriffe;
 
 class SiteController extends Controller {
 
@@ -106,7 +107,19 @@ class SiteController extends Controller {
 
     public function actionAbout() {
         $this->layout = "main_kontakt";
-        return $this->render('about');
+        $modelBegriffe = LBegriffe::find()->all();
+        $arrayOfBegriffe = array();
+        foreach ($modelBegriffe as $item) {
+            array_push($arrayOfBegriffe, $item->data);
+        }
+        if (count($arrayOfBegriffe) < 10) {
+            $session = new Session();
+            $session->addFlash('info', 'Es exisitieren keine oder zu wenige Impressumbegriffe in der Datenbank. Erst, wenn der Admin alle 10 Begriffe eingepflegt hat, lässt sich dieses Feature aufrufen.');
+            return $this->redirect(['/site/index']);
+        }
+        return $this->render('about', [
+                    'arrayOfBegriffe' => $arrayOfBegriffe
+        ]);
     }
 
 }

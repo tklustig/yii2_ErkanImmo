@@ -335,7 +335,7 @@ class ImmobilienController extends Controller {
         $countImmo = Immobilien::find()->count('id');
         if ($countImmo == 0) {
             $session = new Session();
-            $session->addFlash('info', 'Es exisiteren noch keine Immobilien in der Datenbank. Erst, wenn der Admin welche eingepflegt hat, lässt sich dieses Feature aufrufen.');
+            $session->addFlash('info', 'Es exisitieren noch keine Immobilien in der Datenbank. Erst, wenn der Admin welche eingepflegt hat, lässt sich dieses Feature aufrufen.');
             return $this->redirect(['/site/index']);
         }
         $art = Immobilien::findOne(['id' => $id])->l_art_id;
