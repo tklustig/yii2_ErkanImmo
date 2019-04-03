@@ -224,7 +224,6 @@ class SiteController extends Controller {
     }
 
     public function actionCreate() {
-        $bezeichnung = "Bilder für das Frontend";
         $model = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $modelE = new EDateianhang();
         $session = new Session();
@@ -273,7 +272,7 @@ class SiteController extends Controller {
                     for ($i = 0; $i < count($files); $i++) {
                         $connection->createCommand()
                                 ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
-                                    [$fk, $max, $bezeichnung, $files[$i], $now, $UserId]
+                                    [$fk, $max, $model->lDateianhangArt->bezeichnung, $files[$i], $now, $UserId]
                                 ])
                                 ->execute();
                     }
@@ -298,22 +297,34 @@ class SiteController extends Controller {
     }
 
     public function actionShow() {
+        $hasPics = false;
         $pathFrom = Yii::getAlias('@uploading');
         $files = FileHelper::findFiles($pathFrom);
-
         if (count($files) < 2) {
             $message = 'Laden Sie zuerst eines oder mehrere Themes hoch. Derzeit können Sie dem Frontend nock kein Theme zuweisen!';
-            $this->Ausgabe($message, 'Info', 2000, Growl::TYPE_WARNING);
+            $this->Ausgabe($message, 'Info', 2000, Growl::TYPE_GROWL);
         }
         $arrayOfFileNames = array();
+        $arrayOfBez = array();
         $session = new Session();
-        $DynamicModel = new DynamicModel(['bez', 'file', 'art']);
+        $DynamicModel = new DynamicModel(['file']);
         $DynamicModel->addRule('file', 'string');
         $DynamicModel->addRule('file', 'required');
         $max = LDateianhangArt::find()->max('id');
-        $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => $max]);
+        $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => [11, 12]]);
         foreach ($arrayOfObjectsForAnhang as $item) {
             array_push($arrayOfFileNames, $item->dateiname);
+            array_push($arrayOfBez, $item->bezeichnung);
+        }
+        for ($i = 0; $i < count($arrayOfBez); $i++) {
+            if (!empty($arrayOfBez) && $arrayOfBez[$i] == "Frontendbilder")
+                $hasPics = true;
+            break;
+        }
+        if (!$hasPics) {
+            $session = new Session();
+            $session->addFlash('warning', "Solange keine Themes für das Impressum hochgeladen wurden, können diese nicht initialisert werden. Laden Sie welche hoch!");
+            return $this->render('index');
         }
         if ($DynamicModel->load(Yii::$app->request->post())) {
             if (empty($DynamicModel->file)) {
@@ -322,7 +333,8 @@ class SiteController extends Controller {
                 return $this->render('_form_picsforfrontend', [
                             'DynamicModel' => $DynamicModel,
                             'max' => $max,
-                            'arrayOfFileNames' => $arrayOfFileNames
+                            'arrayOfFileNames' => $arrayOfFileNames,
+                            'arrayOfBez' => $arrayOfBez
                 ]);
             }
             $pathTo = Yii::getAlias('@pictures');
@@ -336,15 +348,75 @@ class SiteController extends Controller {
             return $this->render('_form_picsforfrontend', [
                         'DynamicModel' => $DynamicModel,
                         'max' => $max,
-                        'arrayOfFileNames' => $arrayOfFileNames
+                        'arrayOfFileNames' => $arrayOfFileNames,
+                        'arrayOfBez' => $arrayOfBez
+            ]);
+        }
+    }
+
+    public function actionInitialize() {
+        $hasPics = false;
+        $pathFrom = Yii::getAlias('@uploading');
+        $files = FileHelper::findFiles($pathFrom);
+
+        if (count($files) < 2) {
+            $message = 'Laden Sie zuerst eines oder mehrere Themes hoch. Derzeit können Sie dem Impressum nock kein Theme zuweisen!';
+            $this->Ausgabe($message, 'Info', 2000, Growl::TYPE_GROWL);
+        }
+        $arrayOfFileNames = array();
+        $arrayOfBez = array();
+        $session = new Session();
+        $DynamicModel = new DynamicModel(['bez', 'file', 'art']);
+        $DynamicModel->addRule('file', 'string');
+        $DynamicModel->addRule('file', 'required');
+        $max = LDateianhangArt::find()->max('id');
+        $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => $max]);
+        foreach ($arrayOfObjectsForAnhang as $item) {
+            array_push($arrayOfFileNames, $item->dateiname);
+            array_push($arrayOfBez, $item->bezeichnung);
+        }
+        for ($i = 0; $i < count($arrayOfBez); $i++) {
+            if (!empty($arrayOfBez) && $arrayOfBez[$i] == "Impressumbilder")
+                $hasPics = true;
+            break;
+        }
+        if (!$hasPics) {
+            $session = new Session();
+            $session->addFlash('warning', "Solange keine Themes für das Impressum hochgeladen wurden, können diese nicht initialisert werden. Laden Sie welche hoch!");
+            return $this->render('index');
+        }
+        if ($DynamicModel->load(Yii::$app->request->post())) {
+            if (empty($DynamicModel->file)) {
+                $message = 'Bitte selektieren Sie in jeder DropDownbox einen Wert ihrer Wahl';
+                $this->Ausgabe($message, 'Warnung', 1000, Growl::TYPE_INFO);
+                return $this->render('_form_picsforimpressum', [
+                            'DynamicModel' => $DynamicModel,
+                            'max' => $max,
+                            'arrayOfFileNames' => $arrayOfFileNames,
+                            'arrayOfBez' => $arrayOfBez
+                ]);
+            }
+            $pathTo = Yii::getAlias('@pictures');
+            $filename = $DynamicModel->file;
+            $theme = 'Theme.jpg';
+            copy($pathFrom . '/' . $filename, $pathTo . '/' . $filename);
+            rename($pathTo . '/' . $filename, $pathTo . '/' . $theme);
+            $session->addFlash('success', "Herzlichen Glückwunsch. Das Theme $filename wird ab jetzt im Frontend verwendet.");
+            return $this->redirect(['/site/index']);
+        } else {
+            return $this->render('_form_picsforimpressum', [
+                        'DynamicModel' => $DynamicModel,
+                        'max' => $max,
+                        'arrayOfFileNames' => $arrayOfFileNames,
+                        'arrayOfBez' => $arrayOfBez
             ]);
         }
     }
 
     public function actionDeletion() {
-        $session=new Session();
+        $session = new Session();
         $connection = \Yii::$app->db;
-        $record = $connection->createCommand("SELECT COUNT(id) FROM dateianhang WHERE bezeichnung='Bilder für das Frontend'");
+        $record = $connection->createCommand("SELECT COUNT(id) FROM dateianhang WHERE bezeichnung='Impressumbilder'||bezeichnung='Frontendbilder'");
         $countRecords = $record->queryScalar();
         if ($countRecords == 0) {
             $session->addFlash("warning", "Derzeit sind keinerlei Themes im System vermerkt. Laden Sie welche hoch, um sie ggf. löschen zu können!");
@@ -361,10 +433,8 @@ class SiteController extends Controller {
     public function actionDelete($id) {
         $session = new Session();
         $connection = \Yii::$app->db;
-        $record = $connection->createCommand("SELECT COUNT(id) FROM dateianhang WHERE bezeichnung='Bilder für das Frontend'");
+        $record = $connection->createCommand("SELECT COUNT(id) FROM dateianhang WHERE bezeichnung='Impressumbilder'||bezeichnung='Frontendbilder'");
         $countRecords = $record->queryScalar();
-        var_dump($countRecords);
-        die();
         if ($countRecords == 0) {
             $session->addFlash("warning", "Derzeit sind keinerlei Themes im System vermerkt. Laden Sie welche hoch, um sie ggf. löschen zu können!");
             return $this->redirect(['/site/index']);

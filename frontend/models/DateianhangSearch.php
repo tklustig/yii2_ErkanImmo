@@ -21,7 +21,7 @@ class DateianhangSearch extends Dateianhang {
     }
 
     public function search($params) {
-        $query = Dateianhang::find()->where(['bezeichnung' => 'Bilder für das Frontend']);
+        $query = Dateianhang::find()->where(['bezeichnung' => 'Frontendbilder'])->orWhere(['bezeichnung' => 'Impressumbilder']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

@@ -51,6 +51,7 @@ return [
                 'show_user' => 'site/showuser',
                 'load_pictures' => 'site/create',
                 'use_pictures' => 'site/show',
+                'initialize'=>'site/initialize',
                 'deleteAll_pictures' => 'site/deleteall',
                 'picture2delete' => 'site/delete',
                 'delete_pictures' => 'site/deletion',

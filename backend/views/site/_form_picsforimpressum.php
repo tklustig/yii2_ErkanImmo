@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = "Graphical Frontend Initialization";
+$this->title = "Graphical Impressum Initialization";
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="jumbotron">
     <div class="container">
         <div class="page-header"><h2><?= Html::encode($this->title) ?><small>Sie können genau ein Theme über die DropDown-Box initialisieren</small></h2>
-            <span class="badge badge-light">Das von ihnen initialiserte Bild wird im Frontend als theme.jpg jedesmal auf's neue überschrieben</span>     
+            <span class="badge badge-light">Das von ihnen initialiserte Bild wird im Impressum als impressum.jpg jedesmal auf's neue überschrieben</span>     
         </div>
         <div class="row">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
@@ -51,3 +51,4 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php ActiveForm::end(); ?>
     </div>
 </div>
+

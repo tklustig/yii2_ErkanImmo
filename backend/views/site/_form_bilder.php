@@ -39,7 +39,7 @@ $max = frontend\models\base\LDateianhangArt::find()->max('id');
     <div class="col-md-12">
         <?=
         $form->field($model, 'l_dateianhang_art_id')->widget(\kartik\widgets\Select2::classname(), [
-            'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LDateianhangArt::find()->where(['id' => $max])->asArray()->all(), 'id', 'bezeichnung'),
+            'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LDateianhangArt::find()->where(['id' => [10,11]])->asArray()->all(), 'id', 'bezeichnung'),
             'options' => ['placeholder' => Yii::t('app', 'Dateianhangsart')],
             'pluginOptions' => [
                 'allowClear' => true

@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php
         $gridColumn = [
             'id',
-            'data:ntext',
+            'data:html',
             'art',
         ];
         echo DetailView::widget([
