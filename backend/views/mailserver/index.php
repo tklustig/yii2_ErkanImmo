@@ -1,7 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-use kartik\export\ExportMenu;
 use kartik\grid\GridView;
 
 $this->title = Yii::t('app', 'Mailserver');
@@ -25,14 +24,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'headerOptions' => ['class' => 'kartik-sheet-style'],
             'expandOneOnly' => true
         ],
-        'id',
-        'serverURL:url',
-        'serverHost',
-        'username',
-        'password',
-        'port',
-        'useEncryption',
-        'encryption',
         [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{save-as-new} {view} {update} {delete}',
@@ -42,6 +33,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
         ],
+        'id',
+        'serverURL:url',
+        'serverHost',
+        'username',
+        'password',
+        'port',
+        'useEncryption',
+        'encryption',
     ];
     ?>
     <?=

@@ -8,6 +8,7 @@ use app\models\LBegriffeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use kartik\growl\Growl;
 
 class BegriffeController extends Controller {
 
@@ -23,8 +24,22 @@ class BegriffeController extends Controller {
     }
 
     public function actionIndex() {
+        $count = LBegriffe::find()->count('id');
+        $modelBegriffe = LBegriffe::find()->all();
+        $arrayForPropData = array();
+        foreach ($modelBegriffe as $item) {
+            array_push($arrayForPropData, $item->data);
+        }
         $searchModel = new LBegriffeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        if ($count < 10) {
+            $message = "Da derzeit nur $count Records in dieser Tabelle hinterlegt sind, wird die Zuweisung im Frontend(Impressum) nicht funktionieren. Informieren Sie den Softwarehersteller!";
+            $this->Ausgabe($message, 'Error', 500, Growl::TYPE_DANGER);
+        }
+        if (count($arrayForPropData) < 10) {
+            $message = 'Damit die Zuweisung der Begriffe im Frontend(Impressum) funktionert, müssen Sie für alle Records jeweils die Spalte data mit einem Wert belegt haben! Derzeit sind aber nur ' . count($arrayForPropData) . ' Werte belegt';
+            $this->Ausgabe($message, 'Info', 1500, Growl::TYPE_SUCCESS);
+        }
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
@@ -130,6 +145,24 @@ class BegriffeController extends Controller {
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
+    }
+
+    private function Ausgabe($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
+        echo Growl::widget([
+            'type' => $type,
+            'title' => $typus,
+            'icon' => 'glyphicon glyphicon-exclamation-sign',
+            'body' => $message,
+            'showSeparator' => true,
+            'delay' => $delay,
+            'pluginOptions' => [
+                'showProgressbar' => true,
+                'placement' => [
+                    'from' => 'top',
+                    'align' => 'center',
+                ]
+            ]
+        ]);
     }
 
 }

@@ -11,7 +11,7 @@ use kartik\widgets\ActiveForm;
                 'id' => 'dynamic-form',
                 'type' => ActiveForm::TYPE_VERTICAL,
                 'formConfig' => [
-                    'showLabels' => true
+                    'showLabels' => false
                 ]
     ]);
     ?>

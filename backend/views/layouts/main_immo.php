@@ -111,7 +111,7 @@ $this->beginPage()
                         ['label' => '++++++++Mails++++++++', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
-                                ['label' => 'Mailserver konfigurieren(ToComplete)', 'url' => ['/mailserver/index']],
+                                ['label' => 'Mailserver konfigurieren', 'url' => ['/mailserver/index']],
                                 ['label' => 'Mails verschicken(ToDo)', 'url' => ['#']],
                                 ['label' => 'verschickte Mails anzeigen(ToDo)', 'url' => ['#']]
                             ],

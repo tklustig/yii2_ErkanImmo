@@ -6,25 +6,23 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 
-class Mailserver extends \yii\db\ActiveRecord
-{
+class Mailserver extends \yii\db\ActiveRecord {
+
     use \mootensai\relation\RelationTrait;
 
-    public function relationNames()
-    {
+    public function relationNames() {
         return [
             'angelegtVon',
             'aktualisiertVon'
         ];
     }
 
-    public function rules()
-    {
+    public function rules() {
         return [
             [['username', 'password', 'port', 'useEncryption', 'encryption'], 'required'],
             [['port', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
-            [['serverURL'], 'string', 'max' => 15],
+            ['serverURL', 'ip', 'ipv6' => false],
             [['serverHost'], 'string', 'max' => 64],
             [['username', 'password'], 'string', 'max' => 32],
             [['useEncryption'], 'string', 'max' => 1],
@@ -32,13 +30,11 @@ class Mailserver extends \yii\db\ActiveRecord
         ];
     }
 
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'mailserver';
     }
 
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
             'serverURL' => Yii::t('app', 'Server Url'),
@@ -55,21 +51,18 @@ class Mailserver extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getAngelegtVon()
-    {
+    public function getAngelegtVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'angelegt_von']);
     }
-        
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAktualisiertVon()
-    {
+    public function getAktualisiertVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
     }
-    
-    public function behaviors()
-    {
+
+    public function behaviors() {
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
@@ -84,4 +77,5 @@ class Mailserver extends \yii\db\ActiveRecord
             ],
         ];
     }
+
 }

@@ -12,7 +12,7 @@ class Mailserver extends BaseMailserver {
             [['username', 'password', 'port', 'useEncryption', 'encryption'], 'required'],
             [['port', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
-            [['serverURL'], 'string', 'max' => 15],
+            ['serverURL', 'ip', 'ipv6' => false],
             [['serverHost'], 'string', 'max' => 64],
             [['username', 'password'], 'string', 'max' => 32],
             [['useEncryption'], 'string', 'max' => 1],

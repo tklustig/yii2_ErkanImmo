@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Mailserver */
 
-$this->title = Yii::t('app', 'Create Mailserver');
+$this->title = Yii::t('app', 'Mailserverkonfiguration erstellen');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Mailserver'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
