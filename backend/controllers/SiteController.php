@@ -301,7 +301,7 @@ class SiteController extends Controller {
         $pathFrom = Yii::getAlias('@uploading');
         $files = FileHelper::findFiles($pathFrom);
         if (count($files) < 2) {
-            $message = 'Laden Sie zuerst eines oder mehrere Themes hoch. Derzeit können Sie dem Frontend nock kein Theme zuweisen!';
+            $message = 'Laden Sie zuerst eines oder mehrere Themes hoch. Derzeit können Sie dem Frontend noch kein Theme zuweisen!';
             $this->Ausgabe($message, 'Info', 2000, Growl::TYPE_GROWL);
         }
         $arrayOfFileNames = array();
@@ -361,7 +361,7 @@ class SiteController extends Controller {
         $files = FileHelper::findFiles($pathFrom);
 
         if (count($files) < 2) {
-            $message = 'Laden Sie zuerst eines oder mehrere Themes hoch. Derzeit können Sie dem Impressum nock kein Theme zuweisen!';
+            $message = 'Laden Sie zuerst eines oder mehrere Themes hoch. Derzeit können Sie dem Impressum noch kein Theme zuweisen!';
             $this->Ausgabe($message, 'Info', 2000, Growl::TYPE_GROWL);
         }
         $arrayOfFileNames = array();
