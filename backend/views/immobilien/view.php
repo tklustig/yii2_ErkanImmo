@@ -88,10 +88,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'angelegtVon.id',
                         'label' => Yii::t('app', 'Angelegt Von')
                     ],
-                    [
-                        'attribute' => 'aktualisiertVon.id',
-                        'label' => Yii::t('app', 'Aktualisiert Von')
-                    ],
                 ];
                 echo Gridview::widget([
                     'dataProvider' => $providerBesichtigungstermin,

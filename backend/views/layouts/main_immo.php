@@ -105,6 +105,13 @@ $this->beginPage()
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Alle Kundendaten abrufen', 'url' => ['/kunde/index']],
+                            ],
+                        ],
+                        '<li class="divider"></li>',
+                        ['label' => '++++++++Mails++++++++', 'url' => ['#'],
+                            'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
+                            'items' => [
+                                ['label' => 'Mailserver konfigurieren(ToComplete)', 'url' => ['/mailserver/index']],
                                 ['label' => 'Mails verschicken(ToDo)', 'url' => ['#']],
                                 ['label' => 'verschickte Mails anzeigen(ToDo)', 'url' => ['#']]
                             ],
