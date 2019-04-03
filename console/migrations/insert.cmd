@@ -9,5 +9,5 @@ SET /p nameOfDump=Enter name of dump:
 REM with backslash after last folder 
 SET /p path2dump=Enter path to dump: 
 Set /p database=Enter name of database:
-mysql -u root %database% < %path2dump%%nameOfDump%
+mysql -u root -p %database% --default-character-set=utf8mb4 < %path2dump%%nameOfDump% 
 pause
