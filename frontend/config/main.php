@@ -62,6 +62,7 @@ return [
                 'termin_link' => 'termin/link',
                 'termin_zeigen' => 'termin/view',
                 'termin_selektieren' => 'termin/preselect',
+                'termin_map' => 'termin/googlemap',
                 'plz_get' => 'plz/get-city-province',
                 'termin_viewen' => 'termin/view',
                 'pdf_kunde' => '/kunde/pdf',

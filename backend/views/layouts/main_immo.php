@@ -79,12 +79,12 @@ $this->beginPage()
                             'items' => [
                                 ['label' => 'Rechnung anzeigen/drucken', 'url' => ['/rechnung/index']],
                                 ['label' => 'Rechnung erstellen', 'url' => ['/rechnung/create']],
-                                ['label' => 'LRechnungsrumpf bearbeiten', 'url' => ['/kopf/index']],
-                                ['label' => 'LRechnungsart bearbeiten', 'url' => ['/rechnungsart/index']],
+                                ['label' => 'Rechnungsrumpf bearbeiten', 'url' => ['/kopf/index']],
+                                ['label' => 'Rechnungsart bearbeiten', 'url' => ['/rechnungsart/index']],
                             ],
                         ],
                         '<li class="divider"></li>',
-                        ['label' => 'Immobilien', 'url' => ['#'],
+                        ['label' => '++++++++++Immobilien+++++++++++', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Neue Immobilie anlegen', 'url' => ['/immobilien/decide']],
@@ -92,7 +92,7 @@ $this->beginPage()
                             ],
                         ],
                         '<li class="divider"></li>',
-                        ['label' => 'Bankverbindungen',
+                        ['label' => '++++++++++++Bankverbindungen+++++++++++',
                             'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
@@ -101,7 +101,7 @@ $this->beginPage()
                             ],
                         ],
                         '<li class="divider"></li>',
-                        ['label' => 'Kunden', 'url' => ['#'],
+                        ['label' => '+++++++Kunden++++++++', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Alle Kundendaten abrufen', 'url' => ['/kunde/index']],
@@ -117,7 +117,7 @@ $this->beginPage()
                             ],
                         ],
                         '<li class="divider"></li>',
-                        ['label' => 'Termine', 'url' => ['#'],
+                        ['label' => '+++++++Termine(ToComplete:googleMap)+++++++', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Alle Besichtigungstermine abrufen', 'url' => $link],
@@ -125,7 +125,7 @@ $this->beginPage()
                             ],
                         ],
                         '<li class="divider"></li>',
-                        ['label' => 'User',
+                        ['label' => '++++++++++User++++++++',
                             'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [

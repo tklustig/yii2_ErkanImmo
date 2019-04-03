@@ -231,6 +231,11 @@ class TerminController extends Controller {
         $zusatz = '?message=Der+Termin+wurde+mitsamt+seinen++Relationen+gelöscht%21';
         return $this->redirect($link . $zusatz);
     }
+    
+    public function actionMap($id){
+        print_r("Diese Website soll den Treffpunkt in GoogleMaps anzeigen. Derzeit ist dieses Feature allerdings noch eine Baustelle<br>Übergeben wurde die Id:$id<br>Script in der Klasse". get_class().' angehalten');
+        die();
+    }
 
     protected function findModelKunde($id) {
         if (($model = Kunde::findOne($id)) !== null) {

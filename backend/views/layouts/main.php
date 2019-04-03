@@ -64,8 +64,8 @@ AssetBundle::register($this);
                                     'items' => [
                                         ['label' => 'Rechnung anzeigen/drucken', 'url' => ['/rechnung/index']],
                                         ['label' => 'Rechnung erstellen', 'url' => ['/rechnung/create']],
-                                        ['label' => 'LRechnungsrumpf bearbeiten', 'url' => ['/kopf/index']],
-                                        ['label' => 'LRechnungsart bearbeiten', 'url' => ['/rechnungsart/index']],
+                                        ['label' => 'Rechnungsrumpf bearbeiten', 'url' => ['/kopf/index']],
+                                        ['label' => 'Rechnungsart bearbeiten', 'url' => ['/rechnungsart/index']],
                                     ],
                                 ],
                                 '<li class="divider"></li>',
@@ -102,7 +102,7 @@ AssetBundle::register($this);
                                     ],
                                 ],
                                 '<li class="divider"></li>',
-                                ['label' => '+++++++Termine+++++++', 'url' => ['#'],
+                                ['label' => '+++++++Termine(ToComplete:googleMap)+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
                                         ['label' => 'Alle Besichtigungstermine abrufen', 'url' => $link],
