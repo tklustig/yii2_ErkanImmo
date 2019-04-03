@@ -13,6 +13,7 @@ use kartik\widgets\Growl;
 use frontend\models\EDateianhang;
 use frontend\models\Dateianhang;
 use kartik\widgets\Alert;
+use yii\web\Session;
 
 /**
  * ImmobilienController implements the CRUD actions for Immobilien model.
@@ -331,6 +332,12 @@ class ImmobilienController extends Controller {
     }
 
     public function actionIndex($id) {
+        $countImmo = Immobilien::find()->count('id');
+        if ($countImmo == 0) {
+            $session = new Session();
+            $session->addFlash('info', 'Es exisiteren noch keine Immobilien in der Datenbank. Erst, wenn der Admin welche eingepflegt hat, lässt sich dieses Feature aufrufen.');
+            return $this->redirect(['/site/index']);
+        }
         $art = Immobilien::findOne(['id' => $id])->l_art_id;
         $searchModel = new ImmobilienSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $id, $art);
