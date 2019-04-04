@@ -1,63 +1,108 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\Firma */
-/* @var $form yii\widgets\ActiveForm */
-
+use kartik\widgets\ActiveForm;
 ?>
 
 <div class="firma-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php
+    $form = ActiveForm::begin([
+                'id' => 'dynamic-form',
+                'type' => ActiveForm::TYPE_VERTICAL,
+                'formConfig' => [
+                    'showLabels' => false
+                ]
+    ]);
+    ?>
 
     <?= $form->errorSummary($model); ?>
-
-    <?= $form->field($model, 'id')->textInput(['placeholder' => 'Id']) ?>
-
-    <?= $form->field($model, 'firmenname')->textInput(['maxlength' => true, 'placeholder' => 'Firmenname']) ?>
-
-    <?= $form->field($model, 'l_rechtsform_id')->widget(\kartik\widgets\Select2::classname(), [
-        'data' => \yii\helpers\ArrayHelper::map(\backend\models\LRechtsform::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-        'options' => ['placeholder' => Yii::t('app', 'Choose L rechtsform')],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]); ?>
-
-    <?= $form->field($model, 'strasse')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
-
-    <?= $form->field($model, 'hausnummer')->textInput(['placeholder' => 'Hausnummer']) ?>
-
-    <?= $form->field($model, 'l_plz_id')->widget(\kartik\widgets\Select2::classname(), [
-        'data' => \yii\helpers\ArrayHelper::map(frontend\models\LPlz::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
-        'options' => ['placeholder' => Yii::t('app', 'Choose L plz')],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ]); ?>
-
-    <?= $form->field($model, 'ort')->textInput(['maxlength' => true, 'placeholder' => 'Ort']) ?>
-
-    <?= $form->field($model, 'geschaeftsfuehrer')->textInput(['maxlength' => true, 'placeholder' => 'Geschaeftsfuehrer']) ?>
-
-    <?= $form->field($model, 'prokurist')->textInput(['maxlength' => true, 'placeholder' => 'Prokurist']) ?>
-
-    <?= $form->field($model, 'umsatzsteuerID')->textInput(['maxlength' => true, 'placeholder' => 'UmsatzsteuerID']) ?>
-
-    <?= $form->field($model, 'anzahlMitarbeiter')->textInput(['placeholder' => 'AnzahlMitarbeiter']) ?>
+    <div class="row">
+        <div class="col-md-6">
+            <?=
+            $form->field($model, 'l_rechtsform_id', ['addon' => [
+                    'prepend' => ['content' => 'Rechtsform']]])->widget(\kartik\widgets\Select2::classname(), [
+                'data' => \yii\helpers\ArrayHelper::map(\backend\models\LRechtsform::find()->orderBy('id')->asArray()->all(), 'id', 'typus'),
+                'options' => ['placeholder' => Yii::t('app', 'Rechtsform wählen')],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
+            ?>
+        </div>
+        <div class="col-md-6">
+            <?= $form->field($model, 'firmenname', ['addon' => [
+                    'prepend' => ['content' => 'Firmenname']]])->textInput(['maxlength' => true])
+            ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'strasse', ['addon' => [
+                    'prepend' => ['content' => 'Strasse']]])->textInput(['maxlength' => true])
+            ?>
+        </div>
+        <div class="col-md-3">
+            <?=
+            $form->field($model, 'hausnummer', ['addon' => [
+                    'prepend' => ['content' => 'Hausnummer']]])->textInput();
+            ?>
+        </div>
+        <div class="col-md-3">
+            <?=
+            $form->field($model, 'l_plz_id', ['addon' => [
+                    'prepend' => ['content' => 'Plz']]])->widget(\kartik\widgets\Select2::classname(), [
+                'data' => \yii\helpers\ArrayHelper::map(frontend\models\LPlz::find()->orderBy('id')->asArray()->all(), 'id', 'plz'),
+                'options' => ['placeholder' => Yii::t('app', 'Plz wählen')],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
+            ?>
+        </div>
+        <div class="col-md-3">
+<?= $form->field($model, 'ort', ['addon' => [
+        'prepend' => ['content' => 'Standort']]])->textInput(['maxlength' => true])
+?>
+        </div>
+        <div class="col-md-12">
+            <?= $form->field($model, 'geschaeftsfuehrer', ['addon' => [
+                    'prepend' => ['content' => 'Geschäftsführer']]])->textInput(['maxlength' => true])
+            ?>
+        </div>
+        <div class="col-md-4">
+            <?= $form->field($model, 'prokurist', ['addon' => [
+                    'prepend' => ['content' => 'Prokurist']]])->textInput(['maxlength' => true])
+            ?>
+        </div>
+        <div class="col-md-4">
+            <?= $form->field($model, 'umsatzsteuerID', ['addon' => [
+                    'prepend' => ['content' => 'UmsatzsteuerID']]])->textInput(['maxlength' => true])
+            ?>
+        </div>
+        <div class="col-md-4">
+            <?=
+            $form->field($model, 'anzahlMitarbeiter', ['addon' => [
+                    'prepend' => ['content' => 'Mitarbeiteranzahl']]])->widget(kartik\slider\Slider::classname(), [
+                'pluginOptions' => [
+                    'min' => 0,
+                    'max' => 50,
+                    'step' => 1,
+                    'handle' => 'triangle',
+                    'tooltip' => 'always'
+                ]
+            ]);
+            ?>
+        </div>
+    </div>
     <div class="form-group">
-    <?php if(Yii::$app->controller->action->id != 'save-as-new'): ?>
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
+    <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     <?php endif; ?>
-    <?php if(Yii::$app->controller->action->id != 'create'): ?>
-        <?= Html::submitButton(Yii::t('app', 'Save As New'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
-    <?php endif; ?>
-        <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer , ['class'=> 'btn btn-danger']) ?>
+    <?php if (Yii::$app->controller->action->id != 'create'): ?>
+    <?= Html::submitButton(Yii::t('app', 'Save As New'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
+<?php endif; ?>
+<?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer, ['class' => 'btn btn-danger']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+<?php ActiveForm::end(); ?>
 
 </div>
