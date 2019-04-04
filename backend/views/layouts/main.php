@@ -102,7 +102,7 @@ AssetBundle::register($this);
                                     ],
                                 ],
                                 '<li class="divider"></li>',
-                                ['label' => '+++++++Termine(ToComplete:googleMap)+++++++', 'url' => ['#'],
+                                ['label' => '+++++++Termine+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
                                         ['label' => 'Alle Besichtigungstermine abrufen', 'url' => $link],

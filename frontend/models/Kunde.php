@@ -15,7 +15,7 @@ class Kunde extends BaseKunde {
             ['email', 'email'],
             [['vorname', 'nachname', 'stadt'], 'string', 'max' => 255],
             [['strasse'], 'string', 'max' => 44],
-            [['solvenz'], 'string', 'max' => 1],
+            [['solvenz'], 'boolean'],
             ['telefon', 'filter', 'filter' => function ($value) {
                     return $value;
                 }]]);

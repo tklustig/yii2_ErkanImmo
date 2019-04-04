@@ -20,7 +20,7 @@ class Besichtigungstermin extends BaseBesichtigungstermin
             [['uhrzeit', 'Immobilien_id'], 'required'],
             [['uhrzeit', 'angelegt_am', 'aktualisiert_am'], 'safe'],
             [['angelegt_von', 'aktualisiert_von', 'Immobilien_id'], 'integer'],
-            [['Relevanz'], 'string', 'max' => 1]
+            [['Relevanz'], 'boolean']
         ]);
     }
 	

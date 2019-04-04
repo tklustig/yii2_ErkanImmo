@@ -25,6 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php Pjax::begin(); ?>
     <?php
     $link = \Yii::$app->urlManagerBackend->baseUrl . '/home';
+    $dummy = 'id';
     $showLink = false;
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
@@ -45,9 +46,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 return $model->immobilien->id;
             }
         ],
+        [
+            'attribute' => $dummy,
+            'label' => Yii::t('app', 'mit Makler'),
+            'value' => function($model, $id) {
+                $maklerId = frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->admin_id;
+                $maklerName = common\models\User::findOne(['id' => $maklerId])->username;
+                return $maklerName;
+            }
+        ],
         'immobilien.stadt',
         [
-            'attribute' => '',
+            'attribute' => $dummy,
             'label' => Yii::t('app', 'Art'),
             'value' => function($model) {
                 if ($model->immobilien->l_art_id == 1)
@@ -68,21 +78,24 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{kunde} {map}<br>{update}',
+            'template' => '{kunde}<br>{kundenmap} {immomap}<br>{update} {delete}',
             'buttons' => [
-                'kunde' => function ($model, $id) {
+                'kunde' => function ( $id, $model) {
                     $sessionPHP = Yii::$app->session;
                     $sessionPHP->open();
                     $header = $sessionPHP['header'];
                     $sessionPHP->close();
-                    return Html::a('<span class="glyphicon glyphicon-home"></span>', ['/termin/link', 'id' => $id->id, 'header' => $header], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
+                    return Html::a('<span class="glyphicon glyphicon-home"></span>', ['/termin/link', 'id' => $model->id, 'header' => $header], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
                 },
-                'map' => function ($model, $id) {
-                    return Html::a('<span class="glyphicon glyphicon-zoom-in"></span>', ['/termin/map', 'id' => $id->id], ['title' => 'Treffpunkt in Karte anzeigen', 'data' => ['pjax' => '0']]);
+                'kundenmap' => function ( $id, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-download"></span>', ['/termin/map', 'id' => $model->id], ['title' => 'Kundenwohnort in Karte anzeigen. Blendet danach alle Termine ein', 'data' => ['pjax' => '0']]);
                 },
-                'update' => function ($model, $id) {
-                    return Html::a('<span class="glyphicon glyphicon-pencil"></span>', ['/termin/update', 'id' => $id->id], ['title' => 'Bearbeiten']);
+                'immomap' => function ( $id, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-upload"></span>', ['/termin/googlemap', 'id' => $model->id], ['title' => 'Treffpunkt in Karte anzeigen. Blendet danach alle Termine ein', 'data' => ['pjax' => '0']]);
                 },
+            /* 'update' => function ( $id, $model) {
+              return Html::a('<span class="glyphicon glyphicon-pencil"></span>', ['/termin/update', 'id' => $model->id], ['title' => 'Bearbeiten']);
+              }, */
             ],
         ],
     ];

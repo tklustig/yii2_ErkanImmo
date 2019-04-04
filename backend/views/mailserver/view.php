@@ -15,64 +15,65 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="row">
         <div class="col-sm-8">
-            <h2><?= Yii::t('app', 'Mailserver').' '. Html::encode($this->title) ?></h2>
+            <h2><?= Yii::t('app', 'Mailserver') . ' ' . Html::encode($this->title) ?></h2>
         </div>
         <div class="col-sm-4" style="margin-top: 15px">
-<?=             
-             Html::a('<i class="fa glyphicon glyphicon-hand-up"></i> ' . Yii::t('app', 'PDF'), 
-                ['pdf', 'id' => $model->id],
-                [
-                    'class' => 'btn btn-danger',
-                    'target' => '_blank',
-                    'data-toggle' => 'tooltip',
-                    'title' => Yii::t('app', 'Will open the generated PDF file in a new window')
-                ]
-            )?>
-            <?= Html::a(Yii::t('app', 'Save As New'), ['save-as-new', 'id' => $model->id], ['class' => 'btn btn-info']) ?>            
-            <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
+            <?=
+            Html::a('<i class="fa glyphicon glyphicon-hand-up"></i> ' . Yii::t('app', 'PDF'), ['pdf', 'id' => $model->id], [
                 'class' => 'btn btn-danger',
-                'data' => [
-                    'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                    'method' => 'post',
-                ],
-            ])
+                'target' => '_blank',
+                'data-toggle' => 'tooltip',
+                'title' => Yii::t('app', 'Will open the generated PDF file in a new window')
+                    ]
+            )
             ?>
+            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/site/index'], ['class' => 'btn btn-primary ']) ?>  
         </div>
     </div>
 
     <div class="row">
-<?php 
-    $gridColumn = [
-        'id',
-        'serverURL:url',
-        'serverHost',
-        'username',
-        'password',
-        'port',
-        'useEncryption',
-        'encryption',
-        [
-            'attribute' => 'angelegtVon.id',
-            'label' => Yii::t('app', 'Angelegt Von'),
-        ],
-        [
-            'attribute' => 'aktualisiertVon.id',
-            'label' => Yii::t('app', 'Aktualisiert Von'),
-        ],
-        'angelegt_am',
-        'aktualisiert_am',
-    ];
-    echo DetailView::widget([
-        'model' => $model,
-        'attributes' => $gridColumn
-    ]);
-?>
+        <?php
+        $gridColumn = [
+            'id',
+            'serverURL:url',
+            'serverHost',
+            'username',
+            'password',
+            'port',
+            [
+                'attribute' => 'useEncryption',
+                'format' => 'raw',
+                'value' => $model->useEncryption ? '<span class="label label-success">Ja</span>' : '<span class="label label-danger">Nein</span>',
+                'widgetOptions' => [
+                    'pluginOptions' => [
+                        'onText' => 'Ja',
+                        'offText' => 'Nein',
+                    ]
+                ],
+                'valueColOptions' => ['style' => 'width:30%']
+            ],
+            'encryption',
+            [
+                'attribute' => 'angelegtVon.username',
+                'label' => Yii::t('app', 'Angelegt Von'),
+            ],
+            [
+                'attribute' => 'aktualisiertVon.username',
+                'label' => Yii::t('app', 'Aktualisiert Von'),
+            ],
+            'angelegt_am',
+            'aktualisiert_am',
+        ];
+        echo DetailView::widget([
+            'model' => $model,
+            'attributes' => $gridColumn
+        ]);
+        ?>
     </div>
     <div class="row">
-        <h4>User<?= ' '. Html::encode($this->title) ?></h4>
+        <h4>User<?= ' ' . Html::encode($this->title) ?></h4>
     </div>
-    <?php 
+    <?php
     $gridColumnUser = [
         'id',
         'username',
@@ -87,12 +88,12 @@ $this->params['breadcrumbs'][] = $this->title;
     ];
     echo DetailView::widget([
         'model' => $model->angelegtVon,
-        'attributes' => $gridColumnUser    ]);
+        'attributes' => $gridColumnUser]);
     ?>
     <div class="row">
-        <h4>User<?= ' '. Html::encode($this->title) ?></h4>
+        <h4>User<?= ' ' . Html::encode($this->title) ?></h4>
     </div>
-    <?php 
+    <?php
     $gridColumnUser = [
         'id',
         'username',
@@ -107,6 +108,6 @@ $this->params['breadcrumbs'][] = $this->title;
     ];
     echo DetailView::widget([
         'model' => $model->aktualisiertVon,
-        'attributes' => $gridColumnUser    ]);
+        'attributes' => $gridColumnUser]);
     ?>
 </div>

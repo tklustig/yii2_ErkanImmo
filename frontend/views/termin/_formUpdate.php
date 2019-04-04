@@ -128,101 +128,108 @@ use common\models\User;
                                     $form->field($modelKunde, 'telefon', ['addon' => [
                                             'prepend' => ['content' => 'Telefon'], 'append' => ['content' => 'Handy bevorzugt']]])->textInput();
                                     ?>  
+                                    <div class="col-md-12">
+                                        <?=
+                                        $form->field($modelKunde, 'solvenz', ['addon' => [
+                                                'prepend' => ['content' => 'ist luiquide']]])->widget(\kartik\checkbox\CheckboxX::classname(), [
+                                            'autoLabel' => false,
+                                        ])->label(false);
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
+                            <!--  Ending global CSS rules-->
                         </div>
-                        <!--  Ending global CSS rules-->
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Terminangaben-->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box-body">
-                <div class="box-group" id="accordion">
-                    <!--  End of Defining global CSS rules-->
-                    <!-- Beginn des Personenformulars-->
-                    <div class="panel box box-primary">
-                        <div class="box-header with-border">
-                            <h4 class="box-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                    Angaben zum Termin
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseOne" class="panel-collapse collapse in"> <!-- !weist der Column die JS-Id zu!-->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <?=
-                                    $form->field($model, 'uhrzeit', ['addon' => [
-                                            'prepend' => ['content' => 'Uhrzeit und Datum']]])->widget(DateTimePicker::classname(), [
-                                        'options' => ['placeholder' => 'Zeitpunkt eingeben'],
-                                        'pluginOptions' => [
-                                            'autoclose' => true,
-                                            'format' => 'yyyy-mm-dd hh:ii:ss',
-                                        ]
-                                    ]);
-                                    ?>
-                                </div>
-                                <div class="col-md-6">
-                                    <?=
-                                    $form->field($model, 'Relevanz', ['addon' => [
-                                            'prepend' => ['content' => 'An Abwicklung interesiert']]])->widget(\kartik\checkbox\CheckboxX::classname(), [
-                                        'autoLabel' => false,
-                                    ])->label(false);
-                                    ?>
+        <!-- Terminangaben-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box-body">
+                    <div class="box-group" id="accordion">
+                        <!--  End of Defining global CSS rules-->
+                        <!-- Beginn des Personenformulars-->
+                        <div class="panel box box-primary">
+                            <div class="box-header with-border">
+                                <h4 class="box-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                        Angaben zum Termin
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in"> <!-- !weist der Column die JS-Id zu!-->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <?=
+                                        $form->field($model, 'uhrzeit', ['addon' => [
+                                                'prepend' => ['content' => 'Uhrzeit und Datum']]])->widget(DateTimePicker::classname(), [
+                                            'options' => ['placeholder' => 'Zeitpunkt eingeben'],
+                                            'pluginOptions' => [
+                                                'autoclose' => true,
+                                                'format' => 'yyyy-mm-dd hh:ii:ss',
+                                            ]
+                                        ]);
+                                        ?>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <?=
+                                        $form->field($model, 'Relevanz', ['addon' => [
+                                                'prepend' => ['content' => 'An Abwicklung interesiert']]])->widget(\kartik\checkbox\CheckboxX::classname(), [
+                                            'autoLabel' => false,
+                                        ])->label(false);
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
+                            <!--  Ending global CSS rules-->
                         </div>
-                        <!--  Ending global CSS rules-->
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box-body">
-                <div class="row">                                                    
-                    <?php
-                    ?>
-                    <div class="col-md-6">
-                        <?=
-                        $form->field($model, 'aktualisiert_von', ['addon' => [
-                                'prepend' => ['content' => 'aktualisert von']]])->widget(\kartik\widgets\Select2::classname(), [
-                            'data' => \yii\helpers\ArrayHelper::map(User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
-                            'options' => ['placeholder' => Yii::t('app', 'Makler selektieren')],
-                        ]);
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box-body">
+                    <div class="row">                                                    
+                        <?php
                         ?>
-                    </div>
-                    <div class="col-md-6">
-                        <?=
-                        $form->field($model, 'aktualisiert_am', ['addon' => [
-                                'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
-                            'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-                            'disabled' => true,
-                            'saveFormat' => 'php:Y-m-d H:i:s',
-                            'ajaxConversion' => true,
-                        ]);
-                        ?>
+                        <div class="col-md-6">
+                            <?=
+                            $form->field($model, 'aktualisiert_von', ['addon' => [
+                                    'prepend' => ['content' => 'aktualisert von']]])->widget(\kartik\widgets\Select2::classname(), [
+                                'data' => \yii\helpers\ArrayHelper::map(User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
+                                'options' => ['placeholder' => Yii::t('app', 'Makler selektieren')],
+                            ]);
+                            ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?=
+                            $form->field($model, 'aktualisiert_am', ['addon' => [
+                                    'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                                'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+                                'disabled' => true,
+                                'saveFormat' => 'php:Y-m-d H:i:s',
+                                'ajaxConversion' => true,
+                            ]);
+                            ?>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box-body">
-                <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
-                    <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Erzeugen') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-                <?php endif; ?>
-                <?= Html::a(Yii::t('app', 'Abbruch'), $link, ['class' => 'btn btn-danger']) ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box-body">
+                    <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
+                        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Erzeugen') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+                    <?php endif; ?>
+                    <?= Html::a(Yii::t('app', 'Abbruch'), $link, ['class' => 'btn btn-danger']) ?>
+                </div>
             </div>
         </div>
-    </div>
-    <?php ActiveForm::end(); ?>
+        <?php ActiveForm::end(); ?>
 

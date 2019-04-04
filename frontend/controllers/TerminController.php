@@ -81,11 +81,12 @@ class TerminController extends Controller {
                         'header' => $header
             ]);
             //nix traf zu? Dann render die index ohne Einschränkungen
-        } else
+        } else {
             return $this->render('index', [
                         'searchModel' => $searchModel,
                         'dataProvider' => $dataProvider,
             ]);
+        }
     }
 
     public function actionPreselect($message = NULL) {
@@ -234,6 +235,9 @@ class TerminController extends Controller {
     }
 
     public function actionMap($id) {
+        $searchModel = new TerminSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
         /* Hole Datenbankdaten */
 
         //eruiere die Id der Firma. Es gibt immer nur eine!
@@ -279,11 +283,63 @@ class TerminController extends Controller {
         $urlSpecific = "$startPointOrt+$startPointStr,+$startPointOrt/$endPointStr+$endPointOrt";
         $gooleUrl = $basisUrl . $urlSpecific;
         //in googleUrl ist die aufzurufende Url enthalten. Damit blenden wir oben einen Link ein, der GoogleMaps in einem neuen Tab rendert
-        return Html::a("GoogleMaps laden", $gooleUrl, ['class' => 'btn btn-success btn-block', 'target' => '_blank', 'title' => "Load googleMaps"]);
-        /*  var_dump($startPointOrt);
+        echo Html::a("Kunden-Map laden", $gooleUrl, ['class' => 'btn btn-success btn-block', 'target' => '_blank', 'title' => "Load Customer"]);
+        //zu gute Letzt rendern wir das Formular erneut
+        return $this->render('index', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
+        /* Bei Problemen Code entkommentieren und vor den render Befehl verschieben
+          var_dump($startPointOrt);
+          print_r('<br>');
           var_dump($startPointStr);
+          print_r('<br>');
           var_dump($endPointOrt);
-          var_dump($endPointStr); */
+          print_r('<br>');
+          var_dump($endPointStr);
+          die();
+         */
+    }
+
+    public function actionGooglemap($id) {
+        $searchModel = new TerminSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $idFirma = Firma::find()->min('id');
+        if (!empty($idFirma)) {
+            $startPunkt = Firma::findOne(['id' => $idFirma])->ort;
+            $startStrasse = Firma::findOne(['id' => $idFirma])->strasse;
+        } else {
+            $session = new Session();
+            $session->addFlash('info', 'Da Sie ihre Firmendaten noch nicht hinterlegt bzw. eingespeist haben, kann die Googlemap Funtion nicht aufgerufen werden!');
+            return $this->redirect(['/site/index']);
+        }
+        if (stristr($startPunkt, ',')) {
+            $arrayOfSP = explode(',', $startPunkt);
+            $startPointOrt = $arrayOfSP[0];
+        } else
+            $startPointOrt = $startPunkt;
+
+        $startPointStr = $startStrasse;
+        $kundenId = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->kunde_id;
+        $immoId = Kundeimmobillie::findOne(['kunde_id' => $kundenId])->immobilien_id;
+        $endPunkt = Immobilien::findOne(['id' => $immoId])->stadt;
+        $endStrasse = Immobilien::findOne(['id' => $immoId])->strasse;
+        if (stristr($endPunkt, ',')) {
+            $arrayOfEP = explode(',', $endPunkt);
+            $endPointOrt = $arrayOfEP[0];
+        } else
+            $endPointOrt = $endPunkt;
+        $endPointStr = $endStrasse;
+        /* jetzt haben wird alle Komponenten:startPointOrt und startPointStr,endPointOrt und endPointStr. Damit basteln wir uns den 
+          GoogleMap-Aufruf zusammen */
+        $basisUrl = 'https://www.google.de/maps/dir/';
+        $urlSpecific = "$startPointOrt+$startPointStr,+$startPointOrt/$endPointStr+$endPointOrt";
+        $gooleUrl = $basisUrl . $urlSpecific;
+        echo Html::a("Treffpunkt-Map laden", $gooleUrl, ['class' => 'btn btn-success btn-block', 'target' => '_blank', 'title' => "Load Immo"]);
+        return $this->render('index', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
     }
 
     protected function findModelKunde($id) {

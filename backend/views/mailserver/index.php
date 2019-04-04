@@ -24,23 +24,36 @@ $this->params['breadcrumbs'][] = $this->title;
             'headerOptions' => ['class' => 'kartik-sheet-style'],
             'expandOneOnly' => true
         ],
+        'id',
+        'serverURL:url',
+        'serverHost',
+        'username',
+        [
+            'attribute' => 'password',
+            'label' => Yii::t('app', 'Passwort'),
+            'value' => function($model) {
+                return $model->password ? '*****' : Null;
+            },
+        ],
+        'port',
+        [
+            'class' => 'kartik\grid\BooleanColumn',
+            'attribute' => 'useEncryption',
+            'trueLabel' => 'Ja',
+            'falseLabel' => 'Nein',
+            'label' => '<span class="glyphicon glyphicon-piggy-bank"></span>' . '<br>Verschlüsselung aktiviert',
+            'encodeLabel' => false,
+        ],
+        'encryption',
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{save-as-new} {view} {update} {delete}',
+            'template' => '{save-as-new}{view}{update}{delete}',
             'buttons' => [
                 'save-as-new' => function ($url) {
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Save As New']);
                 },
             ],
         ],
-        'id',
-        'serverURL:url',
-        'serverHost',
-        'username',
-        'password',
-        'port',
-        'useEncryption',
-        'encryption',
     ];
     ?>
     <?=
