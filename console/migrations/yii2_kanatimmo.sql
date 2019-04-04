@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 03. Apr 2019 um 22:33
+-- Erstellungszeit: 04. Apr 2019 um 17:00
 -- Server-Version: 10.1.37-MariaDB
--- PHP-Version: 7.2.13
+-- PHP-Version: 7.1.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -157,6 +157,37 @@ INSERT INTO `e_dateianhang` (`id`, `immobilien_id`, `user_id`, `kunde_id`) VALUE
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `firma`
+--
+
+CREATE TABLE `firma` (
+  `id` int(11) NOT NULL,
+  `firmenname` varchar(64) COLLATE utf8_german2_ci NOT NULL,
+  `l_rechtsform_id` int(11) NOT NULL,
+  `strasse` varchar(64) COLLATE utf8_german2_ci NOT NULL,
+  `hausnummer` smallint(6) DEFAULT NULL,
+  `l_plz_id` int(11) NOT NULL,
+  `ort` varchar(64) COLLATE utf8_german2_ci NOT NULL,
+  `geschaeftsfuehrer` varchar(32) COLLATE utf8_german2_ci DEFAULT NULL,
+  `prokurist` varchar(32) COLLATE utf8_german2_ci DEFAULT NULL,
+  `umsatzsteuerID` varchar(64) COLLATE utf8_german2_ci DEFAULT NULL,
+  `anzahlMitarbeiter` smallint(6) DEFAULT NULL,
+  `angelegt_von` int(11) DEFAULT NULL,
+  `aktualisiert_von` int(11) DEFAULT NULL,
+  `angelegt_am` datetime NOT NULL,
+  `aktualisiert_am` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_german2_ci;
+
+--
+-- Daten für Tabelle `firma`
+--
+
+INSERT INTO `firma` (`id`, `firmenname`, `l_rechtsform_id`, `strasse`, `hausnummer`, `l_plz_id`, `ort`, `geschaeftsfuehrer`, `prokurist`, `umsatzsteuerID`, `anzahlMitarbeiter`, `angelegt_von`, `aktualisiert_von`, `angelegt_am`, `aktualisiert_am`) VALUES
+(1, 'Schmidt&Söhne', 3, 'Noltemeyerbrücke', 12, 5855, 'Bothfeld, Groß Buchholz, Lahe ', 'Herr Dr. Schmidt', '', 'ABC-123456-YZ-ADF', 4, 4, 4, '2019-04-04 15:08:16', '2019-04-04 15:34:48');
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `immobilien`
 --
 
@@ -247,9 +278,9 @@ CREATE TABLE `kunde` (
 
 INSERT INTO `kunde` (`id`, `l_plz_id`, `geschlecht`, `vorname`, `nachname`, `stadt`, `strasse`, `geburtsdatum`, `solvenz`, `telefon`, `email`, `bankverbindung_id`, `angelegt_am`, `aktualisiert_am`, `angelegt_von`, `aktualisiert_von`) VALUES
 (1, 5855, 1, 'Michael', 'Krenz', 'Bothfeld, Groß Buchholz, Lahe ', 'Klein Buchholzer Kirchweg  14C', '1961-03-21', 0, '0152/37389041', 'michael@gmx.net', 14, '2019-02-16 09:23:34', '2019-03-03 23:33:35', 3, 3),
-(2, 285, 2, 'Susanne', 'Albrecht', 'Cottbus', 'Krumme Lanke 30', '1983-09-20', 1, '03445/667832', 'albrecht@web.de', NULL, '2019-02-16 09:27:53', '2019-04-03 19:55:56', 4, 3),
-(3, 9915, 4, 'Lydia', 'Scholz', 'Ennepetal', 'Goethestr. 12', '1975-02-17', 0, '01542567880', 'lydia@gmx.net', 5, '2019-02-27 19:18:35', '2019-03-04 00:59:38', 4, NULL),
-(4, 2502, 10, 'Friedrich', 'Schubert', 'Bliesdorf', 'Schwalbengasse 23', '1985-02-02', 1, '', 'friedrich@gmail.com', NULL, '2019-02-27 20:10:06', '2019-03-02 20:11:31', 3, NULL);
+(2, 285, 2, 'Susanne', 'Albrecht', 'Cottbus', 'Ahornweg 2', '1983-09-20', 1, '03445/667832', 'albrecht@web.de', NULL, '2019-02-16 09:27:53', '2019-04-03 19:55:56', 4, 3),
+(3, 9915, 4, 'Lydia', 'Scholz', 'Ennepetal', 'Akazienweg', '1975-02-17', 0, '01542567880', 'lydia@gmx.net', 5, '2019-02-27 19:18:35', '2019-03-04 00:59:38', 4, NULL),
+(4, 2502, 10, 'Friedrich', 'Schubert', 'Bliesdorf', 'Bliesdorfer Str.', '1985-02-02', 1, '', 'friedrich@gmail.com', NULL, '2019-02-27 20:10:06', '2019-03-02 20:11:31', 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -15703,6 +15734,33 @@ INSERT INTO `l_rechnungsart` (`id`, `data`, `art`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `l_rechtsform`
+--
+
+CREATE TABLE `l_rechtsform` (
+  `id` int(11) NOT NULL,
+  `typus` varchar(32) COLLATE utf8_german2_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_german2_ci;
+
+--
+-- Daten für Tabelle `l_rechtsform`
+--
+
+INSERT INTO `l_rechtsform` (`id`, `typus`) VALUES
+(1, 'Einzelunternehmen'),
+(2, 'GbR'),
+(3, 'GmbH & Co.KG'),
+(4, 'KG'),
+(5, 'OHG'),
+(6, 'AG'),
+(7, 'GmbH'),
+(8, 'eG'),
+(9, 'KGaA'),
+(10, 'Stiftung');
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `mailserver`
 --
 
@@ -15718,7 +15776,7 @@ CREATE TABLE `mailserver` (
   `angelegt_von` int(11) DEFAULT NULL,
   `aktualisiert_von` int(11) DEFAULT NULL,
   `angelegt_am` timestamp NULL DEFAULT NULL,
-  `aktualisiert_am` timestamp NULL DEFAULT NULL
+  `aktualisiert_am` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_german2_ci;
 
 -- --------------------------------------------------------
@@ -15843,6 +15901,16 @@ ALTER TABLE `e_dateianhang`
   ADD KEY `immobilien_id` (`immobilien_id`) USING BTREE COMMENT 'FK';
 
 --
+-- Indizes für die Tabelle `firma`
+--
+ALTER TABLE `firma`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `plzId` (`l_plz_id`),
+  ADD UNIQUE KEY `aktualisertVon` (`aktualisiert_von`),
+  ADD UNIQUE KEY `angelegtVon` (`angelegt_von`),
+  ADD KEY `rechtsformId` (`l_rechtsform_id`) USING BTREE;
+
+--
 -- Indizes für die Tabelle `immobilien`
 --
 ALTER TABLE `immobilien`
@@ -15926,6 +15994,12 @@ ALTER TABLE `l_rechnungsart`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indizes für die Tabelle `l_rechtsform`
+--
+ALTER TABLE `l_rechtsform`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indizes für die Tabelle `mailserver`
 --
 ALTER TABLE `mailserver`
@@ -15991,6 +16065,12 @@ ALTER TABLE `dateianhang`
 --
 ALTER TABLE `e_dateianhang`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT für Tabelle `firma`
+--
+ALTER TABLE `firma`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT für Tabelle `immobilien`
@@ -16059,6 +16139,12 @@ ALTER TABLE `l_rechnungsart`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT für Tabelle `l_rechtsform`
+--
+ALTER TABLE `l_rechtsform`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT für Tabelle `mailserver`
 --
 ALTER TABLE `mailserver`
@@ -16120,6 +16206,15 @@ ALTER TABLE `e_dateianhang`
   ADD CONSTRAINT `e_dateianhang_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `e_dateianhang_ibfk_2` FOREIGN KEY (`immobilien_id`) REFERENCES `immobilien` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `e_dateianhang_ibfk_3` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `firma`
+--
+ALTER TABLE `firma`
+  ADD CONSTRAINT `firma_ibfk_1` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `firma_ibfk_2` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `firma_ibfk_3` FOREIGN KEY (`l_plz_id`) REFERENCES `l_plz` (`id`),
+  ADD CONSTRAINT `firma_ibfk_4` FOREIGN KEY (`l_rechtsform_id`) REFERENCES `l_rechtsform` (`id`);
 
 --
 -- Constraints der Tabelle `immobilien`
