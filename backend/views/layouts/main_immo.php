@@ -125,13 +125,14 @@ $this->beginPage()
                             ],
                         ],
                         '<li class="divider"></li>',
-                        ['label' => '++++++++++User++++++++',
+                        ['label' => '++++++User und Firmendaten++++',
                             'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'neuen Benutzer anlegen', 'url' => ['/site/signup']],
                                 ['label' => 'Benutzer löschen', 'url' => ['/site/deluser']],
                                 ['label' => 'Benutzer anzeigen', 'url' => ['/site/showuser']],
+                                ['label' => 'Firmendaten pflegen', 'url' => ['/firma/index']],
                             ],
                         ],
                         ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']]

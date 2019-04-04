@@ -11,8 +11,6 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\base\DynamicModel;
 use yii\db\Query;
-use yii\web\Session;
-use yii\helpers\Url;
 use kartik\growl\Growl;
 //eigene Klassen
 use frontend\models\Immobilien;
