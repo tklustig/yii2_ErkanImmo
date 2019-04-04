@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use kartik\widgets\ActiveForm;
+use yii\helpers\Url;
+use yii\web\JsExpression;
 ?>
 
 <div class="firma-form">
@@ -31,12 +33,14 @@ use kartik\widgets\ActiveForm;
             ?>
         </div>
         <div class="col-md-6">
-            <?= $form->field($model, 'firmenname', ['addon' => [
+            <?=
+            $form->field($model, 'firmenname', ['addon' => [
                     'prepend' => ['content' => 'Firmenname']]])->textInput(['maxlength' => true])
             ?>
         </div>
         <div class="col-md-3">
-            <?= $form->field($model, 'strasse', ['addon' => [
+            <?=
+            $form->field($model, 'strasse', ['addon' => [
                     'prepend' => ['content' => 'Strasse']]])->textInput(['maxlength' => true])
             ?>
         </div>
@@ -47,34 +51,55 @@ use kartik\widgets\ActiveForm;
             ?>
         </div>
         <div class="col-md-3">
-            <?=
+            <?php
+            $route = Url::to(['auswahl']);
+            ?><?=
             $form->field($model, 'l_plz_id', ['addon' => [
                     'prepend' => ['content' => 'Plz']]])->widget(\kartik\widgets\Select2::classname(), [
-                'data' => \yii\helpers\ArrayHelper::map(frontend\models\LPlz::find()->orderBy('id')->asArray()->all(), 'id', 'plz'),
-                'options' => ['placeholder' => Yii::t('app', 'Plz wählen')],
-                'pluginOptions' => [
-                    'allowClear' => true
+                'options' => ['placeholder' => Yii::t('app', 'Postleitzahl wählen'),
+                    'id' => 'zip_code',
                 ],
-            ]);
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'minimumInputLength' => 3,
+                    'language' => [
+                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                    ],
+                    'ajax' => [
+                        'url' => $route,
+                        'dataType' => 'json',
+                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                    ],
+                    'escapeMarkup' => new JsExpression('function(markup) { return markup; }'),
+                    'templateResult' => new JsExpression('function(bewerber) { return bewerber.text; }'),
+                    'templateSelection' => new JsExpression('function(bewerber) { return bewerber.text; }'),
+                ],
+            ])->label(false);
             ?>
-        </div>
+
+        </div> 
         <div class="col-md-3">
-<?= $form->field($model, 'ort', ['addon' => [
-        'prepend' => ['content' => 'Standort']]])->textInput(['maxlength' => true])
-?>
+            <?=
+            $form->field($model, 'ort', ['addon' => [
+                    'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'placeholder' => 'Applikation füllt den Ort gemäß der Postleitzahl', 'readOnly' => true])
+            ?>
+
         </div>
         <div class="col-md-12">
-            <?= $form->field($model, 'geschaeftsfuehrer', ['addon' => [
+            <?=
+            $form->field($model, 'geschaeftsfuehrer', ['addon' => [
                     'prepend' => ['content' => 'Geschäftsführer']]])->textInput(['maxlength' => true])
             ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'prokurist', ['addon' => [
+            <?=
+            $form->field($model, 'prokurist', ['addon' => [
                     'prepend' => ['content' => 'Prokurist']]])->textInput(['maxlength' => true])
             ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'umsatzsteuerID', ['addon' => [
+            <?=
+            $form->field($model, 'umsatzsteuerID', ['addon' => [
                     'prepend' => ['content' => 'UmsatzsteuerID']]])->textInput(['maxlength' => true])
             ?>
         </div>
@@ -95,14 +120,30 @@ use kartik\widgets\ActiveForm;
     </div>
     <div class="form-group">
         <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
-    <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    <?php endif; ?>
-    <?php if (Yii::$app->controller->action->id != 'create'): ?>
-    <?= Html::submitButton(Yii::t('app', 'Save As New'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
-<?php endif; ?>
-<?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer, ['class' => 'btn btn-danger']) ?>
+            <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?php endif; ?>
+        <?php if (Yii::$app->controller->action->id != 'create'): ?>
+            <?= Html::submitButton(Yii::t('app', 'Save As New'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
+        <?php endif; ?>
+        <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer, ['class' => 'btn btn-danger']) ?>
     </div>
 
-<?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 </div>
+<?php
+$url = Url::to(['plz/get-city-province']);
+
+$script = <<< JS
+        $('#zip_code').change(function(){
+        var zipId=$(this).val();
+       $.get('$url',{zipId:zipId},function(data){
+   var data=$.parseJSON(data);
+   alert(data.plz+" entspricht der Stadt "+data.ort+"! Die Id ist "+zipId);
+   $('#firma-ort').attr('value',data.ort);
+   });
+   });
+
+JS;
+$this->registerJS($script);
+?>

@@ -164,7 +164,8 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                         ])->label(false);
                         ?>
 
-                    </div> <div class="col-md-4">
+                    </div> 
+                    <div class="col-md-4">
                         <?=
                         $form->field($model, 'stadt', ['addon' => [
                                 'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'placeholder' => 'Applikation füllt die Stadt gemäß der Postleitzahl', 'readOnly' => true])

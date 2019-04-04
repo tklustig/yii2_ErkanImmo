@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute' => 'l_rechtsform_id',
             'label' => Yii::t('app', 'Rechtsform'),
             'value' => function($model) {
-                return $model->lRechtsform->id;
+                return $model->lRechtsform->typus;
             },
             'filterType' => GridView::FILTER_SELECT2,
             'filter' => \yii\helpers\ArrayHelper::map(\backend\models\LRechtsform::find()->asArray()->all(), 'id', 'typus'),

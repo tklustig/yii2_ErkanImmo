@@ -103,6 +103,7 @@ return [
                 'firma_erzeugen' => 'firma/create',
                 'firma_aktualisieren' => 'firma/update',
                 'firma_loeschen' => 'firma/delete',
+                'firma_auswahl'=>'firma/auswahl',
                 'pdf' => 'gridview/export/download',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<id:\d+>' => '<controller>/save-as-new',

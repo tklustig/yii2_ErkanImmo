@@ -77,7 +77,7 @@ class Firma extends \yii\db\ActiveRecord
 
     public function getLRechtsform()
     {
-        return $this->hasOne(\backend\models\LRechnungsart::className(), ['id' => 'l_rechtsform_id']);
+        return $this->hasOne(\backend\models\LRechtsform::className(), ['id' => 'l_rechtsform_id']);
     }
     
     public function behaviors()
