@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use frontend\models\LPlz;
 use yii\db\Query;
+use kartik\growl\Growl;
 
 class FirmaController extends Controller {
 
@@ -42,8 +43,18 @@ class FirmaController extends Controller {
     }
 
     public function actionCreate() {
+        $count = Firma::find()->count('id');
+        if ($count == 1) {
+            $message = "Da Sie bereits $count mal Firmendaten hinterlegt haben, lässt sich dieses Feature nicht mehr aufrufen. Zweigstellen werden von dieser Applikation nicht unterstützt!";
+            $this->Ausgabe($message, 'Warnung', 500, Growl::TYPE_WARNING);
+            $searchModel = new FirmaSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            return $this->render('index', [
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+            ]);
+        }
         $model = new Firma();
-
         if ($model->loadAll(Yii::$app->request->post())) {
             $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
@@ -141,6 +152,24 @@ class FirmaController extends Controller {
             $out['results'] = ['id' => $id, 'text' => LPlz::find($id)->plz];
         }
         return $out;
+    }
+
+    private function Ausgabe($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
+        echo Growl::widget([
+            'type' => $type,
+            'title' => $typus,
+            'icon' => 'glyphicon glyphicon-exclamation-sign',
+            'body' => $message,
+            'showSeparator' => true,
+            'delay' => $delay,
+            'pluginOptions' => [
+                'showProgressbar' => true,
+                'placement' => [
+                    'from' => 'top',
+                    'align' => 'center',
+                ]
+            ]
+        ]);
     }
 
 }

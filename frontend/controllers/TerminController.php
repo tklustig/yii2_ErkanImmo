@@ -12,12 +12,15 @@ use yii\filters\VerbFilter;
 use yii\base\DynamicModel;
 use yii\db\Query;
 use kartik\growl\Growl;
+use yii\web\Session;
+use yii\helpers\Html;
 //eigene Klassen
 use frontend\models\Immobilien;
 use frontend\models\LPlz;
 use common\models\User;
 use frontend\models\Kundeimmobillie;
 use frontend\models\Adminbesichtigungkunde;
+use backend\models\Firma;
 
 class TerminController extends Controller {
 
@@ -229,10 +232,58 @@ class TerminController extends Controller {
         $zusatz = '?message=Der+Termin+wurde+mitsamt+seinen++Relationen+gelöscht%21';
         return $this->redirect($link . $zusatz);
     }
-    
-    public function actionMap($id){
-        print_r("Diese Website soll den Treffpunkt in GoogleMaps anzeigen. Derzeit ist dieses Feature allerdings noch eine Baustelle<br>Übergeben wurde die Id:$id<br>Script in der Klasse". get_class().' angehalten');
-        die();
+
+    public function actionMap($id) {
+        /* Hole Datenbankdaten */
+
+        //eruiere die Id der Firma. Es gibt immer nur eine!
+        $idFirma = Firma::find()->min('id');
+        //sofern ein Record hinterlegt wurde
+        if (!empty($idFirma)) {
+            //eruiere den Startpunkt bzgl. der Stadt
+            $startPunkt = Firma::findOne(['id' => $idFirma])->ort;
+            //eruiere den Startpunkt bzgl. der Strasse
+            $startStrasse = Firma::findOne(['id' => $idFirma])->strasse;
+            //sofern kein Record hinterlegt wurde...
+        } else {
+            $session = new Session();
+            $session->addFlash('info', 'Da Sie ihre Firmendaten noch nicht hinterlegt bzw. eingespeist haben, kann die Googlemap Funtion nicht aufgerufen werden!');
+            return $this->redirect(['/site/index']);
+        }
+        //Startpunkt enthält ein Komma?
+        if (stristr($startPunkt, ',')) {
+            $arrayOfSP = explode(',', $startPunkt);
+            $startPointOrt = $arrayOfSP[0];
+        } else
+        //Startpunkt wurde plain ausgelesen
+            $startPointOrt = $startPunkt;
+
+        $startPointStr = $startStrasse;
+        /* jetzt haben wird beide Komponenten:startPointOrt und startPointStr. Jetztb holen wir uns das Gegenstück */
+        //Lese aus der Datenbank die KundenId aus
+        $kundenId = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->kunde_id;
+        //eruiere anhand der KundenId den endpunkt und die endStrasse
+        $endPunkt = Kunde::findOne(['id' => $kundenId])->stadt;
+        $endStrasse = Kunde::findOne(['id' => $kundenId])->strasse;
+        //endPunkt enthält ein Komma?
+        if (stristr($endPunkt, ',')) {
+            $arrayOfEP = explode(',', $endPunkt);
+            $endPointOrt = $arrayOfEP[0];
+        } else
+        //endPunkt wurde plain ausgelesen
+            $endPointOrt = $endPunkt;
+        $endPointStr = $endStrasse;
+        /* jetzt haben wird alle Komponenten:startPointOrt und startPointStr,endPointOrt und endPointStr. Damit basteln wir uns den 
+          GoogleMap-Aufruf zusammen */
+        $basisUrl = 'https://www.google.de/maps/dir/';
+        $urlSpecific = "$startPointOrt+$startPointStr,+$startPointOrt/$endPointStr+$endPointOrt";
+        $gooleUrl = $basisUrl . $urlSpecific;
+        //in googleUrl ist die aufzurufende Url enthalten. Damit blenden wir oben einen Link ein, der GoogleMaps in einem neuen Tab rendert
+        return Html::a("GoogleMaps laden", $gooleUrl, ['class' => 'btn btn-success btn-block', 'target' => '_blank', 'title' => "Load googleMaps"]);
+        /*  var_dump($startPointOrt);
+          var_dump($startPointStr);
+          var_dump($endPointOrt);
+          var_dump($endPointStr); */
     }
 
     protected function findModelKunde($id) {
