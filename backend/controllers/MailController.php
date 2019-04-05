@@ -11,6 +11,7 @@ use common\models\User;
 use kartik\growl\Growl;
 use yii\web\Session;
 use yii\web\UploadedFile;
+use yii\db\Expression;
 use backend\models\Mail;
 use app\models\MailSearch;
 use frontend\models\Dateianhang;
@@ -47,13 +48,20 @@ class MailController extends Controller {
     }
 
     public function actionCreate() {
+        $files = array();
+        $extension = array();
+        $bezeichnung = array();
+        $FkInEDatei = array();
+        $connection = \Yii::$app->db;
+        $expression = new Expression('NOW()');
+        $now = (new \yii\db\Query)->select($expression)->scalar();
+        $BoolAnhang = false;
+        $session = new Session();
         $model = new Mail();
         $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
-        $modelEdateiAnhang = new EDateianhang();
+        $modelEDateianhang = EDateianhang::find()->all();
+        $modelE = new EDateianhang();
         $mailFrom = User::findOne(Yii::$app->user->identity->id)->email;
-        $Zieladresse = "";
-        $Ccadresse = "";
-        $Bccadresse = "";
         if ($model->loadAll(Yii::$app->request->post()) && $modelDateianhang->loadAll(Yii::$app->request->post())) {
             /* Anfang der Mailadressenvalidierung */
 
@@ -72,7 +80,7 @@ class MailController extends Controller {
             $Ursprung = "Zieladresse";
 
 //Validiere alle Mailadressen
-            /* Validiert die Zieladressen.Eine Kapselung der Logik funktioniert leider nicht,da gekapselte Methoden nicht mehr zurück rendern können */
+            /* Validiert die Adressen.Eine Kapselung der Logik funktioniert leider nicht,da gekapselte Methoden nicht mehr zurück rendern können */
             for ($i = 0; $i < count($extractInner); $i++) {
                 if (!filter_var($extractInner[$i], FILTER_VALIDATE_EMAIL)) {
                     $message = 'Eine oder mehrere der Mailadressen im Feld ' . $Ursprung . ' ist korrupt. Bitte überprüfen Sie deren Validität und reselektieren Sie ggf. Ihre Dateianhänge';
@@ -123,7 +131,7 @@ class MailController extends Controller {
             if (is_array($Valid)) {
                 $ausgabe1 = print_r('ERROR in der Klasse ' . get_class() . '<br>');
                 $ausgabe2 = var_dump($Valid);
-                $ausgabe3 = 'Die Tabellen mail oder dateianhang  konnten nicht validiert werden. Informieren Sie den Softwarehersteller!';
+                $ausgabe3 = 'Die Tabellen mail oder dateianhang  konnten nicht validiert werden. Informieren Sie den Softwarehersteller!(Fehlercode:ValMailsTZ455)';
                 $ausgabeGesamt = $ausgabe1 . '<br>' . $ausgabe2 . '<br>' . $ausgabe3;
                 var_dump($ausgabeGesamt);
                 print_r('<br>');
@@ -131,11 +139,11 @@ class MailController extends Controller {
                 die();
             }
             /* Ende der Modellvalidierung */
-            //Verarbeite Uploaddaten
+//Verarbeite Uploaddaten
             $modelDateianhang->attachement = UploadedFile::getInstances($modelDateianhang, 'attachement');
-            if (!$modelDateianhang->upload($modelDateianhang)) {
+            if ($modelDateianhang->upload($modelDateianhang))
                 $BoolAnhang = true;
-            } else
+            else
                 throw new NotFoundHttpException(Yii::t('app', "Während des Uploads ging etwas schief. Überprüfen Sie zunächst, ob sie über Schreibrechte verfügen und informieren Sie den Softwarehersteller(Fehlercode:UPx12y34)"));
             if ($BoolAnhang && empty($modelDateianhang->l_dateianhang_art_id)) {
                 $message = 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.';
@@ -150,11 +158,53 @@ class MailController extends Controller {
               Jetzt muss noch die Datenbanklogik codiert werden. Dazu werden die models dateianhang und e_dateianhang benötigt. Beide wurden
               bereits instanziert.
              */
-            // Datenbanklogik Anfang: Dazu wird eine Transaction eröffnet. Erst nach dem Commit werden die Records in die Datenbank geschrieben 
+// Datenbanklogik Anfang: Dazu wird eine Transaction eröffnet. Erst nach dem Commit werden die Records in die Datenbank geschrieben 
             $transaction = \Yii::$app->db->beginTransaction();
-            //$transaction->commit();
+// ersetze deutsche Umlaute im Dateinamen
+            foreach ($modelDateianhang->attachement as $uploadedFile) {
+                $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+                $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+                $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
+// lege jeweils den Dateinamen und dessen Endung in zwei unterschiedliche Arrays ab
+                array_push($files, $uploadedFile->name);
+                array_push($extension, $uploadedFile->extension);
+            }
+// Differenziere je nach Endung der Elemente im Array die in der Datenbank unten zu speichernden Werte
+            for ($i = 0; $i < count($extension); $i++) {
+                if ($extension[$i] == "bmp" || $extension[$i] == "tif" || $extension[$i] == "png" || $extension[$i] == "psd" || $extension[$i] == "pcx" || $extension[$i] == "gif" || $extension[$i] == "cdr" || $extension[$i] == "jpeg" || $extension[$i] == "jpg") {
+                    $bez = "Bild für eine Mail";
+                    array_push($bezeichnung, $bez);
+                } else {
+                    $bez = "Dokumente o.ä. für eine Mail";
+                    array_push($bezeichnung, $bez);
+                }
+            }
+//ab jetzt ist die Mail in die Datenbank gespeichert(na ja, eigentlich erst nach dem Commit). Was folgt ist noch e_dateianhang und dateianhang
             $model->save();
+            /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
+            foreach ($modelEDateianhang as $item) {
+                array_push($FkInEDatei, $item->mail_id);
+            }
+            /* falls nicht */
+            if (!in_array($model->id, $FkInEDatei) && $BoolAnhang) {
+                $modelE->mail_id = $model->id;
+                $modelE->save();
+                $fk = $modelE->id;
+                /* falls doch */
+            } else {
+                $fk = EDateianhang::findOne(['immobilien_id' => $model->id]);
+            }
+            /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
+              Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+            for ($i = 0; $i < count($files); $i++) {
+                $connection->createCommand()
+                        ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
+                            [$fk, $modelDateianhang->l_dateianhang_art_id, $bezeichnung[$i], $files[$i], $now, $model->angelegt_von],
+                        ])
+                        ->execute();
+            }
             return $this->redirect(['view', 'id' => $model->id]);
+            //$transaction->commit();
         } else {
             return $this->render('create', [
                         'model' => $model,
@@ -237,19 +287,21 @@ class MailController extends Controller {
     }
 
     private function ValidateModels($model, $modelDateianhang) {
-        $x = 1;
         $Valid = $model->validate() && $modelDateianhang->validate();
         $ausgabe = array();
+        $x = count($ausgabe);
         if (!$Valid) {
-            $ausgabe[0] = "betrifft Model Mail:";
+            $ausgabe[$x] = "betrifft Model Mail:";
             foreach ($model->getErrors() as $values) {
-                foreach ($values as $value1) {
-                    $ausgabe[$x] = $value1;
+                foreach ($values as $item) {
                     $x++;
+                    $ausgabe[$x] = $item;
                 }
             }
+            $x = count($ausgabe);
+            $ausgabe[$x] = 'betrifft Model Dateianhang:';
+            $x = count($ausgabe);
             foreach ($modelDateianhang->getErrors()as $values) {
-                $ausgabe[$x] = 'betrifft Model Dateianhang:';
                 foreach ($values as $value3) {
                     $ausgabe[$x] = $value3;
                     $x++;
