@@ -112,8 +112,7 @@ $this->beginPage()
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Mailserver konfigurieren', 'url' => ['/mailserver/index']],
-                                ['label' => 'Mails verschicken(ToDo)', 'url' => ['#']],
-                                ['label' => 'verschickte Mails anzeigen(ToDo)', 'url' => ['#']]
+                                ['label' => 'Mails anzeigen/verschicken(ToComplete)', 'url' => ['/mail/index']]
                             ],
                         ],
                         '<li class="divider"></li>',
