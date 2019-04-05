@@ -9,10 +9,13 @@ use backend\models\Mail;
 
 class MailSearch extends Mail {
 
+    public $choice_date;
+
     public function rules() {
         return [
             [['id', 'id_mailserver', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['mail_from', 'mail_to', 'mail_cc', 'mail_bcc', 'betreff', 'bodytext', 'angelegt_am', 'aktualisiert_am'], 'safe'],
+            [['choice_date'], 'boolean'],
         ];
     }
 
@@ -40,8 +43,13 @@ class MailSearch extends Mail {
             'angelegt_von' => $this->angelegt_von,
             'aktualisiert_von' => $this->aktualisiert_von,
         ]);
-        $query->andFilterWhere(['<=', 'angelegt_am', $this->angelegt_am]);
-        $query->andFilterWhere(['<=', 'aktualisiert_am', $this->aktualisiert_am]);
+        if ($this->choice_date == 0) {
+            $query->andFilterWhere(['<=', 'angelegt_am', $this->angelegt_am]);
+            $query->andFilterWhere(['<=', 'aktualisiert_am', $this->aktualisiert_am]);
+        } else {
+            $query->andFilterWhere(['>=', 'angelegt_am', $this->angelegt_am]);
+            $query->andFilterWhere(['>=', 'aktualisiert_am', $this->aktualisiert_am]);
+        }
 
         $query->andFilterWhere(['like', 'mail_from', $this->mail_from])
                 ->andFilterWhere(['like', 'mail_to', $this->mail_to])

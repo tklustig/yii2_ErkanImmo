@@ -40,6 +40,15 @@ use yii\widgets\ActiveForm;
         ],
     ]);
     ?>
+    <?=
+    $form->field($model, 'angelegt_am')->widget(kartik\widgets\DateTimePicker::classname(), [
+        'options' => ['placeholder' => 'Suchzeit eingeben...'],
+        'pluginOptions' => [
+            'autoclose' => true,
+            'format' => 'yyyy-mm-dd hh:ii:ss'
+        ]
+    ]);
+    ?>
     <?= $form->field($model, 'rechnungPlain')->textInput(['rows' => 6]) ?>
 
 

@@ -1,11 +1,8 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $searchModel app\models\MailSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 
 use yii\helpers\Html;
-use kartik\export\ExportMenu;
 use kartik\grid\GridView;
+use kartik\form\ActiveForm;
 
 $this->title = Yii::t('app', 'Mail');
 $this->params['breadcrumbs'][] = $this->title;
@@ -16,7 +13,11 @@ $search = "$('.search-button').click(function(){
 $this->registerJs($search);
 ?>
 <div class="mail-index">
-
+    <?php $form = ActiveForm::begin(); ?>
+    <?= $form->field($searchModel, 'choice_date')->radioList([0 => 'Vorher', 1 => 'Nachher'], ['itemOptions' => ['class' => 'choiceRadio']])->label('Grenzen Sie über diese beiden Radio Buttons Ihre Suche in AdvancedSearch ein'); ?>
+    <?php
+    ActiveForm::end();
+    ?>
     <h1><?= Html::encode($this->title) ?></h1>
     <p>
         <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-info search-button']) ?>
@@ -40,63 +41,20 @@ $this->registerJs($search);
             'expandOneOnly' => true
         ],
         'id',
-        [
-            'attribute' => 'id_mailserver',
-            'label' => Yii::t('app', 'Id Mailserver'),
-            'value' => function($model) {
-                return $model->mailserver->id;
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\backend\models\Mailserver::find()->asArray()->all(), 'id', 'id'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'Mailserver', 'id' => 'grid-mail-search-id_mailserver']
-        ],
         'mail_from',
         'mail_to',
         'mail_cc',
         'mail_bcc',
         'betreff',
-        'bodytext:ntext',
-        'angelegt_am',
-        [
-            'attribute' => 'angelegt_von',
-            'label' => Yii::t('app', 'Angelegt Von'),
-            'value' => function($model) {
-                if ($model->angelegtVon) {
-                    return $model->angelegtVon->id;
-                } else {
-                    return NULL;
-                }
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'id'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-mail-search-angelegt_von']
-        ],
-        'aktualisiert_am',
-        [
-            'attribute' => 'aktualisiert_von',
-            'label' => Yii::t('app', 'Aktualisiert Von'),
-            'value' => function($model) {
-                if ($model->aktualisiertVon) {
-                    return $model->aktualisiertVon->id;
-                } else {
-                    return NULL;
-                }
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'id'),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'User', 'id' => 'grid-mail-search-aktualisiert_von']
-        ],
+        'bodytext:html',
         [
             'class' => 'yii\grid\ActionColumn',
+            'template' => '{save-as-new} {view} {update} {delete}',
+            'buttons' => [
+                'view' => function ($id, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-copy"></span>', ['/mail/view', 'id' => $model->id], ['title' => 'Anzeigen']);
+                },
+            ],
         ],
     ];
     ?>

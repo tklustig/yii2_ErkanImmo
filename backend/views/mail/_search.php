@@ -17,10 +17,6 @@ use yii\widgets\ActiveForm;
     ]);
     ?>
 
-
-
-
-
     <?=
     $form->field($model, 'angelegt_am')->widget(kartik\widgets\DateTimePicker::classname(), [
         'options' => ['placeholder' => 'Suchzeit eingeben...'],
@@ -34,7 +30,7 @@ use yii\widgets\ActiveForm;
     <?=
     $form->field($model, 'angelegt_von')->widget(\kartik\widgets\Select2::classname(), [
         'data' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
-        'options' => ['placeholder' => Yii::t('app', 'Choose User')],
+        'options' => ['placeholder' => Yii::t('app', 'Makler wählen')],
         'pluginOptions' => [
             'allowClear' => true
         ],
@@ -43,7 +39,7 @@ use yii\widgets\ActiveForm;
 
     <?=
     $form->field($model, 'aktualisiert_am')->widget(kartik\widgets\DateTimePicker::classname(), [
-        'options' => ['placeholder' => 'Enter event time ...'],
+        'options' => ['placeholder' => 'Suchzeit eingeben...'],
         'pluginOptions' => [
             'autoclose' => true,
             'format' => 'yyyy-mm-dd hh:ii:ss'

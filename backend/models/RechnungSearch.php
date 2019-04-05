@@ -38,11 +38,11 @@ class RechnungSearch extends Rechnung {
         if ($this->choice_date == 0) {
             $query->andFilterWhere(['<=', 'datumerstellung', $this->datumerstellung]);
             $query->andFilterWhere(['<=', 'datumfaellig', $this->datumfaellig]);
-            //$query->andFilterWhere(['<=', 'angelegt_am', $this->angelegt_am]);
+            $query->andFilterWhere(['<=', 'angelegt_am', $this->angelegt_am]);
         } else {
             $query->andFilterWhere(['>=', 'datumerstellung', $this->datumerstellung]);
             $query->andFilterWhere(['>=', 'datumfaellig', $this->datumfaellig]);
-            //$query->andFilterWhere(['>=', 'angelegt_am', $this->angelegt_am]);
+            $query->andFilterWhere(['>=', 'angelegt_am', $this->angelegt_am]);
         }
         $query->andFilterWhere([
             'id' => $this->id,

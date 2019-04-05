@@ -35,7 +35,7 @@ class MailController extends Controller {
     public function actionView($id) {
         $model = $this->findModel($id);
         return $this->render('view', [
-                    'model' => $this->findModel($id),
+                    'model' => $model,
         ]);
     }
 
@@ -54,17 +54,19 @@ class MailController extends Controller {
     public function actionUpdate($id) {
         $model = $this->findModel($id);
 
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
-            return $this->redirect(['view',]);
+        if ($model->loadAll(Yii::$app->request->post())) {
+            $model->save();
+            return $this->redirect(['view', 'id' => $id]);
         } else {
             return $this->render('update', [
                         'model' => $model,
+                        'id' => $id
             ]);
         }
     }
 
     public function actionDelete($id) {
-        $this->findModel($id)->deleteWithRelated();
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
@@ -93,11 +95,12 @@ class MailController extends Controller {
 
         return $pdf->render();
     }
+
     protected function findModel($id) {
-        if (($model = Mail::findOne([])) !== null) {
+        if (($model = Mail::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+            throw new NotFoundHttpException(Yii::t('app', "Das Model Mail mit der Id:$id konnte nicht geladen werden. Informieren Sie den Softwarehersteller"));
         }
     }
 
