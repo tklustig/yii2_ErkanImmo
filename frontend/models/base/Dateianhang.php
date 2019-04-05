@@ -31,7 +31,7 @@ class Dateianhang extends \yii\db\ActiveRecord {
             [['angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'integer'],
             [['bezeichnung', 'dateiname'], 'string'],
             [['dateiname', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'required', 'except' => 'create_Dateianhang'],
-            [['attachement'], 'file', 'skipOnEmpty' => true, 'maxSize' => 5 * 1024000, 'tooBig' => 'Maximal erlaubte Dateigröße:5 MByte', 'maxFiles' => 10],
+            [['attachement'], 'file', 'skipOnEmpty' => true, 'maxSize' => 2 * 1024 * 1024, 'tooBig' => 'Maximal erlaubte Dateigröße:2 MByte', 'maxFiles' => 10],
         ];
     }
 
