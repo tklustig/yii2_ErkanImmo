@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 04. Apr 2019 um 20:37
+-- Erstellungszeit: 05. Apr 2019 um 08:13
 -- Server-Version: 10.1.37-MariaDB
--- PHP-Version: 7.2.13
+-- PHP-Version: 7.1.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `adminbesichtigungkunde` (
   `id` int(11) NOT NULL,
   `besichtigungstermin_id` int(11) NOT NULL,
-  `admin_id` int(11) NOT NULL,
+  `admin_id` int(11) DEFAULT NULL,
   `kunde_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -236,7 +236,7 @@ INSERT INTO `immobilien` (`id`, `bezeichnung`, `sonstiges`, `strasse`, `wohnflae
 CREATE TABLE `kopf` (
   `id` int(11) NOT NULL,
   `data` text COLLATE utf8_german2_ci NOT NULL,
-  `user_id` int(11) NOT NULL
+  `user_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_german2_ci;
 
 --
@@ -15812,7 +15812,7 @@ CREATE TABLE `rechnung` (
   `geldbetrag` decimal(10,0) NOT NULL,
   `mwst_id` int(11) DEFAULT NULL,
   `kunde_id` int(11) NOT NULL,
-  `makler_id` int(11) NOT NULL,
+  `makler_id` int(11) DEFAULT NULL,
   `kopf_id` int(11) DEFAULT NULL,
   `rechungsart_id` int(11) DEFAULT NULL,
   `rechnungPlain` text COLLATE utf8_german2_ci NOT NULL,
@@ -16177,7 +16177,7 @@ ALTER TABLE `user`
 -- Constraints der Tabelle `adminbesichtigungkunde`
 --
 ALTER TABLE `adminbesichtigungkunde`
-  ADD CONSTRAINT `adminbesichtigungkunde_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `adminbesichtigungkunde_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `adminbesichtigungkunde_ibfk_2` FOREIGN KEY (`besichtigungstermin_id`) REFERENCES `besichtigungstermin` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `adminbesichtigungkunde_ibfk_3` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON UPDATE CASCADE;
 
@@ -16218,8 +16218,8 @@ ALTER TABLE `e_dateianhang`
 -- Constraints der Tabelle `firma`
 --
 ALTER TABLE `firma`
-  ADD CONSTRAINT `firma_ibfk_1` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`),
-  ADD CONSTRAINT `firma_ibfk_2` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `firma_ibfk_1` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `firma_ibfk_2` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `firma_ibfk_3` FOREIGN KEY (`l_plz_id`) REFERENCES `l_plz` (`id`),
   ADD CONSTRAINT `firma_ibfk_4` FOREIGN KEY (`l_rechtsform_id`) REFERENCES `l_rechtsform` (`id`);
 
@@ -16236,7 +16236,7 @@ ALTER TABLE `immobilien`
 -- Constraints der Tabelle `kopf`
 --
 ALTER TABLE `kopf`
-  ADD CONSTRAINT `kopf_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `kopf_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `kunde`
@@ -16267,7 +16267,7 @@ ALTER TABLE `mailserver`
 ALTER TABLE `rechnung`
   ADD CONSTRAINT `rechnung_ibfk_1` FOREIGN KEY (`kopf_id`) REFERENCES `kopf` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `rechnung_ibfk_2` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `rechnung_ibfk_3` FOREIGN KEY (`makler_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `rechnung_ibfk_3` FOREIGN KEY (`makler_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `rechnung_ibfk_4` FOREIGN KEY (`mwst_id`) REFERENCES `l_mwst` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `rechnung_ibfk_5` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `rechnung_ibfk_6` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
