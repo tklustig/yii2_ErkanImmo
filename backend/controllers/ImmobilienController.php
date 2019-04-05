@@ -95,6 +95,8 @@ class ImmobilienController extends Controller {
                 $ModelDateianhang->attachement = UploadedFile::getInstances($ModelDateianhang, 'attachement');
                 if ($ModelDateianhang->upload($ModelDateianhang)) {
                     $BoolAnhang = true;
+                }else{
+                     throw new NotFoundHttpException(Yii::t('app', "Während des Uploads ging etwas schief. Überprüfen Sie zunächst, ob sie über Schreibrechte verfügen und informieren Sie den Softwarehersteller(Fehlercode:UPx12y34)"));
                 }
                 if ($BoolAnhang && empty($ModelDateianhang->l_dateianhang_art_id)) {
                     echo Growl::widget([

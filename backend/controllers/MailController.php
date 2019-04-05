@@ -10,6 +10,7 @@ use yii\helpers\Html;
 use common\models\User;
 use kartik\growl\Growl;
 use yii\web\Session;
+use yii\web\UploadedFile;
 use backend\models\Mail;
 use app\models\MailSearch;
 use frontend\models\Dateianhang;
@@ -129,13 +130,31 @@ class MailController extends Controller {
                 echo Html::a('back', ['/mail/index'], ['title' => 'zurück']);
                 die();
             }
-            /*Ende der Modellvalidierung*/
+            /* Ende der Modellvalidierung */
             //Verarbeite Uploaddaten
-            $model->attachement = UploadedFile::getInstances($model, 'attachement');
-            $anhangszaehler = 0;
- 
+            $modelDateianhang->attachement = UploadedFile::getInstances($modelDateianhang, 'attachement');
+            if (!$modelDateianhang->upload($modelDateianhang)) {
+                $BoolAnhang = true;
+            } else
+                throw new NotFoundHttpException(Yii::t('app', "Während des Uploads ging etwas schief. Überprüfen Sie zunächst, ob sie über Schreibrechte verfügen und informieren Sie den Softwarehersteller(Fehlercode:UPx12y34)"));
+            if ($BoolAnhang && empty($modelDateianhang->l_dateianhang_art_id)) {
+                $message = 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.';
+                $this->Ausgabe($message, 'Warnung', 1500, Growl::TYPE_WARNING);
+                return $this->render('create', [
+                            'model' => $model,
+                            'modelDateianhang' => $modelDateianhang,
+                            'mailFrom' => $mailFrom
+                ]);
+            }
+            /* Ende der Uploadcodierung. Sofern ein Upload hochgeladen wurde, ist er in die entsprechenden Verzeichnisse integriert worden.
+              Jetzt muss noch die Datenbanklogik codiert werden. Dazu werden die models dateianhang und e_dateianhang benötigt. Beide wurden
+              bereits instanziert.
+             */
+            // Datenbanklogik Anfang: Dazu wird eine Transaction eröffnet. Erst nach dem Commit werden die Records in die Datenbank geschrieben 
+            $transaction = \Yii::$app->db->beginTransaction();
+            //$transaction->commit();
             $model->save();
-            return $this->redirect(['view',]);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                         'model' => $model,
