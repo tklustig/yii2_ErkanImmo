@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 05. Apr 2019 um 08:13
+-- Erstellungszeit: 05. Apr 2019 um 14:21
 -- Server-Version: 10.1.37-MariaDB
 -- PHP-Version: 7.1.26
 
@@ -140,19 +140,20 @@ CREATE TABLE `e_dateianhang` (
   `id` int(11) NOT NULL,
   `immobilien_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `kunde_id` int(11) DEFAULT NULL
+  `kunde_id` int(11) DEFAULT NULL,
+  `mail_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Daten für Tabelle `e_dateianhang`
 --
 
-INSERT INTO `e_dateianhang` (`id`, `immobilien_id`, `user_id`, `kunde_id`) VALUES
-(1, 1, NULL, NULL),
-(2, 2, NULL, NULL),
-(3, 4, NULL, NULL),
-(4, 5, NULL, NULL),
-(5, 6, NULL, NULL);
+INSERT INTO `e_dateianhang` (`id`, `immobilien_id`, `user_id`, `kunde_id`, `mail_id`) VALUES
+(1, 1, NULL, NULL, NULL),
+(2, 2, NULL, NULL, NULL),
+(3, 4, NULL, NULL, NULL),
+(4, 5, NULL, NULL, NULL),
+(5, 6, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -15761,6 +15762,34 @@ INSERT INTO `l_rechtsform` (`id`, `typus`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `mail`
+--
+
+CREATE TABLE `mail` (
+  `id` int(11) NOT NULL,
+  `id_mailserver` int(11) NOT NULL,
+  `mail_from` varchar(64) NOT NULL,
+  `mail_to` varchar(64) NOT NULL,
+  `mail_cc` varchar(64) DEFAULT NULL,
+  `mail_bcc` varchar(64) DEFAULT NULL,
+  `betreff` varchar(64) NOT NULL,
+  `bodytext` text NOT NULL,
+  `angelegt_am` datetime DEFAULT NULL,
+  `angelegt_von` int(11) DEFAULT NULL,
+  `aktualisiert_am` datetime DEFAULT NULL,
+  `aktualisiert_von` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `mail`
+--
+
+INSERT INTO `mail` (`id`, `id_mailserver`, `mail_from`, `mail_to`, `mail_cc`, `mail_bcc`, `betreff`, `bodytext`, `angelegt_am`, `angelegt_von`, `aktualisiert_am`, `aktualisiert_von`) VALUES
+(1, 1, 'abc@web.de', 'abf@web.de', NULL, NULL, 'Test', 'Testmail', '2019-04-05 10:28:30', 3, '2019-04-05 18:31:39', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `mailserver`
 --
 
@@ -16007,6 +16036,15 @@ ALTER TABLE `l_rechtsform`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indizes für die Tabelle `mail`
+--
+ALTER TABLE `mail`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mailServer` (`id_mailserver`),
+  ADD KEY `angelegtVon` (`angelegt_von`),
+  ADD KEY `aktualisiertVon` (`id`);
+
+--
 -- Indizes für die Tabelle `mailserver`
 --
 ALTER TABLE `mailserver`
@@ -16152,6 +16190,12 @@ ALTER TABLE `l_rechtsform`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT für Tabelle `mail`
+--
+ALTER TABLE `mail`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT für Tabelle `mailserver`
 --
 ALTER TABLE `mailserver`
@@ -16253,6 +16297,14 @@ ALTER TABLE `kunde`
 ALTER TABLE `kundeimmobillie`
   ADD CONSTRAINT `kundeimmobillie_ibfk_1` FOREIGN KEY (`immobilien_id`) REFERENCES `immobilien` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `kundeimmobillie_ibfk_2` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `mail`
+--
+ALTER TABLE `mail`
+  ADD CONSTRAINT `mail_ibfk_1` FOREIGN KEY (`id_mailserver`) REFERENCES `mailserver` (`id`),
+  ADD CONSTRAINT `mail_ibfk_2` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `mail_ibfk_3` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`);
 
 --
 -- Constraints der Tabelle `mailserver`
