@@ -121,7 +121,7 @@ $this->registerJs($search);
             'type' => GridView::TYPE_PRIMARY,
             "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
             'before' => Html::a(Yii::t('app', 'Mail erstellen'), ['/mail/create'], ['class' => 'btn btn-success', 'title' => 'Erstellt eine neue Mail']),
-            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/mailserver/index'], ['class' => 'btn btn-warning', 'title' => 'Setzt die GridView zurück']),
+            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/mail/index'], ['class' => 'btn btn-warning', 'title' => 'Setzt die GridView zurück']),
             'toggleDataOptions' => ['minCount' => 10],
         ],
         'toolbar' => [
