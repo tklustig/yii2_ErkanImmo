@@ -16,8 +16,11 @@ use backend\models\Mail;
 use app\models\MailSearch;
 use frontend\models\Dateianhang;
 use frontend\models\EDateianhang;
+use common\classes\error_handling;
 
 class MailController extends Controller {
+
+    const RenderBackInCaseOfError = '/mail/index';
 
     public function behaviors() {
         return [
@@ -155,56 +158,67 @@ class MailController extends Controller {
                 ]);
             }
             /* Ende der Uploadcodierung. Sofern ein Upload hochgeladen wurde, ist er in die entsprechenden Verzeichnisse integriert worden.
-              Jetzt muss noch die Datenbanklogik codiert werden. Dazu werden die models dateianhang und e_dateianhang benötigt. Beide wurden
-              bereits instanziert.
+              Jetzt muss noch die Datenbanklogik und das Versenden der Mail codiert werden. Dazu werden die models mail,dateianhang und
+              e_dateianhang benötigt. Alle wurden bereits instanziert.
              */
+//Mailversand:Anfang
+//ToDo:Mail versenden
+
+            
+//Mailversand:Ende
 // Datenbanklogik Anfang: Dazu wird eine Transaction eröffnet. Erst nach dem Commit werden die Records in die Datenbank geschrieben 
-            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                $transaction = \Yii::$app->db->beginTransaction();
 // ersetze deutsche Umlaute im Dateinamen
-            foreach ($modelDateianhang->attachement as $uploadedFile) {
-                $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
-                $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
-                $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
+                foreach ($modelDateianhang->attachement as $uploadedFile) {
+                    $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+                    $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+                    $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
 // lege jeweils den Dateinamen und dessen Endung in zwei unterschiedliche Arrays ab
-                array_push($files, $uploadedFile->name);
-                array_push($extension, $uploadedFile->extension);
-            }
-// Differenziere je nach Endung der Elemente im Array die in der Datenbank unten zu speichernden Werte
-            for ($i = 0; $i < count($extension); $i++) {
-                if ($extension[$i] == "bmp" || $extension[$i] == "tif" || $extension[$i] == "png" || $extension[$i] == "psd" || $extension[$i] == "pcx" || $extension[$i] == "gif" || $extension[$i] == "cdr" || $extension[$i] == "jpeg" || $extension[$i] == "jpg") {
-                    $bez = "Bild für eine Mail";
-                    array_push($bezeichnung, $bez);
-                } else {
-                    $bez = "Dokumente o.ä. für eine Mail";
-                    array_push($bezeichnung, $bez);
+                    array_push($files, $uploadedFile->name);
+                    array_push($extension, $uploadedFile->extension);
                 }
-            }
+// Differenziere je nach Endung der Elemente im Array die in der Datenbank unten zu speichernden Werte
+                for ($i = 0; $i < count($extension); $i++) {
+                    if ($extension[$i] == "bmp" || $extension[$i] == "tif" || $extension[$i] == "png" || $extension[$i] == "psd" || $extension[$i] == "pcx" || $extension[$i] == "gif" || $extension[$i] == "cdr" || $extension[$i] == "jpeg" || $extension[$i] == "jpg") {
+                        $bez = "Bild für eine Mail";
+                        array_push($bezeichnung, $bez);
+                    } else {
+                        $bez = "Dokumente o.ä. für eine Mail";
+                        array_push($bezeichnung, $bez);
+                    }
+                }
 //ab jetzt ist die Mail in die Datenbank gespeichert(na ja, eigentlich erst nach dem Commit). Was folgt ist noch e_dateianhang und dateianhang
-            $model->save();
-            /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
-            foreach ($modelEDateianhang as $item) {
-                array_push($FkInEDatei, $item->mail_id);
-            }
-            /* falls nicht */
-            if (!in_array($model->id, $FkInEDatei) && $BoolAnhang) {
-                $modelE->mail_id = $model->id;
-                $modelE->save();
-                $fk = $modelE->id;
-                /* falls doch */
-            } else {
-                $fk = EDateianhang::findOne(['immobilien_id' => $model->id]);
-            }
-            /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
-              Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
-            for ($i = 0; $i < count($files); $i++) {
-                $connection->createCommand()
-                        ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
-                            [$fk, $modelDateianhang->l_dateianhang_art_id, $bezeichnung[$i], $files[$i], $now, $model->angelegt_von],
-                        ])
-                        ->execute();
+                $model->save();
+                /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
+                foreach ($modelEDateianhang as $item) {
+                    array_push($FkInEDatei, $item->mail_id);
+                }
+                /* falls nicht */
+                if (!in_array($model->id, $FkInEDatei) && $BoolAnhang) {
+                    $modelE->mail_id = $model->id;
+                    $modelE->save();
+                    $fk = $modelE->id;
+                    /* falls doch */
+                } else {
+                    $fk = EDateianhang::findOne(['immobilien_id' => $model->id]);
+                }
+                /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
+                  Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+                for ($i = 0; $i < count($files); $i++) {
+                    $connection->createCommand()
+                            ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
+                                [$fk, $modelDateianhang->l_dateianhang_art_id, $bezeichnung[$i], $files[$i], $now, $model->angelegt_von],
+                            ])
+                            ->execute();
+                }
+                $transaction->commit();
+//Datenbanklogik:Ende
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+                error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
             }
             return $this->redirect(['view', 'id' => $model->id]);
-            //$transaction->commit();
         } else {
             return $this->render('create', [
                         'model' => $model,
