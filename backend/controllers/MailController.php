@@ -16,6 +16,7 @@ use backend\models\Mail;
 use app\models\MailSearch;
 use frontend\models\Dateianhang;
 use frontend\models\EDateianhang;
+use backend\models\Mailserver;
 use common\classes\error_handling;
 
 class MailController extends Controller {
@@ -163,10 +164,8 @@ class MailController extends Controller {
              */
 //Mailversand:Anfang
 //ToDo:Mail versenden
-
-            
 //Mailversand:Ende
-// Datenbanklogik Anfang: Dazu wird eine Transaction eröffnet. Erst nach dem Commit werden die Records in die Datenbank geschrieben 
+// Datenbanklogik Anfang: Dazu wird eine Transaction eröffnet. Erst nach dem Commit werden die Records in die Datenbank geschrieben
             try {
                 $transaction = \Yii::$app->db->beginTransaction();
 // ersetze deutsche Umlaute im Dateinamen
@@ -325,6 +324,55 @@ class MailController extends Controller {
         } else {
             return true;
         }
+    }
+
+    private function FetchMailServerData() {
+        try {
+            $checkServerConf = Mailserver::find()->count('id');
+            $serverId = Mailserver::find()->min('id');
+            if ($checkServerConf < 1)
+                return false;
+            $host = Mailserver::findOne(['id' => $serverId])->serverHost;
+            $username = Mailserver::findOne(['id' => $serverId])->username;
+            $password = Mailserver::findOne(['id' => $serverId])->password;
+            $port = Mailserver::findOne(['id' => $serverId])->port;
+            $useEncryption = Mailserver::findOne(['id' => $serverId])->useEncryption;
+            if ($useEncryption == 1)
+                $encryption = Mailserver::findOne(['id' => $serverId])->encryption;
+            else
+                $encryption = null;
+            if ($encryption != null)
+                $mailer = Yii::$app->mailer->setTransport([
+                    'class' => 'Swift_SmtpTransport',
+                    'host' => $host,
+                    'username' => $username,
+                    'password' => $password,
+                    'port' => $port,
+                    'encryption' => $encryption
+                ]);
+            else
+                $mailer = Yii::$app->mailer->setTransport([
+                    'class' => 'Swift_SmtpTransport',
+                    'host' => $host,
+                    'username' => $username,
+                    'password' => $password,
+                    'port' => $port
+                ]);
+            return $mailer;
+        } catch (yii\db\Exception $e) {
+            error_handling::ErrorWithoutId($e, MailController::RenderBackInCaseOfError);
+        }
+    }
+
+    private function SendMail() {
+        $mailer = Yii::$app->mailer->setTransport([
+            'class' => 'Swift_SmtpTransport',
+            'host' => 'localhost', // or $config['host']
+            'username' => 'username', // or $config['username']
+            'password' => 'password', // or $config['password']
+            'port' => '587', // or $config['port']
+            'encryption' => 'tls', // or $config['encryption']
+        ]);
     }
 
 }

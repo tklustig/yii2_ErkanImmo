@@ -8,14 +8,11 @@ use backend\models\MailserverSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use kartik\growl\Growl;
 
-/**
- * MailserverController implements the CRUD actions for Mailserver model.
- */
-class MailserverController extends Controller
-{
-    public function behaviors()
-    {
+class MailserverController extends Controller {
+
+    public function behaviors() {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -26,63 +23,58 @@ class MailserverController extends Controller
         ];
     }
 
-    /**
-     * Lists all Mailserver models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $searchModel = new MailserverSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
-    /**
-     * Displays a single Mailserver model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
+    public function actionView($id) {
         $model = $this->findModel($id);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+                    'model' => $this->findModel($id),
         ]);
     }
 
-    /**
-     * Creates a new Mailserver model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
+    public function actionCreate() {
+        $checkServerConf = Mailserver::find()->count('id');
         $model = new Mailserver();
+        if ($checkServerConf == 1) {
+            $message = 'Diese Applikation unterstützt nur die Angaben eines einzigen Mailservers. Sie haben bereits einen konfiguriert.<br><strong>Pushen Sie bitte auf Reset Grid!</strong>';
+            $this->Ausgabe($message, 'Info', 1000, Growl::TYPE_SUCCESS);
+            $searchModel = new MailserverSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            return $this->render('index', [
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+            ]);
+        }
+        if ($model->loadAll(Yii::$app->request->post())) {
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
 
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
+                $model->save();
+                $transaction->commit();
+            } catch (yii\db\Exception $e) {
+                $transaction->rollBack();
+                error_handling::ErrorWithoutId($e, MailController::RenderBackInCaseOfError);
+            }
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
 
-    /**
-     * Updates an existing Mailserver model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id) {
         if (Yii::$app->request->post('_asnew') == '1') {
             $model = new Mailserver();
-        }else{
+        } else {
             $model = $this->findModel($id);
         }
 
@@ -90,30 +82,17 @@ class MailserverController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
 
-    /**
-     * Deletes an existing Mailserver model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
+    public function actionDelete($id) {
         $this->findModel($id)->deleteWithRelated();
 
         return $this->redirect(['index']);
     }
-    
-    /**
-     * 
-     * Export Mailserver information into PDF format.
-     * @param integer $id
-     * @return mixed
-     */
+
     public function actionPdf($id) {
         $model = $this->findModel($id);
 
@@ -139,43 +118,46 @@ class MailserverController extends Controller
         return $pdf->render();
     }
 
-    /**
-    * Creates a new Mailserver model by another data,
-    * so user don't need to input all field from scratch.
-    * If creation is successful, the browser will be redirected to the 'view' page.
-    *
-    * @param mixed $id
-    * @return mixed
-    */
     public function actionSaveAsNew($id) {
         $model = new Mailserver();
 
         if (Yii::$app->request->post('_asnew') != '1') {
             $model = $this->findModel($id);
         }
-    
+
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('saveAsNew', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
-    
-    /**
-     * Finds the Mailserver model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Mailserver the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
+
+    protected function findModel($id) {
         if (($model = Mailserver::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
+
+    private function Ausgabe($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
+        echo Growl::widget([
+            'type' => $type,
+            'title' => $typus,
+            'icon' => 'glyphicon glyphicon-exclamation-sign',
+            'body' => $message,
+            'showSeparator' => true,
+            'delay' => $delay,
+            'pluginOptions' => [
+                'showProgressbar' => true,
+                'placement' => [
+                    'from' => 'top',
+                    'align' => 'center',
+                ]
+            ]
+        ]);
+    }
+
 }
