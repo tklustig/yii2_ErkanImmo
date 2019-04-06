@@ -127,7 +127,7 @@ class Dateianhang extends \yii\db\ActiveRecord {
             $url = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . Dateianhang::path . Dateianhang::path2img;
             $uploadedFile->name = $this->Ersetzen($uploadedFile->name);
             if ($bool != NULL && $bool == TRUE) {
-                $uploadedFile->saveAs(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+                $uploadedFile->saveAs(Yii::getAlias('@documentsMail') . DIRECTORY_SEPARATOR . $uploadedFile->name);
             } else {
                 $uploadedFile->saveAs(Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name);
                 copy(Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name, $url . $uploadedFile->name);

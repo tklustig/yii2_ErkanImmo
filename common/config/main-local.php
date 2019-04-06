@@ -17,7 +17,8 @@ return [
     [
         '@uploading' => '@app/uploadedfiles',
         '@pictures' => '@frontend/web/img',
-        '@picturesBackend' => '@backend/web/img/'
+        '@picturesBackend' => '@backend/web/img/',
+        '@documentsMail'=>'@app/mailAnhaenge',
     ],
     'modules' => [
         'datecontrol' => [

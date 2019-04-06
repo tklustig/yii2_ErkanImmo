@@ -57,7 +57,6 @@ class MailSearch extends Mail {
                 ->andFilterWhere(['like', 'mail_bcc', $this->mail_bcc])
                 ->andFilterWhere(['like', 'betreff', $this->betreff])
                 ->andFilterWhere(['like', 'bodytext', $this->bodytext]);
-
         return $dataProvider;
     }
 

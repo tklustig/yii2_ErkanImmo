@@ -46,7 +46,6 @@ $this->registerJs($search);
         'mail_cc',
         'mail_bcc',
         'betreff',
-        'bodytext:html',
         [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{save-as-new} {view} {update} {delete}',

@@ -2,10 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use kartik\grid\GridView;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\Mail */
 ?>
 <div class="mail-view">
 
@@ -19,6 +15,15 @@ use kartik\grid\GridView;
         <?php
         $gridColumn = [
             'id',
+            [
+                'attribute' => 'bodytext',
+                 'label' => Yii::t('app', 'Mailinhalt'),
+                'format' => 'html',
+                'hAlign' => 'center',
+                'value' => function($model) {
+                    return $model->angelegt_am ? $model->bodytext : NULL;
+                }
+            ],
             [
                 'attribute' => 'mailserver.serverHost',
                 'label' => Yii::t('app', 'Mailserver'),
@@ -35,7 +40,7 @@ use kartik\grid\GridView;
                     } else {
                         return NULL;
                     }
-                },
+                }
             ],
             [
                 'attribute' => 'angelegtVon.username',
@@ -53,12 +58,12 @@ use kartik\grid\GridView;
                     } else {
                         return NULL;
                     }
-                },
+                }
             ],
             [
                 'attribute' => 'aktualisiertVon.username',
                 'label' => Yii::t('app', 'Aktualisiert Von'),
-            ],
+            ]
         ];
         echo DetailView::widget([
             'model' => $model,
