@@ -7,3 +7,10 @@
 *.pcx
 *.gif
 *.cdr
+*.doc
+*.docx
+*.txt
+*.pdf
+*.xls
+*.xlsx
+*.ppt
