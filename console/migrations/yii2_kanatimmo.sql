@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 05. Apr 2019 um 14:21
+-- Erstellungszeit: 06. Apr 2019 um 20:08
 -- Server-Version: 10.1.37-MariaDB
--- PHP-Version: 7.1.26
+-- PHP-Version: 7.2.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -128,7 +128,9 @@ INSERT INTO `dateianhang` (`id`, `bezeichnung`, `dateiname`, `angelegt_am`, `akt
 (2, 'Bild für eine Immobilie', 'villa1.jpg', '2019-02-16 09:04:21', NULL, 4, NULL, 4, 2),
 (3, 'Bild für eine Immobilie', 'immo4.jpg', '2019-02-16 09:11:40', NULL, 3, NULL, 3, 3),
 (4, 'Bild für eine Immobilie', 'kitchen-1940175__340.jpg', '2019-02-16 09:14:32', NULL, 3, NULL, 3, 4),
-(5, 'Bild für eine Immobilie', 'modern-minimalist.jpg', '2019-02-16 09:17:24', NULL, 4, NULL, 3, 5);
+(5, 'Bild für eine Immobilie', 'modern-minimalist.jpg', '2019-02-16 09:17:24', NULL, 4, NULL, 3, 5),
+(11, 'Frontendbilder', 'immoThemeC.jpg', '2019-04-05 19:09:03', NULL, 4, NULL, 11, 7),
+(12, 'Frontendbilder', 'immoThemeH.jpg', '2019-04-05 19:09:03', NULL, 4, NULL, 11, 7);
 
 -- --------------------------------------------------------
 
@@ -153,7 +155,8 @@ INSERT INTO `e_dateianhang` (`id`, `immobilien_id`, `user_id`, `kunde_id`, `mail
 (2, 2, NULL, NULL, NULL),
 (3, 4, NULL, NULL, NULL),
 (4, 5, NULL, NULL, NULL),
-(5, 6, NULL, NULL, NULL);
+(5, 6, NULL, NULL, NULL),
+(7, NULL, 4, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -378,7 +381,9 @@ INSERT INTO `l_dateianhang_art` (`id`, `bezeichnung`) VALUES
 (8, 'Dokumente zu einer Villa'),
 (9, 'Bilder und Dokumente zu einem Objekt'),
 (10, 'Frontendbilder'),
-(11, 'Impressumbilder');
+(11, 'Impressumbilder'),
+(12, 'Bilder für eine Mail'),
+(13, 'Dokumente für eine Mail');
 
 -- --------------------------------------------------------
 
@@ -15785,7 +15790,10 @@ CREATE TABLE `mail` (
 --
 
 INSERT INTO `mail` (`id`, `id_mailserver`, `mail_from`, `mail_to`, `mail_cc`, `mail_bcc`, `betreff`, `bodytext`, `angelegt_am`, `angelegt_von`, `aktualisiert_am`, `aktualisiert_von`) VALUES
-(1, 1, 'abc@web.de', 'abf@web.de', NULL, NULL, 'Test', 'Testmail', '2019-04-05 10:28:30', 3, '2019-04-05 18:31:39', NULL);
+(1, 1, 'abc@web.de', 'abf@web.de', NULL, NULL, 'Test', 'Testmail', '2019-04-05 10:28:30', 3, '2019-04-05 18:31:39', NULL),
+(2, 1, 'schroeder@gmx.net', 'tklustig.thomas@gmail.com', '', '', 'Test', '<p>Testmail</p>\r\n', '2019-04-06 18:09:11', 4, '2019-04-06 18:09:11', 4),
+(3, 1, 'kipp.thomas@gmx.net', 'tklustig.thomas@gmail.com', '', '', 'Test', '<p>trrt</p>\r\n', '2019-04-06 18:24:46', 4, '2019-04-06 18:24:46', 4),
+(4, 1, 'kipp.thomas@gmx.net', 'tklustig.thomas@gmail.com', '', '', 'Test', '<p><u><strong>Testmail</strong></u></p>\r\n', '2019-04-06 19:54:08', 4, '2019-04-06 19:54:08', 4);
 
 -- --------------------------------------------------------
 
@@ -15813,7 +15821,7 @@ CREATE TABLE `mailserver` (
 --
 
 INSERT INTO `mailserver` (`id`, `serverURL`, `serverHost`, `username`, `password`, `port`, `useEncryption`, `encryption`, `angelegt_von`, `aktualisiert_von`, `angelegt_am`, `aktualisiert_am`) VALUES
-(1, '192.168.1.10', 'mail.gmx.net', 'kipp.thomas@gmx.net', '1918Rott$', 587, 1, 'tls', 4, 4, '2019-04-04 18:20:20', '2019-04-04 20:27:36');
+(1, '192.168.1.10', 'mail.gmx.net', 'kipp.thomas@gmx.net', '1918Rott', 587, 1, 'tls', 4, 4, '2019-04-04 18:20:20', '2019-04-04 20:27:36');
 
 -- --------------------------------------------------------
 
@@ -15883,7 +15891,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `telefon`, `status`, `created_at`, `updated_at`) VALUES
 (3, 'Krueger', 'QwTXQChoyjcgmbVy1HmRPIWjZUyUJ8qo', '$2y$13$sIc4a4LZQYImRPrtRGYQOuSq.4ChJJeM.ubzKk.261ff.gxhHMSRS', NULL, 'krueger@web.de', '0176/2237687', 10, 1549701768, 1549701768),
-(4, 'Schröder', 'CeuRe1owrFerxXs2hO8zvl7oq-6i_koX', '$2y$13$zb4ECBjwIx2Ul.82Vbx0Z.TuQ5XL8E/XRY3pSkb0rjOkSF3oLNAe6', NULL, 'schroeder@gmx.net', '0176/2237330', 10, 1550183844, 1550183844);
+(4, 'Schröder', 'CeuRe1owrFerxXs2hO8zvl7oq-6i_koX', '$2y$13$zb4ECBjwIx2Ul.82Vbx0Z.TuQ5XL8E/XRY3pSkb0rjOkSF3oLNAe6', NULL, 'kipp.thomas@gmx.net', '0176/2237330', 10, 1550183844, 1550183844);
 
 --
 -- Indizes der exportierten Tabellen
@@ -16042,7 +16050,8 @@ ALTER TABLE `mail`
   ADD PRIMARY KEY (`id`),
   ADD KEY `mailServer` (`id_mailserver`),
   ADD KEY `angelegtVon` (`angelegt_von`),
-  ADD KEY `aktualisiertVon` (`id`);
+  ADD KEY `aktualisiertVon` (`id`),
+  ADD KEY `mail_ibfk_3` (`aktualisiert_von`);
 
 --
 -- Indizes für die Tabelle `mailserver`
@@ -16103,13 +16112,13 @@ ALTER TABLE `besichtigungstermin`
 -- AUTO_INCREMENT für Tabelle `dateianhang`
 --
 ALTER TABLE `dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT für Tabelle `e_dateianhang`
 --
 ALTER TABLE `e_dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT für Tabelle `firma`
@@ -16151,7 +16160,7 @@ ALTER TABLE `l_art`
 -- AUTO_INCREMENT für Tabelle `l_dateianhang_art`
 --
 ALTER TABLE `l_dateianhang_art`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT für Tabelle `l_geschlecht`
@@ -16193,7 +16202,7 @@ ALTER TABLE `l_rechtsform`
 -- AUTO_INCREMENT für Tabelle `mail`
 --
 ALTER TABLE `mail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT für Tabelle `mailserver`
