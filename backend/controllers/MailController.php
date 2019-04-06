@@ -364,15 +364,120 @@ class MailController extends Controller {
         }
     }
 
-    private function SendMail() {
-        $mailer = Yii::$app->mailer->setTransport([
-            'class' => 'Swift_SmtpTransport',
-            'host' => 'localhost', // or $config['host']
-            'username' => 'username', // or $config['username']
-            'password' => 'password', // or $config['password']
-            'port' => '587', // or $config['port']
-            'encryption' => 'tls', // or $config['encryption']
-        ]);
+    private function SendMail($model, $Cc = NULL, $Bcc = NULL, $anhang = NULL) {
+        $SendObject = $this->FetchMailServerData();
+        if (is_array($anhang))
+            $LocalDirectory = Yii::getAlias('@web/img') . DIRECTORY_SEPARATOR;
+        /* Da es 2^3 Möglichkeiten gibt, muss es auch 2^3 Konditionen geben. Auf ein Switch/Case-Konstrukt wird hier verzichtet. Außerdem wird
+          daurauf verzichtet, eventuelle Vereinfachungen zu implementieren, damit der Code einfacher wartbar ist. Folgende boolsche Gleichung
+          liefert die Basis-> A:Empfängeradresse Cc B:Empfängeradresse Bcc C:Anhang
+          (1)Y=notA&&notB&&notC
+          (2)Y=A&&notB&&notC
+          (3)Y=notA&&B&&notC
+          (4)Y=A&&B&&notC
+          (5)Y=notA&&notB&&C
+          (6)Y=A&&notB&&C
+          (7)Y=notA&&B&&C
+          (8)Y=A&&B&&C
+         */
+
+
+        /* Mail hat keinen Anhang */
+//(1)
+        if ($Cc == NULL && $Bcc == NULL && $anhang == NULL) {
+            $SendObject = Yii::$app->mailer->compose()
+                    ->setFrom($model->mail_from)
+                    ->setTo($mdoel->mail_to)
+                    ->setSubject($model->betreff)
+                    ->setHtmlBody($model->bodytext)
+                    ->setTextBody($model->bodytext)
+                    ->send();
+//(2)
+        } else if ($Cc != NULL && $Bcc == NULL && $anhang == NULL) {
+            $SendObject = Yii::$app->mailer->compose()
+                    ->setFrom($model->mail_from)
+                    ->setTo($model->mail_to)
+                    ->setCc($Cc)
+                    ->setSubject($model->betreff)
+                    ->setHtmlBody($model->bodytext)
+                    ->setTextBody($model->bodytext)
+                    ->send();
+//(3)
+        } else if ($Cc == NULL && $Bcc != NULL && $anhang == NULL) {
+            $SendObject = Yii::$app->mailer->compose()
+                    ->setFrom($model->mail_from)
+                    ->setTo($model->mail_to)
+                    ->setBcc($Bcc)
+                    ->setSubject($model->betreff)
+                    ->setHtmlBody($model->bodytext)
+                    ->setTextBody($model->bodytext)
+                    ->send();
+//(4)
+        } else if ($Cc != NULL && $Bcc != NULL && $anhang == NULL) {
+            $SendObject = Yii::$app->mailer->compose()
+                    ->setFrom($model->mail_from)
+                    ->setTo($model->mail_to)
+                    ->setCc($Cc)
+                    ->setBcc($Bcc)
+                    ->setSubject($model->betreff)
+                    ->setHtmlBody($model->bodytext)
+                    ->setTextBody($model->bodytext)
+                    ->send();
+            /* Mail hat Anhang */
+//(5)
+        } else if ($Cc == NULL && $Bcc == NULL && $anhang != NULL) {
+            $SendObject = Yii::$app->mailer->compose()
+                    ->setFrom($model->mail_from)
+                    ->setTo($model->mail_to)
+                    ->setSubject($model->betreff)
+                    ->setHtmlBody($model->bodytext)
+                    ->setTextBody($model->bodytext);
+            foreach ($anhang as $file) {
+                $SendObject->attach($LocalDirectory . $file);
+            }
+            $SendObject->send();
+//(6)
+        } else if ($Cc != NULL && $Bcc == NULL && $anhang != NULL) {
+            $SendObject = Yii::$app->mailer->compose()
+                    ->setFrom($model->mail_from)
+                    ->setTo($model->mail_to)
+                    ->setCc($Cc)
+                    ->setSubject($model->betreff)
+                    ->setHtmlBody($model->bodytext)
+                    ->setTextBody($model->bodytext);
+            foreach ($anhang as $file) {
+                $SendObject->attach($LocalDirectory . $file);
+            }
+            $SendObject->send();
+//(7)
+        } else if ($Cc == NULL && $Bcc != NULL && $anhang != NULL) {
+            $SendObject = Yii::$app->mailer->compose()
+                    ->setFrom($model->mail_from)
+                    ->setTo($model->mail_to)
+                    ->setBcc($Bcc)
+                    ->setSubject($model->betreff)
+                    ->setHtmlBody($model->bodytext)
+                    ->setTextBody($model->bodytext);
+            foreach ($anhang as $file) {
+                $SendObject->attach($LocalDirectory . $file);
+            }
+            $SendObject->send();
+//(8)
+        } else if ($Cc != NULL && $Bcc != NULL && $anhang != NULL) {
+            $SendObject = Yii::$app->mailer->compose()
+                    ->setFrom($model->mail_from)
+                    ->setTo($model->mail_to)
+                    ->setCc($Cc)
+                    ->setBcc($Bcc)
+                    ->setSubject($model->betreff)
+                    ->setHtmlBody($model->bodytext)
+                    ->setTextBody($model->bodytext);
+            foreach ($anhang as $file) {
+                $SendObject->attach($LocalDirectory . $file);
+            }
+            $SendObject->send();
+        }
+        return $SendObject;
     }
 
 }
