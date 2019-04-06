@@ -12,6 +12,7 @@ use kartik\growl\Growl;
 use yii\web\Session;
 use yii\web\UploadedFile;
 use yii\db\Expression;
+use yii\helpers\FileHelper;
 use backend\models\Mail;
 use app\models\MailSearch;
 use frontend\models\Dateianhang;
@@ -52,6 +53,8 @@ class MailController extends Controller {
     }
 
     public function actionCreate() {
+        $Ccadresse = "";
+        $Bccadresse = "";
         $files = array();
         $extension = array();
         $bezeichnung = array();
@@ -145,10 +148,18 @@ class MailController extends Controller {
             /* Ende der Modellvalidierung */
 //Verarbeite Uploaddaten
             $modelDateianhang->attachement = UploadedFile::getInstances($modelDateianhang, 'attachement');
-            if ($modelDateianhang->upload($modelDateianhang))
+            if ($modelDateianhang->upload($model, true)) {
+// ersetze deutsche Umlaute im Dateinamen
+                foreach ($modelDateianhang->attachement as $uploadedFile) {
+                    $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+                    $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+                    $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
+// lege jeweils den Dateinamen und dessen Endung in zwei unterschiedliche Arrays ab
+                    array_push($files, $uploadedFile->name);
+                    array_push($extension, $uploadedFile->extension);
+                }
                 $BoolAnhang = true;
-            else
-                throw new NotFoundHttpException(Yii::t('app', "Während des Uploads ging etwas schief. Überprüfen Sie zunächst, ob sie über Schreibrechte verfügen und informieren Sie den Softwarehersteller(Fehlercode:UPx12y34)"));
+            }
             if ($BoolAnhang && empty($modelDateianhang->l_dateianhang_art_id)) {
                 $message = 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.';
                 $this->Ausgabe($message, 'Warnung', 1500, Growl::TYPE_WARNING);
@@ -162,61 +173,131 @@ class MailController extends Controller {
               Jetzt muss noch die Datenbanklogik und das Versenden der Mail codiert werden. Dazu werden die models mail,dateianhang und
               e_dateianhang benötigt. Alle wurden bereits instanziert.
              */
-//Mailversand:Anfang
-//ToDo:Mail versenden
-//Mailversand:Ende
-// Datenbanklogik Anfang: Dazu wird eine Transaction eröffnet. Erst nach dem Commit werden die Records in die Datenbank geschrieben
-            try {
-                $transaction = \Yii::$app->db->beginTransaction();
-// ersetze deutsche Umlaute im Dateinamen
-                foreach ($modelDateianhang->attachement as $uploadedFile) {
-                    $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
-                    $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
-                    $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
-// lege jeweils den Dateinamen und dessen Endung in zwei unterschiedliche Arrays ab
-                    array_push($files, $uploadedFile->name);
-                    array_push($extension, $uploadedFile->extension);
-                }
-// Differenziere je nach Endung der Elemente im Array die in der Datenbank unten zu speichernden Werte
-                for ($i = 0; $i < count($extension); $i++) {
-                    if ($extension[$i] == "bmp" || $extension[$i] == "tif" || $extension[$i] == "png" || $extension[$i] == "psd" || $extension[$i] == "pcx" || $extension[$i] == "gif" || $extension[$i] == "cdr" || $extension[$i] == "jpeg" || $extension[$i] == "jpg") {
-                        $bez = "Bild für eine Mail";
-                        array_push($bezeichnung, $bez);
-                    } else {
-                        $bez = "Dokumente o.ä. für eine Mail";
-                        array_push($bezeichnung, $bez);
+
+            //Mailversand:Anfang
+            $an = $model->mail_to;
+            $mailWurdeVerschickt = true;
+            if (!$BoolAnhang) {
+                if (empty($model->mail_cc) && empty($model->mail_bcc)) {
+                    if ($this->SendMail($model))
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an  verschickt!");
+                    else {
+                        $session->addFlash('info', "Die Mail konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $mailWurdeVerschickt = false;
+                    }
+                } else if (!empty($model->mail_cc) && empty($model->mail_bcc)) {
+                    $Ccadresse = $model->mail_cc;
+                    if ($this->SendMail($model, $Ccadresse))
+                        $session->addFlash('info', "Die Mail  wurde erfolgreich an $an  verschickt!Sie hat einen CC Empfänger:$Ccadresse");
+                    else {
+                        $session->addFlash('info', "Die Mail konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $mailWurdeVerschickt = false;
+                    }
+                } else if (empty($model->mail_cc) && !empty($model->mail_bcc)) {
+                    $Bccadresse = $model->mail_bcc;
+                    if ($this->SendMail($model, null, $Bccadresse))
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an erfolgreich verschickt!Sie hat einen Bcc Empfänger:$Bccadresse");
+                    else {
+                        $session->addFlash('info', "Die Mail  konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $mailWurdeVerschickt = false;
+                    }
+                } else if (!empty($model->mail_cc) && !empty($model->mail_bcc)) {
+                    $Ccadresse = $model->mail_cc;
+                    $Bccadresse = $model->mail_bcc;
+                    if ($this->SendMail($model, $Ccadresse, $Bccadresse))
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt!Sie hat einen Cc Empfänger:$Ccadresse und einen Bcc Empfänger:$Bccadresse");
+                    else {
+                        $session->addFlash('info', "Die Mail  konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $mailWurdeVerschickt = false;
                     }
                 }
-//ab jetzt ist die Mail in die Datenbank gespeichert(na ja, eigentlich erst nach dem Commit). Was folgt ist noch e_dateianhang und dateianhang
-                $model->save();
-                /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
-                foreach ($modelEDateianhang as $item) {
-                    array_push($FkInEDatei, $item->mail_id);
+            } else {
+                if (empty($model->mail_cc) && empty($model->mail_bcc)) {
+                    if ($this->SendMail($model, null, null, $files))
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt! Sie hatte Anhänge");
+                    else {
+                        $session->addFlash('info', "Die konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $mailWurdeVerschickt = false;
+                    }
+                } else if (!empty($model->mail_cc) && empty($model->mail_bcc)) {
+                    $Ccadresse = $model->mail_cc;
+                    if ($this->SendMail($model, $Ccadresse, null, $files))
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt!Sie hat einen CC Empfänger:$Ccadresse und Anhänge");
+                    else {
+                        $session->addFlash('info', "Die konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $mailWurdeVerschickt = false;
+                    }
+                } else if (empty($model->mail_cc) && !empty($model->mail_bcc)) {
+                    $Bccadresse = $model->mail_bcc;
+                    if ($this->SendMail($model, null, $Bccadresse, $files))
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt!Sie hat einen Bcc Empfänger:$Bccadresse und Anhänge");
+                    else {
+                        $session->addFlash('info', "Die konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $mailWurdeVerschickt = false;
+                    }
+                } else if (!empty($model->mail_cc) && !empty($model->mail_bcc)) {
+                    $Ccadresse = $model->mail_cc;
+                    $Bccadresse = $model->mail_bcc;
+                    if ($this->SendMail($model, $Ccadresse, $Bccadresse, $files))
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt!Sie hat einen Cc Empfänger:$Ccadresse und einen Bcc Empfänger:$Bccadresse und Anhänge");
+                    else {
+                        $session->addFlash('info', "Die konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $mailWurdeVerschickt = false;
+                    }
                 }
-                /* falls nicht */
-                if (!in_array($model->id, $FkInEDatei) && $BoolAnhang) {
-                    $modelE->mail_id = $model->id;
-                    $modelE->save();
-                    $fk = $modelE->id;
-                    /* falls doch */
-                } else {
-                    $fk = EDateianhang::findOne(['immobilien_id' => $model->id]);
-                }
-                /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
-                  Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
-                for ($i = 0; $i < count($files); $i++) {
-                    $connection->createCommand()
-                            ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
-                                [$fk, $modelDateianhang->l_dateianhang_art_id, $bezeichnung[$i], $files[$i], $now, $model->angelegt_von],
-                            ])
-                            ->execute();
-                }
-                $transaction->commit();
-//Datenbanklogik:Ende
-            } catch (\Exception $e) {
-                $transaction->rollBack();
-                error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
             }
+//Mailversand:Ende
+            if ($mailWurdeVerschickt) {
+// Datenbanklogik Anfang: Dazu wird eine Transaction eröffnet. Erst nach dem Commit werden die Records in die Datenbank geschrieben
+                try {
+                    $transaction = \Yii::$app->db->beginTransaction();
+// Differenziere je nach Endung der Elemente im Array die in der Datenbank unten zu speichernden Werte
+                    for ($i = 0; $i < count($extension); $i++) {
+                        if ($extension[$i] == "bmp" || $extension[$i] == "tif" || $extension[$i] == "png" || $extension[$i] == "psd" || $extension[$i] == "pcx" || $extension[$i] == "gif" || $extension[$i] == "cdr" || $extension[$i] == "jpeg" || $extension[$i] == "jpg") {
+                            $bez = "Bild für eine Mail";
+                            array_push($bezeichnung, $bez);
+                        } else {
+                            $bez = "Dokumente o.ä. für eine Mail";
+                            array_push($bezeichnung, $bez);
+                        }
+                    }
+//ab jetzt ist die Mail in die Datenbank gespeichert(na ja, eigentlich erst nach dem Commit). Was folgt ist noch e_dateianhang und dateianhang
+                    $model->save();
+                    /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
+                    foreach ($modelEDateianhang as $item) {
+                        array_push($FkInEDatei, $item->mail_id);
+                    }
+                    /* falls nicht */
+                    if (!in_array($model->id, $FkInEDatei) && $BoolAnhang) {
+                        $modelE->mail_id = $model->id;
+                        $modelE->save();
+                        $fk = $modelE->id;
+                        /* falls doch */
+                    } else {
+                        $fk = EDateianhang::findOne(['immobilien_id' => $model->id]);
+                    }
+                    /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
+                      Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+                    for ($i = 0; $i < count($files); $i++) {
+                        $connection->createCommand()
+                                ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
+                                    [$fk, $modelDateianhang->l_dateianhang_art_id, $bezeichnung[$i], $files[$i], $now, $model->angelegt_von],
+                                ])
+                                ->execute();
+                    }
+                    $transaction->commit();
+//Datenbanklogik:Ende
+                } catch (\Exception $e) {
+                    $transaction->rollBack();
+                    error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
+                }
+            }
+//Anhänge aus Verzeichnis löschen:Anfang
+            $folder = Yii::getAlias('@uploading');
+            if (!$this->DeleteFilesFromfolder($folder)) {
+                $session->addFlash('Warnung', "Während des Löschen der Anhangsdateien ging etwas schief. Das kann die Applikation bzgl. der Themeinitialiserung durcheinander bringen. Löschen Sie die Dateien manuell oder informieren sie den Softwarehersteller(Fehlercode:DelcFG12)");
+            }
+//Anhänge aus Verzeichnis löschen:Anfang
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -366,118 +447,134 @@ class MailController extends Controller {
 
     private function SendMail($model, $Cc = NULL, $Bcc = NULL, $anhang = NULL) {
         $SendObject = $this->FetchMailServerData();
-        if (is_array($anhang))
-            $LocalDirectory = Yii::getAlias('@web/img') . DIRECTORY_SEPARATOR;
-        /* Da es 2^3 Möglichkeiten gibt, muss es auch 2^3 Konditionen geben. Auf ein Switch/Case-Konstrukt wird hier verzichtet. Außerdem wird
-          daurauf verzichtet, eventuelle Vereinfachungen zu implementieren, damit der Code einfacher wartbar ist. Folgende boolsche Gleichung
-          liefert die Basis-> A:Empfängeradresse Cc B:Empfängeradresse Bcc C:Anhang
-          (1)Y=notA&&notB&&notC
-          (2)Y=A&&notB&&notC
-          (3)Y=notA&&B&&notC
-          (4)Y=A&&B&&notC
-          (5)Y=notA&&notB&&C
-          (6)Y=A&&notB&&C
-          (7)Y=notA&&B&&C
-          (8)Y=A&&B&&C
-         */
+        try {
+            if (is_array($anhang))
+                $LocalDirectory = Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR;
+            /* Da es 2^3 Möglichkeiten gibt, muss es auch 2^3 Konditionen geben. Auf ein Switch/Case-Konstrukt wird hier verzichtet. Außerdem wird
+              daurauf verzichtet, eventuelle Vereinfachungen zu implementieren, damit der Code einfacher wartbar ist. Folgende boolsche Gleichung
+              liefert die Basis-> A:Empfängeradresse Cc B:Empfängeradresse Bcc C:Anhang
+              (1)Y=notA&&notB&&notC
+              (2)Y=A&&notB&&notC
+              (3)Y=notA&&B&&notC
+              (4)Y=A&&B&&notC
+              (5)Y=notA&&notB&&C
+              (6)Y=A&&notB&&C
+              (7)Y=notA&&B&&C
+              (8)Y=A&&B&&C
+             */
 
 
-        /* Mail hat keinen Anhang */
+            /* Mail hat keinen Anhang */
 //(1)
-        if ($Cc == NULL && $Bcc == NULL && $anhang == NULL) {
-            $SendObject = Yii::$app->mailer->compose()
-                    ->setFrom($model->mail_from)
-                    ->setTo($mdoel->mail_to)
-                    ->setSubject($model->betreff)
-                    ->setHtmlBody($model->bodytext)
-                    ->setTextBody($model->bodytext)
-                    ->send();
+            if ($Cc == NULL && $Bcc == NULL && $anhang == NULL) {
+                $SendObject = Yii::$app->mailer->compose()
+                        ->setFrom($model->mail_from)
+                        ->setTo($model->mail_to)
+                        ->setSubject($model->betreff)
+                        ->setHtmlBody($model->bodytext)
+                        ->setTextBody($model->bodytext)
+                        ->send();
 //(2)
-        } else if ($Cc != NULL && $Bcc == NULL && $anhang == NULL) {
-            $SendObject = Yii::$app->mailer->compose()
-                    ->setFrom($model->mail_from)
-                    ->setTo($model->mail_to)
-                    ->setCc($Cc)
-                    ->setSubject($model->betreff)
-                    ->setHtmlBody($model->bodytext)
-                    ->setTextBody($model->bodytext)
-                    ->send();
+            } else if ($Cc != NULL && $Bcc == NULL && $anhang == NULL) {
+                $SendObject = Yii::$app->mailer->compose()
+                        ->setFrom($model->mail_from)
+                        ->setTo($model->mail_to)
+                        ->setCc($Cc)
+                        ->setSubject($model->betreff)
+                        ->setHtmlBody($model->bodytext)
+                        ->setTextBody($model->bodytext)
+                        ->send();
 //(3)
-        } else if ($Cc == NULL && $Bcc != NULL && $anhang == NULL) {
-            $SendObject = Yii::$app->mailer->compose()
-                    ->setFrom($model->mail_from)
-                    ->setTo($model->mail_to)
-                    ->setBcc($Bcc)
-                    ->setSubject($model->betreff)
-                    ->setHtmlBody($model->bodytext)
-                    ->setTextBody($model->bodytext)
-                    ->send();
+            } else if ($Cc == NULL && $Bcc != NULL && $anhang == NULL) {
+                $SendObject = Yii::$app->mailer->compose()
+                        ->setFrom($model->mail_from)
+                        ->setTo($model->mail_to)
+                        ->setBcc($Bcc)
+                        ->setSubject($model->betreff)
+                        ->setHtmlBody($model->bodytext)
+                        ->setTextBody($model->bodytext)
+                        ->send();
 //(4)
-        } else if ($Cc != NULL && $Bcc != NULL && $anhang == NULL) {
-            $SendObject = Yii::$app->mailer->compose()
-                    ->setFrom($model->mail_from)
-                    ->setTo($model->mail_to)
-                    ->setCc($Cc)
-                    ->setBcc($Bcc)
-                    ->setSubject($model->betreff)
-                    ->setHtmlBody($model->bodytext)
-                    ->setTextBody($model->bodytext)
-                    ->send();
-            /* Mail hat Anhang */
+            } else if ($Cc != NULL && $Bcc != NULL && $anhang == NULL) {
+                $SendObject = Yii::$app->mailer->compose()
+                        ->setFrom($model->mail_from)
+                        ->setTo($model->mail_to)
+                        ->setCc($Cc)
+                        ->setBcc($Bcc)
+                        ->setSubject($model->betreff)
+                        ->setHtmlBody($model->bodytext)
+                        ->setTextBody($model->bodytext)
+                        ->send();
+                /* Mail hat Anhang */
 //(5)
-        } else if ($Cc == NULL && $Bcc == NULL && $anhang != NULL) {
-            $SendObject = Yii::$app->mailer->compose()
-                    ->setFrom($model->mail_from)
-                    ->setTo($model->mail_to)
-                    ->setSubject($model->betreff)
-                    ->setHtmlBody($model->bodytext)
-                    ->setTextBody($model->bodytext);
-            foreach ($anhang as $file) {
-                $SendObject->attach($LocalDirectory . $file);
-            }
-            $SendObject->send();
+            } else if ($Cc == NULL && $Bcc == NULL && $anhang != NULL) {
+                $SendObject = Yii::$app->mailer->compose()
+                        ->setFrom($model->mail_from)
+                        ->setTo($model->mail_to)
+                        ->setSubject($model->betreff)
+                        ->setHtmlBody($model->bodytext)
+                        ->setTextBody($model->bodytext);
+                foreach ($anhang as $file) {
+                    $SendObject->attach($LocalDirectory . $file);
+                }
+                $SendObject->send();
 //(6)
-        } else if ($Cc != NULL && $Bcc == NULL && $anhang != NULL) {
-            $SendObject = Yii::$app->mailer->compose()
-                    ->setFrom($model->mail_from)
-                    ->setTo($model->mail_to)
-                    ->setCc($Cc)
-                    ->setSubject($model->betreff)
-                    ->setHtmlBody($model->bodytext)
-                    ->setTextBody($model->bodytext);
-            foreach ($anhang as $file) {
-                $SendObject->attach($LocalDirectory . $file);
-            }
-            $SendObject->send();
+            } else if ($Cc != NULL && $Bcc == NULL && $anhang != NULL) {
+                $SendObject = Yii::$app->mailer->compose()
+                        ->setFrom($model->mail_from)
+                        ->setTo($model->mail_to)
+                        ->setCc($Cc)
+                        ->setSubject($model->betreff)
+                        ->setHtmlBody($model->bodytext)
+                        ->setTextBody($model->bodytext);
+                foreach ($anhang as $file) {
+                    $SendObject->attach($LocalDirectory . $file);
+                }
+                $SendObject->send();
 //(7)
-        } else if ($Cc == NULL && $Bcc != NULL && $anhang != NULL) {
-            $SendObject = Yii::$app->mailer->compose()
-                    ->setFrom($model->mail_from)
-                    ->setTo($model->mail_to)
-                    ->setBcc($Bcc)
-                    ->setSubject($model->betreff)
-                    ->setHtmlBody($model->bodytext)
-                    ->setTextBody($model->bodytext);
-            foreach ($anhang as $file) {
-                $SendObject->attach($LocalDirectory . $file);
-            }
-            $SendObject->send();
+            } else if ($Cc == NULL && $Bcc != NULL && $anhang != NULL) {
+                $SendObject = Yii::$app->mailer->compose()
+                        ->setFrom($model->mail_from)
+                        ->setTo($model->mail_to)
+                        ->setBcc($Bcc)
+                        ->setSubject($model->betreff)
+                        ->setHtmlBody($model->bodytext)
+                        ->setTextBody($model->bodytext);
+                foreach ($anhang as $file) {
+                    $SendObject->attach($LocalDirectory . $file);
+                }
+                $SendObject->send();
 //(8)
-        } else if ($Cc != NULL && $Bcc != NULL && $anhang != NULL) {
-            $SendObject = Yii::$app->mailer->compose()
-                    ->setFrom($model->mail_from)
-                    ->setTo($model->mail_to)
-                    ->setCc($Cc)
-                    ->setBcc($Bcc)
-                    ->setSubject($model->betreff)
-                    ->setHtmlBody($model->bodytext)
-                    ->setTextBody($model->bodytext);
-            foreach ($anhang as $file) {
-                $SendObject->attach($LocalDirectory . $file);
+            } else if ($Cc != NULL && $Bcc != NULL && $anhang != NULL) {
+                $SendObject = Yii::$app->mailer->compose()
+                        ->setFrom($model->mail_from)
+                        ->setTo($model->mail_to)
+                        ->setCc($Cc)
+                        ->setBcc($Bcc)
+                        ->setSubject($model->betreff)
+                        ->setHtmlBody($model->bodytext)
+                        ->setTextBody($model->bodytext);
+                foreach ($anhang as $file) {
+                    $SendObject->attach($LocalDirectory . $file);
+                }
+                $SendObject->send();
             }
-            $SendObject->send();
+            return true;
+        } catch (yii\db\Exception $e) {
+            return false;
         }
-        return $SendObject;
+    }
+
+    private function DeleteFilesFromfolder($folder) {
+        try {
+            $arrayOfFiles = FileHelper::findFiles($folder);
+            foreach ($arrayOfFiles as $item) {
+                FileHelper::unlink($folder . DIRECTORY_SEPARATOR . $item);
+            }
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
 }

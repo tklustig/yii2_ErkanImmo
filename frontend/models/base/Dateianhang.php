@@ -111,7 +111,7 @@ class Dateianhang extends \yii\db\ActiveRecord {
         }
     }
 
-    public function upload($model) {
+    public function upload($model, $bool = NULL) {
         $x = 0;
         $valid = $this->validate();
         if (!$valid) {
@@ -126,8 +126,12 @@ class Dateianhang extends \yii\db\ActiveRecord {
         foreach ($this->attachement as $uploadedFile) {
             $url = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . Dateianhang::path . Dateianhang::path2img;
             $uploadedFile->name = $this->Ersetzen($uploadedFile->name);
-            $uploadedFile->saveAs(Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name);
-            copy(Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name, $url . $uploadedFile->name);
+            if ($bool != NULL && $bool == TRUE) {
+                $uploadedFile->saveAs(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+            } else {
+                $uploadedFile->saveAs(Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+                copy(Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name, $url . $uploadedFile->name);
+            }
             $x++;
         }
         if ($x > 0) {
