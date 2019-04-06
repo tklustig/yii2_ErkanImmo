@@ -103,6 +103,7 @@ return [
                 'mail_erzeugen' => 'mail/create',
                 'mail_aktualisieren' => 'mail/update',
                 'mail_loeschen' => 'mail/delete',
+                'deleteAll_pictures' => '/mail/deleteall',
                 'firma' => 'firma/index',
                 'firma_view' => 'firma/view',
                 'firma_erzeugen' => 'firma/create',

@@ -53,6 +53,7 @@ class MailController extends Controller {
     }
 
     public function actionCreate() {
+        $Zieladresse = "";
         $Ccadresse = "";
         $Bccadresse = "";
         $files = array();
@@ -76,59 +77,80 @@ class MailController extends Controller {
             $string2Extract = $model->mail_to;
             $extractOuter = explode("'", $string2Extract);
             $extractInner = explode(";", $extractOuter[0]);
+//Entferne das letzte Element des Arrays, sofern es ein Leerzeichen ist.
+            if ($extractInner[count($extractInner) - 1] == '')
+                array_pop($extractInner);
 //Bilde ein Array aus dem Formularfeld der Mailadressen(cc)
             $string2Extract = $model->mail_cc;
             $extractOuter = explode("'", $string2Extract);
             $extractInnerCc = explode(";", $extractOuter[0]);
+            if ($extractInnerCc[count($extractInnerCc) - 1] == '') {
+                array_pop($extractInnerCc);
+            }
 //Bilde ein Array aus dem Formularfeld der Mailadressen(bcc)
             $string2Extract = $model->mail_bcc;
             $extractOuter = explode("'", $string2Extract);
             $extractInnerBcc = explode(";", $extractOuter[0]);
-            $Ursprung = "Zieladresse";
+            if ($extractInnerBcc[count($extractInnerBcc) - 1] == '')
+                array_pop($extractInnerBcc);
+
+            $Ursprung = "Mainempfänger";
 
 //Validiere alle Mailadressen
             /* Validiert die Adressen.Eine Kapselung der Logik funktioniert leider nicht,da gekapselte Methoden nicht mehr zurück rendern können */
             for ($i = 0; $i < count($extractInner); $i++) {
                 if (!filter_var($extractInner[$i], FILTER_VALIDATE_EMAIL)) {
                     $message = 'Eine oder mehrere der Mailadressen im Feld ' . $Ursprung . ' ist korrupt. Bitte überprüfen Sie deren Validität und reselektieren Sie ggf. Ihre Dateianhänge';
-                    $this->Ausgabe($message);
+                    $this->Ausgabe($message, 'Error', 500, Growl::TYPE_DANGER);
                     /* Dieses Codestück verhindert eine Kapselung der Logik,die demzufolge das erste mal codiert werden muss */
                     return $this->render('create', [
                                 'model' => $model,
                                 'modelDateianhang' => $modelDateianhang,
                                 'mailFrom' => $mailFrom
                     ]);
+                } else {
+                    $Zieladresse = $extractInner;
                 }
             }
+            if (count($Zieladresse) == 1)
+                $Zieladresse = $model->mail_to;
             if (!empty($model->mail_cc)) {
-                $Ursprung = "cc";
+                $Ursprung = "Cc Empfänger";
                 for ($i = 0; $i < count($extractInnerCc); $i++) {
                     if (!filter_var($extractInnerCc[$i], FILTER_VALIDATE_EMAIL)) {
                         $message = 'Eine oder mehrere der Mailadressen im Feld ' . $Ursprung . ' ist korrupt. Bitte überprüfen Sie deren Validität und reselektieren Sie ggf. Ihre Dateianhänge';
-                        $this->Ausgabe($message);
+                        $this->Ausgabe($message, 'Error', 500, Growl::TYPE_DANGER);
                         /* Dieses Codestück verhindert eine Kapselung der Logik,die demzufolge bisher zweimal codiert werden musste */
                         return $this->render('create', [
                                     'model' => $model,
                                     'modelDateianhang' => $modelDateianhang,
                                     'mailFrom' => $mailFrom
                         ]);
+                    } else {
+                        $Ccadresse = $extractInnerCc;
                     }
                 }
+                if (count($Ccadresse) == 1)
+                    $Ccadresse = $model->mail_cc;
             }
             if (!empty($model->mail_bcc)) {
-                $Ursprung = "bcc";
+                $Ursprung = "Bcc Empfänger";
                 for ($i = 0; $i < count($extractInnerBcc); $i++) {
                     if (!filter_var($extractInnerBcc[$i], FILTER_VALIDATE_EMAIL)) {
                         $message = 'Eine oder mehrere der Mailadressen im Feld ' . $Ursprung . ' ist korrupt. Bitte überprüfen Sie deren Validität und reselektieren Sie ggf. Ihre Dateianhänge';
-                        $this->Ausgabe($message);
+                        $this->Ausgabe($message, 'Error', 500, Growl::TYPE_DANGER);
                         /* Dieses Codestück verhindert eine Kapselung der Logik,die demzufolge bisher dreimal codiert werden musste */
                         return $this->render('create', [
                                     'model' => $model,
                                     'modelDateianhang' => $modelDateianhang,
                                     'mailFrom' => $mailFrom
                         ]);
+                    } else {
+                        $Bccadresse = $extractInnerBcc;
                     }
                 }
+                if (count($Bccadresse) == 1)
+                    $Bccadresse = $model->mail_bcc;
             }
             /* Ende der Mailadressenvalidierung
               Anfang der Modellvalidierung
@@ -329,6 +351,11 @@ class MailController extends Controller {
         return $this->redirect(['index']);
     }
 
+    public function actionDeleteall() {
+        print_r('diese Seite ist noch eine Baustelle');
+        die();
+    }
+
     public function actionPdf($id) {
         $model = $this->findModel($id);
 
@@ -445,7 +472,7 @@ class MailController extends Controller {
         }
     }
 
-    private function SendMail($model, $Cc = NULL, $Bcc = NULL, $anhang = NULL) {
+    private function SendMail($zielAdresse, $model, $Cc = NULL, $Bcc = NULL, $anhang = NULL) {
         $SendObject = $this->FetchMailServerData();
         try {
             if (is_array($anhang))
@@ -469,7 +496,7 @@ class MailController extends Controller {
             if ($Cc == NULL && $Bcc == NULL && $anhang == NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
-                        ->setTo($model->mail_to)
+                        ->setTo($zielAdresse)
                         ->setSubject($model->betreff)
                         ->setHtmlBody($model->bodytext)
                         ->setTextBody($model->bodytext)
@@ -478,7 +505,7 @@ class MailController extends Controller {
             } else if ($Cc != NULL && $Bcc == NULL && $anhang == NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
-                        ->setTo($model->mail_to)
+                        ->setTo($zielAdresse)
                         ->setCc($Cc)
                         ->setSubject($model->betreff)
                         ->setHtmlBody($model->bodytext)
@@ -488,7 +515,7 @@ class MailController extends Controller {
             } else if ($Cc == NULL && $Bcc != NULL && $anhang == NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
-                        ->setTo($model->mail_to)
+                        ->setTo($zielAdresse)
                         ->setBcc($Bcc)
                         ->setSubject($model->betreff)
                         ->setHtmlBody($model->bodytext)
@@ -498,7 +525,7 @@ class MailController extends Controller {
             } else if ($Cc != NULL && $Bcc != NULL && $anhang == NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
-                        ->setTo($model->mail_to)
+                        ->setTo($zielAdresse)
                         ->setCc($Cc)
                         ->setBcc($Bcc)
                         ->setSubject($model->betreff)
@@ -510,7 +537,7 @@ class MailController extends Controller {
             } else if ($Cc == NULL && $Bcc == NULL && $anhang != NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
-                        ->setTo($model->mail_to)
+                        ->setTo($zielAdresse)
                         ->setSubject($model->betreff)
                         ->setHtmlBody($model->bodytext)
                         ->setTextBody($model->bodytext);
@@ -522,7 +549,7 @@ class MailController extends Controller {
             } else if ($Cc != NULL && $Bcc == NULL && $anhang != NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
-                        ->setTo($model->mail_to)
+                        ->setTo($zielAdresse)
                         ->setCc($Cc)
                         ->setSubject($model->betreff)
                         ->setHtmlBody($model->bodytext)
@@ -535,7 +562,7 @@ class MailController extends Controller {
             } else if ($Cc == NULL && $Bcc != NULL && $anhang != NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
-                        ->setTo($model->mail_to)
+                        ->setTo($zielAdresse)
                         ->setBcc($Bcc)
                         ->setSubject($model->betreff)
                         ->setHtmlBody($model->bodytext)
@@ -548,7 +575,7 @@ class MailController extends Controller {
             } else if ($Cc != NULL && $Bcc != NULL && $anhang != NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
-                        ->setTo($model->mail_to)
+                        ->setTo($zielAdresse)
                         ->setCc($Cc)
                         ->setBcc($Bcc)
                         ->setSubject($model->betreff)

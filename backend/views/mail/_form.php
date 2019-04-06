@@ -80,7 +80,7 @@ use kartik\widgets\FileInput;
         <div class="col-md-3">
             <?=
             $form->field($model, 'mail_from', ['addon' => [
-                    'prepend' => ['content' => 'Mailabsender']]])->textInput(['maxlength' => true, 'value' => $mailFrom, 'readOnly' => true])
+                    'prepend' => ['content' => 'Mailabsender'],'append' => ['content' => 'readonly']]])->textInput(['maxlength' => true, 'value' => $mailFrom, 'readOnly' => true])
             ?>
         </div>
         <div class="col-md-3">

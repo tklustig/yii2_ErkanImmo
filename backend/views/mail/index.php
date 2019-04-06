@@ -83,6 +83,9 @@ $this->registerJs($search);
             'toggleDataOptions' => ['minCount' => 10],
         ],
         'toolbar' => [
+            ['content' =>
+                Html::a('<span class=" fa fa-cut"> Alle löschen <span class="fa fa-cut">', ['/mail/deleteall'], ['class' => 'btn btn-warning', 'title' => 'löscht alle Mails auf einen Schlag', 'data' => ['pjax' => '0']])
+            ],
             '{export}',
             '{toggleData}'
         ],
