@@ -56,7 +56,6 @@ class MailserverController extends Controller {
         if ($model->loadAll(Yii::$app->request->post())) {
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-
                 $model->save();
                 $transaction->commit();
             } catch (yii\db\Exception $e) {
