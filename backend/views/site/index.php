@@ -1,12 +1,28 @@
 <?php
 
 use yii\helpers\Html;
-use common\widgets\Alert;
+use kartik\alert\Alert;
+use yii\web\Session;
 ?>
 <?php
-//Hier werden alle Flashnachrichten ausgegeben
-$alert = new Alert();
-$alert->run();
+/* Hier werden alle Flashnachrichten ausgegeben
+  $alert = new Alert();
+  $alert->run();
+ */
+$session = new Session();
+$MessageArt = Alert::TYPE_DANGER;
+foreach ($session->getAllFlashes() as $flash) {
+    if (count($flash) > 3) {
+        ?><?=
+        generateOutput($MessageArt, implode("<br/><hr/><br/>", $flash));
+    } else {
+        foreach ($flash as $ausgabe) {
+            ?><?=
+            generateOutput($MessageArt, $ausgabe);
+        }
+    }
+}
+$session->removeAllFlashes();
 ?>
 <center><div class="page-header">
         <h1 class="text-purple">Administration <small class="text-danger">Untertitel</small></h1>
@@ -85,3 +101,14 @@ $this->title = 'My Yii Application';
         </div>
     </div>
 </div>
+<?php
+
+function generateOutput($type, $content) {
+    return Alert::widget(['type' => $type,
+                'title' => 'Information',
+                'icon' => 'glyphicon glyphicon-exclamation-sign',
+                'body' => $content,
+                'showSeparator' => true,
+    ]);
+}
+?>

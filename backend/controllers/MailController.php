@@ -315,13 +315,13 @@ class MailController extends Controller {
                 }
             }
 //Anhänge aus Verzeichnis löschen:Anfang
-            if ($model->checkBoxDelete == 1) {
+            if ($model->checkBoxDelete == 1 || $model->checkBoxDelete == '1') {
                 $folder = Yii::getAlias('@documentsMail');
                 if (!$this->DeleteFilesFromfolder($folder)) {
                     $session->addFlash('Warnung', "Während des Löschen der Anhangsdateien ging etwas schief. Das kann die Applikation bzgl. der Themeinitialiserung durcheinander bringen. Löschen Sie die Dateien manuell oder informieren sie den Softwarehersteller(Fehlercode:DelcFG12)");
                 }
             }
-//Anhänge aus Verzeichnis löschen:Anfang
+//Anhänge aus Verzeichnis löschen:Ende
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -348,9 +348,22 @@ class MailController extends Controller {
     }
 
     public function actionDelete($id) {
-        $this->findModel($id)->deleteWithRelated();
+        try {
+            $session = new Session();
+            if (!empty(EDateianhang::findOne(['mail_id' => $id]))) {
+                $pk = EDateianhang::findOne(['mail_id' => $id])->id;
+                $idOfDateiA = Dateianhang::findOne(['e_dateianhang_id' => $pk])->id;
+                $this->findModelDateianhang($idOfDateiA)->delete();
+                $this->findModelEDateianhang($pk)->delete();
+                $session->addFlash('info', "Der Mailanhang mit der Id:$idOfDateiA wurde erfolgreich gelöscht, sowohl aus der Datenbank als auch physikalisch!");
+            }
+            $this->findModel($id)->delete();
+            $session->addFlash('info', "Die Mail mit der Id:$id wurde erfolgreich gelöscht. sie befindet sich allerdings noch auf Ihrem Mailserver.");
+        } catch (\Exception $e) {
+            error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
+        }
 
-        return $this->redirect(['index']);
+        return $this->redirect(['/site/index']);
     }
 
     public function actionDeleteall() {
@@ -388,6 +401,22 @@ class MailController extends Controller {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t('app', "Das Model Mail mit der Id:$id konnte nicht geladen werden. Informieren Sie den Softwarehersteller"));
+        }
+    }
+
+    protected function findModelDateianhang($id) {
+        if (($model = Dateianhang::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', "Das Model Dateianhang mit der Id:$id konnte nicht geladen werden. Informieren Sie den Softwarehersteller"));
+        }
+    }
+
+    protected function findModelEDateianhang($id) {
+        if (($model = EDateianhang::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', "Das Model EDateianhang mit der Id:$id konnte nicht geladen werden. Informieren Sie den Softwarehersteller"));
         }
     }
 
@@ -470,7 +499,7 @@ class MailController extends Controller {
                 ]);
             return $mailer;
         } catch (yii\db\Exception $e) {
-            error_handling::ErrorWithoutId($e, MailController::RenderBackInCaseOfError);
+            error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
         }
     }
 
@@ -589,16 +618,20 @@ class MailController extends Controller {
                 $SendObject->send();
             }
             return true;
-        } catch (yii\db\Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }
 
     private function DeleteFilesFromfolder($folder) {
         try {
+            $session = new Session();
             $arrayOfFiles = FileHelper::findFiles($folder);
             foreach ($arrayOfFiles as $item) {
-                FileHelper::unlink($folder . DIRECTORY_SEPARATOR . $item);
+                if (!preg_match('/ignore/', $item)) {
+                    FileHelper::unlink($item);
+                    $session->addFlash('info', "Der Mailanhang:$item wurde erfolgreich aus dem Verzecihnis entfernt");
+                }
             }
             return true;
         } catch (\Exception $e) {

@@ -101,18 +101,18 @@ $this->beginPage()
                             ],
                         ],
                         '<li class="divider"></li>',
-                        ['label' => '+++++++Kunden++++++++', 'url' => ['#'],
+                        ['label' => '+++++++Kunden++++++++(ToDo:Mail gezielt verschicken)', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Alle Kundendaten abrufen', 'url' => ['/kunde/index']],
                             ],
                         ],
                         '<li class="divider"></li>',
-                        ['label' => '++++++++Mails++++++++', 'url' => ['#'],
+                        ['label' => '++++++++Mails++++++++(ToDo: alle Mails löschen)', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Mailserver konfigurieren', 'url' => ['/mailserver/index']],
-                                ['label' => 'Mails anzeigen/verschicken(ToComplete)', 'url' => ['/mail/index']]
+                                ['label' => 'Mails anzeigen/verschicken', 'url' => ['/mail/index']]
                             ],
                         ],
                         '<li class="divider"></li>',
