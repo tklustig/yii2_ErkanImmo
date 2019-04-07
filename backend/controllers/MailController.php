@@ -348,18 +348,52 @@ class MailController extends Controller {
     }
 
     public function actionDelete($id) {
+        $transaction = \Yii::$app->db->beginTransaction();
         try {
+            $mailHasBeenDeleted = false;
+            $arrayOfFilenames = array();
+            $arrayOfPkForDateiA = array();
             $session = new Session();
+            //zuerst die die Datenbankeinträge...
             if (!empty(EDateianhang::findOne(['mail_id' => $id]))) {
                 $pk = EDateianhang::findOne(['mail_id' => $id])->id;
-                $idOfDateiA = Dateianhang::findOne(['e_dateianhang_id' => $pk])->id;
-                $this->findModelDateianhang($idOfDateiA)->delete();
+                $modelDateianhang = Dateianhang::find()->all();
+                foreach ($modelDateianhang as $item) {
+                    if ($item->e_dateianhang_id == $pk) {
+                        array_push($arrayOfFilenames, $item->dateiname);
+                        array_push($arrayOfPkForDateiA, $item->id);
+                    }
+                }
+                if (!empty($arrayOfPkForDateiA)) {
+                    for ($i = 0; $i < count($arrayOfPkForDateiA); $i++) {
+                        $this->findModelDateianhang($arrayOfPkForDateiA[$i])->delete();
+                        $session->addFlash('info', "Der Mailanhang mit der Id:$arrayOfPkForDateiA[$i] wurde erfolgreich aus der Datenbank entfernt!");
+                    }
+                }
                 $this->findModelEDateianhang($pk)->delete();
-                $session->addFlash('info', "Der Mailanhang mit der Id:$idOfDateiA wurde erfolgreich gelöscht, sowohl aus der Datenbank als auch physikalisch!");
+            } else {
+                $this->findModel($id)->delete();
+                $session->addFlash('info', "Die Mail der Id:$id wurde erfolgreich gelöscht. Sie hatte keinen Anhang!");
+                $mailHasBeenDeleted = true;
             }
-            $this->findModel($id)->delete();
-            $session->addFlash('info', "Die Mail mit der Id:$id wurde erfolgreich gelöscht. sie befindet sich allerdings noch auf Ihrem Mailserver.");
+            if (!$mailHasBeenDeleted) {
+                $this->findModel($id)->delete();
+                $session->addFlash('info', "Die Mail der Id:$id wurde erfolgreich gelöscht. Sie hatte Anhänge!");
+            }
+            $transaction->commit();
+            //...dann die Dateien physikalisch entfernen
+            if (!empty($arrayOfFilenames)) {
+                $path = Yii::getAlias('@documentsMail');
+                for ($i = 0; $i < count($arrayOfFilenames); $i++) {
+                    $file2BeDeleted = $path . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i];
+                    if (file_exists($file2BeDeleted)) {
+                        FileHelper::unlink($file2BeDeleted);
+                        $session->addFlash('info', "Der physikalische Mailanhang:$arrayOfFilenames[$i] wurde erfolgreich gelöscht.");
+                    }
+                }
+            }
         } catch (\Exception $e) {
+            $transaction->rollBack();
             error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
         }
 

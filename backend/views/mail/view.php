@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'mail_cc',
             'mail_bcc',
             'betreff',
-            'bodytext:ntext',
+            'bodytext:html',
             'angelegt_am',
             [
                 'attribute' => 'angelegtVon.username',
