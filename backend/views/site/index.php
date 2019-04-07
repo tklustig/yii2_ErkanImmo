@@ -12,7 +12,7 @@ use yii\web\Session;
 $session = new Session();
 $MessageArt = Alert::TYPE_DANGER;
 foreach ($session->getAllFlashes() as $flash) {
-    if (count($flash) > 3) {
+    if (count($flash) > 2) {
         ?><?=
         generateOutput($MessageArt, implode("<br/><hr/><br/>", $flash));
     } else {
@@ -23,6 +23,7 @@ foreach ($session->getAllFlashes() as $flash) {
     }
 }
 $session->removeAllFlashes();
+$session->destroy();
 ?>
 <center><div class="page-header">
         <h1 class="text-purple">Administration <small class="text-danger">Untertitel</small></h1>
