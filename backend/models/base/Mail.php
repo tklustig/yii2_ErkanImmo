@@ -26,7 +26,7 @@ class Mail extends \yii\db\ActiveRecord {
             [['id_mailserver', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['bodytext'], 'string'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
-            [['mail_from', 'mail_to', 'mail_cc', 'mail_bcc', 'betreff'], 'string', 'max' => 64],
+            [['mail_from', 'mail_to', 'mail_cc', 'mail_bcc', 'betreff'], 'string', 'max' => 256],
             [['checkBoxDelete'], 'boolean'],
         ];
     }

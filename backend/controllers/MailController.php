@@ -348,6 +348,20 @@ class MailController extends Controller {
     }
 
     public function actionDelete($id) {
+        $modelDateianhang = Dateianhang::find()->all();
+        $arrayOfAllFilenames = array();
+        foreach ($modelDateianhang as $item) {
+            array_push($arrayOfAllFilenames, $item->dateiname);
+        }
+        $arrayOfFilesNamesUnique = array_unique($arrayOfAllFilenames);
+        $arrayOfDifference = array_diff($arrayOfAllFilenames,$arrayOfFilesNamesUnique);
+        print_r('Alle Dateinamen in der Datenbank<br>');
+        var_dump($arrayOfAllFilenames);
+        print_r('<br>Bereinigte(unique) Dateinamen in der Datenbank<br>');
+        var_dump($arrayOfFilesNamesUnique);
+        print_r('<br>Beseitigte Dateinamen in der Datenbank<br>');
+        var_dump($arrayOfDifference);
+        die();
         $transaction = \Yii::$app->db->beginTransaction();
         try {
             $mailHasBeenDeleted = false;
@@ -381,7 +395,13 @@ class MailController extends Controller {
                 $session->addFlash('info', "Die Mail der Id:$id wurde erfolgreich gelöscht. Sie hatte Anhänge!");
             }
             $transaction->commit();
-            //...dann die Dateien physikalisch entfernen
+            //...dann die Dateien physikalisch entfernen. Zunächst muss überprüft werden, ob Dateien doppelt genutzt werden
+            $arrayOfAllFilenames = array();
+            foreach ($modelDateianhang as $item) {
+                array_push($arrayOfAllFilenames, $item->dateiname);
+            }
+            $arrayOfFilesNamesUnique = array_unique($arrayOfAllFilenames);
+            $arrayOfDifference = array_diff($arrayOfAllFilenames, $arrayOfFilesNamesUnique);
             if (!empty($arrayOfFilenames)) {
                 $path = Yii::getAlias('@documentsMail');
                 for ($i = 0; $i < count($arrayOfFilenames); $i++) {
@@ -401,8 +421,26 @@ class MailController extends Controller {
     }
 
     public function actionDeleteall() {
-        print_r('diese Seite ist noch eine Baustelle');
-        die();
+        $arrayOfPk = array();
+        $model = Mail::find()->all();
+        foreach ($model as $item) {
+            array_push($arrayOfPk, $item->id);
+        }
+        if (!empty($arrayOfPk)) {
+            for ($i = 0; $i < count($arrayOfPk); $i++) {
+                //$arrayOfPk[$i] will be na integer, as var_dump shows up, but....
+                $this->actionDelete($arrayOfPk[$i]);
+            }
+        } else {
+            $message = 'in Ihrem Sytem sind keinerlei Mails registriert. Verschicken sie welche. Nur verschickte Mails können gelöscht werden';
+            $this->Ausgabe($message, 'Info/Warnung', 2000, Growl::TYPE_WARNING);
+            $searchModel = new MailSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            return $this->render('index', [
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+            ]);
+        }
     }
 
     public function actionPdf($id) {
