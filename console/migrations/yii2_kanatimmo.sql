@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 06. Apr 2019 um 20:08
+-- Erstellungszeit: 08. Apr 2019 um 17:53
 -- Server-Version: 10.1.37-MariaDB
 -- PHP-Version: 7.2.13
 
@@ -128,9 +128,7 @@ INSERT INTO `dateianhang` (`id`, `bezeichnung`, `dateiname`, `angelegt_am`, `akt
 (2, 'Bild für eine Immobilie', 'villa1.jpg', '2019-02-16 09:04:21', NULL, 4, NULL, 4, 2),
 (3, 'Bild für eine Immobilie', 'immo4.jpg', '2019-02-16 09:11:40', NULL, 3, NULL, 3, 3),
 (4, 'Bild für eine Immobilie', 'kitchen-1940175__340.jpg', '2019-02-16 09:14:32', NULL, 3, NULL, 3, 4),
-(5, 'Bild für eine Immobilie', 'modern-minimalist.jpg', '2019-02-16 09:17:24', NULL, 4, NULL, 3, 5),
-(11, 'Frontendbilder', 'immoThemeC.jpg', '2019-04-05 19:09:03', NULL, 4, NULL, 11, 7),
-(12, 'Frontendbilder', 'immoThemeH.jpg', '2019-04-05 19:09:03', NULL, 4, NULL, 11, 7);
+(5, 'Bild für eine Immobilie', 'modern-minimalist.jpg', '2019-02-16 09:17:24', NULL, 4, NULL, 3, 5);
 
 -- --------------------------------------------------------
 
@@ -155,8 +153,7 @@ INSERT INTO `e_dateianhang` (`id`, `immobilien_id`, `user_id`, `kunde_id`, `mail
 (2, 2, NULL, NULL, NULL),
 (3, 4, NULL, NULL, NULL),
 (4, 5, NULL, NULL, NULL),
-(5, 6, NULL, NULL, NULL),
-(7, NULL, 4, NULL, NULL);
+(5, 6, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -15767,6 +15764,29 @@ INSERT INTO `l_rechtsform` (`id`, `typus`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `l_textbaustein`
+--
+
+CREATE TABLE `l_textbaustein` (
+  `id` int(11) NOT NULL,
+  `beschreibung` varchar(64) COLLATE utf8_german2_ci NOT NULL,
+  `data` text COLLATE utf8_german2_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_german2_ci;
+
+--
+-- Daten für Tabelle `l_textbaustein`
+--
+
+INSERT INTO `l_textbaustein` (`id`, `beschreibung`, `data`) VALUES
+(1, 'Einleitung', 'vielen Dank für Ihre Anfrage, die ich Ihnen gern beantworte. \r\n\r\nDer Einstieg in das Personalwesen ist generell nicht einfach. Wir bieten interessierten und qualifizierten Bewerbern die Chance, diesen Bereich bei uns in der Praxis kennenzulernen. Wir verbinden diese Möglichkeit mit dem Ziel, passende Mitarbeiter für unsere eigenen Reihen auszubilden. \r\nDas Praktikum zum Einstieg in das Personalwesen in unserem Haus wird in Zusammenarbeit mit einem hiesigen Bildungsträger in Form einer Maßnahme der Arbeitsagentur durchgeführt. Voraussetzung für diese Maßnahme ist ein Bildungsgutschein von der Arbeitsagentur. Für den Zeitraum der Maßnahme erhalten Sie Ihre Leistungen von der Agentur weiter. \r\nWährend dieses Zeitraums gibt es Schultage mit Fachvorträgen im Theorie-Unterricht beim Bildungsträger; den Rest der Teit bilden wir Sie hier bei uns im Betrieb praktisch aus. Planmäßig ist vorgesehen, eine/n Praktikantin/en, mit der/dem wir zufrieden und erfolgreich zusammenarbeiten, in ein Angestelltenverhältnis zu übernehmen. Während des Zeitraums bekommt der/die Praktikant/in - natürlich unter Anleitung und entsprechender Hilfestellung - die Gelegenheit, sich hier im Haus einen Bereich aufzubauen, den er/sie anschließend eigenverantwortlich übernehmen kann.\r\nDie Sozialversicherung ist für diesen Zeitraum über den Bildungsträger gewährleistet.\r\n\r\nIch hoffe, Ihnen mit meinen Ausführungen weitergeholfen und Ihr Interesse geweckt zu haben.'),
+(2, 'nicht erreichbar', 'vielen Dank für Ihre Terminvereinbarung. \r\nTelefonisch konnte ich Sie bisher leider nicht erreichen. \r\nBitte rufen Sie mich dies bezüglich im Büro zurück. \r\nVielen Dank!'),
+(3, 'Vermittlungsvereinbarung', 'wie versprochen, sende ich Ihnen anbei unsere Vermittlungsvereinbarung zur Durchsicht vorab. Diesen benötigen wir im Original, vollständig ausgefüllt per Post um Sie vorstellen zu können (Laut SGB III und Vorgabe der Arbeitsagentur ist dieses Vorgehen so vorgeschrieben).\r\n\r\nBitte informieren Sie sich schon einmal genau über den Anfahrtsweg und durchdenken sie noch einmal, ob die Rahmenbedingungen (Arbeitszeiten, Stundenumfang, Vergütung, etc.) Ihren Vorstellungen entsprechen, damit wir Sie mit einer klaren und gut durchdachten Entscheidung bei unserem Kunden empfehlen können. \r\n\r\nEvtl. auftretende Fragen beantworte ich gern in unserem nächsten Telefonat. Informieren Sie mich bitte auch kurz, falls Ihre Entscheidung negativ ausfallen sollte, damit ich den Bewerbungsvorgang hier abschließen kann. Ich freue mich auf unsere weitere Zusammenarbeit und drücke Ihnen schon jetzt die Daumen! \r\n\r\nIch wünsche Ihnen einen charmanten Nachmittag!'),
+(4, 'Rechnungsfehler', 'wie vereinbart, haben wir versucht, die zweite Rate nach Rechnung \r\n\r\nNr. 10140 vom 20.12.2010 \r\n\r\nvon Ihrem Konto einzuziehen. Am \r\n\r\n18.02.2011 \r\n\r\nist eine kostenpflichtige Rückbuchung erfolgt. Eine Klärung dieser Situation haben Sie nicht herbeigeführt. Sie erhalten nun die Gelegenheit, den nun fälligen Betrag von 269,80 (261,80 + 8,- Bankgebühren) bis zum \r\n\r\n24.02.2011 \r\n\r\nauf unser auf der RG angegebenes Konto zu überweisen. Sollten Sie dieser Aufforderung nicht nachkommen, oder eine Klärung herbeiführen, wird wie auf der Rechnung vermerkt weiter verfahren.\r\n\r\nSollten weitere Raten zur Zahlung ausstehen, werden diese zur jeweiligen Fälligkeit laut Rechnung von Ihrem bei uns hinterlegten Konto eingezogen. Es gelten weiterhin die auf der Rechnung vermerkten Zahlungsbedingungen.'),
+(5, 'Beurteilung', 'wir waren in der Vergangenheit in Fragen der Personalauswahl und –beratung für Sie tätig. \r\nIn den nächsten Tagen (bis Pfingsten) möchten wir gern mit unseren Kunden in den Dialog treten, und unseren Service von Ihnen beurteilen lassen. Unabhängig davon, ob wir bei der Vermittlung Ihrer neuen Mitarbeiter bereits erfolgreich waren, würden wir gern erfragen, wie Sie mit unserer Betreuung und Auswahl zufrieden waren und ob Sie Verbesserungsvorschläge für uns haben. \r\n\r\nAuf der Seite:  http://www.wsl-hannover.de/arbeitgeber-feedback \r\nfinden Sie den Link: „neuen Kommentar schreiben“. \r\n\r\nWir freuen uns, wenn Sie uns helfen, unsere Arbeit zukünftig noch kundenorientierter auszurichten. Ein kurzer Kommentar ist für uns schon ein wichtiger Anhaltspunkt – gern Lob und ebenso gern Anregungen! Je detaillierter Sie in Ihren Ausführungen sind, WAS genau Ihnen gut gefällt und was nicht, desto mehr können wir daraus lernen!\r\n\r\nZudem wäre ich dankbar, wenn Sie dies auch an die involvierten Kollegen weiterleiten würden.\r\n\r\nWir bedanken uns bereits im Voraus für 3 Minuten Ihrer Zeit! \r\n\r\nAuf eine weiterhin gute Zusammenarbeit!');
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `mail`
 --
 
@@ -15774,26 +15794,18 @@ CREATE TABLE `mail` (
   `id` int(11) NOT NULL,
   `id_mailserver` int(11) NOT NULL,
   `mail_from` varchar(64) NOT NULL,
-  `mail_to` varchar(64) NOT NULL,
-  `mail_cc` varchar(64) DEFAULT NULL,
-  `mail_bcc` varchar(64) DEFAULT NULL,
+  `mail_to` varchar(256) NOT NULL,
+  `mail_cc` varchar(256) DEFAULT NULL,
+  `mail_bcc` varchar(256) DEFAULT NULL,
   `betreff` varchar(64) NOT NULL,
   `bodytext` text NOT NULL,
+  `textbaustein_id` int(11) DEFAULT NULL,
+  `vorlage` text,
   `angelegt_am` datetime DEFAULT NULL,
   `angelegt_von` int(11) DEFAULT NULL,
   `aktualisiert_am` datetime DEFAULT NULL,
   `aktualisiert_von` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Daten für Tabelle `mail`
---
-
-INSERT INTO `mail` (`id`, `id_mailserver`, `mail_from`, `mail_to`, `mail_cc`, `mail_bcc`, `betreff`, `bodytext`, `angelegt_am`, `angelegt_von`, `aktualisiert_am`, `aktualisiert_von`) VALUES
-(1, 1, 'abc@web.de', 'abf@web.de', NULL, NULL, 'Test', 'Testmail', '2019-04-05 10:28:30', 3, '2019-04-05 18:31:39', NULL),
-(2, 1, 'schroeder@gmx.net', 'tklustig.thomas@gmail.com', '', '', 'Test', '<p>Testmail</p>\r\n', '2019-04-06 18:09:11', 4, '2019-04-06 18:09:11', 4),
-(3, 1, 'kipp.thomas@gmx.net', 'tklustig.thomas@gmail.com', '', '', 'Test', '<p>trrt</p>\r\n', '2019-04-06 18:24:46', 4, '2019-04-06 18:24:46', 4),
-(4, 1, 'kipp.thomas@gmx.net', 'tklustig.thomas@gmail.com', '', '', 'Test', '<p><u><strong>Testmail</strong></u></p>\r\n', '2019-04-06 19:54:08', 4, '2019-04-06 19:54:08', 4);
 
 -- --------------------------------------------------------
 
@@ -16044,6 +16056,12 @@ ALTER TABLE `l_rechtsform`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indizes für die Tabelle `l_textbaustein`
+--
+ALTER TABLE `l_textbaustein`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indizes für die Tabelle `mail`
 --
 ALTER TABLE `mail`
@@ -16051,7 +16069,8 @@ ALTER TABLE `mail`
   ADD KEY `mailServer` (`id_mailserver`),
   ADD KEY `angelegtVon` (`angelegt_von`),
   ADD KEY `aktualisiertVon` (`id`),
-  ADD KEY `mail_ibfk_3` (`aktualisiert_von`);
+  ADD KEY `mail_ibfk_3` (`aktualisiert_von`),
+  ADD KEY `textbausteinId` (`textbaustein_id`);
 
 --
 -- Indizes für die Tabelle `mailserver`
@@ -16112,13 +16131,13 @@ ALTER TABLE `besichtigungstermin`
 -- AUTO_INCREMENT für Tabelle `dateianhang`
 --
 ALTER TABLE `dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT für Tabelle `e_dateianhang`
 --
 ALTER TABLE `e_dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT für Tabelle `firma`
@@ -16199,10 +16218,16 @@ ALTER TABLE `l_rechtsform`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT für Tabelle `l_textbaustein`
+--
+ALTER TABLE `l_textbaustein`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT für Tabelle `mail`
 --
 ALTER TABLE `mail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `mailserver`
@@ -16313,7 +16338,8 @@ ALTER TABLE `kundeimmobillie`
 ALTER TABLE `mail`
   ADD CONSTRAINT `mail_ibfk_1` FOREIGN KEY (`id_mailserver`) REFERENCES `mailserver` (`id`),
   ADD CONSTRAINT `mail_ibfk_2` FOREIGN KEY (`angelegt_von`) REFERENCES `user` (`id`),
-  ADD CONSTRAINT `mail_ibfk_3` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`);
+  ADD CONSTRAINT `mail_ibfk_3` FOREIGN KEY (`aktualisiert_von`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `mail_ibfk_4` FOREIGN KEY (`textbaustein_id`) REFERENCES `l_textbaustein` (`id`);
 
 --
 -- Constraints der Tabelle `mailserver`
