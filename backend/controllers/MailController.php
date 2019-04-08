@@ -354,7 +354,7 @@ class MailController extends Controller {
             array_push($arrayOfAllFilenames, $item->dateiname);
         }
         $arrayOfFilesNamesUnique = array_unique($arrayOfAllFilenames);
-        $arrayOfDifference = array_diff($arrayOfAllFilenames,$arrayOfFilesNamesUnique);
+        $arrayOfDifference = array_diff_assoc($arrayOfAllFilenames,$arrayOfFilesNamesUnique);
         print_r('Alle Dateinamen in der Datenbank<br>');
         var_dump($arrayOfAllFilenames);
         print_r('<br>Bereinigte(unique) Dateinamen in der Datenbank<br>');
@@ -400,8 +400,6 @@ class MailController extends Controller {
             foreach ($modelDateianhang as $item) {
                 array_push($arrayOfAllFilenames, $item->dateiname);
             }
-            $arrayOfFilesNamesUnique = array_unique($arrayOfAllFilenames);
-            $arrayOfDifference = array_diff($arrayOfAllFilenames, $arrayOfFilesNamesUnique);
             if (!empty($arrayOfFilenames)) {
                 $path = Yii::getAlias('@documentsMail');
                 for ($i = 0; $i < count($arrayOfFilenames); $i++) {

@@ -14,10 +14,8 @@ use frontend\models\EDateianhang;
 use frontend\models\Dateianhang;
 use kartik\widgets\Alert;
 use yii\web\Session;
+use yii\helpers\Html;
 
-/**
- * ImmobilienController implements the CRUD actions for Immobilien model.
- */
 class ImmobilienController extends Controller {
 
     public function behaviors() {
@@ -373,6 +371,38 @@ class ImmobilienController extends Controller {
             $out['results'] = ['id' => $id, 'text' => LPlz::find($id)->plz];
         }
         return $out;
+    }
+
+    public function actionMap($id) {
+        $googleStreet = '';
+        /* Hole Datenbankdaten. Benötigt wird die Strasse, die PLZ und der Ort */
+        $strasse = Immobilien::findOne(['id' => $id])->strasse;
+        $plz = Immobilien::findOne(['id' => $id])->lPlz->plz;
+        $ort = Immobilien::findOne(['id' => $id])->stadt;
+        //splitte den String in ein Array auf, da die einzelnen Komponenten einer Strasse mit + verbunden werden müssen. 
+        $arrayOfStreet = explode(" ", $strasse);
+        for ($i = 0; $i < count($arrayOfStreet); $i++) {
+            $googleStreet .= $arrayOfStreet[$i] . '+';
+        }
+        //Entferne das letzte Pluszeichen, damit ein valider Googlestring entsteht
+        $googleStreet = substr($googleStreet, 0, -1);
+        /* jetzt haben wird alle Komponenten:Strasse mit plus getrennt,Plz und Ort. Damit basteln wir uns den 
+          GoogleMap-Aufruf zusammen */
+        $basisUrl = 'https://www.google.de/maps/place/';
+        $urlSpecific = "$googleStreet,+$plz+$ort";
+        $gooleUrl = $basisUrl . $urlSpecific;
+        //in googleUrl ist die aufzurufende Url enthalten. Damit blenden wir oben einen Link ein, der GoogleMaps in einem neuen Tab rendert
+        echo Html::a("Karte laden", $gooleUrl, ['class' => 'btn btn-success btn-block', 'target' => '_blank', 'title' => "Lade Immobilienstandort"]);
+        //zu gute Letzt rendern wir das Formular erneut
+        $art = Immobilien::findOne(['id' => $id])->l_art_id;
+        $searchModel = new ImmobilienSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $id, $art);
+        return $this->render('index', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                    'art' => $art,
+                    'id' => $id
+        ]);
     }
 
     //gekapselte Methoden

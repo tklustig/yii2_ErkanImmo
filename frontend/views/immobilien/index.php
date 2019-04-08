@@ -110,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{map}',
                 'buttons' => [
                     'map' => function ( $id, $model) {
-                        return Html::a('<span class="glyphicon glyphicon-upload"></span>Karte<span class="glyphicon glyphicon-upload">', ['/immobilien/map', 'id' => $model->id], ['style' => ['color' => 'red'], 'title' => 'Standort in Karte einblenden', 'data' => ['pjax' => '0']]);
+                        return Html::a('<span class="glyphicon glyphicon-download"></span>Karte<span class="glyphicon glyphicon-upload">', ['/immobilien/map', 'id' => $model->id], ['style' => ['color' => 'red'], 'title' => 'Standort in Karte einblenden', 'data' => ['pjax' => '0']]);
                     },
                 ],
             ],
@@ -213,7 +213,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{map}',
                 'buttons' => [
                     'map' => function ( $id, $model) {
-                        return Html::a('<span class="glyphicon glyphicon-upload"></span>Karte<span class="glyphicon glyphicon-upload">', ['/immobilien/map', 'id' => $model->id], ['style' => ['color' => 'red'], 'title' => 'Standort in Karte einblenden', 'data' => ['pjax' => '0']]);
+                        return Html::a('<span class="glyphicon glyphicon-download"></span>Karte<span class="glyphicon glyphicon-upload">', ['/immobilien/map', 'id' => $model->id], ['style' => ['color' => 'red'], 'title' => 'Standort in Karte einblenden', 'data' => ['pjax' => '0']]);
                     },
                 ],
             ],
