@@ -132,6 +132,24 @@ use kartik\widgets\FileInput;
             ])
             ?>
         </div>
+        <div class="col-md-6">
+            <?=
+            $form->field($model, 'textbaustein_id', ['addon' => [
+                    'prepend' => ['content' => 'Textbaustein'], 'append' => ['content' => 'wird in die Vorlage übernommen']]])->widget(\kartik\widgets\Select2::classname(), [
+                'data' => \yii\helpers\ArrayHelper::map(backend\models\LTextbaustein::find()->orderBy('id')->asArray()->all(), 'id', 'beschreibung'),
+                'options' => ['placeholder' => Yii::t('app', 'Textbausteinbegriff wählen')],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
+            ?>
+        </div>
+        <div class="col-md-6">
+            <?=
+            $form->field($model, 'vorlage', ['addon' => [
+                    'prepend' => ['content' => 'Vorlage']]])->textarea(['id' => 'IDText_', 'rows' => 6, 'placeholder' => 'Kann per Copy&Paste in den Mailinhalt übernommen werden'])
+            ?>
+        </div>
     </div>
 
     <div class="form-group">

@@ -348,22 +348,24 @@ class MailController extends Controller {
     }
 
     public function actionDelete($id) {
-        $modelDateianhang = Dateianhang::find()->all();
-        $arrayOfAllFilenames = array();
-        foreach ($modelDateianhang as $item) {
-            array_push($arrayOfAllFilenames, $item->dateiname);
-        }
-        $arrayOfFilesNamesUnique = array_unique($arrayOfAllFilenames);
-        $arrayOfDifference = array_diff_assoc($arrayOfAllFilenames,$arrayOfFilesNamesUnique);
-        print_r('Alle Dateinamen in der Datenbank<br>');
-        var_dump($arrayOfAllFilenames);
-        print_r('<br>Bereinigte(unique) Dateinamen in der Datenbank<br>');
-        var_dump($arrayOfFilesNamesUnique);
-        print_r('<br>Beseitigte Dateinamen in der Datenbank<br>');
-        var_dump($arrayOfDifference);
-        die();
-        $transaction = \Yii::$app->db->beginTransaction();
+        /* Zunächst muss dafür gesorgt werden, dass doppelt verwendete Dateien physikalisch nicht gelöscht werden. Dass muss vor dem Entfernen 
+          der Records aus der Datenbank geschehen. Das eigentliche Löschen(s.u.) erfolgt dann erst, wenn die Records erfolgreich entfernt wurden */
         try {
+            $path = Yii::getAlias('@documentsMail');
+            $modelDateianhang = Dateianhang::find()->all();
+            $arrayOfAllFilenames = array();
+            foreach ($modelDateianhang as $item) {
+                array_push($arrayOfAllFilenames, $item->dateiname);
+            }
+            $arrayOfFilesNamesUnique = array_unique($arrayOfAllFilenames);
+            $arrayOfDifference = array_diff_assoc($arrayOfAllFilenames, $arrayOfFilesNamesUnique);
+            $arrayOfDifWithPath = array();
+            foreach ($arrayOfDifference as $item) {
+                $fileWithPath = $path . DIRECTORY_SEPARATOR . $item;
+                array_push($arrayOfDifWithPath, $fileWithPath);
+            }
+            /* Jetzt sind alle erforderlichen Arrays für das weiter unter codierte physikalische Löschen gefüllt */
+            $transaction = \Yii::$app->db->beginTransaction();
             $mailHasBeenDeleted = false;
             $arrayOfFilenames = array();
             $arrayOfPkForDateiA = array();
@@ -371,7 +373,6 @@ class MailController extends Controller {
             //zuerst die die Datenbankeinträge...
             if (!empty(EDateianhang::findOne(['mail_id' => $id]))) {
                 $pk = EDateianhang::findOne(['mail_id' => $id])->id;
-                $modelDateianhang = Dateianhang::find()->all();
                 foreach ($modelDateianhang as $item) {
                     if ($item->e_dateianhang_id == $pk) {
                         array_push($arrayOfFilenames, $item->dateiname);
@@ -394,19 +395,20 @@ class MailController extends Controller {
                 $this->findModel($id)->delete();
                 $session->addFlash('info', "Die Mail der Id:$id wurde erfolgreich gelöscht. Sie hatte Anhänge!");
             }
+            /* zum Debuggen auskommentieren */
             $transaction->commit();
-            //...dann die Dateien physikalisch entfernen. Zunächst muss überprüft werden, ob Dateien doppelt genutzt werden
-            $arrayOfAllFilenames = array();
-            foreach ($modelDateianhang as $item) {
-                array_push($arrayOfAllFilenames, $item->dateiname);
-            }
+            //...dann die Dateien physikalisch entfernen. Hier muss überprüft werden, ob Dateien doppelt genutzt werden(s.o.)
             if (!empty($arrayOfFilenames)) {
-                $path = Yii::getAlias('@documentsMail');
                 for ($i = 0; $i < count($arrayOfFilenames); $i++) {
                     $file2BeDeleted = $path . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i];
-                    if (file_exists($file2BeDeleted)) {
+                    if (!file_exists($file2BeDeleted)) {
+                        $session->addFlash('info', "Der physikalische Mailanhang:$arrayOfFilenames[$i] wurde nicht gelöscht, da er nicht mehr exisitert!");
+                    }
+                    if (file_exists($file2BeDeleted) && !in_array($file2BeDeleted, $arrayOfDifWithPath)) {
                         FileHelper::unlink($file2BeDeleted);
                         $session->addFlash('info', "Der physikalische Mailanhang:$arrayOfFilenames[$i] wurde erfolgreich gelöscht.");
+                    } else {
+                        $session->addFlash('info', "Der physikalische Mailanhang:$arrayOfFilenames[$i] wurde nicht gelöscht, da er in doppelter Verwendung war oder ist.");
                     }
                 }
             }
@@ -414,7 +416,6 @@ class MailController extends Controller {
             $transaction->rollBack();
             error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
         }
-
         return $this->redirect(['/site/index']);
     }
 

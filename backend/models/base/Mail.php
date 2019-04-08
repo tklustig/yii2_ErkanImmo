@@ -16,17 +16,19 @@ class Mail extends \yii\db\ActiveRecord {
         return [
             'mailserver',
             'angelegtVon',
-            'aktualisiertVon'
+            'aktualisiertVon',
+            'textbaustein'
         ];
     }
 
     public function rules() {
         return [
             [['id_mailserver', 'mail_from', 'mail_to', 'betreff', 'bodytext'], 'required'],
-            [['id_mailserver', 'angelegt_von', 'aktualisiert_von'], 'integer'],
-            [['bodytext'], 'string'],
+            [['id_mailserver', 'textbaustein_id', 'angelegt_von', 'aktualisiert_von'], 'integer'],
+            [['bodytext', 'vorlage'], 'string'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
-            [['mail_from', 'mail_to', 'mail_cc', 'mail_bcc', 'betreff'], 'string', 'max' => 256],
+            [['mail_from', 'betreff'], 'string', 'max' => 64],
+            [['mail_to', 'mail_cc', 'mail_bcc'], 'string', 'max' => 256],
             [['checkBoxDelete'], 'boolean'],
         ];
     }
@@ -45,11 +47,12 @@ class Mail extends \yii\db\ActiveRecord {
             'mail_bcc' => Yii::t('app', 'Mail Bcc'),
             'betreff' => Yii::t('app', 'Betreff'),
             'bodytext' => Yii::t('app', 'Bodytext'),
+            'textbaustein_id' => Yii::t('app', 'Textbaustein ID'),
+            'vorlage' => Yii::t('app', 'Vorlage'),
             'angelegt_am' => Yii::t('app', 'Angelegt Am'),
             'angelegt_von' => Yii::t('app', 'Angelegt Von'),
             'aktualisiert_am' => Yii::t('app', 'Aktualisiert Am'),
             'aktualisiert_von' => Yii::t('app', 'Aktualisiert Von'),
-            'checkBoxDelete' => Yii::t('app', 'Anhänge nach Versand löschen')
         ];
     }
 
@@ -63,6 +66,10 @@ class Mail extends \yii\db\ActiveRecord {
 
     public function getAktualisiertVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
+    }
+
+    public function getTextbaustein() {
+        return $this->hasOne(\backend\models\LTextbaustein::className(), ['id' => 'textbaustein_id']);
     }
 
     public function behaviors() {
