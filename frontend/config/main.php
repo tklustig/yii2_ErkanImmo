@@ -53,6 +53,7 @@ return [
                 'immobilien_view' => 'immobilien/view',
                 'immobilien_showlink' => 'immobilien/show',
                 'immobilien_termin' => 'immobilien/termin',
+                'immobilien_karte'=>'immobilien/map',
                 'auswahl' => 'immobilien/auswahl',
                 'termin' => 'termin/index',
                 'termin_create' => 'termin/create',
