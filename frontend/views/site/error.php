@@ -1,13 +1,11 @@
 <?php
 
-/* @var $this yii\web\View */
-/* @var $name string */
-/* @var $message string */
-/* @var $exception Exception */
-
 use yii\helpers\Html;
 
 $this->title = $name;
+?>
+<?php
+$mailTo = common\models\User::findOne(Yii::$app->user->identity->id)->email;
 ?>
 <div class="site-error">
 
@@ -18,10 +16,13 @@ $this->title = $name;
     </div>
 
     <p>
-        The above error occurred while the Web server was processing your request.
+        Obiger Fehler ist aufgrund eines Programmierfehlers aufgetreten. Vermutlich wurde ein falscher Parameter an die Datenbank übergeben.<br>
+        Da im Produktionsmodus der Debugmodus deaktivert wurde, da außerdem im Code diese Exception nicht erwartet bzw. abgefangen wurde, bekommen
+        Sie diese Seite zu sehen.
     </p>
     <p>
-        Please contact us if you think this is a server error. Thank you.
+        Bitte <a href="mailto:<?= $mailTo ?>?subject=<?= $name ?>">wenden</a> sie sich an den Softwarehersteller dieser Applikation und teilen sie ihm folgenden Fehlercode mit:<strong>aGX5280:<?= $name ?></strong>
     </p>
-
 </div>
+
+
