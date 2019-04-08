@@ -1,7 +1,4 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $searchModel frontend\models\ImmobilienSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
@@ -108,6 +105,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 },
             ],
+            [
+                'class' => 'kartik\grid\ActionColumn',
+                'template' => '{map}',
+                'buttons' => [
+                    'map' => function ( $id, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-upload"></span>Karte<span class="glyphicon glyphicon-upload">', ['/immobilien/map', 'id' => $model->id], ['style' => ['color' => 'red'], 'title' => 'Standort in Karte einblenden', 'data' => ['pjax' => '0']]);
+                    },
+                ],
+            ],
         ];
         /* $art=1 entpsricht einer Kaufimmobilie, $art=2 entspricht einer Mietimmobilie =>
           MIET-Immobilie:
@@ -154,7 +160,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'sonstiges',
-                'format'=>'html',
+                'format' => 'html',
                 'label' => Yii::t('app', 'Sonstiges'),
                 'value' => function($model) {
                     $value = $model->sonstiges;
@@ -201,6 +207,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         return NULL;
                     }
                 },
+            ],
+            [
+                'class' => 'kartik\grid\ActionColumn',
+                'template' => '{map}',
+                'buttons' => [
+                    'map' => function ( $id, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-upload"></span>Karte<span class="glyphicon glyphicon-upload">', ['/immobilien/map', 'id' => $model->id], ['style' => ['color' => 'red'], 'title' => 'Standort in Karte einblenden', 'data' => ['pjax' => '0']]);
+                    },
+                ],
             ],
         ];
     }
