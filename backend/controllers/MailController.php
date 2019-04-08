@@ -13,11 +13,13 @@ use yii\web\Session;
 use yii\web\UploadedFile;
 use yii\db\Expression;
 use yii\helpers\FileHelper;
+use yii\web\Response;
 use backend\models\Mail;
 use app\models\MailSearch;
 use frontend\models\Dateianhang;
 use frontend\models\EDateianhang;
 use backend\models\Mailserver;
+use backend\models\LTextbaustein;
 use common\classes\error_handling;
 
 class MailController extends Controller {
@@ -332,20 +334,22 @@ class MailController extends Controller {
         }
     }
 
-    public function actionUpdate($id) {
-        $model = $this->findModel($id);
+    /* Ein Update für verschickte Mails macht keinen Sinn
+      public function actionUpdate($id) {
+      $model = $this->findModel($id);
 
-        if ($model->loadAll(Yii::$app->request->post())) {
-            $model->save();
-            return $this->redirect(['view', 'id' => $id]);
-        } else {
-            $mailFrom = User::findOne(Yii::$app->user->identity->id)->email;
-            return $this->render('create', [
-                        'model' => $model,
-                        'mailFrom' => $mailFrom
-            ]);
-        }
-    }
+      if ($model->loadAll(Yii::$app->request->post())) {
+      $model->save();
+      return $this->redirect(['view', 'id' => $id]);
+      } else {
+      $mailFrom = User::findOne(Yii::$app->user->identity->id)->email;
+      return $this->render('create', [
+      'model' => $model,
+      'mailFrom' => $mailFrom
+      ]);
+      }
+      }
+     */
 
     public function actionDelete($id) {
         /* Zunächst muss dafür gesorgt werden, dass doppelt verwendete Dateien physikalisch nicht gelöscht werden. Dass muss vor dem Entfernen 
@@ -467,7 +471,15 @@ class MailController extends Controller {
         return $pdf->render();
     }
 
-    protected function findModel($id) {
+    public function actionBaustein($textId) {
+        $text = LTextbaustein::findOne($textId)->data;
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $text;
+    }
+
+    //gekapselte Methoden
+
+    private function findModel($id) {
         if (($model = Mail::findOne($id)) !== null) {
             return $model;
         } else {
@@ -475,7 +487,7 @@ class MailController extends Controller {
         }
     }
 
-    protected function findModelDateianhang($id) {
+    private function findModelDateianhang($id) {
         if (($model = Dateianhang::findOne($id)) !== null) {
             return $model;
         } else {
@@ -483,7 +495,7 @@ class MailController extends Controller {
         }
     }
 
-    protected function findModelEDateianhang($id) {
+    private function findModelEDateianhang($id) {
         if (($model = EDateianhang::findOne($id)) !== null) {
             return $model;
         } else {
@@ -539,9 +551,9 @@ class MailController extends Controller {
     private function FetchMailServerData() {
         try {
             $checkServerConf = Mailserver::find()->count('id');
-            $serverId = Mailserver::find()->min('id');
             if ($checkServerConf < 1)
                 return false;
+            $serverId = Mailserver::find()->min('id');
             $host = Mailserver::findOne(['id' => $serverId])->serverHost;
             $username = Mailserver::findOne(['id' => $serverId])->username;
             $password = Mailserver::findOne(['id' => $serverId])->password;
@@ -576,12 +588,14 @@ class MailController extends Controller {
 
     private function SendMail($model, $zielAdresse, $Cc = NULL, $Bcc = NULL, $anhang = NULL) {
         $SendObject = $this->FetchMailServerData();
+        if (!$SendObject)
+            return false;
         try {
             if (is_array($anhang))
                 $LocalDirectory = Yii::getAlias('@documentsMail') . DIRECTORY_SEPARATOR;
-            /* Da es 2^3 Möglichkeiten gibt, muss es auch 2^3 Konditionen geben. Auf ein Switch/Case-Konstrukt wird hier verzichtet. Außerdem wird
-              daurauf verzichtet, eventuelle Vereinfachungen zu implementieren, damit der Code einfacher wartbar ist. Folgende boolsche Gleichung
-              liefert die Basis-> A:Empfängeradresse Cc B:Empfängeradresse Bcc C:Anhang
+            /* Da es 2^3 Möglichkeiten gibt, muss es auch 2^3 Konditionen geben. Auf ein Switch/Case-Konstrukt wird hier verzichtet. Außerdem 
+              wird daurauf verzichtet, eventuelle Vereinfachungen zu implementieren, damit der Code einfacher wartbar ist. Folgende boolsche
+              Gleichung liefert die Basis-> A: MailAdresse Cc B: MailAdresse Bcc C: Anhang
               (1)Y=notA&&notB&&notC
               (2)Y=A&&notB&&notC
               (3)Y=notA&&B&&notC
@@ -593,7 +607,7 @@ class MailController extends Controller {
              */
 
 
-            /* Mail hat keinen Anhang */
+            /* Mail hat keinen Anhang (1) bis(4) */
 //(1)
             if ($Cc == NULL && $Bcc == NULL && $anhang == NULL) {
                 $SendObject = Yii::$app->mailer->compose()
@@ -634,7 +648,7 @@ class MailController extends Controller {
                         ->setHtmlBody($model->bodytext)
                         ->setTextBody($model->bodytext)
                         ->send();
-                /* Mail hat Anhang */
+                /* Mail hat Anhang(5) bis (8) */
 //(5)
             } else if ($Cc == NULL && $Bcc == NULL && $anhang != NULL) {
                 $SendObject = Yii::$app->mailer->compose()

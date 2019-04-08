@@ -8,11 +8,11 @@ use backend\models\LRechnungsartSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
-class RechnungsartController extends Controller
-{
-    public function behaviors()
-    {
+class RechnungsartController extends Controller {
+
+    public function behaviors() {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -23,47 +23,43 @@ class RechnungsartController extends Controller
         ];
     }
 
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $searchModel = new LRechnungsartSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
-    public function actionView($id)
-    {
+    public function actionView($id) {
         $model = $this->findModel($id);
         $providerRechnung = new \yii\data\ArrayDataProvider([
             'allModels' => $model->rechnungs,
         ]);
         return $this->render('view', [
-            'model' => $this->findModel($id),
-            'providerRechnung' => $providerRechnung,
+                    'model' => $this->findModel($id),
+                    'providerRechnung' => $providerRechnung,
         ]);
     }
 
-    public function actionCreate()
-    {
+    public function actionCreate() {
         $model = new LRechnungsart();
 
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
 
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id) {
         if (Yii::$app->request->post('_asnew') == '1') {
             $model = new LRechnungsart();
-        }else{
+        } else {
             $model = $this->findModel($id);
         }
 
@@ -71,13 +67,12 @@ class RechnungsartController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
 
-    public function actionDelete($id)
-    {
+    public function actionDelete($id) {
         $this->findModel($id)->deleteWithRelated();
 
         return $this->redirect(['index']);
@@ -118,27 +113,28 @@ class RechnungsartController extends Controller
         if (Yii::$app->request->post('_asnew') != '1') {
             $model = $this->findModel($id);
         }
-    
+
         if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('saveAsNew', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
 
-    protected function findModel($id)
-    {
+    protected function findModel($id) {
         if (($model = LRechnungsart::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
+
     public function actionBaustein($textId) {
         $text = LRechnungsart::findOne($textId)->data;
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        Yii::$app->response->format = Response::FORMAT_JSON;
         return $text;
     }
+
 }

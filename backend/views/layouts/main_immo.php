@@ -108,7 +108,7 @@ $this->beginPage()
                             ],
                         ],
                         '<li class="divider"></li>',
-                        ['label' => '++++++++Mails++++++++(ToDo: alle Mails löschen)', 'url' => ['#'],
+                        ['label' => '++++++++Mails++++++++', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Mailserver konfigurieren', 'url' => ['/mailserver/index']],

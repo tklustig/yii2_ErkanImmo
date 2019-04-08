@@ -19,7 +19,10 @@ use kartik\widgets\FileInput;
 
     <?= $form->errorSummary($model); ?>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
+            <span class="label label-success">Muliple Empfänger können durch<strong> Semikolon</strong> getrennt eingegeben werden</span>
+        </div>
+        <div class="col-md-6">
             <?=
             $form->field($model, 'checkBoxDelete', ['addon' => [
                     'prepend' => ['content' => 'Entfernt physikalisch alle Anhänge nach dem Upload']]])->widget(\kartik\checkbox\CheckboxX::classname(), []);
@@ -32,8 +35,9 @@ use kartik\widgets\FileInput;
              */
 
             $form->field($modelDateianhang, 'attachement[]')->widget(FileInput::classname(), [
-                'options' => ['multiple' => true],
-                'pluginOptions' => ['allowedFileExtensions' => ['jpg', 'bmp', 'png', 'gif', 'docx', 'doc', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'pdf', 'txt', 'avi', 'mpeg', 'mp3', 'ico']],
+                'options' => ['multiple' => true, 'placeholder' => Yii::t('app', 'Dateianhangsart')],
+                'pluginOptions' => ['allowedFileExtensions' => ['jpg', 'bmp', 'png', 'gif', 'docx', 'doc', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'pdf', 'txt', 'avi', 'mpeg', 'mp3', 'ico'],
+                    'initialCaption' => "Hier ggf. Anhänge hochladen"],
             ]);
             ?>
         </div>
@@ -90,19 +94,19 @@ use kartik\widgets\FileInput;
         <div class="col-md-3">
             <?=
             $form->field($model, 'mail_to', ['addon' => [
-                    'prepend' => ['content' => 'Mainempfänger']]])->textInput(['maxlength' => true, 'placeholder' => 'mult. Empfänger durch Semikolon trennen'])
+                    'prepend' => ['content' => 'Hauptempfänger']]])->textInput(['maxlength' => true])
             ?>
         </div>
         <div class="col-md-3">
             <?=
             $form->field($model, 'mail_cc', ['addon' => [
-                    'prepend' => ['content' => 'Cc Empfänger']]])->textInput(['maxlength' => true, 'placeholder' => 'mult. Empfänger durch Semikolon trennen'])
+                    'prepend' => ['content' => 'Cc Empfänger']]])->textInput(['maxlength' => true])
             ?>
         </div>
         <div class="col-md-3">
             <?=
             $form->field($model, 'mail_bcc', ['addon' => [
-                    'prepend' => ['content' => 'Bcc Empfänger']]])->textInput(['maxlength' => true, 'placeholder' => 'mult. Empfänger durch Semikolon trennen'])
+                    'prepend' => ['content' => 'Bcc Empfänger']]])->textInput(['maxlength' => true])
             ?>
         </div>
         <div class="col-md-6">
@@ -124,20 +128,14 @@ use kartik\widgets\FileInput;
             ]);
             ?>
         </div>
-        <div class="col-md-12">
-            <?=
-            $form->field($model, 'bodytext', ['addon' => [
-                    'prepend' => ['content' => 'Mailinhalt']]])->widget(\dosamigos\ckeditor\CKEditor::className(), [
-                'preset' => 'full', 'clientOptions' => ['height' => 400],
-            ])
-            ?>
-        </div>
         <div class="col-md-6">
             <?=
             $form->field($model, 'textbaustein_id', ['addon' => [
                     'prepend' => ['content' => 'Textbaustein'], 'append' => ['content' => 'wird in die Vorlage übernommen']]])->widget(\kartik\widgets\Select2::classname(), [
                 'data' => \yii\helpers\ArrayHelper::map(backend\models\LTextbaustein::find()->orderBy('id')->asArray()->all(), 'id', 'beschreibung'),
-                'options' => ['placeholder' => Yii::t('app', 'Textbausteinbegriff wählen')],
+                'options' => ['placeholder' => Yii::t('app', 'Textbausteinbegriff wählen'),
+                    'id' => 'bez'
+                ],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],
@@ -147,7 +145,15 @@ use kartik\widgets\FileInput;
         <div class="col-md-6">
             <?=
             $form->field($model, 'vorlage', ['addon' => [
-                    'prepend' => ['content' => 'Vorlage']]])->textarea(['id' => 'IDText_', 'rows' => 6, 'placeholder' => 'Kann per Copy&Paste in den Mailinhalt übernommen werden'])
+                    'prepend' => ['content' => 'Vorlage']]])->textarea(['id' => 'IDText', 'rows' => 6, 'placeholder' => 'Kann per Copy&Paste in den Mailinhalt übernommen werden'])
+            ?>
+        </div>
+        <div class="col-md-12">
+            <?=
+            $form->field($model, 'bodytext', ['addon' => [
+                    'prepend' => ['content' => 'Mailinhalt']]])->widget(\dosamigos\ckeditor\CKEditor::className(), [
+                'preset' => 'full', 'clientOptions' => ['height' => 400],
+            ])
             ?>
         </div>
     </div>
@@ -157,6 +163,21 @@ use kartik\widgets\FileInput;
         <?= Html::a(Yii::t('app', 'Cancel'), ['/mail/index'], ['class' => 'btn btn-danger']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php
+    ActiveForm::end();
+    ?>
 
 </div>
+<?php
+$script = <<< JS
+    $('#bez').change(function(){
+        var textId=$(this).val();
+        var ausgabe='Der Textbaustein mit der Id:'+textId+' wird in die Voralge übernommen!';
+        alert(ausgabe);
+        $.get('mail/baustein',{textId:textId},function(data){
+            $('#IDText').val(data);      
+        });
+    });
+JS;
+$this->registerJS($script);
+?>
