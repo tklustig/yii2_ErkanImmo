@@ -7,16 +7,20 @@ use yii\web\Session;
 
 $this->title = Yii::t('app', 'Kunde');
 $this->params['breadcrumbs'][] = $this->title;
-$search = "$('.search-button').click(function(){
-	$('.search-form').toggle(1000);
-	return false;
-});";
-$checkBox = "$(idKunde).on('click', '#cb input[type=\'checkbox\']', function(){
-               if($(this).is(':checked'))
-           krajeeDialog.alert('Implementieren Sie die Stapelmails über den entsprechenden Button.');
-    });";
-$this->registerJs($search);
-$this->registerJs($checkBox);
+$js = <<<JS
+        $('.search-button').click(function(){
+             $('.search-form').toggle(1000);
+             return false;
+        });
+        $(document).on('ready pjax:success', function(){
+            $('form[name=\"idKunde\"]').on('click', '#cb input[type=\'checkbox\']', function(){
+                 if($(this).is(':checked')){
+                     krajeeDialog.alert('Implementieren Sie die Stapelmails über den entsprechenden Button.');
+                 }
+            });
+        });
+JS;
+$this->registerJs($js, \yii\web\View::POS_READY);
 ?>
 <?php
 //Hier werden alle Flashnachrichten ausgegeben
