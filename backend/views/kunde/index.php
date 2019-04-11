@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
+use kartik\alert\Alert;
+use yii\web\Session;
 
 $this->title = Yii::t('app', 'Kunde');
 $this->params['breadcrumbs'][] = $this->title;
@@ -9,17 +11,42 @@ $search = "$('.search-button').click(function(){
 	$('.search-form').toggle(1000);
 	return false;
 });";
+$checkBox = "$(idKunde).on('click', '#cb input[type=\'checkbox\']', function(){
+               if($(this).is(':checked'))
+           krajeeDialog.alert('Implementieren Sie die Stapelmails über den entsprechenden Button.');
+    });";
 $this->registerJs($search);
+$this->registerJs($checkBox);
+?>
+<?php
+//Hier werden alle Flashnachrichten ausgegeben
+$session = new Session();
+foreach ($session->getAllFlashes() as $flash) {
+    foreach ($flash as $ausgabe) {
+        echo Alert::widget([
+            'type' => Alert::TYPE_INFO,
+            'title' => 'Information',
+            'icon' => 'glyphicon glyphicon-exclamation-sign',
+            'body' => $ausgabe,
+            'showSeparator' => true,
+            'delay' => false
+        ]);
+    }
+}
 ?>
 <div class="kunde-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <p>
-        <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-info search-button']) ?>
-    </p>
     <div class="search-form" style="display:none">
         <?= $this->render('_search', ['model' => $searchModel]); ?>
     </div>
+    <p>
+        <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-info search-button']) ?>
+    </p>
+    <!-- hier wird das HTMl-Formular, welches die Mailmethode im Controller aufruft, implementiert-->
+    <?=
+    Html::beginForm(['/kunde/send'], 'post', ['name' => 'idKunde']);
+    ?>
     <?php
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
@@ -100,6 +127,11 @@ $this->registerJs($search);
           ],
          */
         [
+            'class' => '\kartik\grid\CheckboxColumn', 'checkboxOptions' => function($model) {
+                return ['value' => $model->id];
+            },
+        ],
+        [
             'class' => 'yii\grid\ActionColumn',
         ],
         [
@@ -150,6 +182,9 @@ $this->registerJs($search);
             'toggleDataOptions' => ['minCount' => 10],
         ],
         'toolbar' => [
+            ['content' =>
+                Html::submitButton('<span class=" fa fa-pencil-square-o">', ['', 'class' => 'btn btn-success', 'title' => 'implementiert Mails für ausgewählte Kunden', 'name' => 'button_checkBoxes', 'data' => ['pjax' => '0']])
+            ],
             '{export}',
             '{toggleData}'
         ],
@@ -158,3 +193,6 @@ $this->registerJs($search);
     ?>
 
 </div>
+<?=
+Html::endForm();
+?>

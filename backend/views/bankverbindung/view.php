@@ -15,8 +15,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <h2><?= Yii::t('app', 'Bankverbindung') . ' ' . Html::encode($this->title) ?></h2>
         </div>
         <div class="upper" style="margin-top: 15px">
-            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/site/index'], ['class' => 'btn btn-primary ']) ?>  
-            <?= Html::a(Yii::t('app', 'zurück zum Kunden'), ['/kunde/index'], ['class' => 'btn btn-success ']) ?>  
+            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/bankverbindung/index'], ['class' => 'btn btn-primary ']) ?>  
+            <?= Html::a(Yii::t('app', 'Zu den Kunden'), ['/kunde/index'], ['class' => 'btn btn-success ']) ?>  
             <?=
             Html::a('<i class="fa glyphicon glyphicon-hand-up"></i> ' . Yii::t('app', 'PDF'), ['pdf', 'id' => $model->id], [
                 'class' => 'btn btn-default',

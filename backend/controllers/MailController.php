@@ -201,12 +201,13 @@ class MailController extends Controller {
             //Mailversand:Anfang
             $an = $model->mail_to;
             $mailWurdeVerschickt = true;
+            $errorAusgabe = 'Die Mail konnte nicht verschickt werden. Überprüfen Sie zunächst, ob Sie einen Mailserver initialisiert haben. Falls ja, informieren Sie den Softwarehersteller.';
             if (!$BoolAnhang) {
                 if (empty($model->mail_cc) && empty($model->mail_bcc)) {
                     if ($this->SendMail($model, $Zieladresse))
                         $session->addFlash('info', "Die Mail wurde erfolgreich an $an  verschickt!");
                     else {
-                        $session->addFlash('info', "Die Mail konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
                     }
                 } else if (!empty($model->mail_cc) && empty($model->mail_bcc)) {
@@ -214,7 +215,7 @@ class MailController extends Controller {
                     if ($this->SendMail($model, $Zieladresse, $Ccadresse))
                         $session->addFlash('info', "Die Mail  wurde erfolgreich an $an  verschickt!Sie hat einen CC Empfänger:$Ccadresse");
                     else {
-                        $session->addFlash('info', "Die Mail konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
                     }
                 } else if (empty($model->mail_cc) && !empty($model->mail_bcc)) {
@@ -222,7 +223,7 @@ class MailController extends Controller {
                     if ($this->SendMail($model, $Zieladresse, null, $Bccadresse))
                         $session->addFlash('info', "Die Mail wurde erfolgreich an $an erfolgreich verschickt!Sie hat einen Bcc Empfänger:$Bccadresse");
                     else {
-                        $session->addFlash('info', "Die Mail  konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
                     }
                 } else if (!empty($model->mail_cc) && !empty($model->mail_bcc)) {
@@ -231,7 +232,7 @@ class MailController extends Controller {
                     if ($this->SendMail($model, $Zieladresse, $Ccadresse, $Bccadresse))
                         $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt!Sie hat einen Cc Empfänger:$Ccadresse und einen Bcc Empfänger:$Bccadresse");
                     else {
-                        $session->addFlash('info', "Die Mail  konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
                     }
                 }
@@ -240,7 +241,7 @@ class MailController extends Controller {
                     if ($this->SendMail($model, $Zieladresse, null, null, $files))
                         $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt! Sie hatte Anhänge");
                     else {
-                        $session->addFlash('info', "Die konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
                     }
                 } else if (!empty($model->mail_cc) && empty($model->mail_bcc)) {
@@ -248,7 +249,7 @@ class MailController extends Controller {
                     if ($this->SendMail($model, $Zieladresse, $Ccadresse, null, $files))
                         $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt!Sie hat einen CC Empfänger:$Ccadresse und Anhänge");
                     else {
-                        $session->addFlash('info', "Die konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
                     }
                 } else if (empty($model->mail_cc) && !empty($model->mail_bcc)) {
@@ -256,7 +257,7 @@ class MailController extends Controller {
                     if ($this->SendMail($model, $Zieladresse, null, $Bccadresse, $files))
                         $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt!Sie hat einen Bcc Empfänger:$Bccadresse und Anhänge");
                     else {
-                        $session->addFlash('info', "Die konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
                     }
                 } else if (!empty($model->mail_cc) && !empty($model->mail_bcc)) {
@@ -265,7 +266,7 @@ class MailController extends Controller {
                     if ($this->SendMail($model, $Zieladresse, $Ccadresse, $Bccadresse, $files))
                         $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt!Sie hat einen Cc Empfänger:$Ccadresse und einen Bcc Empfänger:$Bccadresse und Anhänge");
                     else {
-                        $session->addFlash('info', "Die konnte nicht verschickt werden. Informieren Sie den Softwarehersteller");
+                        $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
                     }
                 }
@@ -317,11 +318,15 @@ class MailController extends Controller {
                 }
             }
 //Anhänge aus Verzeichnis löschen:Anfang
-            if ($model->checkBoxDelete == 1 || $model->checkBoxDelete == '1') {
-                $folder = Yii::getAlias('@documentsMail');
-                if (!$this->DeleteFilesFromfolder($folder)) {
-                    $session->addFlash('Warnung', "Während des Löschen der Anhangsdateien ging etwas schief. Das kann die Applikation bzgl. der Themeinitialiserung durcheinander bringen. Löschen Sie die Dateien manuell oder informieren sie den Softwarehersteller(Fehlercode:DelcFG12)");
+            try {
+                if ($model->checkBoxDelete == 1 || $model->checkBoxDelete == '1') {
+                    $folder = Yii::getAlias('@documentsMail');
+                    if (!$this->DeleteFilesFromfolder($folder)) {
+                        $session->addFlash('Warnung', "Während des Löschen der Anhangsdateien ging etwas schief. Das kann die Applikation bzgl. der Themeinitialiserung durcheinander bringen. Löschen Sie die Dateien manuell oder informieren sie den Softwarehersteller(Fehlercode:DelcFG12)");
+                    }
                 }
+            } catch (\Exception $e) {
+                error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
             }
 //Anhänge aus Verzeichnis löschen:Ende
             return $this->redirect(['view', 'id' => $model->id]);

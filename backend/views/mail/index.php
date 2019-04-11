@@ -48,12 +48,12 @@ $this->registerJs($search);
         'betreff',
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{save-as-new} {view} {update} {delete}',
-            'buttons' => [
-                'view' => function ($id, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-copy"></span>', ['/mail/view', 'id' => $model->id], ['title' => 'Anzeigen']);
-                },
-            ],
+            'template' => '{view} {delete}',
+        /* 'buttons' => [
+          'view' => function ($id, $model) {
+          return Html::a('<span class="glyphicon glyphicon-copy"></span>', ['/mail/view', 'id' => $model->id], ['title' => 'Anzeigen']);
+          },
+          ], */
         ],
     ];
     ?>

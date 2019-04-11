@@ -124,6 +124,22 @@ class KundeController extends Controller {
         return $pdf->render();
     }
 
+    public function actionSend() {
+        $session = new Session();
+        $checkbox = (array) Yii::$app->request->post('selection');
+        if (empty(($checkbox)) && (isset($_POST['button_checkBoxes']))) {
+            $session->addFlash("warning", "Selektieren Sie die Bewerber, für die Mails erstellt werden sollen, über die Checkboxen");
+            return $this->redirect(['/kunde/index']);
+        } else {
+            print_r('Script in der Klasse ' . get_class() . ' angehalten<br>');
+            print_r('Folgende Ids wurden übergeben bzw. per Checkboxen selektiert:<br>');
+            foreach ($checkbox as $item) {
+                var_dump($item);
+            }
+        }
+        die();
+    }
+
     protected function findModel($id) {
         if (($model = Kunde::findOne($id)) !== null) {
             return $model;
