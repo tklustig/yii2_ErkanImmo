@@ -29,10 +29,18 @@ use yii\widgets\DetailView;
             ],
             [
                 'attribute' => 'bankverbindung_id',
-                'label' => Yii::t('app', 'Bankdaten hinterlegt'),
+                'label' => Yii::t('app', 'Bankdaten...'),
                 'value' => function($model, $id) {
                     return $model->bankverbindung_id ? 'wurden hinterlegt' : 'wurden nicht hinterlegt';
                 },
+            ],
+            [
+                'class' => 'kartik\grid\BooleanColumn',
+                'attribute' => 'bankverbindung_id',
+                'trueLabel' => 'Ja',
+                'falseLabel' => 'Nein',
+                'label' => 'ist Solvent',
+                'encodeLabel' => false,
             ],
             [
                 'attribute' => 'angelegt_von',

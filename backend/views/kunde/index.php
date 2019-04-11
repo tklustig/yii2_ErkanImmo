@@ -183,11 +183,12 @@ foreach ($session->getAllFlashes() as $flash) {
         'panel' => [
             'type' => GridView::TYPE_PRIMARY,
             "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
+            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/kunde/index'], ['class' => 'btn btn-warning', 'title' => 'Setzt die GridView zurück']),
             'toggleDataOptions' => ['minCount' => 10],
         ],
         'toolbar' => [
             ['content' =>
-                Html::submitButton('<span class=" fa fa-pencil-square-o">', ['', 'class' => 'btn btn-success', 'title' => 'implementiert Mails für ausgewählte Kunden', 'name' => 'button_checkBoxes', 'data' => ['pjax' => '0']])
+                Html::submitButton('<span class=" fa fa-pencil-square-o">', ['', 'class' => 'btn btn-success', 'title' => 'implementiert Mails für ausgewählte Kunden', 'name' => 'button_checkBoxes', 'data' => ['pjax' => '1']])
             ],
             '{export}',
             '{toggleData}'
