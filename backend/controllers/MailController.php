@@ -347,7 +347,20 @@ class MailController extends Controller {
     }
 
     public function actionStapelseveral() {
-        print_r("Hier sollen mehrere Kundenmails verarbeiten werden. Initialisiert wurden folgnedne Arrays:<br>");
+        $sessionPHP = Yii::$app->session;
+        if (!$sessionPHP->isActive)
+            $sessionPHP->open();
+        $mailAdresses = $sessionPHP['adressen'];
+        $name = $sessionPHP['name'];
+        $Geschlecht = $sessionPHP['geschlecht'];
+        if ($sessionPHP->isActive)
+            $sessionPHP->close();
+        print_r("Hier sollen mehrere Kundenmails verarbeiten werden. Initialisiert wurden folgende Arrays:<br>");
+        var_dump($mailAdresses);
+        print_r('<br>');
+        var_dump($name);
+        print_r('<br>');
+        var_dump($Geschlecht);
         die();
     }
 
