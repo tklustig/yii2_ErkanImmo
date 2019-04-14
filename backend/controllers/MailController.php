@@ -339,6 +339,18 @@ class MailController extends Controller {
         }
     }
 
+    public function actionStapelone($Mailadress, $geschlecht, $name) {
+        var_dump($Mailadress);
+        var_dump($geschlecht);
+        var_dump($name);
+        die();
+    }
+
+    public function actionStapelseveral() {
+        print_r("Hier sollen mehrere Kundenmails verarbeiten werden. Initialisiert wurden folgnedne Arrays:<br>");
+        die();
+    }
+
     /* Ein Update für verschickte Mails macht keinen Sinn
       public function actionUpdate($id) {
       $model = $this->findModel($id);

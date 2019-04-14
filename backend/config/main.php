@@ -108,6 +108,8 @@ return [
                 'mail_erzeugen' => 'mail/create',
                 'mail_aktualisieren' => 'mail/update',
                 'mail_loeschen' => 'mail/delete',
+                'mail_stapelSingle'=>'mail/stapelone',
+                'mail_stapelSeveral'=>'mail/stapelseveral',
                 'deleteAll_pictures' => '/mail/deleteall',
                 'firma' => 'firma/index',
                 'firma_view' => 'firma/view',

@@ -28,7 +28,7 @@ $session = new Session();
 foreach ($session->getAllFlashes() as $flash) {
     foreach ($flash as $ausgabe) {
         echo Alert::widget([
-            'type' => Alert::TYPE_INFO,
+            'type' => Alert::TYPE_DANGER,
             'title' => 'Information',
             'icon' => 'glyphicon glyphicon-exclamation-sign',
             'body' => $ausgabe,
@@ -188,7 +188,7 @@ foreach ($session->getAllFlashes() as $flash) {
         ],
         'toolbar' => [
             ['content' =>
-                Html::submitButton('<span class=" fa fa-pencil-square-o">', ['', 'class' => 'btn btn-success', 'title' => 'implementiert Mails für ausgewählte Kunden', 'name' => 'button_checkBoxes', 'data' => ['pjax' => '1']])
+                Html::submitButton('<span class=" fa fa-pencil-square-o">', ['', 'class' => 'btn btn-danger', 'title' => 'implementiert Mails für ausgewählte Kunden', 'name' => 'button_checkBoxes', 'data' => ['pjax' => '1']])
             ],
             '{export}',
             '{toggleData}'

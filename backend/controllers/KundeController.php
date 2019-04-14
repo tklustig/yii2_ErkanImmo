@@ -7,6 +7,7 @@ use frontend\models\Kunde;
 use backend\models\KundeSearch;
 use frontend\models\LPlz;
 use backend\models\Bankverbindung;
+use common\classes\error_handling;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -15,6 +16,8 @@ use yii\web\Session;
 use kartik\growl\Growl;
 
 class KundeController extends Controller {
+
+    const RenderBackInCaseOfError = '/kunde/index';
 
     public function behaviors() {
         return [
@@ -125,19 +128,64 @@ class KundeController extends Controller {
     }
 
     public function actionSend() {
+        /* Die Methode redirect() akzeptiert weder Arrays noch Objekte als Übergabeparameter. Demzufolge werden diese Parameter einer Session
+          übergeben, die dann vom jeweiligen Controller aufgerufen wird */
         $session = new Session();
-        $checkbox = (array) Yii::$app->request->post('selection');
-        if (empty(($checkbox)) && (isset($_POST['button_checkBoxes']))) {
-            $session->addFlash("warning", "Selektieren Sie die Bewerber, für die Mails erstellt werden sollen, über die Checkboxen");
-            return $this->redirect(['/kunde/index']);
-        } else {
-            print_r('Script in der Klasse ' . get_class() . ' angehalten<br>');
-            print_r('Folgende Ids wurden übergeben bzw. per Checkboxen selektiert:<br>');
+        $Mailadresses = array();
+        $Name = array();
+        $Geschlecht = array();
+        /* Indizie für Adressen */
+        $x = 0;
+        /* Indizie für den Fremdschlüssel */
+        $y = 0;
+        /* Indizie für Geschlecht */
+        $z = 0;
+        /* Indizie für Namen */
+        $zz = 0;
+        try {
+            $checkbox = (array) Yii::$app->request->post('selection');
+            if (empty(($checkbox)) && (isset($_POST['button_checkBoxes']))) {
+                $session->addFlash("warning", "Selektieren Sie die Bewerber, für die Mails erstellt werden sollen, über die Checkboxen");
+                return $this->redirect(['/kunde/index']);
+            } /* checkBox enthält die Id */
             foreach ($checkbox as $item) {
-                var_dump($item);
+                $IdAnrede = Kunde::findOne(['id' => $item])->geschlecht0->typus;
+                $VorName = Kunde::findOne(['id' => $item])->vorname;
+                $NachName = Kunde::findOne(['id' => $item])->nachname;
+                $name = $VorName . " " . $NachName;
+//packe die gefundenen Values in oben initialisierte Arrays
+                $Geschlecht[$z] = $IdAnrede;
+                $Name[$zz] = $name;
+                if (empty(Kunde::findOne(['id' => $item])->email)) {
+                    $session->addFlash("warning", "Für diesen Kunden exisitert im system keine Mailadresse. Legen Sie welche an!");
+                    return $this->redirect(['/kunde/index']);
+                } else {
+                    $Mailadresses[$x] = Kunde::findOne(['id' => $item])->email;
+                }
+//packe die Adressen in ein Array
+                $y++;
+                $z++;
+                $zz++;
+                $x++;
             }
+//übergebe die Arrays an eine Session
+            $sessionPHP = Yii::$app->session;
+            if (!$sessionPHP->isActive)
+                $sessionPHP->open();
+            $sessionPHP['adressen'] = $Mailadresses;
+            $sessionPHP['name'] = $Name;
+            $sessionPHP['geschlecht'] = $Geschlecht;
+            if ($sessionPHP->isActive)
+                $sessionPHP->close();
+            if (count($checkbox) == 1)
+//render das StapelOneFormular. Dazu muss jeweils das erste Element der Arrays übergeben werden
+                return $this->redirect(['/mail/stapelone', 'Mailadress' => $Mailadresses[0], 'geschlecht' => $Geschlecht[0], 'name' => $Name[0]]);
+            else
+//render das StapelSeveralFormular
+                return $this->redirect(['/mail/stapelseveral']);
+        } catch (\Exception $error) {
+            error_handling::error_without_id($error, KundeController::RenderBackInCaseOfError);
         }
-        die();
     }
 
     protected function findModel($id) {
