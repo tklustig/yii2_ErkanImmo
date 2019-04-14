@@ -186,7 +186,7 @@ class KundeController extends Controller {
     }
 
     public function actionDelpic($id) {
-        print_r("Übergeben wurde der Pk:$id von EDateianhang. Damit lässt sich in dateianhang der Bildname und der PK auslesen,um somit den löschvorgang codieren zu können!");
+        print_r("Übergeben wurde der Pk:$id von EDateianhang. Damit lässt sich in dateianhang der Bildname und der PK auslesen,um somit den Löschvorgang codieren zu können!");
         die();
     }
 
