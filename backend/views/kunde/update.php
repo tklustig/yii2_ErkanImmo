@@ -17,7 +17,8 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
     $this->render('_form', [
         'model' => $model,
         'plz' => $plz,
-        'id'=>$id,
+        'id' => $id,
+        'modelDateianhang' => $modelDateianhang
     ])
     ?>
 

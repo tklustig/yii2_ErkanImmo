@@ -52,6 +52,7 @@ foreach ($session->getAllFlashes() as $flash) {
     Html::beginForm(['/kunde/send'], 'post', ['name' => 'idKunde']);
     ?>
     <?php
+    $dummy = 'id';
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
         [
@@ -67,6 +68,38 @@ foreach ($session->getAllFlashes() as $flash) {
             'expandOneOnly' => true
         ],
         ['attribute' => 'id', 'visible' => false],
+        /*
+          Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetKundenBild(model),welche
+          drei JOINs und eine dynamische WHERE-Klausel enthält.
+         */
+        [
+            'attribute' => $dummy,
+            'label' => Yii::t('app', ''),
+            'format' => 'html', // sorgt dafür,dass das HTML im return gerendert wird
+            'vAlign' => 'middle',
+            'value' => function($model) {
+                $bmp = '/bmp/';
+                $tif = '/tif/';
+                $png = '/png/';
+                $psd = '/psd/';
+                $pcx = '/pcx/';
+                $gif = '/gif/';
+                $jpeg = '/jpeg/';
+                $jpg = '/jpg/';
+                $ico = '/ico/';
+                try {
+                    $bilder = \frontend\models\Dateianhang::GetKundenBild($model);
+                    foreach ($bilder as $bild) {
+                        if (preg_match($bmp, $bild->dateiname) || preg_match($tif, $bild->dateiname) || preg_match($png, $bild->dateiname) || preg_match($psd, $bild->dateiname) || preg_match($pcx, $bild->dateiname) || preg_match($gif, $bild->dateiname) || preg_match($jpeg, $bild->dateiname) || preg_match($jpg, $bild->dateiname) || preg_match($ico, $bild->dateiname)) {
+                            $url = '@web/img/' . $bild->dateiname;
+                        }
+                    }
+                    return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:50px;height:50px']);
+                } catch (Exception $e) {
+                    return;
+                }
+            }
+        ],
         [
             'attribute' => 'l_plz_id',
             'label' => Yii::t('app', 'Plz'),
@@ -140,12 +173,18 @@ foreach ($session->getAllFlashes() as $flash) {
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{bankverbindung},{termin}',
+            'template' => '{bankverbindung} {termin} {delpic}',
             'buttons' => [
                 'bankverbindung' => function ($id, $model) {
                     if (!empty($model->bankverbindung_id)) {
                         $pk = backend\models\Bankverbindung::findOne(['id' => $model->bankverbindung_id])->id;
-                        return Html::a('<span class="glyphicon glyphicon-th-list"></span>', ['/bankverbindung/view', 'id' => $pk], ['title' => 'Bankverbindung anzeigen']);
+                        return Html::a('<span class="glyphicon glyphicon-th-list"></span>', ['/bankverbindung/view', 'id' => $pk], ['title' => 'Bankverbindung anzeigen','data' => ['pjax' => '0']]);
+                    }
+                },
+                'delpic' => function ($id, $model) {
+                    if (!empty(frontend\models\EDateianhang::findOne(['kunde_id' => $model->id]))) {
+                        $fk = frontend\models\EDateianhang::findOne(['kunde_id' => $model->id])->id;
+                        return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/kunde/delpic', 'id' => $fk], ['title' => 'Kundenbild entfernen','data' => ['pjax' => '0']]);
                     }
                 },
                 'termin' => function ($id, $model) {
@@ -155,7 +194,7 @@ foreach ($session->getAllFlashes() as $flash) {
                             $fk = $item->besichtigungstermin_id;
                             $link = \Yii::$app->urlManagerFrontend->baseUrl . '/termin_viewen';
                             $link .= '?id=' . $fk;
-                            return Html::a('<span class="glyphicon glyphicon-flag"></span>', $link, ['title' => 'zum Termin im Frontend springen']);
+                            return Html::a('<span class="glyphicon glyphicon-flag"></span>', $link, ['title' => 'zum Termin im Frontend springen','data' => ['pjax' => '0']]);
                         }
                     }
                 },

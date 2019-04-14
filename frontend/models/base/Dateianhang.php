@@ -96,6 +96,17 @@ class Dateianhang extends \yii\db\ActiveRecord {
         }
     }
 
+    public static function GetKundenBild($model) {
+        try {
+            return Dateianhang::find()
+                            ->leftJoin('e_dateianhang', 'dateianhang.e_dateianhang_id =e_dateianhang.id')
+                            ->leftJoin('kunde', 'e_dateianhang.kunde_id = kunde.id')
+                            ->where(['e_dateianhang.kunde_id' => $model::findOne([$model->id])->id])->all();
+        } catch (\Exception $error) {
+            return;
+        }
+    }
+
     /*  wird derzeit nicht (mehr) genutzt. Verbleibt allerdings im Repositorie, da aufgezeigt wird, wie man in einer find()->leftJoin()
       ->where()-Klausel eine Relation auf einen Statischen Wert prüft(SELECT * FROM tbl1 JOIN tbl2 ON... where user_id>=1)
      */
@@ -129,7 +140,7 @@ class Dateianhang extends \yii\db\ActiveRecord {
             if ($bool != NULL && $bool == TRUE) {
                 $uploadedFile->saveAs(Yii::getAlias('@documentsMail') . DIRECTORY_SEPARATOR . $uploadedFile->name);
             } else {
-                $uploadedFile->saveAs(Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+                $uploadedFile->saveAs(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name);
                 copy(Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name, $url . $uploadedFile->name);
             }
             $x++;
@@ -169,6 +180,40 @@ class Dateianhang extends \yii\db\ActiveRecord {
             $uploadedFile->saveAs(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name);
             copy(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name, $url . $uploadedFile->name);
             //unlink((Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name));
+            $x++;
+        }
+        if ($x > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function uploadBackend($model) {
+        $x = 0;
+        $valid = $this->validate();
+        if (!$valid) {
+            $errorDateianhang = $model->getErrors();
+            foreach ($errorDateianhang as $values) {
+                foreach ($values as $ausgabe) {
+                    var_dump($ausgabe);
+                    throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
+                }
+            }
+        }
+        foreach ($this->attachement as $uploadedFile) {
+            $endungen = array('jpg', 'jpeg', 'tiff', 'gif', 'bmp', 'png', 'svg', 'ico');
+            for ($i = 0; $i < count($endungen); $i++) {
+                if ($uploadedFile->extension != $endungen[$i])
+                    $bool = false;
+                else {
+                    $bool = true;
+                    break;
+                }
+            }
+            if (!$bool)
+                return false;
+            $uploadedFile->name = $this->Ersetzen($uploadedFile->name);
+            $uploadedFile->saveAs(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name);
             $x++;
         }
         if ($x > 0) {

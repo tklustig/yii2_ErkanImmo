@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use kartik\widgets\ActiveForm;
+use kartik\widgets\FileInput;
 ?>
 
 <div class="kunde-form">
@@ -16,10 +17,33 @@ use kartik\widgets\ActiveForm;
     ?>
     <?= $form->errorSummary($model); ?>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
+            <?=
+            /* 22.11.2017/tklustig/Initialisiert das Upload-Formular.Damit das multiple uploading klappt,muss die property als Array eingebunden werden
+              In Zeile 61 wird an eine statische URL zurück gerendert. Dass koennte irgendwann einmal eine Fehlerquelle darstellen und muss dann behoben werden
+             */
+
+            $form->field($modelDateianhang, 'attachement[]')->widget(FileInput::classname(), [
+                'options' => ['multiple' => true],
+                'pluginOptions' => ['allowedFileExtensions' => ['jpg', 'jpeg', 'tiff', 'gif', 'bmp', 'png', 'svg', 'ico']],
+            ]);
+            ?>
+        </div>
+        <div class="col-md-4">
+            <?=
+            $form->field($modelDateianhang, 'l_dateianhang_art_id')->widget(\kartik\widgets\Select2::classname(), [
+                'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LDateianhangArt::find()->orderBy('id')->asArray()->all(), 'id', 'bezeichnung'),
+                'options' => ['placeholder' => Yii::t('app', 'Dateianhangsart')],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
+            ?>
+        </div>
+        <div class="col-md-4">
             <?= $form->field($model, 'l_plz_id')->textInput(['value' => $plz]) ?>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <?=
             $form->field($model, 'geschlecht', ['addon' => [
                     'prepend' => ['content' => 'Geschlecht']]])->widget(\kartik\widgets\Select2::classname(), [

@@ -7,12 +7,17 @@ use frontend\models\Kunde;
 use backend\models\KundeSearch;
 use frontend\models\LPlz;
 use backend\models\Bankverbindung;
+use frontend\models\Dateianhang;
+use frontend\models\EDateianhang;
 use common\classes\error_handling;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 use yii\db\IntegrityException;
 use yii\web\Session;
+use yii\db\Expression;
+use yii\helpers\FileHelper;
 use kartik\growl\Growl;
 
 class KundeController extends Controller {
@@ -58,15 +63,26 @@ class KundeController extends Controller {
         $model = $this->findModel($id);
         $plzId = $model->l_plz_id;
         $bankId = $model->bankverbindung_id;
+        $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
+        $modelE = new EDateianhang();
+        $FkInEDatei = array();
+        $files = array();
+        $bezeichnung = array();
+        $connection = \Yii::$app->db;
+        $expression = new Expression('NOW()');
+        $now = (new \yii\db\Query)->select($expression)->scalar();
+        $EDateianhang = EDateianhang::find()->all();
+        $BoolAnhang = false;
         //Plzstring im Formular ausgeben
         if (!empty(LPlz::findOne(['id' => $plzId])))
             $plz = LPlz::findOne(['id' => $plzId])->plz;
         else
             $plz = "00000";
-        if ($model->loadAll(Yii::$app->request->post())) {
+        if ($model->loadAll(Yii::$app->request->post()) && $modelDateianhang->loadAll(Yii::$app->request->post())) {
             //den Plzstring in die Id zurück verwandeln
             $plzID = LPlz::findOne(['plz' => $model->l_plz_id])->id;
             $model->l_plz_id = $plzID;
+            //den Bankstring in die Id zurück verwandeln
             if (!empty(Bankverbindung::findOne(['id' => $model->bankverbindung_id]))) {
                 $bankID = Bankverbindung::findOne(['id' => $model->bankverbindung_id])->id;
                 $model->bankverbindung_id = $bankID;
@@ -74,15 +90,104 @@ class KundeController extends Controller {
             /* ToDo: prüfen, ob bankverbindung_id versehentlich über die Select2Box(_form.php) doppelt gesetzt wurde. Falls ja, darf der Record
               nicht gespeichert werden, da zwei Kunden nicht ein-und diesselbe Bankdaten haben können. Die Benachrichtigung soll über eine
               kartikBox erfolgen, gefolgt von einem render auf actionUpdate */
-            $model->save();
+            $modelDateianhang->attachement = UploadedFile::getInstances($modelDateianhang, 'attachement');
+            if ($modelDateianhang->uploadBackend($modelDateianhang))
+                $BoolAnhang = true;
+            if ($BoolAnhang && empty($modelDateianhang->l_dateianhang_art_id)) {
+                echo Growl::widget([
+                    'type' => Growl::TYPE_GROWL,
+                    'title' => 'Warning',
+                    'icon' => 'glyphicon glyphicon-ok-sign',
+                    'body' => 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen. Das soeben hochgeladene Kundenbild wurde wieder entfernt. Reselektieren Sie es ggf.',
+                    'showSeparator' => true,
+                    'delay' => 1500,
+                    'pluginOptions' => [
+                        'showProgressbar' => true,
+                        'placement' => [
+                            'from' => 'top',
+                            'align' => 'center',
+                        ]
+                    ]
+                ]);
+                foreach ($modelDateianhang->attachement as $uploadedFile) {
+                    FileHelper::unlink(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+                }
+                return $this->render('update', [
+                            'model' => $model,
+                            'plz' => $plz,
+                            'id' => $bankId,
+                            'modelDateianhang' => $modelDateianhang
+                ]);
+            }
+            foreach ($modelDateianhang->attachement as $uploadedFile) {
+                $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+                $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+                $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
+// lege jede den Dateinamen  in das Array ab
+                array_push($files, $uploadedFile->name);
+            }
+            $valid = $model->validate();
+            $IsValid = $modelDateianhang->validate() && $valid;
+            if ($IsValid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                $model->save();
+                /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
+                $EDateianhang = EDateianhang::find()->all();
+                foreach ($EDateianhang as $treffer) {
+                    array_push($FkInEDatei, $treffer->kunde_id);
+                }
+                /* falls nicht */
+                if (!in_array($model->id, $FkInEDatei) && $BoolAnhang) {
+                    $modelE->kunde_id = $model->id;
+                    $modelE->save();
+                    $fk = $modelE->id;
+                    /* falls doch */
+                } else {
+                    $fk = EDateianhang::findOne(['kunde_id' => $model->id]);
+                }
+                /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
+                  Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+                if (!empty($model->aktualisiert_von))
+                    $aktualisiertVon = $model->aktualisiert_von;
+                else
+                    $aktualisiertVon = Yii::$app->user->identity->id;
+                for ($i = 0; $i < count($files); $i++) {
+                    $connection->createCommand()
+                            ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
+                                [$fk, $modelDateianhang->l_dateianhang_art_id, 'Kundenbild', $files[$i], $now, $aktualisiertVon],
+                            ])
+                            ->execute();
+                }
+                $transaction->commit();
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                $ErrorModel = $model->getErrors();
+                $ErrorAnhang = $modelDateianhang->getErrors();
+                foreach ($ErrorModel as $values) {
+                    foreach ($values as $ausgabe) {
+                        throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
+                    }
+                }
+                foreach ($ErrorAnhang as $values) {
+                    foreach ($values as $ausgabe) {
+                        throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
+                    }
+                }
+            }
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                         'model' => $model,
                         'plz' => $plz,
-                        'id' => $bankId
+                        'id' => $bankId,
+                        'modelDateianhang' => $modelDateianhang
             ]);
         }
+    }
+
+    public function actionDelpic($id) {
+        print_r("Übergeben wurde der Pk:$id von EDateianhang. Damit lässt sich in dateianhang der Bildname und der PK auslesen,um somit den löschvorgang codieren zu können!");
+        die();
     }
 
     public function actionDelete($id) {

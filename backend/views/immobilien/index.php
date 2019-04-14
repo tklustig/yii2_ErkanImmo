@@ -60,9 +60,8 @@ $this->registerJs($search);
         ],
         [
             /*
-              Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBewerberBild(model),welche
-              drei JOINs und eine dynamische WHERE-Klausel enthält,die auf den FK id_person von bewerber prüft. Das Bild liegt physikalisch auf dem Webspace,
-              dessen Zugriffspfade in der Datenbank in einer ganz bestimmten Reihenfolge hinterlegt sein müssen!
+              Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBild(model),welche
+              drei JOINs und eine dynamische WHERE-Klausel enthält.
              */
             'attribute' => $dummy,
             'label' => Yii::t('app', ''),
