@@ -8,13 +8,6 @@ class LBegriffe extends \yii\db\ActiveRecord
 {
     use \mootensai\relation\RelationTrait;
 
-    public function relationNames()
-    {
-        return [
-            ''
-        ];
-    }
-
     public function rules()
     {
         return [

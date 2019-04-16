@@ -14,17 +14,16 @@ $this->params['breadcrumbs'][] = $this->title;
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
         'id',
-        'typ',
-        'data',
+        'typ:html',
+        'data:html',
         [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{view} {update}',
-        /*
-          'buttons' => [
-          'save-as-new' => function ($url) {
-          return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Save As New']);
-          },
-          ], */
+            'buttons' => [
+                'view' => function ( $id, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', ['/begriffe/view', 'id' => $model->id], ['title' => 'View']);
+                },
+            ],
         ],
     ];
     ?>

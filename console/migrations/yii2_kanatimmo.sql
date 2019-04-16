@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 08. Apr 2019 um 17:53
+-- Erstellungszeit: 16. Apr 2019 um 19:45
 -- Server-Version: 10.1.37-MariaDB
 -- PHP-Version: 7.2.13
 
@@ -128,7 +128,11 @@ INSERT INTO `dateianhang` (`id`, `bezeichnung`, `dateiname`, `angelegt_am`, `akt
 (2, 'Bild für eine Immobilie', 'villa1.jpg', '2019-02-16 09:04:21', NULL, 4, NULL, 4, 2),
 (3, 'Bild für eine Immobilie', 'immo4.jpg', '2019-02-16 09:11:40', NULL, 3, NULL, 3, 3),
 (4, 'Bild für eine Immobilie', 'kitchen-1940175__340.jpg', '2019-02-16 09:14:32', NULL, 3, NULL, 3, 4),
-(5, 'Bild für eine Immobilie', 'modern-minimalist.jpg', '2019-02-16 09:17:24', NULL, 4, NULL, 3, 5);
+(5, 'Bild für eine Immobilie', 'modern-minimalist.jpg', '2019-02-16 09:17:24', NULL, 4, NULL, 3, 5),
+(6, 'Bild für eine Mail', 'Artwork-20180803-184430.png', '2019-04-08 19:23:49', NULL, 4, NULL, 12, 6),
+(7, 'Bild für eine Mail', 'Artwork-20180803-185427.png', '2019-04-08 19:23:49', NULL, 4, NULL, 12, 6),
+(9, 'Kundenbild', 'bild1.jpg', '2019-04-14 15:18:42', NULL, 3, NULL, 14, 8),
+(10, 'Kundenbild', 'Transgender.jpg', '2019-04-14 15:26:55', NULL, 4, NULL, 14, 9);
 
 -- --------------------------------------------------------
 
@@ -153,7 +157,10 @@ INSERT INTO `e_dateianhang` (`id`, `immobilien_id`, `user_id`, `kunde_id`, `mail
 (2, 2, NULL, NULL, NULL),
 (3, 4, NULL, NULL, NULL),
 (4, 5, NULL, NULL, NULL),
-(5, 6, NULL, NULL, NULL);
+(5, 6, NULL, NULL, NULL),
+(6, NULL, NULL, NULL, 1),
+(8, NULL, NULL, 1, NULL),
+(9, NULL, NULL, 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -278,9 +285,9 @@ CREATE TABLE `kunde` (
 --
 
 INSERT INTO `kunde` (`id`, `l_plz_id`, `geschlecht`, `vorname`, `nachname`, `stadt`, `strasse`, `geburtsdatum`, `solvenz`, `telefon`, `email`, `bankverbindung_id`, `angelegt_am`, `aktualisiert_am`, `angelegt_von`, `aktualisiert_von`) VALUES
-(1, 5855, 1, 'Michael', 'Krenz', 'Bothfeld, Groß Buchholz, Lahe ', 'Klein Buchholzer Kirchweg  25', '1961-03-21', 1, '0152/37389041', 'michael@gmx.net', 14, '2019-02-16 09:23:34', '2019-04-04 20:18:56', 3, 3),
+(1, 5855, 1, 'Michael', 'Krenz', 'Bothfeld, Groß Buchholz, Lahe ', 'Klein Buchholzer Kirchweg  25', '1961-03-21', 1, '0152/37389041', 'michael@gmx.net', 14, '2019-02-16 09:23:34', '2019-04-14 15:18:42', 3, 3),
 (2, 285, 2, 'Susanne', 'Albrecht', 'Cottbus', 'Ahornweg 3', '1983-09-20', 0, '03445/667832', 'albrecht@web.de', NULL, '2019-02-16 09:27:53', '2019-04-04 20:18:30', 4, 3),
-(3, 9915, 4, 'Lydia', 'Scholz', 'Ennepetal', 'Akazienweg', '1975-02-17', 0, '01542567880', 'lydia@gmx.net', 5, '2019-02-27 19:18:35', '2019-03-04 00:59:38', 4, NULL),
+(3, 9915, 4, 'Lydia', 'Scholz', 'Ennepetal', 'Akazienweg', '1975-02-17', 0, '01542567880', 'lydia@gmx.net', 5, '2019-02-27 19:18:35', '2019-04-14 15:26:55', 4, NULL),
 (4, 2502, 10, 'Friedrich', 'Schubert', 'Bliesdorf', 'Bliesdorfer Str.', '1985-02-02', 0, '', 'friedrich@gmail.com', NULL, '2019-02-27 20:10:06', '2019-04-04 20:18:05', 3, NULL);
 
 -- --------------------------------------------------------
@@ -343,14 +350,14 @@ CREATE TABLE `l_begriffe` (
 INSERT INTO `l_begriffe` (`id`, `typ`, `data`) VALUES
 (1, 'Firmenname', 'Kanat Immobilien '),
 (2, 'Strasse', 'Lerchengasse 12'),
-(3, 'PLZ', '30511 '),
+(3, 'PLZ', '<p><span style=\"font-size:14px\">30511</span></p>\r\n'),
 (4, 'Ort', 'Saarstedt '),
 (5, 'vertreten durch', 'Erkan Kanat,\r\nHasan Oynak'),
 (6, 'Telefon', '+49(0)511 3458'),
 (7, 'Fax', '+49(0)510 2380'),
 (8, 'Mail', 'erkan@web.de'),
 (9, 'Umsatzsteuer/Identifikationsnummer', '16/121/19910'),
-(10, 'Aufsichtsbehörde', 'Industrie- und Handelskammer Hannover');
+(10, 'Aufsichtsbehörde', '<p><span style=\"font-size:14px\">Industrie- und Handelskammer Hannover</span></p>\r\n');
 
 -- --------------------------------------------------------
 
@@ -380,7 +387,8 @@ INSERT INTO `l_dateianhang_art` (`id`, `bezeichnung`) VALUES
 (10, 'Frontendbilder'),
 (11, 'Impressumbilder'),
 (12, 'Bilder für eine Mail'),
-(13, 'Dokumente für eine Mail');
+(13, 'Dokumente für eine Mail'),
+(14, 'Bild für einen Kunden');
 
 -- --------------------------------------------------------
 
@@ -15807,6 +15815,13 @@ CREATE TABLE `mail` (
   `aktualisiert_von` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `mail`
+--
+
+INSERT INTO `mail` (`id`, `id_mailserver`, `mail_from`, `mail_to`, `mail_cc`, `mail_bcc`, `betreff`, `bodytext`, `textbaustein_id`, `vorlage`, `angelegt_am`, `angelegt_von`, `aktualisiert_am`, `aktualisiert_von`) VALUES
+(1, 1, 'kipp.thomas@gmx.net', 'thomas.kipp@eisvogel-online-software.de', 'tklustig.thomas@gmail.com', '', 'Testmail', '<div style=\"text-align:center\"><strong><span style=\"font-size:24px\"><span style=\"font-family:Lucida Sans Unicode,Lucida Grande,sans-serif\">Sehr geehrter Herr Kipp,</span></span></strong></div>\r\n\r\n<div style=\"text-align:center\">&nbsp;</div>\r\n\r\n<div>wie vereinbart, haben wir versucht, die zweite Rate nach RechnungNr. 10140 vom 20.12.2010 von Ihrem Konto einzuziehen. Am 18.02.2011 ist eine kostenpflichtige R&uuml;ckbuchung erfolgt. <u>Eine Kl&auml;rung dieser Situation haben Sie nicht herbeigef&uuml;hrt</u>. Sie erhalten nun die Gelegenheit, den nun f&auml;lligen Betrag von 269,80 (261,80 + 8,- Bankgeb&uuml;hren) bis zum</div>\r\n\r\n<div>24.02.2011 auf unser auf der RG angegebenes Konto zu &uuml;berweisen. Sollten Sie dieser Aufforderung nicht nachkommen, oder eine Kl&auml;rung herbeif&uuml;hren, wird wie auf der Rechnung vermerkt weiter verfahren.</div>\r\n\r\n<div>&nbsp;</div>\r\n\r\n<div>Sollten weitere Raten zur Zahlung ausstehen, werden diese zur jeweiligen F&auml;lligkeit laut Rechnung von Ihrem bei uns hinterlegten Konto eingezogen. Es gelten weiterhin die auf der Rechnung vermerkten Zahlungsbedingungen.</div>\r\n', 4, 'wie vereinbart, haben wir versucht, die zweite Rate nach Rechnung \r\n\r\nNr. 10140 vom 20.12.2010 \r\n\r\nvon Ihrem Konto einzuziehen. Am \r\n\r\n18.02.2011 \r\n\r\nist eine kostenpflichtige Rückbuchung erfolgt. Eine Klärung dieser Situation haben Sie nicht herbeigeführt. Sie erhalten nun die Gelegenheit, den nun fälligen Betrag von 269,80 (261,80 + 8,- Bankgebühren) bis zum \r\n\r\n24.02.2011 \r\n\r\nauf unser auf der RG angegebenes Konto zu überweisen. Sollten Sie dieser Aufforderung nicht nachkommen, oder eine Klärung herbeiführen, wird wie auf der Rechnung vermerkt weiter verfahren.\r\n\r\nSollten weitere Raten zur Zahlung ausstehen, werden diese zur jeweiligen Fälligkeit laut Rechnung von Ihrem bei uns hinterlegten Konto eingezogen. Es gelten weiterhin die auf der Rechnung vermerkten Zahlungsbedingungen.', '2019-04-08 19:23:55', 4, '2019-04-08 19:23:55', 4);
+
 -- --------------------------------------------------------
 
 --
@@ -16008,6 +16023,12 @@ ALTER TABLE `l_art`
   ADD PRIMARY KEY (`id`) USING BTREE COMMENT 'PK';
 
 --
+-- Indizes für die Tabelle `l_begriffe`
+--
+ALTER TABLE `l_begriffe`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indizes für die Tabelle `l_dateianhang_art`
 --
 ALTER TABLE `l_dateianhang_art`
@@ -16131,13 +16152,13 @@ ALTER TABLE `besichtigungstermin`
 -- AUTO_INCREMENT für Tabelle `dateianhang`
 --
 ALTER TABLE `dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT für Tabelle `e_dateianhang`
 --
 ALTER TABLE `e_dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT für Tabelle `firma`
@@ -16176,10 +16197,16 @@ ALTER TABLE `l_art`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT für Tabelle `l_begriffe`
+--
+ALTER TABLE `l_begriffe`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT für Tabelle `l_dateianhang_art`
 --
 ALTER TABLE `l_dateianhang_art`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT für Tabelle `l_geschlecht`
@@ -16227,7 +16254,7 @@ ALTER TABLE `l_textbaustein`
 -- AUTO_INCREMENT für Tabelle `mail`
 --
 ALTER TABLE `mail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT für Tabelle `mailserver`

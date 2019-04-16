@@ -272,7 +272,7 @@ class SiteController extends Controller {
                     for ($i = 0; $i < count($files); $i++) {
                         $connection->createCommand()
                                 ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
-                                    [$fk, $max, $model->lDateianhangArt->bezeichnung, $files[$i], $now, $UserId]
+                                    [$fk, $model->l_dateianhang_art_id, $model->lDateianhangArt->bezeichnung, $files[$i], $now, $UserId]
                                 ])
                                 ->execute();
                     }
@@ -311,7 +311,7 @@ class SiteController extends Controller {
         $DynamicModel->addRule('file', 'string');
         $DynamicModel->addRule('file', 'required');
         $max = LDateianhangArt::find()->max('id');
-        $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => [11, 12]]);
+        $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => [10, 11]]);
         foreach ($arrayOfObjectsForAnhang as $item) {
             array_push($arrayOfFileNames, $item->dateiname);
             array_push($arrayOfBez, $item->bezeichnung);
@@ -371,7 +371,7 @@ class SiteController extends Controller {
         $DynamicModel->addRule('file', 'string');
         $DynamicModel->addRule('file', 'required');
         $max = LDateianhangArt::find()->max('id');
-        $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => $max]);
+        $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => [10,11]]);
         foreach ($arrayOfObjectsForAnhang as $item) {
             array_push($arrayOfFileNames, $item->dateiname);
             array_push($arrayOfBez, $item->bezeichnung);
@@ -444,8 +444,8 @@ class SiteController extends Controller {
         $dateiname = Dateianhang::findOne(['id' => $id])->dateiname;
         $path = Yii::getAlias('@picturesBackend');
         $pathFrom = Yii::getAlias('@uploading');
-        unlink($path . $dateiname);
-        unlink($pathFrom . DIRECTORY_SEPARATOR . $dateiname);
+        FileHelper::unlink($path . DIRECTORY_SEPARATOR . $dateiname);
+        FileHelper::unlink($pathFrom . DIRECTORY_SEPARATOR . $dateiname);
         $model = $this->findModel_dateianhang($id)->delete();
         $session->addFlash('info', "Das Theme mit der ID:$id wurde soeben sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
         return $this->redirect(['/site/index']);
@@ -476,8 +476,8 @@ class SiteController extends Controller {
         $path = Yii::getAlias('@picturesBackend');
         $pathFrom = Yii::getAlias('@uploading');
         for ($i = 0; $i < count($arrayOfFilenames); $i++) {
-            unlink($path . $arrayOfFilenames[$i]);
-            unlink($pathFrom . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+            FileHelper::unlink($path . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+            FileHelper::unlink($pathFrom . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
         }
         $session->addFlash('info', "Sämtliche Themes wurden sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
         return $this->redirect(['/site/index']);
