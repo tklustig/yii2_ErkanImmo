@@ -2,10 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use kartik\grid\GridView;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\Mail */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Mail'), 'url' => ['index']];
@@ -27,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
             )
             ?>
-            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/mail/index'], ['class' => 'btn btn-primary ']) ?>  
+            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/site/index'], ['class' => 'btn btn-primary ']) ?>  
         </div>
     </div>
 

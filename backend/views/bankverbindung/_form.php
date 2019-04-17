@@ -38,19 +38,19 @@ use kartik\widgets\ActiveForm;
     <div class="col-md-4">
         <?=
         $form->field($model, 'iban', ['addon' => [
-                'prepend' => ['content' => 'IBAN'], 'append' => ['content' => 'berechnet die Applikation']]])->textInput(['maxlength' => true, 'readonly' => true])
+                'prepend' => ['content' => 'IBAN'], 'append' => ['content' => 'berechnet die Applikation']]])->textInput(['maxlength' => true])
         ?>
     </div>
     <div class="col-md-4">
         <?=
         $form->field($model, 'bic', ['addon' => [
-                'prepend' => ['content' => 'BIC'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true, 'readonly' => true])
+                'prepend' => ['content' => 'BIC'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true])
         ?>
     </div>
     <div class="col-md-4">
         <?=
         $form->field($model, 'institut', ['addon' => [
-                'prepend' => ['content' => 'Institut'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true, 'readonly' => true])
+                'prepend' => ['content' => 'Institut'], 'append' => ['content' => 'ermittelt ein Webservice']]])->textInput(['maxlength' => true])
         ?>
     </div>
     <div class="form-group">

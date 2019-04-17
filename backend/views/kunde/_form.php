@@ -95,6 +95,13 @@ use kartik\widgets\FileInput;
             ?>
 
         </div>
+        <div class="col-md-6">
+            <?= $form->field($model, 'telefon')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
+        </div>
+        <div class="col-md-6">
+            <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
+        </div>
+
         <div class="col-md-4">
             <?=
             $form->field($model, 'aktualisiert_von')->widget(\kartik\widgets\Select2::classname(), [

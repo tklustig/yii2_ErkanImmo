@@ -21,7 +21,6 @@ $this->registerJs($search);
 
     <h1><?= Html::encode($this->title) ?></h1>
     <p>
-        <?= Html::a(Yii::t('app', 'Create Rechnung'), ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-info search-button']) ?>
     </p>
     <div class="search-form" style="display:none">
@@ -166,7 +165,7 @@ $this->registerJs($search);
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Save As New']);
                 },
                 'print' => function ($model, $id) {
-                    return Html::a('<span class="glyphicon glyphicon-print"></span>', ['/rechnung/print', 'id' => $id->id], ['title' => 'Rechnung drucken', 'data' => ['pjax' => '0']]);
+                    return Html::a('<span class="glyphicon glyphicon-print"></span>', ['/rechnung/print', 'id' => $id->id], ['title' => 'Rechnung drucken', 'target' => '_blank', 'data' => ['pjax' => '0']]);
                 },
             ],
         ],
@@ -192,7 +191,6 @@ $this->registerJs($search);
         'panel' => [
             'type' => GridView::TYPE_PRIMARY,
             "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
-            'before' => Html::a(Yii::t('app', 'Rechnungsart erstellen'), ['/rechnungsart/create'], ['class' => 'btn btn-success', 'title' => 'Erstellt einen neuen Rechnungskopf']),
             'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/rechnung/index'], ['class' => 'btn btn-warning', 'title' => 'Setzt die GridView zurück']),
             'toggleDataOptions' => ['minCount' => 10],
         ],

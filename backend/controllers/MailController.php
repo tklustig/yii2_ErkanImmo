@@ -329,7 +329,10 @@ class MailController extends Controller {
                 error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
             }
 //Anhänge aus Verzeichnis löschen:Ende
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($mailWurdeVerschickt)
+                return $this->redirect(['view', 'id' => $model->id]);
+            else
+                return $this->redirect(['/site/index']);
         } else {
             return $this->render('create', [
                         'model' => $model,
@@ -594,7 +597,7 @@ class MailController extends Controller {
             else
                 $encryption = null;
             if ($encryption != null)
-                $mailer = Yii::$app->mailer->setTransport([
+                Yii::$app->mailer->setTransport([
                     'class' => 'Swift_SmtpTransport',
                     'host' => $host,
                     'username' => $username,
@@ -603,14 +606,14 @@ class MailController extends Controller {
                     'encryption' => $encryption
                 ]);
             else
-                $mailer = Yii::$app->mailer->setTransport([
+                Yii::$app->mailer->setTransport([
                     'class' => 'Swift_SmtpTransport',
                     'host' => $host,
                     'username' => $username,
                     'password' => $password,
                     'port' => $port
                 ]);
-            return $mailer;
+            return Yii::$app->mailer;
         } catch (yii\db\Exception $e) {
             error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
         }

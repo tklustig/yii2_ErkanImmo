@@ -24,7 +24,7 @@ use backend\models\LRechnungsart;
         <div class="col-md-6">
             <?=
             $form->field($model, 'beschreibung', ['addon' => [
-                    'prepend' => ['content' => 'Zusatz'], 'append' => ['content' => 'Rumpf']]])->textarea(['id' => 'IDText', 'rows' => 6])
+                    'prepend' => ['content' => 'Zusatz'], 'append' => ['content' => 'Rumpf']]])->textarea(['id' => 'IDText', 'rows' => 6,'readOnly'=>true])
             ?>
         </div>
         <div class="col-md-6">
@@ -38,7 +38,7 @@ use backend\models\LRechnungsart;
             $form->field($model, 'kopf_id', ['addon' => [
                     'prepend' => ['content' => 'Rechnungsrumpf'], 'append' => ['content' => 'wird in den Zusatz übernommen']]])->widget(\kartik\widgets\Select2::classname(), [
                 'data' => \yii\helpers\ArrayHelper::map(Kopf::find()->orderBy('id')->asArray()->all(), 'id', 'user_id'),
-                'options' => ['placeholder' => Yii::t('app', 'Rumpf wählen'),
+                'options' => ['placeholder' => Yii::t('app', 'Makler ID wählen'),
                     'id' => 'bez'
                 ],
                 'pluginOptions' => [
