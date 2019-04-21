@@ -45,7 +45,7 @@ class FirmaController extends Controller {
     public function actionCreate() {
         $count = Firma::find()->count('id');
         if ($count == 1) {
-            $message = "Da Sie bereits $count mal Firmendaten hinterlegt haben, lässt sich dieses Feature nicht mehr aufrufen. Zweigstellen werden von dieser Applikation nicht unterstützt!";
+            $message = "Da Sie bereits $count mal Firmendaten hinterlegt haben, lässt sich dieses Feature nicht mehr aufrufen. Zweigstellen werden von dieser Applikation nicht unterstützt!<strong> Bitte setzen sie die Grid zurück</strong>";
             $this->Ausgabe($message, 'Warnung', 500, Growl::TYPE_WARNING);
             $searchModel = new FirmaSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

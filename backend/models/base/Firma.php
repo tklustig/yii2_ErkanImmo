@@ -6,12 +6,11 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 
-class Firma extends \yii\db\ActiveRecord
-{
+class Firma extends \yii\db\ActiveRecord {
+
     use \mootensai\relation\RelationTrait;
 
-    public function relationNames()
-    {
+    public function relationNames() {
         return [
             'angelegtVon',
             'aktualisiertVon',
@@ -20,27 +19,25 @@ class Firma extends \yii\db\ActiveRecord
         ];
     }
 
-    public function rules()
-    {
+    public function rules() {
         return [
             [['firmenname', 'l_rechtsform_id', 'strasse', 'l_plz_id', 'ort'], 'required'],
             [['l_rechtsform_id', 'hausnummer', 'l_plz_id', 'anzahlMitarbeiter', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
             [['firmenname', 'strasse', 'ort', 'umsatzsteuerID'], 'string', 'max' => 64],
             [['geschaeftsfuehrer', 'prokurist'], 'string', 'max' => 32],
+            [['bankdaten'], 'string', 'max' => 256],
             [['l_plz_id'], 'unique'],
             [['aktualisiert_von'], 'unique'],
             [['angelegt_von'], 'unique']
         ];
     }
 
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'firma';
     }
 
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
             'firmenname' => Yii::t('app', 'Firmenname'),
@@ -52,6 +49,7 @@ class Firma extends \yii\db\ActiveRecord
             'geschaeftsfuehrer' => Yii::t('app', 'Geschaeftsfuehrer'),
             'prokurist' => Yii::t('app', 'Prokurist'),
             'umsatzsteuerID' => Yii::t('app', 'Umsatzsteuer ID'),
+            'bankdaten' => Yii::t('app', 'Bankdaten'),
             'anzahlMitarbeiter' => Yii::t('app', 'Anzahl Mitarbeiter'),
             'angelegt_von' => Yii::t('app', 'Angelegt Von'),
             'aktualisiert_von' => Yii::t('app', 'Aktualisiert Von'),
@@ -60,28 +58,23 @@ class Firma extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getAngelegtVon()
-    {
+    public function getAngelegtVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'angelegt_von']);
     }
 
-    public function getAktualisiertVon()
-    {
+    public function getAktualisiertVon() {
         return $this->hasOne(\common\models\User::className(), ['id' => 'aktualisiert_von']);
     }
 
-    public function getLPlz()
-    {
+    public function getLPlz() {
         return $this->hasOne(\frontend\models\LPlz::className(), ['id' => 'l_plz_id']);
     }
 
-    public function getLRechtsform()
-    {
+    public function getLRechtsform() {
         return $this->hasOne(\backend\models\LRechtsform::className(), ['id' => 'l_rechtsform_id']);
     }
-    
-    public function behaviors()
-    {
+
+    public function behaviors() {
         return [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
@@ -96,4 +89,5 @@ class Firma extends \yii\db\ActiveRecord
             ],
         ];
     }
+
 }

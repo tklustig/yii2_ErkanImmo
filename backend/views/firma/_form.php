@@ -85,10 +85,17 @@ use yii\web\JsExpression;
             ?>
 
         </div>
-        <div class="col-md-12">
+        <div class="col-md-6">
             <?=
             $form->field($model, 'geschaeftsfuehrer', ['addon' => [
                     'prepend' => ['content' => 'Geschäftsführer']]])->textInput(['maxlength' => true])
+            ?>
+        </div>
+        <div class="col-md-6">
+            <?=
+            $form->field($model, 'bankdaten')->widget(\dosamigos\ckeditor\CKEditor::className(), [
+                'preset' => 'full', 'clientOptions' => ['height' => 200],
+            ])
             ?>
         </div>
         <div class="col-md-4">
@@ -121,9 +128,6 @@ use yii\web\JsExpression;
     <div class="form-group">
         <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
             <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-        <?php endif; ?>
-        <?php if (Yii::$app->controller->action->id != 'create'): ?>
-            <?= Html::submitButton(Yii::t('app', 'Save As New'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
         <?php endif; ?>
         <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer, ['class' => 'btn btn-danger']) ?>
     </div>

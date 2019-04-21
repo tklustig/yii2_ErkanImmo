@@ -5,6 +5,7 @@ namespace backend\controllers;
 use Yii;
 use backend\models\Rechnung;
 use backend\models\RechnungSearch;
+use backend\models\Firma;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -140,20 +141,22 @@ class RechnungController extends Controller {
         $geschlecht = Rechnung::findOne(['id' => $id])->kunde->geschlecht0->typus;
         $vorname = Rechnung::findOne(['id' => $id])->kunde->vorname;
         $nachname = Rechnung::findOne(['id' => $id])->kunde->nachname;
+        $maxId = Firma::find()->max('id');
+        $bankDatenFirma = Firma::findOne(['id' => $maxId])->bankdaten;
         $rechnungAn = $geschlecht . ' ' . $vorname . ' ' . $nachname;
         $rechnungTitle = $rechnungVon . ' ' . $rechnungAn;
         $pdf = new Pdf([
-            'mode' => Pdf::MODE_CORE,
+            'mode' => Pdf::MODE_UTF8,
             'format' => Pdf::FORMAT_A4,
-            'orientation' => Pdf::ORIENT_PORTRAIT,
+            'orientation' => Pdf::ORIENT_LANDSCAPE,
             'destination' => Pdf::DEST_BROWSER,
             'content' => $data,
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
-            'cssInline' => '.kv-heading-1{font-size:18px}',
+            'cssInline' => '.kv-heading-1{font-size:10px}',
             'options' => ['title' => $rechnungTitle],
             'methods' => [
                 'SetHeader' => $rechnungTitle,
-                'SetFooter' => ['{PAGENO}'],
+                'SetFooter' => $bankDatenFirma,
             ]
         ]);
         return $pdf->render(array($pdf->render(), 'target' => '_blank'));

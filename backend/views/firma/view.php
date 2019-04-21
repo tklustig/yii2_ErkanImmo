@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
             )
             ?>
-            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/site/index'], ['class' => 'btn btn-primary ']) ?>  
+            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/firma/index'], ['class' => 'btn btn-primary ']) ?>  
         </div>
     </div>
 
@@ -50,6 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'geschaeftsfuehrer',
             'prokurist',
             'umsatzsteuerID',
+            'bankdaten:html',
             'anzahlMitarbeiter',
             [
                 'attribute' => 'angelegtVon.username',

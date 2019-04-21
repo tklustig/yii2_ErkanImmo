@@ -25,6 +25,7 @@ use yii\widgets\DetailView;
             'geschaeftsfuehrer',
             'prokurist',
             'umsatzsteuerID',
+            'bankdaten:html',
             'anzahlMitarbeiter',
             [
                 'attribute' => 'angelegtVon.username',
