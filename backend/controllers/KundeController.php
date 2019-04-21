@@ -80,7 +80,7 @@ class KundeController extends Controller {
             $plz = "00000";
         if ($model->loadAll(Yii::$app->request->post()) && $modelDateianhang->loadAll(Yii::$app->request->post())) {
             //den Plzstring in die Id zurück verwandeln
-            $plzID = LPlz::findOne(['plz' => $model->l_plz_id])->id;
+            $plzID = LPlz::findOne(['plz' => $model->lPlz->plz])->id;
             $model->l_plz_id = $plzID;
             //den Bankstring in die Id zurück verwandeln
             if (!empty(Bankverbindung::findOne(['id' => $model->bankverbindung_id]))) {
@@ -306,6 +306,23 @@ class KundeController extends Controller {
         } catch (\Exception $error) {
             error_handling::error_without_id($error, KundeController::RenderBackInCaseOfError);
         }
+    }
+
+    public function actionAuswahlk($q = null, $id = null) {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = ['results' => ['id' => '', 'text' => '']];
+        if (!is_null($q)) {
+            $query = new yii\db\Query();
+            $query->select('id, plz AS text')
+                    ->from('l_plz')
+                    ->where(['like', 'plz', $q]);
+            $command = $query->createCommand();
+            $data = $command->queryAll();
+            $out['results'] = array_values($data);
+        } elseif ($id > 0) {
+            $out['results'] = ['id' => $id, 'text' => LPlz::find($id)->plz];
+        }
+        return $out;
     }
 
     protected function findModel($id) {

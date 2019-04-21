@@ -83,6 +83,7 @@ return [
                 'kunde_loeschen' => 'kunde/delete',
                 'kunde_bildloeschen' => 'kunde/delpic',
                 'kunde_mailSenden' => 'kunde/send',
+                'auswahlk' => 'kunde/auswahlk',
                 'baustein' => 'kopf/baustein',
                 'rechnung' => 'rechnung/index',
                 'rechnung_view' => 'rechnung/view',

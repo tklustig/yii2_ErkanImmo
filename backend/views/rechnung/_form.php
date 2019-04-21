@@ -24,7 +24,7 @@ use backend\models\LRechnungsart;
         <div class="col-md-6">
             <?=
             $form->field($model, 'beschreibung', ['addon' => [
-                    'prepend' => ['content' => 'Zusatz'], 'append' => ['content' => 'Rumpf']]])->textarea(['id' => 'IDText', 'rows' => 6,'readOnly'=>true])
+                    'prepend' => ['content' => 'Zusatz'], 'append' => ['content' => 'Rumpf']]])->textarea(['id' => 'IDText', 'rows' => 6, 'readOnly' => true])
             ?>
         </div>
         <div class="col-md-6">
@@ -53,7 +53,7 @@ use backend\models\LRechnungsart;
                     'prepend' => ['content' => 'Vorlagenart'], 'append' => ['content' => 'wird in die Vorlage übernommen']]])->widget(\kartik\widgets\Select2::classname(), [
                 'data' => \yii\helpers\ArrayHelper::map(LRechnungsart::find()->orderBy('id')->asArray()->all(), 'id', 'art'),
                 'options' => ['placeholder' => Yii::t('app', 'Art wählen'),
-                        'id' => 'bez_'
+                    'id' => 'bez_'
                 ],
                 'pluginOptions' => [
                     'allowClear' => true
@@ -152,7 +152,7 @@ use backend\models\LRechnungsart;
         <?php if (Yii::$app->controller->action->id != 'create'): ?>
             <?= Html::submitButton(Yii::t('app', 'Save As New'), ['class' => 'btn btn-info', 'value' => '1', 'name' => '_asnew']) ?>
         <?php endif; ?>
-        <?= Html::a(Yii::t('app', 'Cancel'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
+        <?= Html::a(Yii::t('app', 'Cancel'), ['/rechnung/index'], ['class' => 'btn btn-danger']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

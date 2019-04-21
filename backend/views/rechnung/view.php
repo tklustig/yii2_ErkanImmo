@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
             )
             ?>
-            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/site/index'], ['class' => 'btn btn-primary ']) ?>  
+            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/rechnung/index'], ['class' => 'btn btn-primary ']) ?>  
         </div>
     </div>
 

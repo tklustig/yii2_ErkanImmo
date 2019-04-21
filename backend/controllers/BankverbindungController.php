@@ -58,7 +58,7 @@ class BankverbindungController extends Controller {
                 //Sofern jquerySubmitButton gedrückt
                 if (Yii::$app->request->post('submit') != null && Yii::$app->request->post('submit') == 'submitIbanData') {
                     if (!empty($model->iban) || !empty($model->bic)) {
-                        if (strlen($model->bic) != 8 || strlen($model->iban) != 22)
+                        if (strlen($model->bic) != 11 || strlen($model->iban) != 22)
                             $wrongInput = true;
                     }
                     if (!$wrongInput) {
@@ -157,7 +157,9 @@ class BankverbindungController extends Controller {
             $connection->createCommand()
                     ->update('kunde', ['bankverbindung_id' => $model->id], ['id' => $id])
                     ->execute();
-            $this->redirect(['/bankverbindung/index']);
+            $session = new Session();
+            $session->addFlash('info', "Die Bankdaten wurden Ihrem System unter der ID:$model->id neu hinzugefügt!");
+            return $this->redirect(['/site/index']);
         } else {
             return $this->render('_form_conclusion', [
                         'model' => $model,

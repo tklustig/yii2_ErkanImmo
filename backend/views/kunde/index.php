@@ -13,7 +13,7 @@ $js = <<<JS
              return false;
         });
         $(document).on('ready pjax:success', function(){
-            $('form[name=\"idKunde\"]').on('click', '#cb input[type=\'checkbox\']', function(){
+            $('form[id=\"idKunde\"]').on('click', '#cb input[type=\'checkbox\']', function(){
                  if($(this).is(':checked')){
                      krajeeDialog.alert('Implementieren Sie die Stapelmails über den entsprechenden Button.');
                  }
@@ -49,7 +49,7 @@ foreach ($session->getAllFlashes() as $flash) {
     </p>
     <!-- hier wird das HTMl-Formular, welches die Mailmethode im Controller aufruft, implementiert-->
     <?=
-    Html::beginForm(['/kunde/send'], 'post', ['name' => 'idKunde']);
+    Html::beginForm(['/kunde/send'], 'post', ['id' => 'idKunde']);
     ?>
     <?php
     $dummy = 'id';
@@ -159,13 +159,13 @@ foreach ($session->getAllFlashes() as $flash) {
                 'bankverbindung' => function ($id, $model) {
                     if (!empty($model->bankverbindung_id)) {
                         $pk = backend\models\Bankverbindung::findOne(['id' => $model->bankverbindung_id])->id;
-                        return Html::a('<span class="glyphicon glyphicon-th-list"></span>', ['/bankverbindung/view', 'id' => $pk], ['title' => 'Bankverbindung anzeigen','data' => ['pjax' => '0']]);
+                        return Html::a('<span class="glyphicon glyphicon-th-list"></span>', ['/bankverbindung/view', 'id' => $pk], ['title' => 'Bankverbindung anzeigen', 'data' => ['pjax' => '0']]);
                     }
                 },
                 'delpic' => function ($id, $model) {
                     if (!empty(frontend\models\EDateianhang::findOne(['kunde_id' => $model->id]))) {
                         $fk = frontend\models\EDateianhang::findOne(['kunde_id' => $model->id])->id;
-                        return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/kunde/delpic', 'id' => $fk], ['title' => 'Kundenbild entfernen','data' => ['pjax' => '0']]);
+                        return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/kunde/delpic', 'id' => $fk], ['title' => 'Kundenbild entfernen', 'data' => ['pjax' => '0']]);
                     }
                 },
                 'termin' => function ($id, $model) {
@@ -175,7 +175,7 @@ foreach ($session->getAllFlashes() as $flash) {
                             $fk = $item->besichtigungstermin_id;
                             $link = \Yii::$app->urlManagerFrontend->baseUrl . '/termin_viewen';
                             $link .= '?id=' . $fk;
-                            return Html::a('<span class="glyphicon glyphicon-flag"></span>', $link, ['title' => 'zum Termin im Frontend springen','data' => ['pjax' => '0']]);
+                            return Html::a('<span class="glyphicon glyphicon-flag"></span>', $link, ['title' => 'zum Termin im Frontend springen', 'data' => ['pjax' => '0']]);
                         }
                     }
                 },

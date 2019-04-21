@@ -3,8 +3,9 @@
 use yii\helpers\Html;
 use kartik\widgets\ActiveForm;
 use kartik\widgets\FileInput;
+use yii\helpers\Url;
+use yii\web\JsExpression;
 ?>
-
 <div class="kunde-form">
     <?php
     $form = ActiveForm::begin([
@@ -41,8 +42,33 @@ use kartik\widgets\FileInput;
             ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'l_plz_id')->textInput(['value' => $plz]) ?>
-        </div>
+            <?php
+            $route = Url::to(['auswahlk']);
+            ?><?=
+            $form->field($model, 'l_plz_id', ['addon' => [
+                    'prepend' => ['content' => 'Plz']]])->widget(\kartik\widgets\Select2::classname(), [
+                'options' => ['placeholder' => Yii::t('app', 'Postleitzahl wählen'),
+                    'id' => 'zip_code',
+                ],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'minimumInputLength' => 3,
+                    'language' => [
+                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                    ],
+                    'ajax' => [
+                        'url' => $route,
+                        'dataType' => 'json',
+                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                    ],
+                    'escapeMarkup' => new JsExpression('function(markup) { return markup; }'),
+                    'templateResult' => new JsExpression('function(bewerber) { return bewerber.text; }'),
+                    'templateSelection' => new JsExpression('function(bewerber) { return bewerber.text; }'),
+                ],
+            ])->label(false);
+            ?>
+
+        </div> 
         <div class="col-md-4">
             <?=
             $form->field($model, 'geschlecht', ['addon' => [
@@ -62,7 +88,7 @@ use kartik\widgets\FileInput;
             <?= $form->field($model, 'nachname')->textInput(['maxlength' => true, 'placeholder' => 'Nachname']) ?>
         </div>
         <div class="col-md-3">
-            <?= $form->field($model, 'stadt')->textInput(['maxlength' => true, 'placeholder' => 'Stadt']) ?>
+            <?= $form->field($model, 'stadt')->textInput(['maxlength' => true, 'placeholder' => 'Stadt', 'id' => 'immobilien-stadt']) ?>
         </div>
         <div class="col-md-3">
             <?= $form->field($model, 'strasse')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
@@ -126,5 +152,21 @@ use kartik\widgets\FileInput;
         <?= Html::a(Yii::t('app', 'Cancel'), ['/kunde/index'], ['class' => 'btn btn-danger']) ?>
     </div>
     <?php ActiveForm::end(); ?>
-
 </div>
+
+<?php
+$url = Url::to(['plz/get-city-province']);
+$script = <<< JS
+        $('#zip_code').change(function(){
+        var zipId=$(this).val();
+       $.get('$url',{zipId:zipId},function(data){
+   var data=$.parseJSON(data);
+   alert(data.plz+" entspricht der Stadt "+data.ort+"! Die Id ist "+zipId);
+   $('#immobilien-stadt').attr('value',data.ort);
+   });
+   });
+        
+
+JS;
+$this->registerJS($script);
+?>

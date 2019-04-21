@@ -9,7 +9,14 @@ $this->params['breadcrumbs'][] = $this->title;
 $search = "$('.search-button').click(function(){
 	$('.search-form').toggle(1000);
 	return false;
-});";
+});
+
+ var isIE = /*@cc_on!@*/false || !!document.documentMode;
+    var isEdge = !isIE && !!window.StyleMedia;
+    if (isEdge)
+        alert('Die Druckoption kann mit Browser aus dem Hause Microsoft nicht aufgerufen werden. Verwenden Sie besser Chrome, Safari oder Firefox!');
+
+";
 $this->registerJs($search);
 ?>
 <div class="rechnung-index">

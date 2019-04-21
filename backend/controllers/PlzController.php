@@ -11,7 +11,7 @@ class PlzController extends Controller {
 
     public function actionGetCityProvince($zipId) {
         $location = LPlz::findOne($zipId);
-        echo Json::encode($location);
+        return Json::encode($location);
     }
 
 }

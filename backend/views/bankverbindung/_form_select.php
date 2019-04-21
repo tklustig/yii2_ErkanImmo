@@ -4,6 +4,15 @@ use yii\helpers\Html;
 use kartik\form\ActiveForm;
 ?>
 
+<?php
+$modelKunde = frontend\models\Kunde::find()->all();
+$arrayOfBankverbindung = array();
+foreach ($modelKunde as $item) {
+    if ($item->bankverbindung_id == null)
+        array_push($arrayOfBankverbindung, $item->id);
+}
+?>
+
 <div class="immobilien-form">
 
     <?php
@@ -18,6 +27,7 @@ use kartik\form\ActiveForm;
     <div class="page-header">
         <br><br><center>
             <h1><?= Html::encode($this->title) ?></h1></center>
+        <span class="badge badge-light">Es werden in der DropDownbox nur diejenigen Kunden zur Auswahl angeboten, für welche im System bisher keinerlei Bankdaten hinterlegt wurden </span> 
     </div>
     <div class="jumbotron">
         <div class="container">
@@ -26,7 +36,7 @@ use kartik\form\ActiveForm;
                 <?=
                 $form->field($DynamicModel, 'kunde', ['addon' => [
                         'prepend' => ['content' => 'Typ']]])->widget(\kartik\widgets\Select2::classname(), [
-                    'data' => \yii\helpers\ArrayHelper::map(frontend\models\Kunde::find()->orderBy('id')->asArray()->all(), 'id', 'nachname'),
+                    'data' => \yii\helpers\ArrayHelper::map(frontend\models\Kunde::find()->orderBy('id')->where(['id' => $arrayOfBankverbindung])->asArray()->all(), 'id', 'nachname'),
                     'options' => ['placeholder' => Yii::t('app', 'Kunde wählen')],
                     'pluginOptions' => [
                         'allowClear' => true
