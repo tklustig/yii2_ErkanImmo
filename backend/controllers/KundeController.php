@@ -87,9 +87,6 @@ class KundeController extends Controller {
                 $bankID = Bankverbindung::findOne(['id' => $model->bankverbindung_id])->id;
                 $model->bankverbindung_id = $bankID;
             }
-            /* ToDo: prüfen, ob bankverbindung_id versehentlich über die Select2Box(_form.php) doppelt gesetzt wurde. Falls ja, darf der Record
-              nicht gespeichert werden, da zwei Kunden nicht ein-und diesselbe Bankdaten haben können. Die Benachrichtigung soll über eine
-              kartikBox erfolgen, gefolgt von einem render auf actionUpdate */
             $modelDateianhang->attachement = UploadedFile::getInstances($modelDateianhang, 'attachement');
             if ($modelDateianhang->uploadBackend($modelDateianhang))
                 $BoolAnhang = true;
@@ -110,7 +107,8 @@ class KundeController extends Controller {
                     ]
                 ]);
                 foreach ($modelDateianhang->attachement as $uploadedFile) {
-                    FileHelper::unlink(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+                    if (file_exists(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name))
+                        FileHelper::unlink(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name);
                 }
                 return $this->render('update', [
                             'model' => $model,
@@ -122,9 +120,8 @@ class KundeController extends Controller {
             foreach ($modelDateianhang->attachement as $uploadedFile) {
                 $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
                 $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
-                $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
 // lege jede den Dateinamen  in das Array ab
-                array_push($files, $uploadedFile->name);
+                array_push($files, str_replace($umlaute, $ersetzen, $uploadedFile->name));
             }
             $valid = $model->validate();
             $IsValid = $modelDateianhang->validate() && $valid;
@@ -142,9 +139,9 @@ class KundeController extends Controller {
                     $modelE->save();
                     $fk = $modelE->id;
                     /* falls doch */
-                } else {
-                    $fk = EDateianhang::findOne(['kunde_id' => $model->id])->id;
                 }
+                if (in_array($model->id, $FkInEDatei))
+                    $fk = EDateianhang::findOne(['kunde_id' => $model->id])->id;
                 /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
                   Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
                 if (!empty($model->aktualisiert_von))
@@ -198,6 +195,7 @@ class KundeController extends Controller {
             } else
                 $session->addFlash('info', "Das Kundenbild $filename konnte physikalisch nicht gelöscht werden, da es nicht mehr exisitert!");
             $this->findModelDateianhang($pkOfDateianhang)->delete();
+            $this->findModelEDateianhang($id)->delete();
             $transaction->commit();
             $session->addFlash('info', "Das Kundenbild mit der Id $pkOfDateianhang wurde aus Ihrer Datenbank entfernt");
         } catch (\Exception $error) {
@@ -323,6 +321,14 @@ class KundeController extends Controller {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'Das Model Dateianhang konnte nicht gealden werden. Informieren Sie den Softwarehersteller'));
+        }
+    }
+
+    protected function findModelEDateianhang($id) {
+        if (($model = EDateianhang::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', 'Das Model EDateianhang konnte nicht gealden werden. Informieren Sie den Softwarehersteller'));
         }
     }
 

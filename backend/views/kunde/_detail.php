@@ -34,19 +34,43 @@ use yii\widgets\DetailView;
                     return $model->bankverbindung_id ? 'wurden hinterlegt' : 'wurden nicht hinterlegt';
                 },
             ],
+            /* [
+              'attribute' => 'solvenz',
+              'label' => 'ist Solvent',
+              'format' => 'raw',
+              'value' => $model->solvenz ? '<span class="label label-success">Ja</span>' : '<span class="label label-danger">Nein</span>',
+              'widgetOptions' => [
+              'pluginOptions' => [
+              'onText' => 'Ja',
+              'offText' => 'Nein',
+              ]
+              ],
+              'valueColOptions' => ['style' => 'width:30%']
+              ], */
             [
-                'class' => 'kartik\grid\BooleanColumn',
-                'attribute' => 'bankverbindung_id',
-                'trueLabel' => 'Ja',
-                'falseLabel' => 'Nein',
-                'label' => 'ist Solvent',
-                'encodeLabel' => false,
+                'attribute' => 'geburtsdatum',
+                'format' => 'html',
+                'label' => Yii::t('app', 'Geburtsdatum'),
+                'value' => function($model, $id) {
+                    if ($model->geburtsdatum) {
+                        $expression = new yii\db\Expression('NOW()');
+                        $now = (new \yii\db\Query)->select($expression)->scalar();
+                        $diff = strtotime($now) - strtotime($model->geburtsdatum);
+                        $hours = floor($diff / (60 * 60));
+                        $year = floor($hours / 24 / 365);
+                        $output = date("d.m.Y", strtotime($model->geburtsdatum)) . '<br>' . $year . " Jahre alt";
+                        return $output;
+                    } else {
+                        return NULL;
+                    }
+                },
             ],
             [
                 'attribute' => 'angelegt_von',
                 'label' => Yii::t('app', 'Angelegt von'),
+                'format' => 'html',
                 'value' => function($model, $id) {
-                    return $model->vorname . ' ' . $model->nachname;
+                    return '<strong>Kunde</strong>' . ' ' . $model->geschlecht0->typus . ' ' . $model->vorname . ' ' . $model->nachname;
                 },
             ],
             [

@@ -67,7 +67,6 @@ foreach ($session->getAllFlashes() as $flash) {
             'headerOptions' => ['class' => 'kartik-sheet-style'],
             'expandOneOnly' => true
         ],
-        ['attribute' => 'id', 'visible' => false],
         /*
           Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetKundenBild(model),welche
           drei JOINs und eine dynamische WHERE-Klausel enthält.
@@ -118,24 +117,6 @@ foreach ($session->getAllFlashes() as $flash) {
         'nachname',
         'stadt',
         'strasse',
-        [
-            'attribute' => 'geburtsdatum',
-            'format' => 'html',
-            'label' => Yii::t('app', 'Geburtsdatum'),
-            'value' => function($model, $id) {
-                if ($model->geburtsdatum) {
-                    $expression = new yii\db\Expression('NOW()');
-                    $now = (new \yii\db\Query)->select($expression)->scalar();
-                    $diff = strtotime($now) - strtotime($model->geburtsdatum);
-                    $hours = floor($diff / (60 * 60));
-                    $year = floor($hours / 24 / 365);
-                    $output = date("d.m.Y", strtotime($model->geburtsdatum)) . '<br>' . $year . " Jahre alt";
-                    return $output;
-                } else {
-                    return NULL;
-                }
-            },
-        ],
         [
             'class' => 'kartik\grid\BooleanColumn',
             'attribute' => 'solvenz',
