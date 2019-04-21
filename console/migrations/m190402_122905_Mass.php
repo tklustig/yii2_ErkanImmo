@@ -231,7 +231,7 @@ class m190402_122905_Mass extends Migration
             'aktualisiert_von'=> $this->integer(11)->null()->defaultValue(null),
             'angelegt_von'=> $this->integer(11)->null()->defaultValue(null),
             'aktualisiert_am'=> $this->timestamp()->notNull()->defaultExpression("CURRENT_TIMESTAMP"),
-            'angelegt_am'=> $this->timestamp()->notNull()->defaultValue('0000-00-00 00:00:00'),
+            'angelegt_am'=> $this->timestamp()->notNull()->defaultValue(null),
         ], $tableOptions);
 
         $this->createIndex('mwst','{{%rechnung}}',['mwst_id'],false);
