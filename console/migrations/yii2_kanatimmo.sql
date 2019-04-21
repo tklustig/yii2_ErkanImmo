@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 21. Apr 2019 um 09:04
+-- Erstellungszeit: 21. Apr 2019 um 10:02
 -- Server-Version: 10.1.37-MariaDB
 -- PHP-Version: 7.2.13
 
@@ -130,9 +130,7 @@ INSERT INTO `dateianhang` (`id`, `bezeichnung`, `dateiname`, `angelegt_am`, `akt
 (4, 'Bild für eine Immobilie', 'kitchen-1940175__340.jpg', '2019-02-16 09:14:32', NULL, 3, NULL, 3, 4),
 (5, 'Bild für eine Immobilie', 'modern-minimalist.jpg', '2019-02-16 09:17:24', NULL, 4, NULL, 3, 5),
 (6, 'Bild für eine Mail', 'Artwork-20180803-184430.png', '2019-04-08 19:23:49', NULL, 4, NULL, 12, 6),
-(7, 'Bild für eine Mail', 'Artwork-20180803-185427.png', '2019-04-08 19:23:49', NULL, 4, NULL, 12, 6),
-(9, 'Kundenbild', 'bild1.jpg', '2019-04-14 15:18:42', NULL, 3, NULL, 14, 8),
-(10, 'Kundenbild', 'Transgender.jpg', '2019-04-14 15:26:55', NULL, 4, NULL, 14, 9);
+(7, 'Bild für eine Mail', 'Artwork-20180803-185427.png', '2019-04-08 19:23:49', NULL, 4, NULL, 12, 6);
 
 -- --------------------------------------------------------
 
@@ -160,7 +158,8 @@ INSERT INTO `e_dateianhang` (`id`, `immobilien_id`, `user_id`, `kunde_id`, `mail
 (5, 6, NULL, NULL, NULL),
 (6, NULL, NULL, NULL, 1),
 (8, NULL, NULL, 1, NULL),
-(9, NULL, NULL, 3, NULL);
+(9, NULL, NULL, 3, NULL),
+(16, NULL, NULL, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -285,8 +284,8 @@ CREATE TABLE `kunde` (
 --
 
 INSERT INTO `kunde` (`id`, `l_plz_id`, `geschlecht`, `vorname`, `nachname`, `stadt`, `strasse`, `geburtsdatum`, `solvenz`, `telefon`, `email`, `bankverbindung_id`, `angelegt_am`, `aktualisiert_am`, `angelegt_von`, `aktualisiert_von`) VALUES
-(1, 5855, 1, 'Michael', 'Krenz', 'Bothfeld, Groß Buchholz, Lahe ', 'Klein Buchholzer Kirchweg  25', '1961-03-21', 1, '0152/37389041', 'michael@gmx.net', 14, '2019-02-16 09:23:34', '2019-04-14 15:18:42', 3, 3),
-(2, 285, 2, 'Susanne', 'Albrecht', 'Cottbus', 'Ahornweg 3', '1983-09-20', 0, '03445/667832', 'albrecht@web.de', NULL, '2019-02-16 09:27:53', '2019-04-04 20:18:30', 4, 3),
+(1, 5855, 1, 'Michael', 'Krenz', 'Bothfeld, Groß Buchholz, Lahe ', 'Klein Buchholzer Kirchweg  25', '1961-03-21', 1, '0152/37389041', 'michael@gmx.net', 14, '2019-02-16 09:23:34', '2019-04-21 09:58:29', 3, 3),
+(2, 285, 2, 'Susanne', 'Albrecht', 'Cottbus', 'Ahornweg 3', '1983-09-20', 0, '03445/667832', 'albrecht@web.de', NULL, '2019-02-16 09:27:53', '2019-04-21 09:58:06', 4, 3),
 (3, 9915, 4, 'Lydia', 'Scholz', 'Ennepetal', 'Akazienweg', '1975-02-17', 0, '01542567880', 'lydia@gmx.net', 5, '2019-02-27 19:18:35', '2019-04-14 15:26:55', 4, NULL),
 (4, 2502, 10, 'Friedrich', 'Schubert', 'Bliesdorf', 'Bliesdorfer Str.', '1985-02-02', 0, '', 'friedrich@gmail.com', NULL, '2019-02-27 20:10:06', '2019-04-04 20:18:05', 3, NULL);
 
@@ -16153,13 +16152,13 @@ ALTER TABLE `besichtigungstermin`
 -- AUTO_INCREMENT für Tabelle `dateianhang`
 --
 ALTER TABLE `dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT für Tabelle `e_dateianhang`
 --
 ALTER TABLE `e_dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT für Tabelle `firma`
@@ -16319,7 +16318,7 @@ ALTER TABLE `e_dateianhang`
   ADD CONSTRAINT `e_dateianhang_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `e_dateianhang_ibfk_2` FOREIGN KEY (`immobilien_id`) REFERENCES `immobilien` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `e_dateianhang_ibfk_3` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `e_dateianhang_ibfk_4` FOREIGN KEY (`mail_id`) REFERENCES `mail` (`id`);
+  ADD CONSTRAINT `e_dateianhang_ibfk_4` FOREIGN KEY (`mail_id`) REFERENCES `mail` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `firma`

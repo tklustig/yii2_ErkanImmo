@@ -143,7 +143,7 @@ class KundeController extends Controller {
                     $fk = $modelE->id;
                     /* falls doch */
                 } else {
-                    $fk = EDateianhang::findOne(['kunde_id' => $model->id]);
+                    $fk = EDateianhang::findOne(['kunde_id' => $model->id])->id;
                 }
                 /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
                   Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
@@ -186,8 +186,25 @@ class KundeController extends Controller {
     }
 
     public function actionDelpic($id) {
-        print_r("Übergeben wurde der Pk:$id von EDateianhang. Damit lässt sich in dateianhang der Bildname und der PK auslesen,um somit den Löschvorgang codieren zu können!");
-        die();
+        $session = new Session();
+        try {
+            $transaction = Yii::$app->db->beginTransaction();
+            $path = Yii::getAlias('@picturesBackend');
+            $pkOfDateianhang = Dateianhang::findOne(['e_dateianhang_id' => $id])->id;
+            $filename = Dateianhang::findOne(['id' => $pkOfDateianhang])->dateiname;
+            if (file_exists($path . DIRECTORY_SEPARATOR . $filename)) {
+                FileHelper::unlink($path . DIRECTORY_SEPARATOR . $filename);
+                $session->addFlash('info', "Das Kundenbild $filename wurde physikalisch aus Ihrem Webverzeichnis gelöscht");
+            } else
+                $session->addFlash('info', "Das Kundenbild $filename konnte physikalisch nicht gelöscht werden, da es nicht mehr exisitert!");
+            $this->findModelDateianhang($pkOfDateianhang)->delete();
+            $transaction->commit();
+            $session->addFlash('info', "Das Kundenbild mit der Id $pkOfDateianhang wurde aus Ihrer Datenbank entfernt");
+        } catch (\Exception $error) {
+            $transaction->rollBack();
+            error_handling::error_without_id($error, KundeController::RenderBackInCaseOfError);
+        }
+        return $this->redirect(['/site/index']);
     }
 
     public function actionDelete($id) {
@@ -197,7 +214,7 @@ class KundeController extends Controller {
             $session->addFlash('info', "Der Kunde mit der Id:$id wurde aus der Datenbank entfernt!");
             return $this->redirect(['/site/index']);
         } catch (IntegrityException $er) {
-            $message = "Der Kunde mit der Id:$id kann nicht gelöscht werden, da das gegen die referentielle Integrität verstößt. Löschen Sie zunächst die korrespondierenden Bankdaten und/oder Besichtigungstermine!";
+            $message = "Der Kunde mit der Id:$id kann nicht gelöscht werden, da das gegen die referentielle Integrität verstößt. Löschen Sie zunächst die korrespondierenden Bankdaten, Besichtigungstermnie und Bilder!";
             $this->message($message, 'Error', 1500, Growl::TYPE_DANGER);
             $searchModel = new KundeSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -298,6 +315,14 @@ class KundeController extends Controller {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+    }
+
+    protected function findModelDateianhang($id) {
+        if (($model = Dateianhang::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', 'Das Model Dateianhang konnte nicht gealden werden. Informieren Sie den Softwarehersteller'));
         }
     }
 
