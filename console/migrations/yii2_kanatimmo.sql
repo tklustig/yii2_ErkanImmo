@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 16. Apr 2019 um 19:45
+-- Erstellungszeit: 21. Apr 2019 um 09:04
 -- Server-Version: 10.1.37-MariaDB
 -- PHP-Version: 7.2.13
 
@@ -15969,7 +15969,8 @@ ALTER TABLE `e_dateianhang`
   ADD PRIMARY KEY (`id`) USING BTREE COMMENT 'PK',
   ADD KEY `user_id` (`user_id`) USING BTREE COMMENT 'FK',
   ADD KEY `kunde_id` (`kunde_id`) USING BTREE COMMENT 'FK',
-  ADD KEY `immobilien_id` (`immobilien_id`) USING BTREE COMMENT 'FK';
+  ADD KEY `immobilien_id` (`immobilien_id`) USING BTREE COMMENT 'FK',
+  ADD KEY `mail_id` (`mail_id`);
 
 --
 -- Indizes für die Tabelle `firma`
@@ -16317,7 +16318,8 @@ ALTER TABLE `dateianhang`
 ALTER TABLE `e_dateianhang`
   ADD CONSTRAINT `e_dateianhang_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `e_dateianhang_ibfk_2` FOREIGN KEY (`immobilien_id`) REFERENCES `immobilien` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `e_dateianhang_ibfk_3` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `e_dateianhang_ibfk_3` FOREIGN KEY (`kunde_id`) REFERENCES `kunde` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `e_dateianhang_ibfk_4` FOREIGN KEY (`mail_id`) REFERENCES `mail` (`id`);
 
 --
 -- Constraints der Tabelle `firma`
