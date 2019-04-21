@@ -310,7 +310,6 @@ class SiteController extends Controller {
         $DynamicModel = new DynamicModel(['file']);
         $DynamicModel->addRule('file', 'string');
         $DynamicModel->addRule('file', 'required');
-        $max = LDateianhangArt::find()->max('id');
         $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => [10, 11]]);
         foreach ($arrayOfObjectsForAnhang as $item) {
             array_push($arrayOfFileNames, $item->dateiname);
@@ -333,7 +332,6 @@ class SiteController extends Controller {
                 $this->Ausgabe($message, 'Warnung', 1000, Growl::TYPE_INFO);
                 return $this->render('_form_picsforfrontend', [
                             'DynamicModel' => $DynamicModel,
-                            'max' => $max,
                             'arrayOfFileNames' => $arrayOfFileNames,
                             'arrayOfBez' => $arrayOfBez
                 ]);
@@ -348,7 +346,6 @@ class SiteController extends Controller {
         } else {
             return $this->render('_form_picsforfrontend', [
                         'DynamicModel' => $DynamicModel,
-                        'max' => $max,
                         'arrayOfFileNames' => $arrayOfFileNames,
                         'arrayOfBez' => $arrayOfBez
             ]);

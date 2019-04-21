@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-md-12">
                 <?=
                 $form->field($DynamicModel, 'file')->widget(\kartik\widgets\Select2::classname(), [
-                    'data' => \yii\helpers\ArrayHelper::map(frontend\models\Dateianhang::find()->where(['l_dateianhang_art_id' => $max])->asArray()->all(), 'dateiname', 'dateiname'),
+                    'data' => \yii\helpers\ArrayHelper::map(frontend\models\Dateianhang::find()->where(['l_dateianhang_art_id' => [10,11]])->asArray()->all(), 'dateiname', 'dateiname'),
                     'options' => ['placeholder' => Yii::t('app', 'Filename')],
                     'pluginOptions' => [
                         'allowClear' => true
