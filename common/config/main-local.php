@@ -1,5 +1,10 @@
+<script>
+    var isIE = /*@cc_on!@*/false || !!document.documentMode;
+    var isEdge = !isIE && !!window.StyleMedia;
+    if (isEdge)
+        alert("Bestimmte PDF Darstellungen werden mit Browser aus dem Hause Microsoft nicht funktionieren. Verwenden Sie besser Chrome, Safari oder Firefox!");
+</script>
 <?php
-
 if (PHP_OS == "WINNT") {
     $dsn = 'mysql:host=localhost;dbname=mysql';
     $username = 'root';
@@ -18,7 +23,7 @@ return [
         '@uploading' => '@app/uploadedfiles',
         '@pictures' => '@frontend/web/img',
         '@picturesBackend' => '@backend/web/img',
-        '@documentsMail'=>'@app/mailAnhaenge',
+        '@documentsMail' => '@app/mailAnhaenge',
     ],
     'modules' => [
         'datecontrol' => [
@@ -84,5 +89,4 @@ function DatenbankErzeugen($dsn, $username, $password) {
         die();
     }
 }
-
 ?>
