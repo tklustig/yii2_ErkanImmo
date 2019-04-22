@@ -1,8 +1,9 @@
 <?php
 
+use yii\db\Schema;
 use yii\db\Migration;
 
-class m190402_122905_Mass extends Migration
+class m190421_233024_Mass extends Migration
 {
 
     public function init()
@@ -18,7 +19,7 @@ class m190402_122905_Mass extends Migration
         $this->createTable('{{%adminbesichtigungkunde}}',[
             'id'=> $this->primaryKey(11),
             'besichtigungstermin_id'=> $this->integer(11)->notNull(),
-            'admin_id'=> $this->integer(11)->notNull(),
+            'admin_id'=> $this->integer(11)->null()->defaultValue(null),
             'kunde_id'=> $this->integer(11)->notNull(),
         ], $tableOptions);
 
@@ -83,11 +84,36 @@ class m190402_122905_Mass extends Migration
             'immobilien_id'=> $this->integer(11)->null()->defaultValue(null),
             'user_id'=> $this->integer(11)->null()->defaultValue(null),
             'kunde_id'=> $this->integer(11)->null()->defaultValue(null),
+            'mail_id'=> $this->integer(11)->null()->defaultValue(null),
         ], $tableOptions);
 
         $this->createIndex('user_id','{{%e_dateianhang}}',['user_id'],false);
         $this->createIndex('kunde_id','{{%e_dateianhang}}',['kunde_id'],false);
         $this->createIndex('immobilien_id','{{%e_dateianhang}}',['immobilien_id'],false);
+        $this->createIndex('mail_id','{{%e_dateianhang}}',['mail_id'],false);
+
+        $this->createTable('{{%firma}}',[
+            'id'=> $this->primaryKey(11),
+            'firmenname'=> $this->string(64)->notNull(),
+            'l_rechtsform_id'=> $this->integer(11)->notNull(),
+            'strasse'=> $this->string(64)->notNull(),
+            'hausnummer'=> $this->smallInteger(6)->null()->defaultValue(null),
+            'l_plz_id'=> $this->integer(11)->notNull(),
+            'ort'=> $this->string(64)->notNull(),
+            'geschaeftsfuehrer'=> $this->string(32)->null()->defaultValue(null),
+            'prokurist'=> $this->string(32)->null()->defaultValue(null),
+            'umsatzsteuerID'=> $this->string(64)->null()->defaultValue(null),
+            'anzahlMitarbeiter'=> $this->smallInteger(6)->null()->defaultValue(null),
+            'angelegt_von'=> $this->integer(11)->null()->defaultValue(null),
+            'aktualisiert_von'=> $this->integer(11)->null()->defaultValue(null),
+            'angelegt_am'=> $this->datetime()->notNull(),
+            'aktualisiert_am'=> $this->datetime()->notNull(),
+        ], $tableOptions);
+
+        $this->createIndex('plzId','{{%firma}}',['l_plz_id'],true);
+        $this->createIndex('aktualisertVon','{{%firma}}',['aktualisiert_von'],true);
+        $this->createIndex('angelegtVon','{{%firma}}',['angelegt_von'],true);
+        $this->createIndex('rechtsformId','{{%firma}}',['l_rechtsform_id'],false);
 
         $this->createTable('{{%immobilien}}',[
             'id'=> $this->primaryKey(11),
@@ -121,7 +147,7 @@ class m190402_122905_Mass extends Migration
         $this->createTable('{{%kopf}}',[
             'id'=> $this->primaryKey(11),
             'data'=> $this->text()->notNull(),
-            'user_id'=> $this->integer(11)->notNull(),
+            'user_id'=> $this->integer(11)->null()->defaultValue(null),
         ], $tableOptions);
 
         $this->createIndex('user','{{%kopf}}',['user_id'],false);
@@ -162,6 +188,13 @@ class m190402_122905_Mass extends Migration
         $this->createTable('{{%l_art}}',[
             'id'=> $this->primaryKey(11),
             'bezeichnung'=> $this->string(32)->notNull(),
+        ], $tableOptions);
+
+
+        $this->createTable('{{%l_begriffe}}',[
+            'id'=> $this->primaryKey(11),
+            'typ'=> $this->string(256)->notNull(),
+            'data'=> $this->string(128)->notNull(),
         ], $tableOptions);
 
 
@@ -214,7 +247,62 @@ class m190402_122905_Mass extends Migration
             'data'=> $this->text()->notNull(),
             'art'=> $this->string(32)->notNull(),
         ], $tableOptions);
-        
+
+
+        $this->createTable('{{%l_rechtsform}}',[
+            'id'=> $this->primaryKey(11),
+            'typus'=> $this->string(32)->notNull(),
+        ], $tableOptions);
+
+
+        $this->createTable('{{%l_textbaustein}}',[
+            'id'=> $this->primaryKey(11),
+            'beschreibung'=> $this->string(64)->notNull(),
+            'data'=> $this->text()->notNull(),
+        ], $tableOptions);
+
+
+        $this->createTable('{{%mail}}',[
+            'id'=> $this->primaryKey(11),
+            'id_mailserver'=> $this->integer(11)->notNull(),
+            'mail_from'=> $this->string(64)->notNull(),
+            'mail_to'=> $this->string(256)->notNull(),
+            'mail_cc'=> $this->string(256)->null()->defaultValue(null),
+            'mail_bcc'=> $this->string(256)->null()->defaultValue(null),
+            'betreff'=> $this->string(64)->notNull(),
+            'bodytext'=> $this->text()->notNull(),
+            'textbaustein_id'=> $this->integer(11)->null()->defaultValue(null),
+            'vorlage'=> $this->text()->null()->defaultValue(null),
+            'angelegt_am'=> $this->datetime()->null()->defaultValue(null),
+            'angelegt_von'=> $this->integer(11)->null()->defaultValue(null),
+            'aktualisiert_am'=> $this->datetime()->null()->defaultValue(null),
+            'aktualisiert_von'=> $this->integer(11)->null()->defaultValue(null),
+        ], $tableOptions);
+
+        $this->createIndex('mailServer','{{%mail}}',['id_mailserver'],false);
+        $this->createIndex('angelegtVon','{{%mail}}',['angelegt_von'],false);
+        $this->createIndex('aktualisiertVon','{{%mail}}',['id'],false);
+        $this->createIndex('mail_ibfk_3','{{%mail}}',['aktualisiert_von'],false);
+        $this->createIndex('textbausteinId','{{%mail}}',['textbaustein_id'],false);
+
+        $this->createTable('{{%mailserver}}',[
+            'id'=> $this->primaryKey(11),
+            'serverURL'=> $this->string(15)->null()->defaultValue(null),
+            'serverHost'=> $this->string(64)->null()->defaultValue(null),
+            'username'=> $this->string(32)->notNull(),
+            'password'=> $this->string(32)->notNull(),
+            'port'=> $this->smallInteger(6)->notNull(),
+            'useEncryption'=> $this->tinyInteger(1)->notNull(),
+            'encryption'=> $this->string(6)->notNull(),
+            'angelegt_von'=> $this->integer(11)->null()->defaultValue(null),
+            'aktualisiert_von'=> $this->integer(11)->null()->defaultValue(null),
+            'angelegt_am'=> $this->timestamp()->null()->defaultValue(null),
+            'aktualisiert_am'=> $this->datetime()->null()->defaultValue(null),
+        ], $tableOptions);
+
+        $this->createIndex('angelegtVon','{{%mailserver}}',['angelegt_von'],false);
+        $this->createIndex('aktualisiertVon','{{%mailserver}}',['aktualisiert_von'],false);
+
         $this->createTable('{{%rechnung}}',[
             'id'=> $this->primaryKey(11),
             'datumerstellung'=> $this->date()->notNull(),
@@ -224,13 +312,13 @@ class m190402_122905_Mass extends Migration
             'geldbetrag'=> $this->decimal(10)->notNull(),
             'mwst_id'=> $this->integer(11)->null()->defaultValue(null),
             'kunde_id'=> $this->integer(11)->notNull(),
-            'makler_id'=> $this->integer(11)->notNull(),
+            'makler_id'=> $this->integer(11)->null()->defaultValue(null),
             'kopf_id'=> $this->integer(11)->null()->defaultValue(null),
             'rechungsart_id'=> $this->integer(11)->null()->defaultValue(null),
             'rechnungPlain'=> $this->text()->notNull(),
             'aktualisiert_von'=> $this->integer(11)->null()->defaultValue(null),
             'angelegt_von'=> $this->integer(11)->null()->defaultValue(null),
-            'aktualisiert_am'=> $this->timestamp()->notNull()->defaultExpression("CURRENT_TIMESTAMP"),
+            'aktualisiert_am'=> $this->timestamp()->notNull()->defaultValue(null),
             'angelegt_am'=> $this->timestamp()->notNull()->defaultValue(null),
         ], $tableOptions);
 
@@ -259,7 +347,7 @@ class m190402_122905_Mass extends Migration
             'fk_adminbesichtigungkunde_admin_id',
             '{{%adminbesichtigungkunde}}', 'admin_id',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_adminbesichtigungkunde_besichtigungstermin_id',
@@ -277,13 +365,13 @@ class m190402_122905_Mass extends Migration
             'fk_bankverbindung_aktualisiert_von',
             '{{%bankverbindung}}', 'aktualisiert_von',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_bankverbindung_angelegt_von',
             '{{%bankverbindung}}', 'angelegt_von',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_bankverbindung_kunde_id',
@@ -295,7 +383,7 @@ class m190402_122905_Mass extends Migration
             'fk_besichtigungstermin_aktualisiert_von',
             '{{%besichtigungstermin}}', 'aktualisiert_von',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_besichtigungstermin_Immobilien_id',
@@ -307,13 +395,13 @@ class m190402_122905_Mass extends Migration
             'fk_besichtigungstermin_angelegt_von',
             '{{%besichtigungstermin}}', 'angelegt_von',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_dateianhang_aktualisiert_von',
             '{{%dateianhang}}', 'aktualisiert_von',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_dateianhang_e_dateianhang_id',
@@ -331,13 +419,13 @@ class m190402_122905_Mass extends Migration
             'fk_dateianhang_angelegt_von',
             '{{%dateianhang}}', 'angelegt_von',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_e_dateianhang_user_id',
             '{{%e_dateianhang}}', 'user_id',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_e_dateianhang_immobilien_id',
@@ -352,6 +440,36 @@ class m190402_122905_Mass extends Migration
             'RESTRICT', 'CASCADE'
         );
         $this->addForeignKey(
+            'fk_e_dateianhang_mail_id',
+            '{{%e_dateianhang}}', 'mail_id',
+            '{{%mail}}', 'id',
+            'RESTRICT', 'CASCADE'
+        );
+        $this->addForeignKey(
+            'fk_firma_angelegt_von',
+            '{{%firma}}', 'angelegt_von',
+            '{{%user}}', 'id',
+            'SET NULL', 'CASCADE'
+        );
+        $this->addForeignKey(
+            'fk_firma_aktualisiert_von',
+            '{{%firma}}', 'aktualisiert_von',
+            '{{%user}}', 'id',
+            'SET NULL', 'CASCADE'
+        );
+        $this->addForeignKey(
+            'fk_firma_l_plz_id',
+            '{{%firma}}', 'l_plz_id',
+            '{{%l_plz}}', 'id',
+            'RESTRICT', 'CASCADE'
+        );
+        $this->addForeignKey(
+            'fk_firma_l_rechtsform_id',
+            '{{%firma}}', 'l_rechtsform_id',
+            '{{%l_rechtsform}}', 'id',
+            'RESTRICT', 'CASCADE'
+        );
+        $this->addForeignKey(
             'fk_immobilien_l_art_id',
             '{{%immobilien}}', 'l_art_id',
             '{{%l_art}}', 'id',
@@ -361,7 +479,7 @@ class m190402_122905_Mass extends Migration
             'fk_immobilien_aktualisiert_von',
             '{{%immobilien}}', 'aktualisiert_von',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_immobilien_l_heizungsart_id',
@@ -373,13 +491,13 @@ class m190402_122905_Mass extends Migration
             'fk_immobilien_angelegt_von',
             '{{%immobilien}}', 'angelegt_von',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_kopf_user_id',
             '{{%kopf}}', 'user_id',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_kunde_bankverbindung_id',
@@ -391,7 +509,7 @@ class m190402_122905_Mass extends Migration
             'fk_kunde_aktualisiert_von',
             '{{%kunde}}', 'aktualisiert_von',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_kunde_l_plz_id',
@@ -418,6 +536,42 @@ class m190402_122905_Mass extends Migration
             'RESTRICT', 'CASCADE'
         );
         $this->addForeignKey(
+            'fk_mail_id_mailserver',
+            '{{%mail}}', 'id_mailserver',
+            '{{%mailserver}}', 'id',
+            'RESTRICT', 'CASCADE'
+        );
+        $this->addForeignKey(
+            'fk_mail_angelegt_von',
+            '{{%mail}}', 'angelegt_von',
+            '{{%user}}', 'id',
+            'SET NULL', 'CASCADE'
+        );
+        $this->addForeignKey(
+            'fk_mail_aktualisiert_von',
+            '{{%mail}}', 'aktualisiert_von',
+            '{{%user}}', 'id',
+            'SET NULL', 'CASCADE'
+        );
+        $this->addForeignKey(
+            'fk_mail_textbaustein_id',
+            '{{%mail}}', 'textbaustein_id',
+            '{{%l_textbaustein}}', 'id',
+            'RESTRICT', 'CASCADE'
+        );
+        $this->addForeignKey(
+            'fk_mailserver_angelegt_von',
+            '{{%mailserver}}', 'angelegt_von',
+            '{{%user}}', 'id',
+            'SET NULL', 'CASCADE'
+        );
+        $this->addForeignKey(
+            'fk_mailserver_aktualisiert_von',
+            '{{%mailserver}}', 'aktualisiert_von',
+            '{{%user}}', 'id',
+            'SET NULL', 'CASCADE'
+        );
+        $this->addForeignKey(
             'fk_rechnung_kopf_id',
             '{{%rechnung}}', 'kopf_id',
             '{{%kopf}}', 'id',
@@ -433,7 +587,7 @@ class m190402_122905_Mass extends Migration
             'fk_rechnung_makler_id',
             '{{%rechnung}}', 'makler_id',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_rechnung_mwst_id',
@@ -445,13 +599,13 @@ class m190402_122905_Mass extends Migration
             'fk_rechnung_angelegt_von',
             '{{%rechnung}}', 'angelegt_von',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_rechnung_aktualisiert_von',
             '{{%rechnung}}', 'aktualisiert_von',
             '{{%user}}', 'id',
-            'RESTRICT', 'CASCADE'
+            'SET NULL', 'CASCADE'
         );
         $this->addForeignKey(
             'fk_rechnung_rechungsart_id',
@@ -479,6 +633,11 @@ class m190402_122905_Mass extends Migration
             $this->dropForeignKey('fk_e_dateianhang_user_id', '{{%e_dateianhang}}');
             $this->dropForeignKey('fk_e_dateianhang_immobilien_id', '{{%e_dateianhang}}');
             $this->dropForeignKey('fk_e_dateianhang_kunde_id', '{{%e_dateianhang}}');
+            $this->dropForeignKey('fk_e_dateianhang_mail_id', '{{%e_dateianhang}}');
+            $this->dropForeignKey('fk_firma_angelegt_von', '{{%firma}}');
+            $this->dropForeignKey('fk_firma_aktualisiert_von', '{{%firma}}');
+            $this->dropForeignKey('fk_firma_l_plz_id', '{{%firma}}');
+            $this->dropForeignKey('fk_firma_l_rechtsform_id', '{{%firma}}');
             $this->dropForeignKey('fk_immobilien_l_art_id', '{{%immobilien}}');
             $this->dropForeignKey('fk_immobilien_aktualisiert_von', '{{%immobilien}}');
             $this->dropForeignKey('fk_immobilien_l_heizungsart_id', '{{%immobilien}}');
@@ -490,6 +649,12 @@ class m190402_122905_Mass extends Migration
             $this->dropForeignKey('fk_kunde_geschlecht', '{{%kunde}}');
             $this->dropForeignKey('fk_kundeimmobillie_immobilien_id', '{{%kundeimmobillie}}');
             $this->dropForeignKey('fk_kundeimmobillie_kunde_id', '{{%kundeimmobillie}}');
+            $this->dropForeignKey('fk_mail_id_mailserver', '{{%mail}}');
+            $this->dropForeignKey('fk_mail_angelegt_von', '{{%mail}}');
+            $this->dropForeignKey('fk_mail_aktualisiert_von', '{{%mail}}');
+            $this->dropForeignKey('fk_mail_textbaustein_id', '{{%mail}}');
+            $this->dropForeignKey('fk_mailserver_angelegt_von', '{{%mailserver}}');
+            $this->dropForeignKey('fk_mailserver_aktualisiert_von', '{{%mailserver}}');
             $this->dropForeignKey('fk_rechnung_kopf_id', '{{%rechnung}}');
             $this->dropForeignKey('fk_rechnung_kunde_id', '{{%rechnung}}');
             $this->dropForeignKey('fk_rechnung_makler_id', '{{%rechnung}}');
@@ -502,11 +667,13 @@ class m190402_122905_Mass extends Migration
             $this->dropTable('{{%besichtigungstermin}}');
             $this->dropTable('{{%dateianhang}}');
             $this->dropTable('{{%e_dateianhang}}');
+            $this->dropTable('{{%firma}}');
             $this->dropTable('{{%immobilien}}');
             $this->dropTable('{{%kopf}}');
             $this->dropTable('{{%kunde}}');
             $this->dropTable('{{%kundeimmobillie}}');
             $this->dropTable('{{%l_art}}');
+            $this->dropTable('{{%l_begriffe}}');
             $this->dropTable('{{%l_dateianhang_art}}');
             $this->dropTable('{{%l_geschlecht}}');
             $this->dropTable('{{%l_heizungsart}}');
@@ -515,6 +682,10 @@ class m190402_122905_Mass extends Migration
             $this->dropTable('{{%l_mwst}}');
             $this->dropTable('{{%l_plz}}');
             $this->dropTable('{{%l_rechnungsart}}');
+            $this->dropTable('{{%l_rechtsform}}');
+            $this->dropTable('{{%l_textbaustein}}');
+            $this->dropTable('{{%mail}}');
+            $this->dropTable('{{%mailserver}}');
             $this->dropPrimaryKey('pk_on_migration','{{%migration}}');
             $this->dropTable('{{%migration}}');
             $this->dropTable('{{%rechnung}}');
