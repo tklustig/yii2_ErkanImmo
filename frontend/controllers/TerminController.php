@@ -21,6 +21,7 @@ use common\models\User;
 use frontend\models\Kundeimmobillie;
 use frontend\models\Adminbesichtigungkunde;
 use backend\models\Firma;
+use backend\models\LBegriffe;
 
 class TerminController extends Controller {
 
@@ -114,6 +115,7 @@ class TerminController extends Controller {
     }
 
     public function actionCreate($id) {
+        $session = new Session();
         $arrayOfErrors = array();
         $this->layout = "main_immo";
         $model = new Besichtigungstermin();
@@ -199,6 +201,35 @@ class TerminController extends Controller {
             $modelAdminBesKunde->admin_id = $maklerSollBearbeiten;
             $modelAdminBesKunde->kunde_id = $modelKunde->id;
             $modelAdminBesKunde->save();
+            $modelBegriffe = LBegriffe::find()->all();
+            $arrayOfBegriffe = array();
+            foreach ($modelBegriffe as $item) {
+                array_push($arrayOfBegriffe, $item->data);
+            }
+            $zaehler = 0;
+            $mailIsValid = false;
+            for ($i = 0; $i < count($arrayOfBegriffe); $i++) {
+                if ($arrayOfBegriffe[$i] != "")
+                    $zaehler += 1;
+            }
+            if ($zaehler == 10) {
+                if (filter_var($arrayOfBegriffe[7], FILTER_VALIDATE_EMAIL)) {
+                    $mailIsValid = true;
+                    $from = $arrayOfBegriffe[7];
+                }
+            }
+            if ($mailIsValid) {
+                $maklerId = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $model->id])->admin_id;
+                $maklerName = User::findOne(['id' => $maklerId])->username;
+                $zielAdresse = $modelKunde->email;
+                $betreff = 'Besichtigungstermin mit' . $modelKunde->geschlecht0->typus . ' ' . $modelKunde->vorname . ' ' . $modelKunde->nachname;
+                $content = "Für den Makler $maklerName wurde ein Besichtigungstermin vereinbart. Bitte rufen Sie im Backend die Besichtigungstermine ab!";
+                if (!$this->SendMail($from, $zielAdresse, $betreff, $content))
+                    $session->addFlash('info', 'Die Bestätigungsmail konnte nicht verschickt werden. Unser Makler wird sich telefonisch bei Ihnen melden.');
+                else
+                    $session->addFlash('info', "Der Besichtigungtermin wurde per Mail an unseren Makler $maklerName weitergeleitet. Er wird sich mit Ihnen in Verbindung setzen.");
+            } else
+                $session->addFlash('info', 'Da der Admin nicht alle Firmendaten gepflegt hat, konnte die Bestätigungsmail konnte nicht verschickt werden. Unser Makler wird sich telefonisch bei Ihnen melden.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
         return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
@@ -443,6 +474,62 @@ class TerminController extends Controller {
                 ]
             ]
         ]);
+    }
+
+    private function FetchMailServerData() {
+        try {
+            $checkServerConf = Mailserver::find()->count('id');
+            if ($checkServerConf < 1)
+                return false;
+            $serverId = Mailserver::find()->min('id');
+            $host = Mailserver::findOne(['id' => $serverId])->serverHost;
+            $username = Mailserver::findOne(['id' => $serverId])->username;
+            $password = Mailserver::findOne(['id' => $serverId])->password;
+            $port = Mailserver::findOne(['id' => $serverId])->port;
+            $useEncryption = Mailserver::findOne(['id' => $serverId])->useEncryption;
+            if ($useEncryption == 1)
+                $encryption = Mailserver::findOne(['id' => $serverId])->encryption;
+            else
+                $encryption = null;
+            if ($encryption != null)
+                Yii::$app->mailer->setTransport([
+                    'class' => 'Swift_SmtpTransport',
+                    'host' => $host,
+                    'username' => $username,
+                    'password' => $password,
+                    'port' => $port,
+                    'encryption' => $encryption
+                ]);
+            else
+                Yii::$app->mailer->setTransport([
+                    'class' => 'Swift_SmtpTransport',
+                    'host' => $host,
+                    'username' => $username,
+                    'password' => $password,
+                    'port' => $port
+                ]);
+            return Yii::$app->mailer;
+        } catch (yii\db\Exception $e) {
+            error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
+        }
+    }
+
+    private function SendMail($from, $zielAdresse, $betreff, $content) {
+        $SendObject = $this->FetchMailServerData();
+        if (!$SendObject)
+            return false;
+        try {
+            $SendObject = Yii::$app->mailer->compose()
+                    ->setFrom($from)
+                    ->setTo($zielAdresse)
+                    ->setSubject($betreff)
+                    ->setHtmlBody($content)
+                    ->setTextBody($content)
+                    ->send();
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
 }
