@@ -13,6 +13,7 @@ use yii\db\IntegrityException;
 use yii\web\UploadedFile;
 use frontend\models\LPlz;
 use yii\db\Query;
+use yii\helpers\FileHelper;
 use yii\db\Expression;
 use kartik\widgets\Growl;
 use kartik\helpers\Html;
@@ -147,28 +148,30 @@ class ImmobilienController extends Controller {
                 $IsValid = $ModelDateianhang->validate() && $valid;
                 if ($IsValid) {
                     $model->save();
-                    /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
-                    $EDateianhang = EDateianhang::find()->all();
-                    foreach ($EDateianhang as $treffer) {
-                        array_push($FkInEDatei, $treffer->immobilien_id);
-                    }
-                    /* falls nicht */
-                    if (!in_array($model->id, $FkInEDatei) && $BoolAnhang) {
-                        $modelE->immobilien_id = $model->id;
-                        $modelE->save();
-                        $fk = $modelE->id;
-                        /* falls doch */
-                    } else {
-                        $fk = EDateianhang::findOne(['immobilien_id' => $model->id]);
-                    }
-                    /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
-                      Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
-                    for ($i = 0; $i < count($files); $i++) {
-                        $connection->createCommand()
-                                ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
-                                    [$fk, $art, $bezeichnung[$i], $files[$i], $now, $model->user_id],
-                                ])
-                                ->execute();
+                    if ($BoolAnhang) {
+                        /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
+                        $EDateianhang = EDateianhang::find()->all();
+                        foreach ($EDateianhang as $treffer) {
+                            array_push($FkInEDatei, $treffer->immobilien_id);
+                        }
+                        /* falls nicht */
+                        if (!in_array($model->id, $FkInEDatei) && $BoolAnhang) {
+                            $modelE->immobilien_id = $model->id;
+                            $modelE->save();
+                            $fk = $modelE->id;
+                            /* falls doch */
+                        } else {
+                            $fk = EDateianhang::findOne(['immobilien_id' => $model->id])->id;
+                        }
+                        /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
+                          Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+                        for ($i = 0; $i < count($files); $i++) {
+                            $connection->createCommand()
+                                    ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
+                                        [$fk, $art, $bezeichnung[$i], $files[$i], $now, $model->user_id],
+                                    ])
+                                    ->execute();
+                        }
                     }
                     return $this->redirect(['view', 'id' => $model->id]);
                 } else {
@@ -208,7 +211,17 @@ class ImmobilienController extends Controller {
         $ModelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $model = $this->findModel($id);
         $FormId = $model->l_art_id;
+        $modelE = new EDateianhang();
+        $FkInEDatei = array();
+        $files = array();
+        $extension = array();
+        $bezeichnung = array();
+        $connection = \Yii::$app->db;
+        $expression = new Expression('NOW()');
+        $now = (new \yii\db\Query)->select($expression)->scalar();
+        $EDateianhang = EDateianhang::find()->all();
         $BoolAnhang = false;
+        $session = new Session();
         try {
             if (Yii::$app->request->post()) {
                 $data = Yii::$app->request->post();
@@ -247,11 +260,57 @@ class ImmobilienController extends Controller {
                         ]);
                     }
                 }
+                foreach ($ModelDateianhang->attachement as $uploaded_file) {
+                    $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+                    $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+                    $uploaded_file->name = str_replace($umlaute, $ersetzen, $uploaded_file->name);
+// lege jede jeweils den Dateinamen und dessen Endung in zwei unterschiedliche Arrays ab
+                    array_push($files, $uploaded_file->name);
+                    array_push($extension, $uploaded_file->extension);
+                }
+                // Differenziere je nach Endung der Elemente im Array die in der Datenbank unten zu speichernden Werte
+                for ($i = 0; $i < count($extension); $i++) {
+                    if ($extension[$i] == "bmp" || $extension[$i] == "tif" || $extension[$i] == "png" || $extension[$i] == "psd" || $extension[$i] == "pcx" || $extension[$i] == "gif" || $extension[$i] == "cdr" || $extension[$i] == "jpeg" || $extension[$i] == "jpg") {
+                        $bez = "Bild für eine Immobilie";
+                        array_push($bezeichnung, $bez);
+                    } else {
+                        $bez = "Dokumente o.ä. für eine Immobilie";
+                        array_push($bezeichnung, $bez);
+                    }
+                }
                 $valid = $model->validate();
                 if ($valid) {
                     /*  Hier muss noch der Spechervorgang für dateianhang und edateianhang vorgenommen werden. Dazu kommt derselbe 
                       Code wie in actionCreate() zum Einsatz */
                     $model->save();
+                    if ($BoolAnhang) {
+                        /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
+                        $EDateianhang = EDateianhang::find()->all();
+                        foreach ($EDateianhang as $treffer) {
+                            array_push($FkInEDatei, $treffer->immobilien_id);
+                        }
+                        /* falls nicht */
+                        if (!in_array($model->id, $FkInEDatei) && $BoolAnhang) {
+                            $modelE->immobilien_id = $model->id;
+                            $modelE->save();
+                            $fk = $modelE->id;
+                            /* falls doch */
+                        } else {
+                            $fk = EDateianhang::findOne(['immobilien_id' => $model->id])->id;
+                        }
+                        /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
+                          Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+                        for ($i = 0; $i < count($files); $i++) {
+                            $connection->createCommand()
+                                    ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
+                                        [$fk, $art, $bezeichnung[$i], $files[$i], $now, $model->user_id],
+                                    ])
+                                    ->execute();
+                        }
+                    }
+                    for ($i = 0; $i < count($files); $i++) {
+                        $session->addFlash('info', "Folgende Dokumente wurden für die Immobilie der Id $id hinzugefügt:$files[$i]");
+                    }
                     return $this->redirect(['view', 'id' => $model->id]);
                 } else {
                     $ErrorModel = $model->getErrors();
@@ -290,7 +349,7 @@ class ImmobilienController extends Controller {
         $AllFiles = array();
         $FilesSeveral = array();
         $session = new Session();
-        $ArrayOfPicName = array();
+        $ArrayOfAnhangName = array();
         $ArrayOfIdAnhang = array();
         try {
             if (!empty(Besichtigungstermin::findOne(['Immobilien_id' => $id]))) {
@@ -303,12 +362,12 @@ class ImmobilienController extends Controller {
                 $PicName = Dateianhang::find()->where(['e_dateianhang_id' => $fk])->all();
 //packe die Ids und die Dateinamen in ein Array
                 foreach ($PicName as $file) {
-                    array_push($ArrayOfPicName, $file->dateiname);
+                    array_push($ArrayOfAnhangName, $file->dateiname);
                     array_push($ArrayOfIdAnhang, $file->id);
                 }
 //eruiere die Pfade
-                $UrlFrontend = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . 'yii2_ErkanImmo/frontend/web/img/';
-                $UrlBackend = Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR;
+                $UrlBackend = Yii::getAlias('@picturesBackend');
+                $UrlFrontend = Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR;
 // eruiere alle Dateinamen, die in Dateianhang vermerkt sind
                 $FindAllFiles = Dateianhang::find()->all();
                 foreach ($FindAllFiles as $files) {
@@ -327,12 +386,17 @@ class ImmobilienController extends Controller {
                     $session->addFlash('info', 'Der Anhang ' . $file . " wurde nicht aus Ihrem Webverzeichnis entfernt, da er  mehrere mal verwendet wird");
 //andernfalls lösche gemäß der Angaben im Array
                 } else {
-                    for ($i = 0; $i < count($ArrayOfPicName); $i++) {
-                        if (file_exists($UrlBackend . $ArrayOfPicName[$i])) {
-                            unlink($UrlBackend . $ArrayOfPicName[$i]);
-                            unlink($UrlFrontend . $ArrayOfPicName[$i]);
-                        }
-                        $session->addFlash('info', 'Der Anhang ' . $ArrayOfPicName[$i] . " wurde aus Ihrem Webverzeichnis entfernt.");
+                    for ($i = 0; $i < count($ArrayOfAnhangName); $i++) {
+                        if (file_exists($UrlBackend . DIRECTORY_SEPARATOR . $ArrayOfAnhangName[$i])) {
+                            FileHelper::unlink($UrlBackend . DIRECTORY_SEPARATOR . $ArrayOfAnhangName[$i]);
+                            $session->addFlash('info', 'Das Bild/Dokument ' . $ArrayOfAnhangName[$i] . " wurde physikalisch aus Ihrem BackendWebverzeichnis entfernt.");
+                        } else
+                            $session->addFlash('info', 'Das Bild/Dokument ' . $ArrayOfAnhangName[$i] . " konnte aus Ihrem BackendWebverzeichnis physikalisch nicht entfernt werden, da er nicht mehr exisitert.");
+                        if (file_exists($UrlFrontend . DIRECTORY_SEPARATOR . $ArrayOfAnhangName[$i])) {
+                            FileHelper::unlink($UrlFrontend . DIRECTORY_SEPARATOR . $ArrayOfAnhangName[$i]);
+                            $session->addFlash('info', 'Das Bild/Dokument ' . $ArrayOfAnhangName[$i] . " wurde physikalisch aus Ihrem FrontendWebverzeichnis entfernt.");
+                        } else
+                            $session->addFlash('info', 'Das Bild/Dokument ' . $ArrayOfAnhangName[$i] . " konnte aus Ihrem FrontendWebverzeichnis physikalisch nicht entfernt werden, da er nicht mehr exisitert.");
                     }
                 }
                 for ($i = 0; $i < count($ArrayOfIdAnhang); $i++) {
@@ -341,12 +405,12 @@ class ImmobilienController extends Controller {
             }
             $this->findModel($id)->deleteWithRelated();
             if (!empty($IdAnhang)) {
-                $session->addFlash('info', "Der Datensatz mit der Id:$id wurde erfolgreich gelöscht");
+                $session->addFlash('info', "Die Immobilie mit der Id:$id wurde erfolgreich gelöscht. Sie hatte Uploads");
             } else {
-                $session->addFlash('info', "Der Datensatz mit der Id:$id wurde erfolgreich gelöscht. Er hatte keinen Anhang!");
+                $session->addFlash('info', "Die Immobilie mit der Id:$id wurde erfolgreich gelöscht. Sie hatte keinen Upload!");
             }
             return $this->redirect(['/immobilien/index']);
-        } catch (IntegrityException $e) {
+        } catch (\Exception $e) {
             $ausgabe = "Unknown error. Bitte kontaktieren Sie den Softwartehersteller unter Angabe folgender Punkte:<br><1>:" . get_class() . "<br><2>" . $e;
             throw new NotAcceptableHttpException(Yii::t('app', $ausgabe));
         }

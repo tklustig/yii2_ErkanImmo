@@ -188,19 +188,26 @@ $this->registerJs($search);
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Duplizieren']);
                 },
                 'deleted' => function ($model, $id) {
-                    return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/immobilien/deleted', 'id' => $id->id], ['title' => 'Löschen']);
+                    return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/immobilien/deleted', 'id' => $id->id], ['title' => 'Ohne Rückfrage löschen']);
                 },
-                'showDocument' => function ($model, $id) {
+                'showDocument' => function ($id, $model) {
                     $doc = '/doc/';
                     $docx = '/docx/';
                     $txt = '/txt/';
                     $pdf = '/pdf/';
-                    if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $id]))) {
-                        $pk = \frontend\models\EDateianhang::findOne(['immobilien_id' => $id])->id;
-                        $filename = frontend\models\Dateianhang::findOne(['e_dateianhang_id' => $pk])->dateiname;
-                        if (preg_match($doc, $filename) || preg_match($docx, $filename) || preg_match($txt, $filename) || preg_match($pdf, $filename)) {
-                            return Html::a('<span class="glyphicon glyphicon-file"></span>', ['/immobilien/show', 'filename' => $filename], ['title' => 'Dokument anzeigen', 'data' => ['pjax' => '0']]);
+                    $odt = '/odt/';
+                    $arrayOfFK = array();
+                    $filename = null;
+                    if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id]))) {
+                        $pk = \frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id])->id;
+                        $fileNames = frontend\models\Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
+                        foreach ($fileNames as $item) {
+                            if (preg_match($doc, $item->dateiname) || preg_match($docx, $item->dateiname) || preg_match($txt, $item->dateiname) || preg_match($pdf, $item->dateiname) || preg_match($odt, $item->dateiname)) {
+                                $filename = $item->dateiname;
+                            }
                         }
+                        if ($filename != null)
+                            return Html::a('<span class="glyphicon glyphicon-file"></span>', ['/immobilien/show', 'filename' => $filename], ['title' => 'Dokument anzeigen', 'data' => ['pjax' => '0']]);
                     }
                 },
             ],
@@ -348,19 +355,26 @@ $this->registerJs($search);
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Duplizieren']);
                 },
                 'deleted' => function ($model, $id) {
-                    return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/immobilien/deleted', 'id' => $id->id], ['title' => 'Löschen']);
+                    return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/immobilien/deleted', 'id' => $id->id], ['title' => 'Ohne Rückfrage löschen']);
                 },
-                'showDocument' => function ($model, $id) {
+                'showDocument' => function ($id, $model) {
                     $doc = '/doc/';
                     $docx = '/docx/';
                     $txt = '/txt/';
                     $pdf = '/pdf/';
-                    if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $id]))) {
-                        $pk = \frontend\models\EDateianhang::findOne(['immobilien_id' => $id])->id;
-                        $filename = frontend\models\Dateianhang::findOne(['e_dateianhang_id' => $pk])->dateiname;
-                        if (preg_match($doc, $filename) || preg_match($docx, $filename) || preg_match($txt, $filename) || preg_match($pdf, $filename)) {
-                            return Html::a('<span class="glyphicon glyphicon-file"></span>', ['/immobilien/show', 'filename' => $filename], ['title' => 'Dokument anzeigen', 'data' => ['pjax' => '0']]);
+                    $odt = '/odt/';
+                    $arrayOfFK = array();
+                    $filename = null;
+                    if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id]))) {
+                        $pk = \frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id])->id;
+                        $fileNames = frontend\models\Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
+                        foreach ($fileNames as $item) {
+                            if (preg_match($doc, $item->dateiname) || preg_match($docx, $item->dateiname) || preg_match($txt, $item->dateiname) || preg_match($pdf, $item->dateiname) || preg_match($odt, $item->dateiname)) {
+                                $filename = $item->dateiname;
+                            }
                         }
+                        if ($filename != null)
+                            return Html::a('<span class="glyphicon glyphicon-file"></span>', ['/immobilien/show', 'filename' => $filename], ['title' => 'Dokument anzeigen', 'data' => ['pjax' => '0']]);
                     }
                 },
             ],
