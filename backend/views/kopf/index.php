@@ -30,7 +30,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute' => 'user_id',
             'label' => Yii::t('app', 'Makler'),
             'value' => function($model) {
-                return $model->user->username;
+                if (!empty($model->user->username))
+                    return $model->user->username;
             },
             'filterType' => GridView::FILTER_SELECT2,
             'filter' => \yii\helpers\ArrayHelper::map(\common\models\User::find()->asArray()->all(), 'id', 'username'),

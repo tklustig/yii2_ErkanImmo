@@ -19,7 +19,7 @@ class Mailserver extends \yii\db\ActiveRecord {
 
     public function rules() {
         return [
-            [['username', 'password', 'port', 'useEncryption', 'encryption'], 'required'],
+            [['username', 'password', 'port', 'useEncryption', 'serverHost'], 'required'],
             [['port', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
             ['serverURL', 'ip', 'ipv6' => false],

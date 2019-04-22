@@ -9,7 +9,7 @@ class Mailserver extends BaseMailserver {
 
     public function rules() {
         return array_replace_recursive(parent::rules(), [
-            [['username', 'password', 'port', 'useEncryption', 'encryption'], 'required'],
+            [['username', 'password', 'port', 'useEncryption', 'serverHost'], 'required'],
             [['port', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
             ['serverURL', 'ip', 'ipv6' => false],

@@ -5,14 +5,8 @@ namespace backend\models;
 use Yii;
 use \backend\models\base\Rechnung as BaseRechnung;
 
-/**
- * This is the model class for table "rechnung".
- */
 class Rechnung extends BaseRechnung
 {
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return array_replace_recursive(parent::rules(),

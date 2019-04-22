@@ -6,6 +6,7 @@ use Yii;
 use backend\models\Rechnung;
 use backend\models\RechnungSearch;
 use backend\models\Firma;
+use frontend\models\Kunde;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -50,6 +51,12 @@ class RechnungController extends Controller {
     }
 
     public function actionCreate() {
+        $countKunde = Kunde::find()->count('id');
+        if ($countKunde == 0) {
+            $session = new Session();
+            $session->addFlash('info', 'Es exisitieren noch keine Kunden in der Datenbank, denen Sie Rechnungen schicken könnten. Steigern Sie Ihre Kundenaqkuise!');
+            return $this->redirect(['/site/index']);
+        }
         $model = new Rechnung();
         if ($model->loadAll(Yii::$app->request->post())) {
             $arrayContent = array();

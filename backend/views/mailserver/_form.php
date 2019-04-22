@@ -28,7 +28,7 @@ use kartik\widgets\ActiveForm;
         <div class="col-md-6">
             <?=
             $form->field($model, 'serverHost', ['addon' => [
-                    'prepend' => ['content' => 'Host (optional, aber üblich)'], 'append' => ['content' => 'gültigen DNS Name eingeben']]])->textInput(['maxlength' => true, 'placeholder' => 'ServerHost'])
+                    'prepend' => ['content' => 'Host'], 'append' => ['content' => 'gültigen DNS Name eingeben']]])->textInput(['maxlength' => true, 'placeholder' => 'ServerHost'])
             ?>
         </div>
         <div class="col-md-6">
@@ -51,7 +51,7 @@ use kartik\widgets\ActiveForm;
         <div class="col-md-6">
             <?=
             $form->field($model, 'encryption', ['addon' => [
-                    'prepend' => ['content' => 'Verschlüsselungsart'], 'append' => ['content' => 'z.B tls']]])->textInput(['maxlength' => true, 'placeholder' => 'Encryption'])
+                    'prepend' => ['content' => 'Verschlüsselungsart(optional, aber üblich)'], 'append' => ['content' => 'z.B tls']]])->textInput(['maxlength' => true, 'placeholder' => 'Encryption'])
             ?>
         </div>
         <div class="col-md-12">
