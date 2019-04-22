@@ -13,9 +13,6 @@ class Dateianhang extends \yii\db\ActiveRecord {
 
     public $attachement;
 
-    const path = 'yii2_ErkanImmo';
-    const path2img = '/backend/web/img/';
-
     public function relationNames() {
         return [
             'eDateianhang',
@@ -135,13 +132,12 @@ class Dateianhang extends \yii\db\ActiveRecord {
             }
         }
         foreach ($this->attachement as $uploadedFile) {
-            $url = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . Dateianhang::path . Dateianhang::path2img;
             $uploadedFile->name = $this->Ersetzen($uploadedFile->name);
             if ($bool != NULL && $bool == TRUE) {
                 $uploadedFile->saveAs(Yii::getAlias('@documentsMail') . DIRECTORY_SEPARATOR . $uploadedFile->name);
             } else {
                 $uploadedFile->saveAs(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name);
-                copy(Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name, $url . $uploadedFile->name);
+                copy(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name, Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name);
             }
             $x++;
         }
@@ -175,10 +171,9 @@ class Dateianhang extends \yii\db\ActiveRecord {
             }
             if (!$bool)
                 return false;
-            $url = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . Dateianhang::path . Dateianhang::path2img;
             $uploadedFile->name = $this->Ersetzen($uploadedFile->name);
             $uploadedFile->saveAs(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name);
-            copy(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name, $url . $uploadedFile->name);
+            copy(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name, Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name);
             //unlink((Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name));
             $x++;
         }

@@ -33,90 +33,86 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
     <!-- Beginn des Anhangformulars-->
     <!-- START ACCORDION & CAROUSEL-->
     <!--  Defining global CSS rules-->
-    <?php if ($model->isNewRecord) { ?>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box-body">
-                    <div class="box-group" id="accordion">
-                        <!--  End of Defining global CSS rules-->
-                        <!-- Beginn des Personenformulars-->
-                        <div class="panel box box-primary">
-                            <div class="box-header with-border">
-                                <h4 class="box-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                        Angaben zum Immobilienanhang
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseOne" class="panel-collapse collapse in"> <!-- !weist der Column die JS-Id zu!-->
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <?=
-                                        /* 22.11.2017/tklustig/Initialisiert das Upload-Formular.Damit das multiple uploading klappt,muss die property als Array eingebunden werden
-                                          In Zeile 61 wird an eine statische URL zurück gerendert. Dass koennte irgendwann einmal eine Fehlerquelle darstellen und muss dann behoben werden
-                                         */
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box-body">
+                <div class="box-group" id="accordion">
+                    <!--  End of Defining global CSS rules-->
+                    <!-- Beginn des Personenformulars-->
+                    <div class="panel box box-primary">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                    Angaben zum Immobilienanhang
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in"> <!-- !weist der Column die JS-Id zu!-->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <?=
+                                    /* 22.11.2017/tklustig/Initialisiert das Upload-Formular.Damit das multiple uploading klappt,muss die property als Array eingebunden werden
+                                      In Zeile 61 wird an eine statische URL zurück gerendert. Dass koennte irgendwann einmal eine Fehlerquelle darstellen und muss dann behoben werden
+                                     */
 
-                                        $form->field($model_Dateianhang, 'attachement[]')->widget(FileInput::classname(), [
-                                            'options' => ['multiple' => true],
-                                            'pluginOptions' => ['allowedFileExtensions' => ['jpg', 'bmp', 'png', 'gif', 'docx', 'doc', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'pdf', 'txt', 'avi', 'mpeg', 'mp3', 'ico']],
+                                    $form->field($ModelDateianhang, 'attachement[]')->widget(FileInput::classname(), [
+                                        'options' => ['multiple' => true],
+                                        'pluginOptions' => ['allowedFileExtensions' => ['jpg', 'jpeg', 'bmp', 'png', 'gif', 'docx', 'doc', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'pdf', 'txt', 'avi', 'mpeg', 'mp3', 'ico','odt']],
+                                    ]);
+                                    ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?=
+                                    $form->field($ModelDateianhang, 'l_dateianhang_art_id')->widget(\kartik\widgets\Select2::classname(), [
+                                        'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LDateianhangArt::find()->orderBy('id')->asArray()->all(), 'id', 'bezeichnung'),
+                                        'options' => ['placeholder' => Yii::t('app', 'Dateianhangsart')],
+                                        'pluginOptions' => [
+                                            'allowClear' => true
+                                        ],
+                                    ])->label(false);
+                                    ?>
+                                </div>
+                                <?php
+                                if ($model->isNewRecord) {
+                                    ?>
+                                    <div class="col-md-6">
+
+                                        <?=
+                                        $form->field($ModelDateianhang, 'angelegt_am', ['addon' => [
+                                                'prepend' => ['content' => 'angelegt am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                                            'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+                                            'disabled' => true,
+                                            'saveFormat' => 'php:Y-m-d H:i:s',
+                                            'ajaxConversion' => true,
                                         ]);
                                         ?>
                                     </div>
+                                    <?php
+                                } else {
+                                    ?>
                                     <div class="col-md-6">
+
                                         <?=
-                                        $form->field($model_Dateianhang, 'l_dateianhang_art_id')->widget(\kartik\widgets\Select2::classname(), [
-                                            'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LDateianhangArt::find()->orderBy('id')->asArray()->all(), 'id', 'bezeichnung'),
-                                            'options' => ['placeholder' => Yii::t('app', 'Dateianhangsart')],
-                                            'pluginOptions' => [
-                                                'allowClear' => true
-                                            ],
-                                        ])->label(false);
+                                        $form->field($ModelDateianhang, 'aktualisert_am', ['addon' => [
+                                                'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                                            'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+                                            'disabled' => true,
+                                            'saveFormat' => 'php:Y-m-d H:i:s',
+                                            'ajaxConversion' => true,
+                                        ]);
                                         ?>
                                     </div>
                                     <?php
-                                    if ($model->isNewRecord) {
-                                        ?>
-                                        <div class="col-md-6">
-
-                                            <?=
-                                            $form->field($model_Dateianhang, 'angelegt_am', ['addon' => [
-                                                    'prepend' => ['content' => 'angelegt am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
-                                                'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-                                                'disabled' => true,
-                                                'saveFormat' => 'php:Y-m-d H:i:s',
-                                                'ajaxConversion' => true,
-                                            ]);
-                                            ?>
-                                        </div>
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <div class="col-md-6">
-
-                                            <?=
-                                            $form->field($model_Dateianhang, 'aktualisert_am', ['addon' => [
-                                                    'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
-                                                'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-                                                'disabled' => true,
-                                                'saveFormat' => 'php:Y-m-d H:i:s',
-                                                'ajaxConversion' => true,
-                                            ]);
-                                            ?>
-                                        </div>
-                                        <?php
-                                    }
-                                    ?>
-                                </div>
+                                }
+                                ?>
                             </div>
                         </div>
-                        <!--  Ending global CSS rules-->
                     </div>
+                    <!--  Ending global CSS rules-->
                 </div>
             </div>
         </div>
-        <?php
-    }
-    ?>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="box-body">
@@ -318,7 +314,7 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
     <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Erzeugen') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     <?php endif; ?>
-    <?= Html::a(Yii::t('app', 'Abbruch'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
+    <?= Html::a(Yii::t('app', 'Abbruch'), ['/immobilien/index'], ['class' => 'btn btn-danger']) ?>
 </div>
 <?php ActiveForm::end(); ?>
 

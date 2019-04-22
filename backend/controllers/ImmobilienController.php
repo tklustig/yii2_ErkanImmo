@@ -15,6 +15,7 @@ use frontend\models\LPlz;
 use yii\db\Query;
 use yii\db\Expression;
 use kartik\widgets\Growl;
+use kartik\helpers\Html;
 /* Eigene Klassen */
 use backend\models\Immobilien;
 use backend\models\ImmobilienSearch;
@@ -114,12 +115,12 @@ class ImmobilienController extends Controller {
                     if ($id == 1) {
                         return $this->render('_form_vermieten', [
                                     'model' => $model,
-                                    'model_Dateianhang' => $ModelDateianhang
+                                    'ModelDateianhang' => $ModelDateianhang
                         ]);
                     } else if ($id == 2) {
                         return $this->render('_form_verkauf', [
                                     'model' => $model,
-                                    'model_Dateianhang' => $ModelDateianhang
+                                    'ModelDateianhang' => $ModelDateianhang
                         ]);
                     }
                 }
@@ -188,12 +189,12 @@ class ImmobilienController extends Controller {
                 if ($id == 1) {
                     return $this->render('_form_vermieten', [
                                 'model' => $model,
-                                'model_Dateianhang' => $ModelDateianhang
+                                'ModelDateianhang' => $ModelDateianhang
                     ]);
                 } else if ($id == 2) {
                     return $this->render('_form_verkauf', [
                                 'model' => $model,
-                                'model_Dateianhang' => $ModelDateianhang
+                                'ModelDateianhang' => $ModelDateianhang
                     ]);
                 }
             }
@@ -204,13 +205,52 @@ class ImmobilienController extends Controller {
 
     public function actionUpdate($id) {
         $this->layout = "main_immo";
-        $ModelDateianhang = new Dateianhang();
+        $ModelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $model = $this->findModel($id);
         $FormId = $model->l_art_id;
+        $BoolAnhang = false;
         try {
+            if (Yii::$app->request->post()) {
+                $data = Yii::$app->request->post();
+                $art = $data['Dateianhang']['l_dateianhang_art_id'];
+                $ModelDateianhang->l_dateianhang_art_id = $art;
+            }
             if ($model->loadAll(Yii::$app->request->post())) {
+                $ModelDateianhang->attachement = UploadedFile::getInstances($ModelDateianhang, 'attachement');
+                if ($ModelDateianhang->upload($ModelDateianhang))
+                    $BoolAnhang = true;
+                if ($BoolAnhang && empty($ModelDateianhang->l_dateianhang_art_id)) {
+                    echo Growl::widget([
+                        'type' => Growl::TYPE_GROWL,
+                        'title' => 'Warning',
+                        'icon' => 'glyphicon glyphicon-ok-sign',
+                        'body' => 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.',
+                        'showSeparator' => true,
+                        'delay' => 1500,
+                        'pluginOptions' => [
+                            'showProgressbar' => true,
+                            'placement' => [
+                                'from' => 'top',
+                                'align' => 'center',
+                            ]
+                        ]
+                    ]);
+                    if ($FormId == 1) {
+                        return $this->render('_form_vermieten', [
+                                    'model' => $model,
+                                    'ModelDateianhang' => $ModelDateianhang
+                        ]);
+                    } else if ($FormId == 2) {
+                        return $this->render('_form_verkauf', [
+                                    'model' => $model,
+                                    'ModelDateianhang' => $ModelDateianhang
+                        ]);
+                    }
+                }
                 $valid = $model->validate();
                 if ($valid) {
+                    /*  Hier muss noch der Spechervorgang für dateianhang und edateianhang vorgenommen werden. Dazu kommt derselbe 
+                      Code wie in actionCreate() zum Einsatz */
                     $model->save();
                     return $this->redirect(['view', 'id' => $model->id]);
                 } else {
@@ -231,12 +271,12 @@ class ImmobilienController extends Controller {
                 if ($FormId == 1) {
                     return $this->render('_form_vermieten', [
                                 'model' => $model,
-                                'model_Dateianhang' => $ModelDateianhang
+                                'ModelDateianhang' => $ModelDateianhang
                     ]);
                 } else if ($FormId == 2) {
                     return $this->render('_form_verkauf', [
                                 'model' => $model,
-                                'model_Dateianhang' => $ModelDateianhang
+                                'ModelDateianhang' => $ModelDateianhang
                     ]);
                 }
             }
@@ -381,6 +421,13 @@ class ImmobilienController extends Controller {
             $out['results'] = ['id' => $id, 'text' => LPlz::find($id)->plz];
         }
         return $out;
+    }
+
+    public function actionTermin($id) {
+        print_r("Übergeben wurde die Id:$id<br>");
+        print_r('Diese Option ist in dieser Version nicht verfügbar.<br>');
+        print_r('Script wurde in der Klasse ' . get_class() . ' regulär gestoppt!<br>');
+        echo Html::a('zurück', ['/immobilien/index'], ['title' => 'zurück']);
     }
 
     protected function findModel($id) {
