@@ -32,7 +32,7 @@ $max = frontend\models\base\LDateianhangArt::find()->max('id');
 
         $form->field($model, 'attachement[]')->widget(FileInput::classname(), [
             'options' => ['multiple' => true],
-            'pluginOptions' => ['allowedFileExtensions' => ['jpg', 'bmp', 'png', 'gif', 'docx', 'doc', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'pdf', 'txt', 'avi', 'mpeg', 'mp3', 'ico']],
+            'pluginOptions' => ['allowedFileExtensions' => ['jpg','jpeg', 'bmp', 'png', 'gif', 'docx', 'doc', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'pdf', 'txt', 'avi', 'mpeg', 'mp3', 'ico']],
         ]);
         ?>
     </div>

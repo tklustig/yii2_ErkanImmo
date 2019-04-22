@@ -147,7 +147,7 @@ class Dateianhang extends \yii\db\ActiveRecord {
         return false;
     }
 
-    public function uploadFrontend($model) {
+    public function uploadBackendThemes($model) {
         $x = 0;
         $valid = $this->validate();
         if (!$valid) {
@@ -173,7 +173,7 @@ class Dateianhang extends \yii\db\ActiveRecord {
                 return false;
             $uploadedFile->name = $this->Ersetzen($uploadedFile->name);
             $uploadedFile->saveAs(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name);
-            copy(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name, Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+            copy(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name, Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name);
             //unlink((Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name));
             $x++;
         }

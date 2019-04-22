@@ -15,7 +15,10 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="row">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
             <?php
-            $url = Yii::getAlias('@web/img/');
+            $url = Yii::getAlias('@uploading').DIRECTORY_SEPARATOR;
+            var_dump($arrayOfFileNames);
+            var_dump($url);
+            die();
             ?>
             <div class="col-md-12">
                 <table class="table table-bordered table-responsive">

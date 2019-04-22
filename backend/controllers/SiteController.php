@@ -246,7 +246,7 @@ class SiteController extends Controller {
                 //Wenn ja ...
             } else {
                 //prüfe den Rückgabewert des eigentlichen Uploads. Falls TRUE...
-                if ($model->uploadFrontend($model)) {
+                if ($model->uploadBackendThemes($model)) {
                     foreach ($model->attachement as $uploadedFile) {
                         $this->Ersetzen($uploadedFile->name);
                         array_push($files, $uploadedFile->name);

@@ -15,10 +15,10 @@ if (PHP_OS == "WINNT") {
 return [
     'aliases' =>
     [
-        '@uploading' => '@app/uploadedfiles',
+        '@uploading' => '@backend/uploadedfiles',
         '@pictures' => '@frontend/web/img',
         '@picturesBackend' => '@backend/web/img',
-        '@documentsMail' => '@app/mailAnhaenge',
+        '@documentsMail' => '@backend/mailAnhaenge',
     ],
     'modules' => [
         'datecontrol' => [
