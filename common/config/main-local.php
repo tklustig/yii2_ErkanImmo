@@ -60,8 +60,8 @@ return [
         'db' => [
             'class' => 'yii\db\Connection',
             'dsn' => 'mysql:host=localhost;dbname=yii2_kanatimmo',
-            'username' => 'phpmyadmin',
-            'password' => '1918rott',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
         ],
     ],

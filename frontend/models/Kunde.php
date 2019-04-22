@@ -9,7 +9,7 @@ class Kunde extends BaseKunde {
 
     public function rules() {
         return array_replace_recursive(parent::rules(), [
-            [['l_plz_id', 'geschlecht', 'vorname', 'nachname', 'stadt', 'strasse'], 'required'],
+            [['l_plz_id', 'geschlecht', 'vorname', 'nachname', 'stadt', 'strasse','email'], 'required'],
             [['l_plz_id', 'angelegt_von', 'aktualisiert_von', 'geschlecht'], 'integer'],
             [['geburtsdatum', 'angelegt_am', 'aktualisiert_am'], 'safe'],
             ['email', 'email'],

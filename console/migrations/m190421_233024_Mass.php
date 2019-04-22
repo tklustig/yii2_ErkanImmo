@@ -1,6 +1,5 @@
 <?php
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 class m190421_233024_Mass extends Migration {
@@ -161,7 +160,7 @@ class m190421_233024_Mass extends Migration {
             'geburtsdatum' => $this->date()->null()->defaultValue(null),
             'solvenz' => $this->tinyInteger(1)->null()->defaultValue(null),
             'telefon' => $this->string(32)->null()->defaultValue(null),
-            'email' => $this->string(64)->null()->defaultValue(null),
+            'email' => $this->string(64)->notNull()->defaultValue(null),
             'bankverbindung_id' => $this->integer(11)->null()->defaultValue(null),
             'angelegt_am' => $this->datetime()->null()->defaultValue(null),
             'aktualisiert_am' => $this->datetime()->null()->defaultValue(null),

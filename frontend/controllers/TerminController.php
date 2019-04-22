@@ -178,7 +178,7 @@ class TerminController extends Controller {
             }
             if (!$bool) {
                 print_r('<br><br>');
-                print_r('Fehler während der Validierung der Datenbankklassen. Bitte informieren Sie den Softwarehersteller.');
+                print_r('Fehler während der Validierung der Datenbankklassen. Bitte informieren Sie den Softwarehersteller unter Angabe folgender Meldungen:');
                 for ($i = 0; $i < count($arrayOfErrors); $i++) {
                     print_r($arrayOfErrors[$i]);
                 }
