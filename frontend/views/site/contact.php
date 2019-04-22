@@ -1,7 +1,4 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \frontend\models\ContactForm */
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
@@ -93,12 +90,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                                             <span class="icon">
                                                                 <i class="icon-location"></i>
                                                             </span>
-                                                            <span class="address_wrapper"><strong>Kanat, Erkan</strong><br> Lerchenstr. 12<br> 30659 Hannover, Nordstadt Deutschland</span>
+                                                            <span class="address_wrapper"><strong><?= $arrayOfBegriffe[4]; ?></strong><br><?= $arrayOfBegriffe[1]; ?><br><?= $arrayOfBegriffe[2] . ' '; ?><?= $arrayOfBegriffe[3]; ?></span>
                                                         </li>
                                                         <li class="phone phone-1">
                                                             <span class="icon"><i class="icon-phone"></i></span>
                                                             <p>
-                                                                <label>+49(0)511 3458</label>
+                                                                <label><?= $arrayOfBegriffe[5]; ?></label>
                                                             </p>
                                                         </li>
                                                         <li class="mail">
@@ -106,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                                 <i class="icon-mail"></i>
                                                             </span>
                                                             <p>
-                                                                <a href='mailto:erkan@web.de'>erkan@web.de</a>
+                                                                <a href='mailto:<?= $arrayOfBegriffe[7]; ?>'><?= $arrayOfBegriffe[7]; ?></a>
                                                             </p>
                                                         </li>
                                                         <li class="www">

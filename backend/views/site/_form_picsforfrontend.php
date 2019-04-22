@@ -15,10 +15,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="row">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
             <?php
-            $url = Yii::getAlias('@uploading').DIRECTORY_SEPARATOR;
-            var_dump($arrayOfFileNames);
-            var_dump($url);
-            die();
+            //das Alias @picturesBackend funktioniert aus unerklärlichen Gründen nicht
+            $url = Yii::getAlias('@web/img/').DIRECTORY_SEPARATOR;
             ?>
             <div class="col-md-12">
                 <table class="table table-bordered table-responsive">
@@ -27,6 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         for ($i = 0; $i < count($arrayOfFileNames); $i++) {
                             ?><th><?=
                                 $arrayOfFileNames[$i] . '<br>' . $arrayOfBez[$i];
+                                //var_dump($url . $arrayOfFileNames[$i]);
                                 ?><td style="text-align:center" ><?=
                                 Html::img($url . $arrayOfFileNames[$i], ['alt' => 'Pic not found', 'class' => 'img-circle', 'style' => 'width:125px;height:125px']);
                             }

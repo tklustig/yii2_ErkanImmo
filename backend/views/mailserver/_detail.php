@@ -28,11 +28,11 @@ use kartik\grid\GridView;
         'useEncryption',
         'encryption',
         [
-            'attribute' => 'angelegtVon.id',
+            'attribute' => 'angelegtVon.username',
             'label' => Yii::t('app', 'Angelegt Von'),
         ],
         [
-            'attribute' => 'aktualisiertVon.id',
+            'attribute' => 'aktualisiertVon.username',
             'label' => Yii::t('app', 'Aktualisiert Von'),
         ],
         'angelegt_am',

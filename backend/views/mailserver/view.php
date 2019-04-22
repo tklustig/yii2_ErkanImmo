@@ -2,10 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use kartik\grid\GridView;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\Mailserver */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Mailserver'), 'url' => ['index']];
@@ -27,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
             )
             ?>
-            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/mailserver/index'], ['class' => 'btn btn-primary ']) ?>  
+<?= Html::a(Yii::t('app', 'zur Übersicht'), ['/mailserver/index'], ['class' => 'btn btn-primary ']) ?>  
         </div>
     </div>
 
@@ -70,26 +66,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ]);
         ?>
     </div>
-    <div class="row">
-        <h4>User<?= ' ' . Html::encode($this->title) ?></h4>
-    </div>
-    <?php
-    $gridColumnUser = [
-        'id',
-        'username',
-        'auth_key',
-        'password_hash',
-        'password_reset_token',
-        'email',
-        'telefon',
-        'status',
-        'created_at',
-        'updated_at',
-    ];
-    echo DetailView::widget([
-        'model' => $model->angelegtVon,
-        'attributes' => $gridColumnUser]);
-    ?>
     <div class="row">
         <h4>User<?= ' ' . Html::encode($this->title) ?></h4>
     </div>

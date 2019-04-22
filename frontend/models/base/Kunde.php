@@ -4,7 +4,6 @@ namespace frontend\models\base;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use yii\behaviors\BlameableBehavior;
 
 class Kunde extends \yii\db\ActiveRecord {
 
@@ -97,10 +96,6 @@ class Kunde extends \yii\db\ActiveRecord {
                 'createdAtAttribute' => 'angelegt_am',
                 'updatedAtAttribute' => 'aktualisiert_am',
                 'value' => new \yii\db\Expression('NOW()'),
-            ],
-            'blameable' => [
-                'class' => BlameableBehavior::className(),
-                'updatedByAttribute' => 'aktualisiert_von',
             ],
         ];
     }

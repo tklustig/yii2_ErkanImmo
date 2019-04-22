@@ -81,7 +81,7 @@ use yii\web\JsExpression;
         <div class="col-md-3">
             <?=
             $form->field($model, 'ort', ['addon' => [
-                    'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'placeholder' => 'Applikation füllt den Ort gemäß der Postleitzahl', 'readOnly' => true])
+                    'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'placeholder' => 'Applikation füllt den Ort gemäß der Postleitzahl'])
             ?>
 
         </div>
@@ -93,7 +93,8 @@ use yii\web\JsExpression;
         </div>
         <div class="col-md-6">
             <?=
-            $form->field($model, 'bankdaten')->widget(\dosamigos\ckeditor\CKEditor::className(), [
+            $form->field($model, 'bankdaten',['addon' => [
+                    'prepend' => ['content' => 'Bankdaten']]])->widget(\dosamigos\ckeditor\CKEditor::className(), [
                 'preset' => 'full', 'clientOptions' => ['height' => 200],
             ])
             ?>

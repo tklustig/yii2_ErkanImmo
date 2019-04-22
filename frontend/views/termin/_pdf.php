@@ -3,44 +3,96 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-/* @var $this yii\web\View */
-/* @var $model frontend\modules\bewerber\models\Bewerber */
-
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bewerber'), 'url' => ['index']];
+$fk = \frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $model->id])->kunde_id;
+$geschlechtKunde = \frontend\models\Kunde::findOne(['id' => $fk])->geschlecht0->typus;
+$nameKunde = \frontend\models\Kunde::findOne(['id' => $fk])->vorname . ' ' . \frontend\models\Kunde::findOne(['id' => $fk])->nachname;
+$this->title = $geschlechtKunde . ' ' . $nameKunde;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="bewerber-view">
 
     <div class="row">
         <div class="col-sm-9">
-            <h2><?= Yii::t('app', 'Bewerber') . ' ' . Html::encode($this->title) ?></h2>
+            <h2><?= Yii::t('app', 'Terminbestätigung für') . ' ' . Html::encode($this->title) ?></h2>
         </div>
     </div>
 
     <div class="row">
         <?php
         $gridColumn = [
-            'angelegt_am',
             'id',
-            'uhrzeit',
-            'Relevanz',
             [
-                'attribute' => 'angelegt_von',
+                'attribute' => 'angelegt_am',
+                'label' => Yii::t('app', 'Termin wurde erstellt am'),
+                'format' => ['datetime', 'php:d-M-Y H:i:s'],
+                'value' => function($model) {
+                    $time = new DateTime($model->angelegt_am);
+                    ($model->angelegt_am) ? $value = $time : $value = 'kein Besichtigungstermin abrufbar';
+                    return $value;
+                }
+            ],
+            [
+                'attribute' => 'uhrzeit',
+                'label' => Yii::t('app', 'Besichtigungstermin ist am'),
+                'format' => ['datetime', 'php:d-M-Y H:i:s'],
+                'value' => function($model) {
+                    $time = new DateTime($model->uhrzeit);
+                    ($model->uhrzeit) ? $value = $time : $value = 'kein Besichtigungstermin abrufbar';
+                    return $value;
+                }
+            ],
+            [
+                'attribute' => 'Relevanz',
+                'label' => Yii::t('app', 'Abwicklungsinteresse vorhanden'),
+                'value' => function($model) {
+                    ($model->Relevanz == 1) ? $value = 'Ja' : $value = 'Nein';
+                    return $value;
+                }
+            ],
+            [
+                'attribute' => '',
                 'label' => Yii::t('app', 'Makler'),
                 'value' => function($model) {
-                    ($model->angelegt_von) ? $value = $model->angelegtVon->nachname . ', ' . $model->angelegtVon->vorname : $value = 'kein Kunde vorhanden';
-                    return $value;
+                    $fk = \frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $model->id])->admin_id;
+                    $maklerName = \common\models\User::findOne(['id' => $fk])->username;
+                    return $maklerName;
+                }
+            ],
+            [
+                'attribute' => '',
+                'label' => Yii::t('app', 'Treffpunkt ist...'),
+                'format' => 'html',
+                'value' => function($model, $id) {
+                    $kundenId = frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $model->id])->kunde_id;
+                    $plzKunde = \frontend\models\Kunde::findOne(['id' => $kundenId])->lPlz->plz;
+                    $StrasseKunde = \frontend\models\Kunde::findOne(['id' => $kundenId])->strasse;
+                    $wohnortKunde = \frontend\models\Kunde::findOne(['id' => $kundenId])->stadt;
+                    $giveBack = 'in ' . $plzKunde . ' ' . $wohnortKunde . '<br>' . $StrasseKunde;
+                    return $giveBack;
                 }
             ],
             'Immobilien_id',
             [
-                'attribute' => 'Immobilien_id',
-                'label' => Yii::t('app', 'Treffpunkt'),
-                'value' => function($id, $model) {
-                    $kundenId = frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $id])->kunde_id;
-                    $wohnortKunde = \frontend\models\Kunde::findOne(['id' => $kundenId])->stadt;
-                    return $wohnortKunde;
+                'attribute' => '',
+                'label' => Yii::t('app', 'Immobilie befindet sich..'),
+                'format' => 'html',
+                'value' => function($model, $id) {
+                    $fk = $model->Immobilien_id;
+                    $plzImmo = frontend\models\Immobilien::findOne(['id' => $fk])->lPlz->plz;
+                    $StrasseImmo = \backend\models\Immobilien::findOne(['id' => $fk])->strasse;
+                    $ortImmo = \backend\models\Immobilien::findOne(['id' => $fk])->stadt;
+                    $giveBack = 'in ' . $plzImmo . ' ' . $ortImmo . '<br>' . $StrasseImmo;
+                    return $giveBack;
+                }
+            ],
+            [
+                'attribute' => '',
+                'label' => Yii::t('app', 'Zusatzinformation'),
+                'format' => 'html',
+                'style' => 'center',
+                'value' => function($model, $id) {
+                    $zusatz = 'Den geographischen Standpunkt der Immobilie lässt sich über unsere WebSite aufrufen und auch ausdrucken.';
+                    return $zusatz;
                 }
             ],
         ];

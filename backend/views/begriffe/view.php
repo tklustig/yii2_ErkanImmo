@@ -2,10 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use kartik\grid\GridView;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\LBegriffe */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'L Begriffe'), 'url' => ['index']];
@@ -27,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
             )
             ?>
-            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/site/index'], ['class' => 'btn btn-primary ']) ?>  
+            <?= Html::a(Yii::t('app', 'zur Übersicht'), ['/begriffe/index'], ['class' => 'btn btn-primary ']) ?>  
         </div>
     </div>
 
@@ -36,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $gridColumn = [
             'id',
             'typ',
-            'data',
+            'data:html',
         ];
         echo DetailView::widget([
             'model' => $model,

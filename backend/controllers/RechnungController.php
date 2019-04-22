@@ -65,7 +65,7 @@ class RechnungController extends Controller {
             $arrayContent[2] = "Zivilprozessordnung";
             $arrayContent[3] = "Widerspruchsregelungen";
             if (!$this->CheckIfStringContainsElement($model->rechnungPlain, $arrayContent)) {
-                $message = 'Die Rechnung muss den gestzlichen Normen entsprechen. Erstellen Sie die Rechnung, indem Sie per Copy&Paste Die Inhalte der Felder Zusatz und Vorlage einfügen!';
+                $message = 'Die Rechnung muss den gestzlichen Normen entsprechen. Erstellen Sie die Rechnung, indem Sie per Copy&Paste den Inhalt des Feldes Zusatz einfügen!';
                 $this->Ausgabe($message);
                 return $this->render('create', [
                             'model' => $model,

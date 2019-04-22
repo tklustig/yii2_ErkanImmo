@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use kartik\alert\Alert;
+use kartik\widgets\Growl;
 
 class KopfController extends Controller {
 
@@ -55,6 +56,8 @@ class KopfController extends Controller {
     }
 
     public function actionUpdate($id) {
+        $message = "Bitte ändern Sie auf keinen Fall die Asterikse(****,++++,::::)<br>Sie werden alle zum Ersetzen durch Ihre Firmenbegriffe benötigt!";
+        $this->Ausgabe($message, 'Wichtige Info', 1500, Growl::TYPE_WARNING);
         if (Yii::$app->request->post('_asnew') == '1') {
             $model = new Kopf();
         } else {
@@ -157,6 +160,24 @@ class KopfController extends Controller {
         $text = Kopf::findOne($textId)->data;
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         return $text;
+    }
+
+    protected function Ausgabe($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
+        echo Growl::widget([
+            'type' => $type,
+            'title' => $typus,
+            'icon' => 'glyphicon glyphicon-exclamation-sign',
+            'body' => $message,
+            'showSeparator' => true,
+            'delay' => $delay,
+            'pluginOptions' => [
+                'showProgressbar' => true,
+                'placement' => [
+                    'from' => 'top',
+                    'align' => 'center',
+                ]
+            ]
+        ]);
     }
 
 }

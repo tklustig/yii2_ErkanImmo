@@ -48,9 +48,9 @@ class BegriffeController extends Controller {
     }
 
     public function actionView($id) {
-        $model = $this->findModel($id);
+        $model = $this->findModelBegriffe($id);
         return $this->render('view', [
-                    'model' => $this->findModel($id),
+                    'model' => $this->findModelBegriffe($id),
         ]);
     }
 
@@ -74,10 +74,10 @@ class BegriffeController extends Controller {
         if (Yii::$app->request->post('_asnew') == '1') {
             $model = new LBegriffe();
         } else {
-            $model = $this->findModel($id);
+            $model = $this->findModelBegriffe($id);
         }
-
-        if ($model->loadAll(Yii::$app->request->post()) && $model->saveAll()) {
+        if ($model->loadAll(Yii::$app->request->post())) {
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -139,11 +139,11 @@ class BegriffeController extends Controller {
 
      */
 
-    protected function findModel($id) {
+    protected function findModelBegriffe($id) {
         if (($model = LBegriffe::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+            throw new NotFoundHttpException(Yii::t('app', 'Das Model LBegriffe konnte nicht geladen werden. Informieren Sie den Softwarehersteller'));
         }
     }
 

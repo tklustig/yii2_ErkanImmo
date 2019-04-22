@@ -21,7 +21,7 @@ class Firma extends \yii\db\ActiveRecord {
 
     public function rules() {
         return [
-            [['firmenname', 'l_rechtsform_id', 'strasse', 'l_plz_id', 'ort'], 'required'],
+            [['firmenname', 'l_rechtsform_id', 'strasse', 'l_plz_id', 'ort','bankdaten'], 'required'],
             [['l_rechtsform_id', 'hausnummer', 'l_plz_id', 'anzahlMitarbeiter', 'angelegt_von', 'aktualisiert_von'], 'integer'],
             [['angelegt_am', 'aktualisiert_am'], 'safe'],
             [['firmenname', 'strasse', 'ort', 'umsatzsteuerID'], 'string', 'max' => 64],

@@ -173,8 +173,9 @@ class Dateianhang extends \yii\db\ActiveRecord {
                 return false;
             $uploadedFile->name = $this->Ersetzen($uploadedFile->name);
             $uploadedFile->saveAs(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+            /*  Das Bild muss in das Webverzeichnis kopiert werden, damit es überhaupt angezeigt wird. Bilder in anderen Ordnern 
+                werden prinzipiell nicht angezeigt */
             copy(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name, Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name);
-            //unlink((Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name));
             $x++;
         }
         if ($x > 0) {

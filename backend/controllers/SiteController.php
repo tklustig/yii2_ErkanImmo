@@ -339,8 +339,11 @@ class SiteController extends Controller {
             $pathTo = Yii::getAlias('@pictures');
             $filename = $DynamicModel->file;
             $theme = 'Theme.jpg';
-            copy($pathFrom . '/' . $filename, $pathTo . '/' . $filename);
-            rename($pathTo . '/' . $filename, $pathTo . '/' . $theme);
+            //Da es unter Linux nicht möglich ist, bestehende Bilder zu überschreiben, muss es vorher gelöscht werden
+            if (file_exists($pathTo . DIRECTORY_SEPARATOR . $filename))
+                FileHelper::unlink($pathTo . DIRECTORY_SEPARATOR . $filename);
+            copy($pathFrom . DIRECTORY_SEPARATOR . $filename, $pathTo . DIRECTORY_SEPARATOR . $filename);
+            rename($pathTo . DIRECTORY_SEPARATOR . $filename, $pathTo . DIRECTORY_SEPARATOR . $theme);
             $session->addFlash('success', "Herzlichen Glückwunsch. Das Theme $filename wird ab jetzt im Frontend verwendet.");
             return $this->redirect(['/site/index']);
         } else {
@@ -368,7 +371,7 @@ class SiteController extends Controller {
         $DynamicModel->addRule('file', 'string');
         $DynamicModel->addRule('file', 'required');
         $max = LDateianhangArt::find()->max('id');
-        $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => [10,11]]);
+        $arrayOfObjectsForAnhang = Dateianhang::findAll(['l_dateianhang_art_id' => [10, 11]]);
         foreach ($arrayOfObjectsForAnhang as $item) {
             array_push($arrayOfFileNames, $item->dateiname);
             array_push($arrayOfBez, $item->bezeichnung);
@@ -412,6 +415,7 @@ class SiteController extends Controller {
         }
     }
 
+    //Stellt das Löschformular aller Themes dar
     public function actionDeletion() {
         $session = new Session();
         $connection = \Yii::$app->db;
@@ -429,6 +433,7 @@ class SiteController extends Controller {
         ]);
     }
 
+    //Löscht ein bliebiges, einzelnes Theme
     public function actionDelete($id) {
         $session = new Session();
         $connection = \Yii::$app->db;
@@ -441,13 +446,20 @@ class SiteController extends Controller {
         $dateiname = Dateianhang::findOne(['id' => $id])->dateiname;
         $path = Yii::getAlias('@picturesBackend');
         $pathFrom = Yii::getAlias('@uploading');
-        FileHelper::unlink($path . DIRECTORY_SEPARATOR . $dateiname);
-        FileHelper::unlink($pathFrom . DIRECTORY_SEPARATOR . $dateiname);
-        $model = $this->findModel_dateianhang($id)->delete();
-        $session->addFlash('info', "Das Theme mit der ID:$id wurde soeben sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
+        if (file_exists($path . DIRECTORY_SEPARATOR . $dateiname) && file_exists($pathFrom . DIRECTORY_SEPARATOR . $dateiname)) {
+            FileHelper::unlink($path . DIRECTORY_SEPARATOR . $dateiname);
+            FileHelper::unlink($pathFrom . DIRECTORY_SEPARATOR . $dateiname);
+            $fk = Dateianhang::findOne(['id' => $id])->e_dateianhang_id;
+            $model = $this->findModel_dateianhang($id)->delete();
+            $modelEDateianhang = $this->findModel_eDateianhang($fk)->delete();
+            $session->addFlash('info', "Das Theme mit der ID:$id wurde soeben sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
+        } else {
+            $session->addFlash('info', "Der Löschvorgang wurde abgebrochen, da die Themes physikalisch nicht mehr auf Ihrer Platte sind.");
+        }
         return $this->redirect(['/site/index']);
     }
 
+    //Löscht alle Themes
     public function actionDeleteall() {
         $session = new Session();
         $eDateianhang = EDateianhang::find()->all();
@@ -472,18 +484,21 @@ class SiteController extends Controller {
         //lösche alle im Array vorhandenen Bilder anhand der Dateinamen aus backend/web/img(@picturesBackend)
         $path = Yii::getAlias('@picturesBackend');
         $pathFrom = Yii::getAlias('@uploading');
+        $hasBeenDeleted = false;
         for ($i = 0; $i < count($arrayOfFilenames); $i++) {
-            FileHelper::unlink($path . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
-            FileHelper::unlink($pathFrom . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+            if (file_exists($path . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]) && file_exists($pathFromh . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i])) {
+                FileHelper::unlink($path . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+                FileHelper::unlink($pathFrom . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+                $hasBeenDeleted = true;
+            }
         }
-        $session->addFlash('info', "Sämtliche Themes wurden sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
+        if ($hasBeenDeleted)
+            $session->addFlash('info', "Sämtliche Themes wurden sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
+        else
+            $session->addFlash('info', "Der Löschvorgang wurde abgebrochen, da die Themes physikalisch nicht mehr auf Ihrer Platte sind.");
+
         return $this->redirect(['/site/index']);
     }
-
-    /* private methods without doing any actionRendering 
-      protected: access only for own class members or inherits.
-      private: access only for own class members. Inherits can't acess this kind of methods.
-     */
 
     private function findModel_user($id) {
         try {

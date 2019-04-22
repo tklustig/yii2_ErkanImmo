@@ -55,7 +55,7 @@ class SiteController extends Controller {
 
     /* Regelt die Logik der Startseite */
 
-    public function actionIndex($id = NULL) {
+    public function actionIndex() {
         $this->layout = "main_kanat";
         return $this->render('index', [
         ]);
@@ -71,8 +71,22 @@ class SiteController extends Controller {
     /* Regelt die Logik der Kontaktseite */
 
     public function actionContact() {
-        $session = new Session();
         $this->layout = "main_kontakt";
+        $modelBegriffe = LBegriffe::find()->all();
+        $arrayOfBegriffe = array();
+        foreach ($modelBegriffe as $item) {
+            array_push($arrayOfBegriffe, $item->data);
+        }
+        $zaehler = 0;
+        for ($i = 0; $i < count($arrayOfBegriffe); $i++) {
+            if ($arrayOfBegriffe[$i] != "")
+                $zaehler += 1;
+        }
+        if ($zaehler < 10) {
+            $session = new Session();
+            $session->addFlash('info', 'Es exisitieren keine oder zu wenige Firmenbegriffe in der Datenbank. Erst, wenn der Admin alle erforderlichen Firmenbegriffe eingepflegt hat, lässt sich dieses Feature aufrufen.');
+            return $this->redirect(['/site/index']);
+        }
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post())) {
 ?><?=
@@ -87,6 +101,7 @@ class SiteController extends Controller {
             ]);
             return $this->render('contact', [
                         'model' => $model,
+                        'arrayOfBegriffe' => $arrayOfBegriffe
             ]);
             /*
               if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
@@ -99,6 +114,7 @@ class SiteController extends Controller {
         } else {
             return $this->render('contact', [
                         'model' => $model,
+                        'arrayOfBegriffe' => $arrayOfBegriffe
             ]);
         }
     }
@@ -112,7 +128,12 @@ class SiteController extends Controller {
         foreach ($modelBegriffe as $item) {
             array_push($arrayOfBegriffe, $item->data);
         }
-        if (count($arrayOfBegriffe) < 10) {
+        $zaehler = 0;
+        for ($i = 0; $i < count($arrayOfBegriffe); $i++) {
+            if ($arrayOfBegriffe[$i] != "")
+                $zaehler += 1;
+        }
+        if ($zaehler < 10) {
             $session = new Session();
             $session->addFlash('info', 'Es exisitieren keine oder zu wenige Impressumbegriffe in der Datenbank. Erst, wenn der Admin alle 10 Begriffe eingepflegt hat, lässt sich dieses Feature aufrufen.');
             return $this->redirect(['/site/index']);

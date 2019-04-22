@@ -62,7 +62,7 @@ if (!empty($session->getAllFlashes())) {
     </header>
 </div>
 <?php
-$url = Yii::getAlias("@web") . '/img/';
+$url = Yii::getAlias('@web') . '/img/';
 ?>
 <div style="background:url(<?= $url ?>Theme.jpg);  background-repeat: no-repeat;  background-size: 100% 100%;">
     <div class="section_wrapper mcb-section-inner">
@@ -85,13 +85,13 @@ $url = Yii::getAlias("@web") . '/img/';
             </div>
         </div>
         <div class="column one">
-            <div style="position: relative; margin-top: -100px; z-index: 1;">
-                <div class="image_frame image_item no_link scale-with-grid aligncenter no_border" >
-                    <div class="image_wrapper">
-                        <?= Html::img('@web/img/erkan_logo.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid', 'style' => 'width:350px;height:150px;']); ?>
-                    </div>
-                </div>
-            </div>
+            <!--   <div style="position: relative; margin-top: -100px; z-index: 1;">
+                   <div class="image_frame image_item no_link scale-with-grid aligncenter no_border" >
+                       <div class="image_wrapper">
+            <?php //echo Html::img('@web/img/erkan_logo.jpg', ['alt' => 'PicNotFound', 'class' => 'scale-with-grid', 'style' => 'width:350px;height:150px;']); ?>
+                       </div>
+                   </div>
+               </div>-->
             <div style="text-align: center; margin: 7% 20%;">
                 <h4 style="color: #FF0040;">Sie suchen neuen Wohnraum?<br> Wie bieten Wohnobjekte aller Art!</h4></div>
             <div style="text-align: left; margin: 13% 23%;">

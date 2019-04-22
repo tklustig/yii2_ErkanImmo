@@ -21,7 +21,7 @@ use kartik\widgets\ActiveForm;
         <div class="col-md-12">
             <?=
             $form->field($model, 'art', ['addon' => [
-                    'prepend' => ['content' => 'Art'], 'append' => ['content' => 'Verkauf oder Vermietung']]])->textInput(['maxlength' => true, 'placeholder' => 'Art'])
+                    'prepend' => ['content' => 'Art'], 'append' => ['content' => 'Verkauf, Vermietung oder Sonstiges']]])->textInput(['maxlength' => true, 'placeholder' => 'Art'])
             ?>
         </div>
         <div class="col-md-12">

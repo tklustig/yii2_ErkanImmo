@@ -21,7 +21,7 @@ INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_res
 (1, 'admin', 'X7J-22cjz-YsYEFeBdDIjk-_H3BqnpjK', '$2y$13$T78FDlTEVgYC4curFdZqaOYb5kEv/Fyg5snEDxmb0J2hmC82WT73a', NULL, 'admin@hotmail.com', '01224/3347890', 10, 1554214088, 1554214088);
 
 INSERT INTO `kopf` (`id`, `data`, `user_id`) VALUES
-(1, 'Diese Rechnung wurde unter Zuhilfenahme eines lizenzierten Webtools von unserem Makler **** erstellt. Im Falle von Reklamationen wenden Sie sich bitte telefonisch an ++++ oder per Mail an ::::. \r\nHinweise:\r\nAchten Sie auf das Fälligkeitsdatum der Rechnung.\r\n\r\nIn den Paragraphen ab 688 der Zivilprozessordnung (ZPO) sind Widerspruchsregelungen enthalten. ', 1);
+(1, 'Diese Rechnung wurde unter Zuhilfenahme eines lizenzierten Webtools von unserem Makler **** erstellt. Im Falle von Reklamationen wenden Sie sich bitte telefonisch an ++++ oder per Mail an :::: \r\nHinweise:\r\nAchten Sie auf das Fälligkeitsdatum der Rechnung.\r\n\r\nIn den Paragraphen ab 688 der Zivilprozessordnung (ZPO) sind Widerspruchsregelungen enthalten. ', 1);
 
 
 -- --------------------------------------------------------
@@ -32,6 +32,24 @@ INSERT INTO `kopf` (`id`, `data`, `user_id`) VALUES
 INSERT INTO `l_art` (`id`, `bezeichnung`) VALUES
 (1, 'Vermietung'),
 (2, 'Verkauf');
+
+-- --------------------------------------------------------
+--
+-- Daten für Tabelle `l_rechtsform`
+--
+
+INSERT INTO `l_rechtsform` (`id`, `typus`) VALUES
+(1, 'AG'),
+(2, 'eG'),
+(3, 'Einzelunternehmen'),
+(4, 'GbR'),
+(5, 'GmbH'),
+(6, 'GmbH & Co.KG'),
+(7, 'KG'),
+(8, 'KGaA'),
+(9, 'OHG'),
+(10, 'Stiftung');
+
 
 -- --------------------------------------------------------
 --
@@ -48,7 +66,8 @@ INSERT INTO `l_dateianhang_art` (`id`, `bezeichnung`) VALUES
 (7, 'Dokumente zu einer Wohnung'),
 (8, 'Dokumente zu einer Villa'),
 (9, 'Bilder und Dokumente zu einem Objekt'),
-(10, 'Frontendbilder');
+(10, 'Frontendbilder'),
+(11, 'Impressumbilder');
 
 -- --------------------------------------------------------
 --
