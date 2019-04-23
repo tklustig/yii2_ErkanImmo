@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 21. Apr 2019 um 10:02
+-- Erstellungszeit: 23. Apr 2019 um 20:10
 -- Server-Version: 10.1.37-MariaDB
 -- PHP-Version: 7.2.13
 
@@ -130,7 +130,9 @@ INSERT INTO `dateianhang` (`id`, `bezeichnung`, `dateiname`, `angelegt_am`, `akt
 (4, 'Bild für eine Immobilie', 'kitchen-1940175__340.jpg', '2019-02-16 09:14:32', NULL, 3, NULL, 3, 4),
 (5, 'Bild für eine Immobilie', 'modern-minimalist.jpg', '2019-02-16 09:17:24', NULL, 4, NULL, 3, 5),
 (6, 'Bild für eine Mail', 'Artwork-20180803-184430.png', '2019-04-08 19:23:49', NULL, 4, NULL, 12, 6),
-(7, 'Bild für eine Mail', 'Artwork-20180803-185427.png', '2019-04-08 19:23:49', NULL, 4, NULL, 12, 6);
+(7, 'Bild für eine Mail', 'Artwork-20180803-185427.png', '2019-04-08 19:23:49', NULL, 4, NULL, 12, 6),
+(30, 'Kundenbild', 'Transgender.jpg', '2019-04-21 10:03:47', NULL, 4, NULL, 14, 9),
+(38, 'Kundenbild', 'man_2.jpg', '2019-04-21 14:41:14', NULL, 4, NULL, 14, 25);
 
 -- --------------------------------------------------------
 
@@ -157,9 +159,8 @@ INSERT INTO `e_dateianhang` (`id`, `immobilien_id`, `user_id`, `kunde_id`, `mail
 (4, 5, NULL, NULL, NULL),
 (5, 6, NULL, NULL, NULL),
 (6, NULL, NULL, NULL, 1),
-(8, NULL, NULL, 1, NULL),
 (9, NULL, NULL, 3, NULL),
-(16, NULL, NULL, 2, NULL);
+(25, NULL, NULL, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -178,6 +179,7 @@ CREATE TABLE `firma` (
   `geschaeftsfuehrer` varchar(32) COLLATE utf8_german2_ci DEFAULT NULL,
   `prokurist` varchar(32) COLLATE utf8_german2_ci DEFAULT NULL,
   `umsatzsteuerID` varchar(64) COLLATE utf8_german2_ci DEFAULT NULL,
+  `bankdaten` varchar(256) COLLATE utf8_german2_ci DEFAULT NULL,
   `anzahlMitarbeiter` smallint(6) DEFAULT NULL,
   `angelegt_von` int(11) DEFAULT NULL,
   `aktualisiert_von` int(11) DEFAULT NULL,
@@ -189,8 +191,8 @@ CREATE TABLE `firma` (
 -- Daten für Tabelle `firma`
 --
 
-INSERT INTO `firma` (`id`, `firmenname`, `l_rechtsform_id`, `strasse`, `hausnummer`, `l_plz_id`, `ort`, `geschaeftsfuehrer`, `prokurist`, `umsatzsteuerID`, `anzahlMitarbeiter`, `angelegt_von`, `aktualisiert_von`, `angelegt_am`, `aktualisiert_am`) VALUES
-(1, 'Schmidt&Söhne', 3, 'Noltemeyerbrücke', 12, 5855, 'Bothfeld, Groß Buchholz, Lahe ', 'Herr Dr. Schmidt', '', 'ABC-123456-YZ-ADF', 4, 4, 4, '2019-04-04 15:08:16', '2019-04-04 15:34:48');
+INSERT INTO `firma` (`id`, `firmenname`, `l_rechtsform_id`, `strasse`, `hausnummer`, `l_plz_id`, `ort`, `geschaeftsfuehrer`, `prokurist`, `umsatzsteuerID`, `bankdaten`, `anzahlMitarbeiter`, `angelegt_von`, `aktualisiert_von`, `angelegt_am`, `aktualisiert_am`) VALUES
+(1, 'Schmidt&Söhne', 3, 'Noltemeyerbrücke', 12, 5855, 'Bothfeld, Groß Buchholz, Lahe ', 'Herr Dr. Schmidt', '', 'ABC-123456-YZ-ADF', '<p><span style=\"font-size:14px\">►Bankinstitut:Commerzbank&nbsp; ►IBAN:DE89370400440532013000►&nbsp;BIC:COBADEFXX</span></p>\r\n', 5, 4, 4, '2019-04-04 15:08:16', '2019-04-21 18:07:40');
 
 -- --------------------------------------------------------
 
@@ -271,7 +273,7 @@ CREATE TABLE `kunde` (
   `geburtsdatum` date DEFAULT NULL,
   `solvenz` tinyint(1) DEFAULT NULL,
   `telefon` varchar(32) DEFAULT NULL,
-  `email` varchar(64) DEFAULT NULL,
+  `email` varchar(64) NOT NULL,
   `bankverbindung_id` int(11) DEFAULT NULL,
   `angelegt_am` datetime DEFAULT NULL,
   `aktualisiert_am` datetime DEFAULT NULL,
@@ -284,10 +286,10 @@ CREATE TABLE `kunde` (
 --
 
 INSERT INTO `kunde` (`id`, `l_plz_id`, `geschlecht`, `vorname`, `nachname`, `stadt`, `strasse`, `geburtsdatum`, `solvenz`, `telefon`, `email`, `bankverbindung_id`, `angelegt_am`, `aktualisiert_am`, `angelegt_von`, `aktualisiert_von`) VALUES
-(1, 5855, 1, 'Michael', 'Krenz', 'Bothfeld, Groß Buchholz, Lahe ', 'Klein Buchholzer Kirchweg  25', '1961-03-21', 1, '0152/37389041', 'michael@gmx.net', 14, '2019-02-16 09:23:34', '2019-04-21 09:58:29', 3, 3),
-(2, 285, 2, 'Susanne', 'Albrecht', 'Cottbus', 'Ahornweg 3', '1983-09-20', 0, '03445/667832', 'albrecht@web.de', NULL, '2019-02-16 09:27:53', '2019-04-21 09:58:06', 4, 3),
-(3, 9915, 4, 'Lydia', 'Scholz', 'Ennepetal', 'Akazienweg', '1975-02-17', 0, '01542567880', 'lydia@gmx.net', 5, '2019-02-27 19:18:35', '2019-04-14 15:26:55', 4, NULL),
-(4, 2502, 10, 'Friedrich', 'Schubert', 'Bliesdorf', 'Bliesdorfer Str.', '1985-02-02', 0, '', 'friedrich@gmail.com', NULL, '2019-02-27 20:10:06', '2019-04-04 20:18:05', 3, NULL);
+(1, 5855, 1, 'Michael', 'Krenz', 'Bothfeld, Groß Buchholz, Lahe ', 'Klein Buchholzer Kirchweg  25', '1961-03-21', 0, '0152/37389041', 'michael@gmx.net', 14, '2019-02-16 09:23:34', '2019-04-21 15:15:01', 3, 4),
+(2, 5854, 1, 'Chris', 'Albrecht', 'Hannover', 'Ahornweg 3', '1983-09-20', 1, '03445/667832', 'albrecht@web.de', NULL, '2019-02-16 09:27:53', '2019-04-21 15:21:16', 4, 4),
+(3, 9915, 4, 'Lydia', 'Scholz', 'Ennepetal', 'Akazienweg', '1975-02-17', 1, '01542567880', 'lydia@gmx.net', 5, '2019-02-27 19:18:35', '2019-04-21 14:29:14', 4, 4),
+(4, 2502, 10, 'Friedrich', 'Schubert', 'Bliesdorf', 'Bliesdorfer Str.', '1985-02-02', 0, '', 'friedrich@gmail.com', NULL, '2019-02-27 20:10:06', '2019-04-21 14:29:06', 3, 4);
 
 -- --------------------------------------------------------
 
@@ -16152,13 +16154,13 @@ ALTER TABLE `besichtigungstermin`
 -- AUTO_INCREMENT für Tabelle `dateianhang`
 --
 ALTER TABLE `dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT für Tabelle `e_dateianhang`
 --
 ALTER TABLE `e_dateianhang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT für Tabelle `firma`

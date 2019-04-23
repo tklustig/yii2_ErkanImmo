@@ -20,6 +20,10 @@ SET time_zone = "+00:00";
 INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `telefon`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'admin', 'X7J-22cjz-YsYEFeBdDIjk-_H3BqnpjK', '$2y$13$T78FDlTEVgYC4curFdZqaOYb5kEv/Fyg5snEDxmb0J2hmC82WT73a', NULL, 'admin@hotmail.com', '01224/3347890', 10, 1554214088, 1554214088);
 
+--
+-- Daten für Tabelle `kopf` 
+--
+
 INSERT INTO `kopf` (`id`, `data`, `user_id`) VALUES
 (1, 'Diese Rechnung wurde unter Zuhilfenahme eines lizenzierten Webtools von unserem Makler **** erstellt. Im Falle von Reklamationen wenden Sie sich bitte telefonisch an ++++ oder per Mail an :::: \r\nHinweise:\r\nAchten Sie auf das Fälligkeitsdatum der Rechnung.\r\n\r\nIn den Paragraphen ab 688 der Zivilprozessordnung (ZPO) sind Widerspruchsregelungen enthalten. ', 1);
 
@@ -113,6 +117,19 @@ INSERT INTO `l_begriffe` (`id`, `typ`) VALUES
 (8, 'Mail'),
 (9, 'Umsatzsteuer/Identifikationsnummer'),
 (10, 'Aufsichtsbehörde');
+
+--
+-- Daten für Tabelle `l_textbaustein`
+--
+
+INSERT INTO `l_textbaustein` (`id`, `beschreibung`, `data`) VALUES
+(1, 'Einleitung', 'vielen Dank für Ihre Anfrage, die ich Ihnen gern beantworte. \r\n\r\nDer Einstieg in das Personalwesen ist generell nicht einfach. Wir bieten interessierten und qualifizierten Bewerbern die Chance, diesen Bereich bei uns in der Praxis kennenzulernen. Wir verbinden diese Möglichkeit mit dem Ziel, passende Mitarbeiter für unsere eigenen Reihen auszubilden. \r\nDas Praktikum zum Einstieg in das Personalwesen in unserem Haus wird in Zusammenarbeit mit einem hiesigen Bildungsträger in Form einer Maßnahme der Arbeitsagentur durchgeführt. Voraussetzung für diese Maßnahme ist ein Bildungsgutschein von der Arbeitsagentur. Für den Zeitraum der Maßnahme erhalten Sie Ihre Leistungen von der Agentur weiter. \r\nWährend dieses Zeitraums gibt es Schultage mit Fachvorträgen im Theorie-Unterricht beim Bildungsträger; den Rest der Teit bilden wir Sie hier bei uns im Betrieb praktisch aus. Planmäßig ist vorgesehen, eine/n Praktikantin/en, mit der/dem wir zufrieden und erfolgreich zusammenarbeiten, in ein Angestelltenverhältnis zu übernehmen. Während des Zeitraums bekommt der/die Praktikant/in - natürlich unter Anleitung und entsprechender Hilfestellung - die Gelegenheit, sich hier im Haus einen Bereich aufzubauen, den er/sie anschließend eigenverantwortlich übernehmen kann.\r\nDie Sozialversicherung ist für diesen Zeitraum über den Bildungsträger gewährleistet.\r\n\r\nIch hoffe, Ihnen mit meinen Ausführungen weitergeholfen und Ihr Interesse geweckt zu haben.'),
+(2, 'nicht erreichbar', 'vielen Dank für Ihre Terminvereinbarung. \r\nTelefonisch konnte ich Sie bisher leider nicht erreichen. \r\nBitte rufen Sie mich dies bezüglich im Büro zurück. \r\nVielen Dank!'),
+(3, 'Vermittlungsvereinbarung', 'wie versprochen, sende ich Ihnen anbei unsere Vermittlungsvereinbarung zur Durchsicht vorab. Diesen benötigen wir im Original, vollständig ausgefüllt per Post um Sie vorstellen zu können (Laut SGB III und Vorgabe der Arbeitsagentur ist dieses Vorgehen so vorgeschrieben).\r\n\r\nBitte informieren Sie sich schon einmal genau über den Anfahrtsweg und durchdenken sie noch einmal, ob die Rahmenbedingungen (Arbeitszeiten, Stundenumfang, Vergütung, etc.) Ihren Vorstellungen entsprechen, damit wir Sie mit einer klaren und gut durchdachten Entscheidung bei unserem Kunden empfehlen können. \r\n\r\nEvtl. auftretende Fragen beantworte ich gern in unserem nächsten Telefonat. Informieren Sie mich bitte auch kurz, falls Ihre Entscheidung negativ ausfallen sollte, damit ich den Bewerbungsvorgang hier abschließen kann. Ich freue mich auf unsere weitere Zusammenarbeit und drücke Ihnen schon jetzt die Daumen! \r\n\r\nIch wünsche Ihnen einen charmanten Nachmittag!'),
+(4, 'Rechnungsfehler', 'wie vereinbart, haben wir versucht, die zweite Rate nach Rechnung \r\n\r\nNr. 10140 vom 20.12.2010 \r\n\r\nvon Ihrem Konto einzuziehen. Am \r\n\r\n18.02.2011 \r\n\r\nist eine kostenpflichtige Rückbuchung erfolgt. Eine Klärung dieser Situation haben Sie nicht herbeigeführt. Sie erhalten nun die Gelegenheit, den nun fälligen Betrag von 269,80 (261,80 + 8,- Bankgebühren) bis zum \r\n\r\n24.02.2011 \r\n\r\nauf unser auf der RG angegebenes Konto zu überweisen. Sollten Sie dieser Aufforderung nicht nachkommen, oder eine Klärung herbeiführen, wird wie auf der Rechnung vermerkt weiter verfahren.\r\n\r\nSollten weitere Raten zur Zahlung ausstehen, werden diese zur jeweiligen Fälligkeit laut Rechnung von Ihrem bei uns hinterlegten Konto eingezogen. Es gelten weiterhin die auf der Rechnung vermerkten Zahlungsbedingungen.'),
+(5, 'Beurteilung', 'wir waren in der Vergangenheit in Fragen der Personalauswahl und –beratung für Sie tätig. \r\nIn den nächsten Tagen (bis Pfingsten) möchten wir gern mit unseren Kunden in den Dialog treten, und unseren Service von Ihnen beurteilen lassen. Unabhängig davon, ob wir bei der Vermittlung Ihrer neuen Mitarbeiter bereits erfolgreich waren, würden wir gern erfragen, wie Sie mit unserer Betreuung und Auswahl zufrieden waren und ob Sie Verbesserungsvorschläge für uns haben. \r\n\r\nAuf der Seite:  http://www.wsl-hannover.de/arbeitgeber-feedback \r\nfinden Sie den Link: „neuen Kommentar schreiben“. \r\n\r\nWir freuen uns, wenn Sie uns helfen, unsere Arbeit zukünftig noch kundenorientierter auszurichten. Ein kurzer Kommentar ist für uns schon ein wichtiger Anhaltspunkt – gern Lob und ebenso gern Anregungen! Je detaillierter Sie in Ihren Ausführungen sind, WAS genau Ihnen gut gefällt und was nicht, desto mehr können wir daraus lernen!\r\n\r\nZudem wäre ich dankbar, wenn Sie dies auch an die involvierten Kollegen weiterleiten würden.\r\n\r\nWir bedanken uns bereits im Voraus für 3 Minuten Ihrer Zeit! \r\n\r\nAuf eine weiterhin gute Zusammenarbeit!');
+
+-- --------------------------------------------------------
 
 -- --------------------------------------------------------
 
