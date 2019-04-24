@@ -343,6 +343,7 @@ class MailController extends Controller {
     }
 
     public function actionStapelone($Mailadress, $geschlecht, $name) {
+        print_r("Hier soll eine einzelne Kundenmail verarbeitet werden. Übergeben wurden folgende Strings:<br>");
         var_dump($Mailadress);
         var_dump($geschlecht);
         var_dump($name);
