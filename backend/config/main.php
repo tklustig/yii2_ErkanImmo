@@ -65,6 +65,7 @@ return [
                 'immobilien_duplizieren' => 'immobilien/save-as-new',
                 'immobilien_vorauswahl' => 'immobilien/decide',
                 'immobilien_showlink' => 'immobilien/show',
+                'deleteUploads' => 'immobilien/deletion',
                 'bankverbindung' => 'bankverbindung/index',
                 'bankverbindung_view' => 'bankverbindung/view',
                 'bankverbindung_erzeugen' => 'bankverbindung/create',

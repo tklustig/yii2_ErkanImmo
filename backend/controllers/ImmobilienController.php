@@ -417,7 +417,7 @@ class ImmobilienController extends Controller {
     }
 
     public function actionShow($filename) {
-        $CompletePath = Yii::getAlias('@pictures' . '/' . $filename);
+        $CompletePath = Yii::getAlias('@documentsImmoB' . '/' . $filename);
         return Yii::$app->response->sendFile($CompletePath, $filename);
     }
 
@@ -492,6 +492,12 @@ class ImmobilienController extends Controller {
         print_r('Diese Option ist in dieser Version nicht verfügbar.<br>');
         print_r('Script wurde in der Klasse ' . get_class() . ' regulär gestoppt!<br>');
         echo Html::a('zurück', ['/immobilien/index'], ['title' => 'zurück']);
+    }
+    
+    public function actionDeletion(){
+        print_r("Es wurde nix übergeben, da die View von Dateianhang gerendert werden soll, die das Löschen der ImmoUploads ermöglichen soll!");
+        print_r("<br>Script wurde in der Klasse ".get_class()." angehalten");
+        die();
     }
 
     protected function findModel($id) {

@@ -60,7 +60,7 @@ $this->registerJs($search);
         ],
         [
             /*
-              Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBild(model),welche
+              Hier wird das Immobild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBild(model),welche
               drei JOINs und eine dynamische WHERE-Klausel enthält.
              */
             'attribute' => $dummy,
@@ -182,7 +182,7 @@ $this->registerJs($search);
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{view}<br>{update}<br>{deleted}<br>{showDocument}',
+            'template' => '{view}<br>{update}<br>{deleted}<br>{showDocument}<br>{deletion}',
             'buttons' => [
                 'save-as-new' => function ($url) {
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Duplizieren']);
@@ -196,18 +196,42 @@ $this->registerJs($search);
                     $txt = '/txt/';
                     $pdf = '/pdf/';
                     $odt = '/odt/';
+                    $xls = '/xls/';
+                    $xlsx = '/xlsx/';
+                    $ppt = '/ppt/';
                     $arrayOfFK = array();
                     $filename = null;
                     if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id]))) {
                         $pk = \frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id])->id;
                         $fileNames = frontend\models\Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
                         foreach ($fileNames as $item) {
-                            if (preg_match($doc, $item->dateiname) || preg_match($docx, $item->dateiname) || preg_match($txt, $item->dateiname) || preg_match($pdf, $item->dateiname) || preg_match($odt, $item->dateiname)) {
+                            if (preg_match($doc, $item->dateiname) || preg_match($docx, $item->dateiname) || preg_match($txt, $item->dateiname) || preg_match($pdf, $item->dateiname) || preg_match($odt, $item->dateiname) || preg_match($xls, $item->dateiname) || preg_match($xlsx, $item->dateiname) || preg_match($ppt, $item->dateiname)) {
                                 $filename = $item->dateiname;
                             }
                         }
                         if ($filename != null)
                             return Html::a('<span class="glyphicon glyphicon-file"></span>', ['/immobilien/show', 'filename' => $filename], ['title' => 'Dokument anzeigen', 'data' => ['pjax' => '0']]);
+                    }
+                },
+                'deletion' => function ($id, $model) {
+                    $doc = '/doc/';
+                    $docx = '/docx/';
+                    $txt = '/txt/';
+                    $pdf = '/pdf/';
+                    $odt = '/odt/';
+                    $xls = '/xls/';
+                    $xlsx = '/xlsx/';
+                    $ppt = '/ppt/';
+                    $arrayOfFilenames = array();
+                    $filename = null;
+                    if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id]))) {
+                        $pk = \frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id])->id;
+                        $fileNames = frontend\models\Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
+                        foreach ($fileNames as $item) {
+                            array_push($arrayOfFilenames, $item->dateiname);
+                        }
+                        if (count($arrayOfFilenames) > 0)
+                            return Html::a('<span class="glyphicon glyphicon-remove-sign"></span>', ['/immobilien/deletion'], ['title' => 'Uploads löschen', 'data' => ['pjax' => '0']]);
                     }
                 },
             ],
@@ -349,7 +373,7 @@ $this->registerJs($search);
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{view}<br>{update}<br>{deleted}<br>{showDocument}',
+            'template' => '{view}<br>{update}<br>{deleted}<br>{showDocument}<br>{deletion}',
             'buttons' => [
                 'save-as-new' => function ($url) {
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Duplizieren']);
@@ -363,18 +387,42 @@ $this->registerJs($search);
                     $txt = '/txt/';
                     $pdf = '/pdf/';
                     $odt = '/odt/';
+                    $xls = '/xls/';
+                    $xlsx = '/xlsx/';
+                    $ppt = '/ppt/';
                     $arrayOfFK = array();
                     $filename = null;
                     if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id]))) {
                         $pk = \frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id])->id;
                         $fileNames = frontend\models\Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
                         foreach ($fileNames as $item) {
-                            if (preg_match($doc, $item->dateiname) || preg_match($docx, $item->dateiname) || preg_match($txt, $item->dateiname) || preg_match($pdf, $item->dateiname) || preg_match($odt, $item->dateiname)) {
+                            if (preg_match($doc, $item->dateiname) || preg_match($docx, $item->dateiname) || preg_match($txt, $item->dateiname) || preg_match($pdf, $item->dateiname) || preg_match($odt, $item->dateiname) || preg_match($xls, $item->dateiname) || preg_match($xlsx, $item->dateiname) || preg_match($ppt, $item->dateiname)) {
                                 $filename = $item->dateiname;
                             }
                         }
                         if ($filename != null)
                             return Html::a('<span class="glyphicon glyphicon-file"></span>', ['/immobilien/show', 'filename' => $filename], ['title' => 'Dokument anzeigen', 'data' => ['pjax' => '0']]);
+                    }
+                },
+                'deletion' => function ($id, $model) {
+                    $doc = '/doc/';
+                    $docx = '/docx/';
+                    $txt = '/txt/';
+                    $pdf = '/pdf/';
+                    $odt = '/odt/';
+                    $xls = '/xls/';
+                    $xlsx = '/xlsx/';
+                    $ppt = '/ppt/';
+                    $arrayOfFilenames = array();
+                    $filename = null;
+                    if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id]))) {
+                        $pk = \frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id])->id;
+                        $fileNames = frontend\models\Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
+                        foreach ($fileNames as $item) {
+                            array_push($arrayOfFilenames, $item->dateiname);
+                        }
+                        if (count($arrayOfFilenames) > 0)
+                            return Html::a('<span class="glyphicon glyphicon-remove-sign"></span>', ['/immobilien/deletion'], ['title' => 'Uploads löschen', 'data' => ['pjax' => '0']]);
                     }
                 },
             ],

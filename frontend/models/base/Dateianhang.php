@@ -136,8 +136,13 @@ class Dateianhang extends \yii\db\ActiveRecord {
             if ($bool != NULL && $bool == TRUE) {
                 $uploadedFile->saveAs(Yii::getAlias('@documentsMail') . DIRECTORY_SEPARATOR . $uploadedFile->name);
             } else {
-                $uploadedFile->saveAs(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name);
-                copy(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name, Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+                if ($uploadedFile->extension == "pdf" || $uploadedFile->extension == "txt" || $uploadedFile->extension == "doc" || $uploadedFile->extension == "docx" || $uploadedFile->extension == "xls" || $uploadedFile->extension == "xlsx" || $uploadedFile->extension == "ppt" || $uploadedFile->extension == "odt") {
+                    $uploadedFile->saveAs(Yii::getAlias('@documentsImmoB') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+                    copy(Yii::getAlias('@documentsImmoB') . DIRECTORY_SEPARATOR . $uploadedFile->name, Yii::getAlias('@documentsImmoF') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+                } else {
+                    $uploadedFile->saveAs(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+                    copy(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name, Yii::getAlias('@pictures') . DIRECTORY_SEPARATOR . $uploadedFile->name);
+                }
             }
             $x++;
         }
@@ -174,7 +179,7 @@ class Dateianhang extends \yii\db\ActiveRecord {
             $uploadedFile->name = $this->Ersetzen($uploadedFile->name);
             $uploadedFile->saveAs(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name);
             /*  Das Bild muss in das Webverzeichnis kopiert werden, damit es überhaupt angezeigt wird. Bilder in anderen Ordnern 
-                werden prinzipiell nicht angezeigt */
+              werden prinzipiell nicht angezeigt */
             copy(Yii::getAlias('@uploading') . DIRECTORY_SEPARATOR . $uploadedFile->name, Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name);
             $x++;
         }

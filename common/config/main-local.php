@@ -1,5 +1,6 @@
 
 <?php
+
 if (PHP_OS == "WINNT") {
     $dsn = 'mysql:host=localhost;dbname=mysql';
     $username = 'root';
@@ -19,6 +20,8 @@ return [
         '@pictures' => '@frontend/web/img',
         '@picturesBackend' => '@backend/web/img',
         '@documentsMail' => '@backend/mailAnhaenge',
+        '@documentsImmoB' => '@backend/immoAnhaenge',
+        '@documentsImmoF' => '@frontend/immoAnhaenge'
     ],
     'modules' => [
         'datecontrol' => [
@@ -84,4 +87,5 @@ function DatenbankErzeugen($dsn, $username, $password) {
         die();
     }
 }
+
 ?>

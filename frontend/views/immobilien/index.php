@@ -107,10 +107,33 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',
-                'template' => '{map}',
+                'template' => '{map}<br>{showDocument}',
                 'buttons' => [
                     'map' => function ( $id, $model) {
                         return Html::a('<span class="glyphicon glyphicon-download"></span>Karte<span class="glyphicon glyphicon-upload">', ['/immobilien/map', 'id' => $model->id], ['style' => ['color' => 'red'], 'title' => 'Standort in Karte einblenden', 'data' => ['pjax' => '0']]);
+                    },
+                    'showDocument' => function ($id, $model) {
+                        $doc = '/doc/';
+                        $docx = '/docx/';
+                        $txt = '/txt/';
+                        $pdf = '/pdf/';
+                        $odt = '/odt/';
+                        $xls = '/xls/';
+                        $xlsx = '/xlsx/';
+                        $ppt = '/ppt/';
+                        $arrayOfFK = array();
+                        $filename = null;
+                        if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id]))) {
+                            $pk = \frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id])->id;
+                            $fileNames = frontend\models\Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
+                            foreach ($fileNames as $item) {
+                                if (preg_match($doc, $item->dateiname) || preg_match($docx, $item->dateiname) || preg_match($txt, $item->dateiname) || preg_match($pdf, $item->dateiname) || preg_match($odt, $item->dateiname) || preg_match($xls, $item->dateiname) || preg_match($xlsx, $item->dateiname) || preg_match($ppt, $item->dateiname)) {
+                                    $filename = $item->dateiname;
+                                }
+                            }
+                            if ($filename != null)
+                                return Html::a('<span class="glyphicon glyphicon-file"></span>', ['/immobilien/show', 'filename' => $filename], ['title' => 'Dokument anzeigen', 'data' => ['pjax' => '0']]);
+                        }
                     },
                 ],
             ],
@@ -210,10 +233,33 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',
-                'template' => '{map}',
+                'template' => '{map}<br>{showDocument}',
                 'buttons' => [
                     'map' => function ( $id, $model) {
                         return Html::a('<span class="glyphicon glyphicon-download"></span>Karte<span class="glyphicon glyphicon-upload">', ['/immobilien/map', 'id' => $model->id], ['style' => ['color' => 'red'], 'title' => 'Standort in Karte einblenden', 'data' => ['pjax' => '0']]);
+                    },
+                    'showDocument' => function ($id, $model) {
+                        $doc = '/doc/';
+                        $docx = '/docx/';
+                        $txt = '/txt/';
+                        $pdf = '/pdf/';
+                        $odt = '/odt/';
+                        $xls = '/xls/';
+                        $xlsx = '/xlsx/';
+                        $ppt = '/ppt/';
+                        $arrayOfFK = array();
+                        $filename = null;
+                        if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id]))) {
+                            $pk = \frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id])->id;
+                            $fileNames = frontend\models\Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
+                            foreach ($fileNames as $item) {
+                                if (preg_match($doc, $item->dateiname) || preg_match($docx, $item->dateiname) || preg_match($txt, $item->dateiname) || preg_match($pdf, $item->dateiname) || preg_match($odt, $item->dateiname) || preg_match($xls, $item->dateiname) || preg_match($xlsx, $item->dateiname) || preg_match($ppt, $item->dateiname)) {
+                                    $filename = $item->dateiname;
+                                }
+                            }
+                            if ($filename != null)
+                                return Html::a('<span class="glyphicon glyphicon-file"></span>', ['/immobilien/show', 'filename' => $filename], ['title' => 'Dokument anzeigen', 'data' => ['pjax' => '0']]);
+                        }
                     },
                 ],
             ],
