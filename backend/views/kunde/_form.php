@@ -12,24 +12,12 @@ use yii\web\JsExpression;
                 'id' => 'dynamic-form',
                 'type' => ActiveForm::TYPE_VERTICAL,
                 'formConfig' => [
-                    'showLabels' => true
+                    'showLabels' => false
                 ]
     ]);
     ?>
     <?= $form->errorSummary($model); ?>
     <div class="row">
-        <div class="col-md-12">
-            <?=
-            $form->field($model, 'bankverbindung_id', ['addon' => [
-                    'prepend' => ['content' => 'Bankinstitut']]])->widget(\kartik\widgets\Select2::classname(), [
-                'data' => \yii\helpers\ArrayHelper::map(backend\models\Bankverbindung::find()->asArray()->all(), 'id', 'institut'),
-                'options' => ['placeholder' => Yii::t('app', 'Bankverbindung selektieren')],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]);
-            ?>
-        </div>
         <div class="col-md-12">
             <?=
             /* 22.11.2017/tklustig/Initialisiert das Upload-Formular.Damit das multiple uploading klappt,muss die property als Array eingebunden werden
@@ -94,20 +82,33 @@ use yii\web\JsExpression;
             ?>
         </div>
         <div class="col-md-3">
-            <?= $form->field($model, 'vorname')->textInput(['placeholder' => 'Vorname']) ?>
-        </div>
-        <div class="col-md-3">
-            <?= $form->field($model, 'nachname')->textInput(['maxlength' => true, 'placeholder' => 'Nachname']) ?>
-        </div>
-        <div class="col-md-3">
-            <?= $form->field($model, 'stadt')->textInput(['maxlength' => true, 'placeholder' => 'Stadt', 'id' => 'immobilien-stadt']) ?>
-        </div>
-        <div class="col-md-3">
-            <?= $form->field($model, 'strasse')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
-        </div>
-        <div class="col-md-6">
             <?=
-            $form->field($model, 'geburtsdatum')->widget(\kartik\date\DatePicker::className(), [
+            $form->field($model, 'vorname', ['addon' => [
+                    'prepend' => ['content' => 'Vorname']]])->textInput()
+            ?>
+        </div>
+        <div class="col-md-3">
+            <?=
+            $form->field($model, 'nachname', ['addon' => [
+                    'prepend' => ['content' => 'Nachname']]])->textInput(['maxlength' => true])
+            ?>
+        </div>
+        <div class="col-md-3">
+            <?=
+            $form->field($model, 'stadt', ['addon' => [
+                    'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'id' => 'immobilien-stadt'])
+            ?>
+        </div>
+        <div class="col-md-3">
+            <?=
+            $form->field($model, 'strasse', ['addon' => [
+                    'prepend' => ['content' => 'Strasse']]])->textInput(['maxlength' => true, 'placeholder' => 'Strasse'])
+            ?>
+        </div>
+        <div class="col-md-4">
+            <?=
+            $form->field($model, 'geburtsdatum',['addon' => [
+                    'prepend' => ['content' => 'Geburtsdatum']]])->widget(\kartik\date\DatePicker::className(), [
                 'type' => kartik\datetime\DateTimePicker::TYPE_COMPONENT_PREPEND,
                 'pluginOptions' =>
                 [
@@ -121,15 +122,30 @@ use yii\web\JsExpression;
             ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'telefon')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
+            <?=
+            $form->field($model, 'bankverbindung_id', ['addon' => [
+                    'prepend' => ['content' => 'Bankinstitut']]])->widget(\kartik\widgets\Select2::classname(), [
+                'data' => \yii\helpers\ArrayHelper::map(backend\models\Bankverbindung::find()->asArray()->all(), 'id', 'institut'),
+                'options' => ['placeholder' => Yii::t('app', 'Bankverbindung selektieren')],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
+            ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
+            <?= $form->field($model, 'telefon',['addon' => [
+                    'prepend' => ['content' => 'Telefon']]])->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
+        </div>
+        <div class="col-md-4">
+            <?= $form->field($model, 'email',['addon' => [
+                    'prepend' => ['content' => 'Mail']]])->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
         </div>
 
         <div class="col-md-4">
             <?=
-            $form->field($model, 'aktualisiert_von')->widget(\kartik\widgets\Select2::classname(), [
+            $form->field($model, 'aktualisiert_von',['addon' => [
+                    'prepend' => ['content' => 'Aktualisiert von']]])->widget(\kartik\widgets\Select2::classname(), [
                 'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
                 'options' => ['placeholder' => Yii::t('app', 'Choose User')],
                 'pluginOptions' => [
@@ -138,11 +154,11 @@ use yii\web\JsExpression;
             ]);
             ?>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-4">
             <?=
             $form->field($model, 'solvenz')->widget(\kartik\checkbox\CheckboxX::classname(), [
                 'autoLabel' => true
-            ])->label(false);
+            ]);
             ?>
         </div>
     </div>
