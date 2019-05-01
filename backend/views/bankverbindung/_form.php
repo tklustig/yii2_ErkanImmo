@@ -57,7 +57,7 @@ use kartik\widgets\ActiveForm;
         <?php if (Yii::$app->controller->action->id != 'save-as-new'): ?>
             <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         <?php endif; ?>
-        <?= Html::a(Yii::t('app', 'Cancel'), ['/site/index'], ['class' => 'btn btn-danger']) ?>
+        <?= Html::a(Yii::t('app', 'Cancel'), ['/bankverbindung/index'], ['class' => 'btn btn-danger']) ?>
     </div>
     <?php ActiveForm::end(); ?>
 </div>

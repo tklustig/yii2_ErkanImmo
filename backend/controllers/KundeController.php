@@ -59,10 +59,8 @@ class KundeController extends Controller {
     }
 
     public function actionUpdate($id) {
-        $model = new Bankverbindung();
         $model = $this->findModel($id);
         $plzId = $model->l_plz_id;
-        $bankId = $model->bankverbindung_id;
         $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $modelE = new EDateianhang();
         $FkInEDatei = array();
@@ -82,11 +80,7 @@ class KundeController extends Controller {
             //den Plzstring in die Id zurück verwandeln
             $plzID = LPlz::findOne(['plz' => $model->lPlz->plz])->id;
             $model->l_plz_id = $plzID;
-            //den Bankstring in die Id zurück verwandeln
-            if (!empty(Bankverbindung::findOne(['id' => $model->bankverbindung_id]))) {
-                $bankID = Bankverbindung::findOne(['id' => $model->bankverbindung_id])->id;
-                $model->bankverbindung_id = $bankID;
-            }
+            //den Bankstring in die Id zurück verwandeln      
             $modelDateianhang->attachement = UploadedFile::getInstances($modelDateianhang, 'attachement');
             if ($modelDateianhang->uploadBackend($modelDateianhang))
                 $BoolAnhang = true;
@@ -113,7 +107,7 @@ class KundeController extends Controller {
                 return $this->render('update', [
                             'model' => $model,
                             'plz' => $plz,
-                            'id' => $bankId,
+                            'id' => $id,
                             'modelDateianhang' => $modelDateianhang
                 ]);
             }
@@ -176,7 +170,7 @@ class KundeController extends Controller {
             return $this->render('update', [
                         'model' => $model,
                         'plz' => $plz,
-                        'id' => $bankId,
+                        'id' => $id,
                         'modelDateianhang' => $modelDateianhang
             ]);
         }

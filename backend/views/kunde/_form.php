@@ -20,6 +20,18 @@ use yii\web\JsExpression;
     <div class="row">
         <div class="col-md-12">
             <?=
+            $form->field($model, 'bankverbindung_id', ['addon' => [
+                    'prepend' => ['content' => 'Bankinstitut']]])->widget(\kartik\widgets\Select2::classname(), [
+                'data' => \yii\helpers\ArrayHelper::map(backend\models\Bankverbindung::find()->asArray()->all(), 'id', 'institut'),
+                'options' => ['placeholder' => Yii::t('app', 'Bankverbindung selektieren')],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
+            ?>
+        </div>
+        <div class="col-md-12">
+            <?=
             /* 22.11.2017/tklustig/Initialisiert das Upload-Formular.Damit das multiple uploading klappt,muss die property als Array eingebunden werden
               In Zeile 61 wird an eine statische URL zurück gerendert. Dass koennte irgendwann einmal eine Fehlerquelle darstellen und muss dann behoben werden
              */
@@ -93,7 +105,7 @@ use yii\web\JsExpression;
         <div class="col-md-3">
             <?= $form->field($model, 'strasse')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <?=
             $form->field($model, 'geburtsdatum')->widget(\kartik\date\DatePicker::className(), [
                 'type' => kartik\datetime\DateTimePicker::TYPE_COMPONENT_PREPEND,
@@ -109,22 +121,9 @@ use yii\web\JsExpression;
             ?>
         </div>
         <div class="col-md-4">
-            <?=
-            $form->field($model, 'bankverbindung_id', ['addon' => [
-                    'prepend' => ['content' => 'Bankinstitut']]])->widget(\kartik\widgets\Select2::classname(), [
-                'data' => \yii\helpers\ArrayHelper::map(backend\models\Bankverbindung::find()->asArray()->all(), 'id', 'institut'),
-                'options' => ['placeholder' => Yii::t('app', 'Bankverbindung selektieren')],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]);
-            ?>
-
-        </div>
-        <div class="col-md-6">
             <?= $form->field($model, 'telefon')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => 'Strasse']) ?>
         </div>
 

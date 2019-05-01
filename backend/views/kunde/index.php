@@ -165,7 +165,7 @@ foreach ($session->getAllFlashes() as $flash) {
                 'delpic' => function ($id, $model) {
                     if (!empty(frontend\models\EDateianhang::findOne(['kunde_id' => $model->id]))) {
                         $fk = frontend\models\EDateianhang::findOne(['kunde_id' => $model->id])->id;
-                        return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/kunde/delpic', 'id' => $fk], ['title' => 'Kundenbild entfernen', 'data' => ['pjax' => '0']]);
+                        return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/kunde/delpic', 'id' => $fk], ['title' => 'Kundenbild ohne Rückfrage entfernen', 'data' => ['pjax' => '0']]);
                     }
                 },
                 'termin' => function ($id, $model) {
