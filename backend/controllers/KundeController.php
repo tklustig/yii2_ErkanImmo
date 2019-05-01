@@ -65,6 +65,7 @@ class KundeController extends Controller {
         $modelE = new EDateianhang();
         $modelBank = Bankverbindung::find()->all();
         $arrayOfBankPk = array();
+        $arrayOfDoubleBankPk = array();
         foreach ($modelBank as $item) {
             array_push($arrayOfBankPk, $item->id);
         }
