@@ -63,6 +63,11 @@ class KundeController extends Controller {
         $plzId = $model->l_plz_id;
         $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $modelE = new EDateianhang();
+        $modelBank = Bankverbindung::find()->all();
+        $arrayOfBankPk = array();
+        foreach ($modelBank as $item) {
+            array_push($arrayOfBankPk, $item->id);
+        }
         $FkInEDatei = array();
         $files = array();
         $bezeichnung = array();
@@ -76,6 +81,11 @@ class KundeController extends Controller {
             $plz = LPlz::findOne(['id' => $plzId])->plz;
         else
             $plz = "00000";
+        if (!empty(Bankverbindung::findOne(['id' => $model->bankverbindung_id])))
+            $hasBankConnection = true;
+        else
+            $hasBankConnection = false;
+        var_dump($hasBankConnection);
         if ($model->loadAll(Yii::$app->request->post()) && $modelDateianhang->loadAll(Yii::$app->request->post())) {
             //den Plzstring in die Id zurück verwandeln
             $plzID = LPlz::findOne(['plz' => $model->lPlz->plz])->id;
@@ -85,21 +95,8 @@ class KundeController extends Controller {
             if ($modelDateianhang->uploadBackend($modelDateianhang))
                 $BoolAnhang = true;
             if ($BoolAnhang && empty($modelDateianhang->l_dateianhang_art_id)) {
-                echo Growl::widget([
-                    'type' => Growl::TYPE_GROWL,
-                    'title' => 'Warning',
-                    'icon' => 'glyphicon glyphicon-ok-sign',
-                    'body' => 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen. Das soeben hochgeladene Kundenbild wurde wieder entfernt. Reselektieren Sie es ggf.',
-                    'showSeparator' => true,
-                    'delay' => 1500,
-                    'pluginOptions' => [
-                        'showProgressbar' => true,
-                        'placement' => [
-                            'from' => 'top',
-                            'align' => 'center',
-                        ]
-                    ]
-                ]);
+                $ausgabe = 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen. Das soeben hochgeladene Kundenbild wurde wieder entfernt. Reselektieren Sie es ggf.';
+                $this->message($ausgabe, 'Warnung', 1250, Growl::TYPE_WARNING);
                 foreach ($modelDateianhang->attachement as $uploadedFile) {
                     if (file_exists(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name))
                         FileHelper::unlink(Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $uploadedFile->name);
@@ -122,6 +119,24 @@ class KundeController extends Controller {
             if ($IsValid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 $model->save();
+                if (!$hasBankConnection) {
+                    $arrayOfBankKunde = array();
+                    $arrayOfBankKunde = $arrayOfBankPk;
+                    array_push($arrayOfBankKunde, $model->bankverbindung_id);
+                    $unique = array_unique($arrayOfBankKunde);
+                    $arrayOfDoubleBankPk = array_diff_assoc($arrayOfBankKunde, $unique);
+                }
+                if (!empty($arrayOfDoubleBankPk)) {
+                    $transaction->rollBack();
+                    $ausgabe = 'Diese Bankverbindung ist bereits einem anderen Kunden zugeordnet. Diese Applikation versucht, Mißbrauch zu verhindern!';
+                    $this->message($ausgabe);
+                    return $this->render('update', [
+                                'model' => $model,
+                                'plz' => $plz,
+                                'id' => $id,
+                                'modelDateianhang' => $modelDateianhang
+                    ]);
+                }
                 /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
                 $EDateianhang = EDateianhang::find()->all();
                 foreach ($EDateianhang as $treffer) {
