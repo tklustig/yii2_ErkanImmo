@@ -36,7 +36,7 @@ use kartik\widgets\FileInput;
 
             $form->field($modelDateianhang, 'attachement[]')->widget(FileInput::classname(), [
                 'options' => ['multiple' => true, 'placeholder' => Yii::t('app', 'Dateianhangsart')],
-                'pluginOptions' => ['allowedFileExtensions' => ['jpg', 'bmp', 'png', 'gif', 'docx', 'doc', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'pdf', 'txt', 'avi', 'mpeg', 'mp3', 'ico'],
+                'pluginOptions' => ['allowedFileExtensions' => ['jpg', 'jpeg', 'bmp', 'png', 'gif', 'psd', 'pcx', 'ico', 'docx', 'doc', 'xls', 'xlsx', 'csv', 'ppt', 'pptx', 'pdf', 'txt', 'avi', 'mpeg', 'mp3'],
                     'initialCaption' => "Hier ggf. Anhänge hochladen"],
             ]);
             ?>

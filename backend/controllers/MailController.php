@@ -511,6 +511,66 @@ class MailController extends Controller {
         return $text;
     }
 
+    public function actionAnhaenge($id) {
+        $bmp = '/bmp/';
+        $tif = '/tif/';
+        $png = '/png/';
+        $psd = '/psd/';
+        $pcx = '/pcx/';
+        $gif = '/gif/';
+        $jpeg = '/jpeg/';
+        $jpg = '/jpg/';
+        $ico = '/ico/';
+        $urlRoot = Yii::getAlias('@documentsMail') . DIRECTORY_SEPARATOR;
+        $modelDateianhang = Dateianhang::find()->where(['e_dateianhang_id' => $id])->all();
+        $arrayOfFilenames = array();
+        //Bundle 1
+        $arrayOfPics = array();
+        $arrayOfBezPics = array();
+        //Bundle 2
+        $arrayOfOther = array();
+        $arrayOfBezOther = array();
+        $id = Dateianhang::findOne(['e_dateianhang_id' => $id])->id;
+        foreach ($modelDateianhang as $item) {
+            array_push($arrayOfFilenames, $item->dateiname);
+            if (preg_match($bmp, $item->dateiname) || preg_match($tif, $item->dateiname) || preg_match($png, $item->dateiname) || preg_match($psd, $item->dateiname) || preg_match($pcx, $item->dateiname) || preg_match($gif, $item->dateiname) || preg_match($jpeg, $item->dateiname) || preg_match($jpg, $item->dateiname) || preg_match($ico, $item->dateiname)) {
+                array_push($arrayOfBezPics, $item->bezeichnung);
+            } else
+                array_push($arrayOfBezOther, $item->bezeichnung);
+        }
+        for ($i = 0; $i < count($arrayOfFilenames); $i++) {
+            if (preg_match($bmp, $arrayOfFilenames[$i]) || preg_match($tif, $arrayOfFilenames[$i]) || preg_match($png, $arrayOfFilenames[$i]) || preg_match($psd, $arrayOfFilenames[$i]) || preg_match($pcx, $arrayOfFilenames[$i]) || preg_match($gif, $arrayOfFilenames[$i]) || preg_match($jpeg, $arrayOfFilenames[$i]) || preg_match($jpg, $arrayOfFilenames[$i]) || preg_match($ico, $arrayOfFilenames[$i]))
+                array_push($arrayOfPics, $arrayOfFilenames[$i]);
+            else
+                array_push($arrayOfOther, $arrayOfFilenames[$i]);
+        }
+        if (count($arrayOfPics) > 0 && count($arrayOfOther) == 0) {
+            for ($i = 0; $i < count($arrayOfPics); $i++) {
+                copy($urlRoot . $arrayOfFilenames[$i], Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+            }
+            return $this->render('_form_mailanhaenge', [
+                        'arrayOfPics' => $arrayOfPics,
+                        'arrayOfBezPics' => $arrayOfBezPics,
+                        'id' => $id
+            ]);
+        } else if (count($arrayOfPics) == 0 && count($arrayOfOther) > 0)
+            return $this->render('_form_mailanhaenge', [
+                        'arrayOfOther' => $arrayOfOther,
+                        'arrayOfBezOther' => $arrayOfBezOther,
+                        'id' => $id
+            ]);
+        else if (count($arrayOfPics) > 0 && count($arrayOfOther) > 0) {
+            copy($urlRoot . $arrayOfFilenames[$i], Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+            return $this->render('_form_mailanhaenge', [
+                        'arrayOfPics' => $arrayOfPics,
+                        'arrayOfBezPic' => $arrayOfBezPics,
+                        'arrayOfOther' => $arrayOfOther,
+                        'arrayOfBezOther' => $arrayOfBezOther,
+                        'id' => $id
+            ]);
+        }
+    }
+
     //gekapselte Methoden
 
     private function findModel($id) {

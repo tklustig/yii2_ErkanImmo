@@ -113,6 +113,7 @@ return [
                 'mail_loeschen' => 'mail/delete',
                 'mail_stapelSingle' => 'mail/stapelone',
                 'mail_stapelSeveral' => 'mail/stapelseveral',
+                'mail_severallAnhaenge'=>'mail/anhaenge',
                 'deleteAll_pictures' => '/mail/deleteall',
                 'firma' => 'firma/index',
                 'firma_view' => 'firma/view',
