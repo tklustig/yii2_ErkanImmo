@@ -17,7 +17,7 @@ use yii\widgets\DetailView;
             'id',
             [
                 'attribute' => 'bodytext',
-                 'label' => Yii::t('app', 'Mailinhalt'),
+                'label' => Yii::t('app', 'Mailinhalt'),
                 'format' => 'html',
                 'hAlign' => 'center',
                 'value' => function($model) {
@@ -27,6 +27,17 @@ use yii\widgets\DetailView;
             [
                 'attribute' => 'mailserver.serverHost',
                 'label' => Yii::t('app', 'Mailserver'),
+            ],
+            [
+                'attribute' => 'dummy',
+                'label' => Yii::t('app', 'hat Anhänge'),
+                'value' => function($model, $id) {
+                    if (!empty(frontend\models\EDateianhang::findOne(['mail_id' => $model->id])))
+                        $giveBackValue = 'JA - sie können über die Büroklammer angezeigt werden.';
+                    else
+                        $giveBackValue = 'NEIN';
+                    return $giveBackValue;
+                }
             ],
             [
                 'attribute' => 'angelegt_am',

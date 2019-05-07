@@ -529,6 +529,9 @@ class MailController extends Controller {
         //Bundle 2
         $arrayOfOther = array();
         $arrayOfBezOther = array();
+        $sessionPHP = Yii::$app->session;
+        if (!$sessionPHP->isActive)
+            $sessionPHP->open();
         $id = Dateianhang::findOne(['e_dateianhang_id' => $id])->id;
         foreach ($modelDateianhang as $item) {
             array_push($arrayOfFilenames, $item->dateiname);
@@ -543,9 +546,13 @@ class MailController extends Controller {
             else
                 array_push($arrayOfOther, $arrayOfFilenames[$i]);
         }
+        if (!$sessionPHP->isActive)
+            $sessionPHP->open();
+        $sessionPHP['bilder'] = $arrayOfPics;
+        $sessionPHP->close();
         if (count($arrayOfPics) > 0 && count($arrayOfOther) == 0) {
             for ($i = 0; $i < count($arrayOfPics); $i++) {
-                copy($urlRoot . $arrayOfFilenames[$i], Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+                copy($urlRoot . $arrayOfPics[$i], Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $arrayOfPics[$i]);
             }
             return $this->render('_form_mailanhaenge', [
                         'arrayOfPics' => $arrayOfPics,
@@ -561,7 +568,7 @@ class MailController extends Controller {
         else if (count($arrayOfPics) > 0 && count($arrayOfOther) > 0) {
             for ($i = 0; $i < count($arrayOfPics); $i++) {
                 if (preg_match($bmp, $arrayOfPics[$i]) || preg_match($tif, $arrayOfPics[$i]) || preg_match($png, $arrayOfPics[$i]) || preg_match($psd, $arrayOfPics[$i]) || preg_match($pcx, $arrayOfPics[$i]) || preg_match($gif, $arrayOfPics[$i]) || preg_match($jpeg, $arrayOfPics[$i]) || preg_match($jpg, $arrayOfPics[$i]) || preg_match($ico, $arrayOfPics[$i])) {
-                    copy($urlRoot . $arrayOfFilenames[$i], Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+                    copy($urlRoot . $arrayOfPics[$i], Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $arrayOfPics[$i]);
                 }
             }
             return $this->render('_form_mailanhaenge', [
@@ -572,6 +579,12 @@ class MailController extends Controller {
                         'id' => $id
             ]);
         }
+    }
+
+    public function actionDocument($id) {
+        $filePath = Yii::getAlias('@documentsMail');
+        $completePath = $filePath . DIRECTORY_SEPARATOR . $id;
+        return Yii::$app->response->sendFile($completePath, $id);
     }
 
     //gekapselte Methoden

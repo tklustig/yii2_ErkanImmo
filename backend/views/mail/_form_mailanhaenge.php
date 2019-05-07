@@ -23,10 +23,12 @@ $urlRoot = Yii::getAlias('@documentsMail') . DIRECTORY_SEPARATOR;
                             for ($i = 0; $i < count($arrayOfPics); $i++) {
                                 ?><th><?=
                                     $arrayOfPics[$i] . '<br>' . $arrayOfBezPics[$i];
-                                    ?><td style="text-align:center" ><?=
+                                    ?></th><td style="text-align:center" ><?=
                                     Html::img($urlWeb . $arrayOfPics[$i], ['alt' => 'Pic not found', 'class' => 'img-circle', 'style' => 'width:125px;height:125px']);
-                                }
-                                ?> 
+                                    ?> 
+                                </td> <?php
+                            }
+                            ?> 
                         </tr>
                     </table>
                 </div>
@@ -40,9 +42,10 @@ $urlRoot = Yii::getAlias('@documentsMail') . DIRECTORY_SEPARATOR;
                             for ($i = 0; $i < count($arrayOfOther); $i++) {
                                 ?><th><?=
                                     $arrayOfOther[$i] . '<br>' . $arrayOfBezOther[$i];
-                                    //hier muss das Dokument im Browser angezeigt werden                                    
-                                    ?> 
-                                </th> <?php
+                                    ?></th><td><?=
+                                    Html::a('Doukument anzeigen', ['/mail/document', 'id' => $arrayOfOther[$i]], ['class' => 'btn btn-primary', 'target' => '_blank']);
+                                    ?>                                  
+                                </td> <?php
                             }
                             ?> 
                         </tr>
@@ -58,12 +61,12 @@ $urlRoot = Yii::getAlias('@documentsMail') . DIRECTORY_SEPARATOR;
                             for ($i = 0; $i < count($arrayOfPics); $i++) {
                                 ?><th><?=
                                     $arrayOfPics[$i] . '<br>' . $arrayOfBezPics[$i];
-                                    ?></th<td style="text-align:center" ><?=
+                                    ?></th><td style="text-align:center" ><?=
                                     Html::img($urlWeb . $arrayOfPics[$i], ['alt' => 'Pic not found', 'class' => 'img-circle', 'style' => 'width:125px;height:125px']);
                                     ?> 
-                                    </th> <?php
-                                }
-                                ?> 
+                                </td> <?php
+                            }
+                            ?> 
                         </tr>
                     </table>
                 </div>
@@ -74,9 +77,10 @@ $urlRoot = Yii::getAlias('@documentsMail') . DIRECTORY_SEPARATOR;
                             for ($i = 0; $i < count($arrayOfOther); $i++) {
                                 ?><th><?=
                                     $arrayOfOther[$i] . '<br>' . $arrayOfBezOther[$i];
-                                    //hier muss das Dokument im Browser angezeigt werden                                    
-                                    ?> 
-                                </th> <?php
+                                    ?></th><td><?=
+                                    Html::a('Doukument anzeigen', ['/mail/document', 'id' => $arrayOfOther[$i]], ['class' => 'btn btn-primary', 'target' => '_blank']);
+                                    ?>                                  
+                                </td> <?php
                             }
                             ?> 
                         </tr>

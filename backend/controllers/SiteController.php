@@ -84,6 +84,37 @@ class SiteController extends Controller {
             $message = 'Da Sie offensichtlich einen User gelöscht hatten, ist momentan kein User mehr angemeldet. Betätigen Sie bitte die Loginoption, rechts oben im Menu!';
             $this->Ausgabe($message, 'Warnung', 1500, Growl::TYPE_WARNING);
         }
+        $sessionPHP = Yii::$app->session;
+        if (!$sessionPHP->isActive)
+            $sessionPHP->open();
+        $pics = $sessionPHP['bilder'];
+        $path = Yii::getAlias('@picturesBackend');
+        $modelDateianhang = Dateianhang::find()->all();
+        $arrayOfAllFilenames = array();
+        foreach ($modelDateianhang as $item) {
+            array_push($arrayOfAllFilenames, $item->dateiname);
+        }
+        $arrayOfFilesNamesUnique = array_unique($arrayOfAllFilenames);
+        $arrayOfDifference = array_diff_assoc($arrayOfAllFilenames, $arrayOfFilesNamesUnique);
+        $arrayOfDifWithPath = array();
+        foreach ($arrayOfDifference as $item) {
+            $fileWithPath = $path . DIRECTORY_SEPARATOR . $item;
+            array_push($arrayOfDifWithPath, $fileWithPath);
+        }
+        if (is_array($pics) && $pics != null && count($pics) == 1) {
+            $file2BeDeleted = $path . DIRECTORY_SEPARATOR . $pics[0];
+            if (file_exists($file2BeDeleted) && !in_array($file2BeDeleted, $arrayOfDifWithPath)) {
+                FileHelper::unlink($file2BeDeleted);
+            }
+        } else if (is_array($pics) && $pics != null && count($pics) > 1) {
+            for ($i = 0; $i < count($pics); $i++) {
+                $file2BeDeleted = $path . DIRECTORY_SEPARATOR . $pics[$i];
+                if (file_exists($file2BeDeleted) && !in_array($file2BeDeleted, $arrayOfDifWithPath)) {
+                    FileHelper::unlink($file2BeDeleted);
+                }
+            }
+        }
+        $sessionPHP->close();
         return $this->render('index');
     }
 

@@ -115,6 +115,7 @@ return [
                 'mail_stapelSeveral' => 'mail/stapelseveral',
                 'mail_severallAnhaenge'=>'mail/anhaenge',
                 'deleteAll_pictures' => '/mail/deleteall',
+                'mail_document'=>'mail/document',
                 'firma' => 'firma/index',
                 'firma_view' => 'firma/view',
                 'firma_erzeugen' => 'firma/create',
