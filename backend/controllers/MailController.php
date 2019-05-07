@@ -388,6 +388,7 @@ class MailController extends Controller {
     public function actionDelete($id) {
         /* Zunächst muss dafür gesorgt werden, dass doppelt verwendete Dateien physikalisch nicht gelöscht werden. Dass muss vor dem Entfernen 
           der Records aus der Datenbank geschehen. Das eigentliche Löschen(s.u.) erfolgt dann erst, wenn die Records erfolgreich entfernt wurden */
+        $transaction = \Yii::$app->db->beginTransaction();
         try {
             $path = Yii::getAlias('@documentsMail');
             $modelDateianhang = Dateianhang::find()->all();
@@ -403,7 +404,6 @@ class MailController extends Controller {
                 array_push($arrayOfDifWithPath, $fileWithPath);
             }
             /* Jetzt sind alle erforderlichen Arrays für das weiter unter codierte physikalische Löschen gefüllt */
-            $transaction = \Yii::$app->db->beginTransaction();
             $mailHasBeenDeleted = false;
             $arrayOfFilenames = array();
             $arrayOfPkForDateiA = array();
@@ -433,7 +433,6 @@ class MailController extends Controller {
                 $this->findModel($id)->delete();
                 $session->addFlash('info', "Die Mail der Id:$id wurde erfolgreich gelöscht. Sie hatte Anhänge!");
             }
-            /* zum Debuggen auskommentieren */
             $transaction->commit();
             //...dann die Dateien physikalisch entfernen. Hier muss überprüft werden, ob Dateien doppelt genutzt werden(s.o.)
             if (!empty($arrayOfFilenames)) {
@@ -560,10 +559,14 @@ class MailController extends Controller {
                         'id' => $id
             ]);
         else if (count($arrayOfPics) > 0 && count($arrayOfOther) > 0) {
-            copy($urlRoot . $arrayOfFilenames[$i], Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+            for ($i = 0; $i < count($arrayOfPics); $i++) {
+                if (preg_match($bmp, $arrayOfPics[$i]) || preg_match($tif, $arrayOfPics[$i]) || preg_match($png, $arrayOfPics[$i]) || preg_match($psd, $arrayOfPics[$i]) || preg_match($pcx, $arrayOfPics[$i]) || preg_match($gif, $arrayOfPics[$i]) || preg_match($jpeg, $arrayOfPics[$i]) || preg_match($jpg, $arrayOfPics[$i]) || preg_match($ico, $arrayOfPics[$i])) {
+                    copy($urlRoot . $arrayOfFilenames[$i], Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+                }
+            }
             return $this->render('_form_mailanhaenge', [
                         'arrayOfPics' => $arrayOfPics,
-                        'arrayOfBezPic' => $arrayOfBezPics,
+                        'arrayOfBezPics' => $arrayOfBezPics,
                         'arrayOfOther' => $arrayOfOther,
                         'arrayOfBezOther' => $arrayOfBezOther,
                         'id' => $id

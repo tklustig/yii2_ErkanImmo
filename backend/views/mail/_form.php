@@ -44,7 +44,7 @@ use kartik\widgets\FileInput;
         <div class="col-md-6">
             <?=
             $form->field($modelDateianhang, 'l_dateianhang_art_id')->widget(\kartik\widgets\Select2::classname(), [
-                'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LDateianhangArt::find()->orderBy('id')->where(['id' => [12, 13]])->asArray()->all(), 'id', 'bezeichnung'),
+                'data' => \yii\helpers\ArrayHelper::map(\frontend\models\LDateianhangArt::find()->orderBy('id')->where(['id' => [12, 13, 15]])->asArray()->all(), 'id', 'bezeichnung'),
                 'options' => ['placeholder' => Yii::t('app', 'Dateianhangsart')],
                 'pluginOptions' => [
                     'allowClear' => true
