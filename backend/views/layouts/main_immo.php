@@ -101,7 +101,7 @@ $this->beginPage()
                             ],
                         ],
                         '<li class="divider"></li>',
-                        ['label' => '+++++++Kunden++++++++(ToComplete:Mail gezielt verschicken,Kundenbild löschen)', 'url' => ['#'],
+                        ['label' => '+++++++Kunden++++++++(ToComplete:Mail gezielt verschicken)', 'url' => ['#'],
                             'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                             'items' => [
                                 ['label' => 'Alle Kundendaten abrufen', 'url' => ['/kunde/index']],
