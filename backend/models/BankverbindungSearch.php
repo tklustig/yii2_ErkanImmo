@@ -22,7 +22,10 @@ class BankverbindungSearch extends Bankverbindung {
     }
 
     public function search($params) {
-        $query = Bankverbindung::find();
+        if (!empty($params['BankverbindungSearch']['kunde_id']))
+            $query = Bankverbindung::find()->where(['kunde_id' => $params['BankverbindungSearch']['kunde_id']]);
+        else
+            $query = Bankverbindung::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

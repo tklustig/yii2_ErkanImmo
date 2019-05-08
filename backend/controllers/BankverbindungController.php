@@ -39,9 +39,9 @@ class BankverbindungController extends Controller {
         }
         $searchModel = new BankverbindungSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        print_r('<br><br>');
+        /*print_r('<br><br>');
         var_dump(Yii::$app->request->queryParams);
-        print_r('Der Parameter kunde_id muss im Searchmodel entsprechend ausgewertet werden');
+        print_r('Der Parameter kunde_id muss im Searchmodel entsprechend ausgewertet werden');*/
         return $this->render('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
     }
 
