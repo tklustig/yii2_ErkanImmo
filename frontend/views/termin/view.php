@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-sm-12">
             <div class="upper" style="margin-top: 15px">
-                <?= Html::a(Yii::t('app', 'zur Immobilie'), ['immobilien/preview'], ['class' => 'btn btn-sucess']) ?>    
+                <?= Html::a(Yii::t('app', 'zur Übersicht'), ['site/index'], ['class' => 'btn btn-sucess']) ?>    
                 <?=
                 Html::a('<i class="fa glyphicon glyphicon-hand-up"></i> ' . Yii::t('app', 'PDF'), ['pdf', 'id' => $model->id], [
                     'class' => 'btn btn-default',
@@ -50,8 +50,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute' => 'angelegt_von',
                         'label' => Yii::t('app', 'Kunde'),
-                        'value' => function($model) {
-                            ($model->angelegt_von) ? $value = $model->angelegtVon->nachname . ", " . $model->angelegtVon->vorname : $value = 'kein Kunde vorhanden';
+                        'value' => function($model, $id) {
+                            $fk = \frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $model->id])->kunde_id;
+                            $name = \frontend\models\Kunde::findOne(['id' => $fk])->vorname . ',' . \frontend\models\Kunde::findOne(['id' => $fk])->nachname;
+                            ($model->angelegt_von) ? $value = $name : $value = 'kein Kunde vorhanden';
                             return $value;
                         }
                     ],

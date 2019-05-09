@@ -14,6 +14,7 @@ use yii\db\Query;
 use kartik\growl\Growl;
 use yii\web\Session;
 use yii\helpers\Html;
+use yii\validators\EmailValidator;
 //eigene Klassen
 use frontend\models\Immobilien;
 use frontend\models\LPlz;
@@ -22,6 +23,7 @@ use frontend\models\Kundeimmobillie;
 use frontend\models\Adminbesichtigungkunde;
 use backend\models\Firma;
 use backend\models\LBegriffe;
+use backend\models\Mailserver;
 
 class TerminController extends Controller {
 
@@ -122,6 +124,7 @@ class TerminController extends Controller {
         $modelKunde = new Kunde();
         $modelKundeImmo = new Kundeimmobillie();
         $modelAdminBesKunde = new Adminbesichtigungkunde();
+        $checkMail = new EmailValidator();
         if ($model->load(Yii::$app->request->post()) && $modelKunde->load(Yii::$app->request->post())) {
             if ($modelKunde->l_plz_id == "")
                 $modelKunde->l_plz_id = null;
@@ -213,23 +216,34 @@ class TerminController extends Controller {
                     $zaehler += 1;
             }
             if ($zaehler == 10) {
-                if (filter_var($arrayOfBegriffe[7], FILTER_VALIDATE_EMAIL)) {
+                if (!$checkMail->validate($arrayOfBegriffe[7]))
+                    $arrayOfBegriffe[7] = substr($arrayOfBegriffe[7], 0, -1);
+                if (!$checkMail->validate($arrayOfBegriffe[7]))
+                    $arrayOfBegriffe[7] = substr($arrayOfBegriffe[7], 0, -1);
+                if ($checkMail->validate($arrayOfBegriffe[7])) {
                     $mailIsValid = true;
-                    $from = $arrayOfBegriffe[7];
+                    $zielAdresse = $arrayOfBegriffe[7];
                 }
             }
             if ($mailIsValid) {
                 $maklerId = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $model->id])->admin_id;
                 $maklerName = User::findOne(['id' => $maklerId])->username;
-                $zielAdresse = $modelKunde->email;
-                $betreff = 'Besichtigungstermin mit' . $modelKunde->geschlecht0->typus . ' ' . $modelKunde->vorname . ' ' . $modelKunde->nachname;
-                $content = "Für den Makler $maklerName wurde ein Besichtigungstermin vereinbart. Bitte rufen Sie im Backend die Besichtigungstermine ab!";
-                if (!$this->SendMail($from, $zielAdresse, $betreff, $content))
-                    $session->addFlash('info', 'Die Bestätigungsmail konnte nicht verschickt werden. Unser Makler wird sich telefonisch bei Ihnen melden.');
+                $from = $zielAdresse;
+                $betreff = 'Besichtigungstermin mit ' . $modelKunde->geschlecht0->typus . ' ' . $modelKunde->vorname . ' ' . $modelKunde->nachname;
+                $content = "Für den Makler $maklerName wurde ein Besichtigungstermin vereinbart. Bitte rufen Sie im Backend die Besichtigungstermine ab! Die Mail des Kunden von der Betreffzeile lautet $modelKunde->mail!";
+                if (!$this->SendMail($from, $zielAdresse, $betreff, $content)) {
+                    if (!empty($modelKunde->telefon))
+                        $session->addFlash('info', 'Die Bestätigungsmail konnte nicht verschickt werden. Unser Makler wird sich telefonisch bei Ihnen melden.');
+                    else
+                        $session->addFlash('info', "Die Bestätigungsmail konnte nicht verschickt werden. Da sie keine Telefonummer hinterlegt haben, können wir diesen Termin leider nicht bestätigen. Kontaktieren sie uns unter der Nummer $arrayOfBegriffe[5]");
+                } else
+                    $session->addFlash('info', "Der Besichtigungtermin wurde per Mail an unseren Makler $maklerName weitergeleitet. Er wird sich mit Ihnen alsbald schriftlich in Verbindung setzen.");
+            } else {
+                if (!empty($modelKunde->telefon))
+                    $session->addFlash('info', 'Da der Admin nicht alle Firmendaten gepflegt hat, konnte die Bestätigungsmail nicht verschickt werden. Unser Makler wird sich telefonisch bei Ihnen melden.');
                 else
-                    $session->addFlash('info', "Der Besichtigungtermin wurde per Mail an unseren Makler $maklerName weitergeleitet. Er wird sich mit Ihnen in Verbindung setzen.");
-            } else
-                $session->addFlash('info', 'Da der Admin nicht alle Firmendaten gepflegt hat, konnte die Bestätigungsmail konnte nicht verschickt werden. Unser Makler wird sich telefonisch bei Ihnen melden.');
+                    $session->addFlash('info', "Da der Admin nicht alle Firmendaten gepflegt hat, konnte die Bestätigungsmail nicht verschickt werden. Da sie keine Telefonummer hinterlegt haben, können wir diesen Termin leider nicht bestätigen. Kontaktieren sie uns unter der Nummer $arrayOfBegriffe[5]");
+            }
             return $this->redirect(['view', 'id' => $model->id]);
         }
         return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
@@ -518,18 +532,18 @@ class TerminController extends Controller {
         $SendObject = $this->FetchMailServerData();
         if (!$SendObject)
             return false;
-        try {
-            $SendObject = Yii::$app->mailer->compose()
-                    ->setFrom($from)
-                    ->setTo($zielAdresse)
-                    ->setSubject($betreff)
-                    ->setHtmlBody($content)
-                    ->setTextBody($content)
-                    ->send();
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
+        //try {
+        $SendObject = Yii::$app->mailer->compose()
+                ->setFrom($from)
+                ->setTo($zielAdresse)
+                ->setSubject($betreff)
+                ->setHtmlBody($content)
+                ->setTextBody($content)
+                ->send();
+        return true;
+        //} catch (\Exception $e) {
+        //  return false;
+        // }
     }
 
 }

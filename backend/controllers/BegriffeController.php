@@ -77,6 +77,17 @@ class BegriffeController extends Controller {
             $model = $this->findModelBegriffe($id);
         }
         if ($model->loadAll(Yii::$app->request->post())) {
+            $model->data = strip_tags($model->data);
+            if (strlen($model->data) < 4 + 2) {
+                $message = "Ein fast leeres Feld bringt das Frontend durcheinander, da dort alle Begriffe dieser Tabelle ausgelesen werden!<br> Begriffe unter 4 Buchstaben werden folglich nicht akzeptiert.";
+                $this->Ausgabe($message);
+                $searchModel = new LBegriffeSearch();
+                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+                return $this->render('index', [
+                            'searchModel' => $searchModel,
+                            'dataProvider' => $dataProvider,
+                ]);
+            }
             $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {

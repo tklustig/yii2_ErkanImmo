@@ -22,7 +22,7 @@ use kartik\widgets\ActiveForm;
             <?=
             $form->field($model, 'data', ['addon' => [
                     'prepend' => ['content' => 'Inhalt']]])->widget(\dosamigos\ckeditor\CKEditor::className(), [
-                'preset' => 'full', 'clientOptions' => ['height' => 400],
+                'preset' => 'full', 'clientOptions' => ['height' => 100],
             ])
             ?>
         </div>

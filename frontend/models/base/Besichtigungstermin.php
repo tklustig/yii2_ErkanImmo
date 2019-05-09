@@ -60,9 +60,9 @@ class Besichtigungstermin extends \yii\db\ActiveRecord
         return $this->hasOne(\frontend\models\Immobilien::className(), ['id' => 'Immobilien_id']);
     }
 
-    public function getAngelegtVon()
+    public function getAktualisiertVon()
     {
-        return $this->hasOne(\frontend\models\Kunde::className(), ['id' => 'angelegt_von']);
+        return $this->hasOne(\frontend\models\Kunde::className(), ['id' => 'aktualisiert_von']);
     }
 
     public function behaviors()

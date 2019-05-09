@@ -16,6 +16,16 @@ use yii\widgets\DetailView;
         $dummy = 'id';
         $gridColumn = [
             'id',
+            [
+                'attribute' => 'dummy',
+                'label' => Yii::t('app', 'wurde gemacht mit'),
+                'value' => function($model, $id) {
+                    $kundeId = frontend\models\Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $model->id])->kunde_id;
+                    $kundeGeschelcht = \frontend\models\Kunde::findOne(['id' => $kundeId])->geschlecht0->typus;
+                    $kundenName = \frontend\models\Kunde::findOne(['id' => $kundeId])->vorname . ", " . \frontend\models\Kunde::findOne(['id' => $kundeId])->nachname;
+                    return $kundeGeschelcht . " " . $kundenName;
+                },
+            ],
             'uhrzeit',
             [
                 'attribute' => 'Relevanz',

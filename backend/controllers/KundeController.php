@@ -9,6 +9,7 @@ use frontend\models\LPlz;
 use backend\models\Bankverbindung;
 use frontend\models\Dateianhang;
 use frontend\models\EDateianhang;
+use frontend\models\Kundeimmobillie;
 use common\classes\error_handling;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -216,13 +217,15 @@ class KundeController extends Controller {
     }
 
     public function actionDelete($id) {
+        $transaction = Yii::$app->db->beginTransaction();
         try {
             $session = new Session();
+            $pkOfKundeImmo = Kundeimmobillie::findOne(['kunde_id' => $id])->id;
+            $this->findModelKundeImmo($pkOfKundeImmo)->delete();
             $this->findModel($id)->delete();
             $session->addFlash('info', "Der Kunde mit der Id:$id wurde aus der Datenbank entfernt!");
-            return $this->redirect(['/site/index']);
         } catch (IntegrityException $er) {
-            $message = "Der Kunde mit der Id:$id kann nicht gelöscht werden, da das gegen die referentielle Integrität verstößt. Löschen Sie zunächst die korrespondierenden Bankdaten, Besichtigungstermnie und Bilder!";
+            $message = "Der Kunde mit der Id:$id kann nicht gelöscht werden, da das gegen die referentielle Integrität verstößt. Löschen Sie zunächst die korrespondierenden Bankdaten, Besichtigungstermine und Bilder!";
             $this->message($message, 'Error', 1500, Growl::TYPE_DANGER);
             $searchModel = new KundeSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -231,6 +234,8 @@ class KundeController extends Controller {
                         'dataProvider' => $dataProvider,
             ]);
         }
+        $transaction->commit();
+        return $this->redirect(['/site/index']);
     }
 
     public function actionPdf($id) {
@@ -356,6 +361,14 @@ class KundeController extends Controller {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'Das Model EDateianhang konnte nicht gealden werden. Informieren Sie den Softwarehersteller'));
+        }
+    }
+
+    protected function findModelKundeImmo($id) {
+        if (($model = Kundeimmobillie::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', 'Das Model KundeImmobilie konnte nicht geladen werden. Informieren Sie den Softwarehersteller'));
         }
     }
 
