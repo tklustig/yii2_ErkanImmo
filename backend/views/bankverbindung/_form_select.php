@@ -32,7 +32,7 @@ foreach ($modelKunde as $item) {
     <div class="jumbotron">
         <div class="container">
             <div class="col-md-12">
-                <p>Bitte treffen Sie eine Vorauswahl, für welchen Kunden Sie die Bankdaten eingeben wollen..</p>
+                <p>Bitte treffen Sie eine Vorauswahl, für welchen Kunden Sie die Bankdaten eingeben wollen. Zur Wahl siehe Bemerkung oben!</p>
                 <?=
                 $form->field($DynamicModel, 'kunde', ['addon' => [
                         'prepend' => ['content' => 'Typ']]])->widget(\kartik\widgets\Select2::classname(), [
