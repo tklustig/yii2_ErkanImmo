@@ -21,6 +21,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="besichtigungstermin-index">
     <center>
         <h1><?= Html::encode($this->title) ?></h1>
+        <?php
+        if (!empty($abgelaufenMessage))
+            echo '<font color="red">' . $abgelaufenMessage . '</font>';
+        ?>
     </center>
     <?php Pjax::begin(); ?>
     <?php
@@ -39,6 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 return Yii::$app->controller->renderPartial('_expand', ['model' => $model]);
             }
         ],
+        'id',
         [
             'attribute' => 'id',
             'label' => Yii::t('app', 'Immobilien-Id'),
@@ -67,7 +72,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 return $begriff;
             }
         ],
-        'uhrzeit',
+        [
+            'attribute' => 'uhrzeit',
+            'label' => Yii::t('app', 'DateTime'),
+            'value' => function($model) {
+                $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $model->uhrzeit);
+                return $dateTime->format('d-m-Y H:i:s');
+            }
+        ],
         [
             'class' => 'kartik\grid\BooleanColumn',
             'attribute' => 'Relevanz',
@@ -88,10 +100,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a('<span class="glyphicon glyphicon-home"></span>', ['/termin/link', 'id' => $model->id, 'header' => $header], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
                 },
                 'kundenmap' => function ( $id, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-download"></span>', ['/termin/map', 'id' => $model->id], ['title' => 'Kundenwohnort in Karte anzeigen. Blendet danach alle Termine ein', 'data' => ['pjax' => '0']]);
+                    return Html::a('<span class="glyphicon glyphicon-download"></span>', ['/termin/map', 'id' => $model->id], ['title' => 'Treffpunkt in Karte anzeigen. Blendet danach alle Termine ein', 'data' => ['pjax' => '0']]);
                 },
                 'immomap' => function ( $id, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-upload"></span>', ['/termin/googlemap', 'id' => $model->id], ['title' => 'Treffpunkt in Karte anzeigen. Blendet danach alle Termine ein', 'data' => ['pjax' => '0']]);
+                    return Html::a('<span class="glyphicon glyphicon-upload"></span>', ['/termin/googlemap', 'id' => $model->id], ['title' => 'Immobilie in Karte anzeigen. Blendet danach alle Termine ein', 'data' => ['pjax' => '0']]);
                 },
             /* 'update' => function ( $id, $model) {
               return Html::a('<span class="glyphicon glyphicon-pencil"></span>', ['/termin/update', 'id' => $model->id], ['title' => 'Bearbeiten']);

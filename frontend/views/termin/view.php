@@ -35,8 +35,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 $maklerName = \common\models\User::findOne(['id' => $maklerId])->username;
             } else
                 $maklerName = "Unknown";
+            $datetime = $model->uhrzeit;
+            $giveBackValue = date('d-m-Y H:i:s', strtotime($datetime));
             ?>
-            <center><h3>Unser Makler Herr/Frau <?= $maklerName ?> wird sich am <?= $model->uhrzeit ?> Uhr bei Ihnen vor Ort in  <?= $wohnortKunde ?> treffen, um die Immobilie in <?= $immoPlace ?> zu begutachten.</h3>
+            <center><h3>Unser Makler Herr/Frau <?= $maklerName ?> wird sich am <?= $giveBackValue ?> Uhr bei Ihnen vor Ort in  <?= $wohnortKunde ?> treffen, um die Immobilie in <?= $immoPlace ?> zu begutachten.</h3>
                 <p>Pushen sie auf den weiß-grauen PDF Button, um ein Dokument für Ihre Unterlagen zu erstellen.</p></center>
         </div>
         <div class="col-md-12">

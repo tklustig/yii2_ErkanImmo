@@ -66,12 +66,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 ['class' => 'yii\grid\SerialColumn'],
                 ['attribute' => 'id', 'visible' => false],
                 'l_plz_id',
-                'geschlecht',
+                'geschlecht0.typus',
                 'vorname',
                 'nachname',
                 'stadt',
                 'strasse',
-                'geburtsdatum',
+                [
+                    'attribute' => 'geburtsdatum',
+                    'label' => Yii::t('app', 'Geburtsdatum'),
+                    'value' => function($model) {
+                        $expression = new yii\db\Expression('NOW()');
+                        $now = (new yii\db\Query)->select($expression)->scalar();
+                        $diff = strtotime($now) - strtotime($model->geburtsdatum);
+                        $hours = floor($diff / (60 * 60));
+                        $year = floor($hours / 24 / 365);
+                        $output = 'geboren am ' . date("d.m.Y", strtotime($model->geburtsdatum)) . ' => ' . $year . " Jahre alt";
+                        return $output;
+                    }
+                ],
                 [
                     'class' => 'kartik\grid\BooleanColumn',
                     'attribute' => 'solvenz',

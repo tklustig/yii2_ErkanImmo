@@ -136,10 +136,10 @@ $dummy = 'id';
                     return Html::a('<span class="glyphicon glyphicon-home"></span>', ['/termin/link', 'id' => $model->id, 'header' => $header], ['title' => 'Interessent anzeigen', 'data' => ['pjax' => '0']]);
                 },
                 'kundenmap' => function ( $id, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-download"></span>', ['/termin/map', 'id' => $model->id], ['title' => 'Kundenwohnort in Karte anzeigen. Blendet danach alle Termine ein', 'data' => ['pjax' => '0']]);
+                    return Html::a('<span class="glyphicon glyphicon-download"></span>', ['/termin/map', 'id' => $model->id], ['title' => 'Treffpunkt in Karte anzeigen. Blendet danach alle Termine ein', 'data' => ['pjax' => '0']]);
                 },
                 'immomap' => function ( $id, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-upload"></span>', ['/termin/googlemap', 'id' => $model->id], ['title' => 'Treffpunkt in Karte anzeigen. Blendet danach alle Termine ein', 'data' => ['pjax' => '0']]);
+                    return Html::a('<span class="glyphicon glyphicon-upload"></span>', ['/termin/googlemap', 'id' => $model->id], ['title' => 'Immobilie in Karte anzeigen. Blendet danach alle Termine ein', 'data' => ['pjax' => '0']]);
                 },
               /*  'update' => function ( $id, $model) {
                     return Html::a('<span class="glyphicon glyphicon-pencil"></span>', ['/termin/update', 'id' => $model->id], ['title' => 'Bearbeiten']);

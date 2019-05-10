@@ -12,6 +12,8 @@ use kartik\growl\Growl;
 
 class MailserverController extends Controller {
 
+    const RenderBackInCaseOfError = '/mailserver/index';
+
     public function behaviors() {
         return [
             'verbs' => [
@@ -60,7 +62,7 @@ class MailserverController extends Controller {
                 $transaction->commit();
             } catch (yii\db\Exception $e) {
                 $transaction->rollBack();
-                error_handling::ErrorWithoutId($e, MailController::RenderBackInCaseOfError);
+                \common\classes\error_handling::error_without_id($e, MailserverController::RenderBackInCaseOfError);
             }
             return $this->redirect(['view', 'id' => $model->id]);
         } else {

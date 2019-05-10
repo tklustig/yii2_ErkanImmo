@@ -15,6 +15,7 @@ use kartik\growl\Growl;
 use yii\web\Session;
 use yii\helpers\Html;
 use yii\validators\EmailValidator;
+use DateTime;
 //eigene Klassen
 use frontend\models\Immobilien;
 use frontend\models\LPlz;
@@ -69,6 +70,22 @@ class TerminController extends Controller {
             }
         }
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $now = (new DateTime('now'))->format('Y-m-d H:i:s');
+        $modelTermineAbgelaufen = Besichtigungstermin::find()->where(['<', 'uhrzeit', $now])->all();
+        $arrayOfAbgelaufen = array();
+        foreach ($modelTermineAbgelaufen as $item) {
+            array_push($arrayOfAbgelaufen, $item->id);
+        }
+        sort($arrayOfAbgelaufen);
+        $abgelaufenMessage = '';
+        if (count($arrayOfAbgelaufen) == 1) {
+            $abgelaufenMessage = "<p>Genau ein Besichtigungstermin mit der Id $arrayOfAbgelaufen[0] ist veraltet. Sie sollten ihn löschen!</p>";
+        } else if (count($arrayOfAbgelaufen) > 1) {
+            $abgelaufenMessage = '<h3><font color="#8258FA">Mehrere Besichtigungstermine sind veraltet</h3></font>';
+            for ($i = 0; $i < count($arrayOfAbgelaufen); $i++) {
+                $abgelaufenMessage .= "<label>Der Besichtigungstermin mit der Id $arrayOfAbgelaufen[$i] ist veraltet. Sie sollten ihn löschen.</label><br>";
+            }
+        }
         //wurden keine Besichtigungstermine gefunden, aber danach gesucht?
         if ($id != null && empty($arrayOfFk)) {
             $message = 'Für diesen Makler wurde noch kein Besichtigungstermin festgelegt. Wir raten zur umgehender Kündigung dieser faulen Ratte.';
@@ -81,13 +98,14 @@ class TerminController extends Controller {
             return $this->render('index', [
                         'searchModel' => $searchModel,
                         'dataProvider' => $dataProvider,
-                        'header' => $header
+                        'header' => $header,
             ]);
             //nix traf zu? Dann render die index ohne Einschränkungen
         } else {
             return $this->render('index', [
                         'searchModel' => $searchModel,
                         'dataProvider' => $dataProvider,
+                        'abgelaufenMessage' => $abgelaufenMessage
             ]);
         }
     }
@@ -117,136 +135,169 @@ class TerminController extends Controller {
     }
 
     public function actionCreate($id) {
-        $session = new Session();
-        $arrayOfErrors = array();
-        $this->layout = "main_immo";
-        $model = new Besichtigungstermin();
-        $modelKunde = new Kunde();
-        $modelKundeImmo = new Kundeimmobillie();
-        $modelAdminBesKunde = new Adminbesichtigungkunde();
-        $checkMail = new EmailValidator();
-        if ($model->load(Yii::$app->request->post()) && $modelKunde->load(Yii::$app->request->post())) {
-            if ($modelKunde->l_plz_id == "")
-                $modelKunde->l_plz_id = null;
-            if (empty($modelKunde->telefon) && empty($modelKunde->email)) {
-                $message = "Bitte geben Sie entweder eine Telefonnumer oder eine Mailadresse an!";
-                $this->message($message, 'Warnung', 1250, Growl::TYPE_WARNING);
-                return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
-            }
-            //handle ForeignKey Immobilien_id in table besichtigungstermin
-            $immoId = Immobilien::findOne(['id' => $id])->id;
-            $model->Immobilien_id = $immoId;
-            preg_match("/(\d{4})-\d{2}-\d{2} +(\d{2}):\d{2}:\d{2}/", $model->uhrzeit, $matches);
-            $wholeString = $matches[0];
-            $year = $matches[1];
-            $hour = $matches[2];
-            if ($hour < 6 || $hour > 19) {
-                $maklerId = $model->angelegt_von;
-                $makler = User::findOne(['id' => $maklerId])->username;
-                $message = "Uhrzeit ist außerhalb der Arbeitszeiten unserer Makler's Herr/Frau $makler.";
-                $this->message($message);
-                return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
-            }
-            //Die Überprüfung der Strasse auf eine Hausnummer klappt mit dem pregmatchPattern
-            $string2Array = explode(' ', $modelKunde->strasse);
-            if (count($string2Array) < 1)
-                $bool = false;
-            else
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $session = new Session();
+            $arrayOfErrors = array();
+            $this->layout = "main_immo";
+            $model = new Besichtigungstermin();
+            $modelKunde = new Kunde();
+            $modelKundeImmo = new Kundeimmobillie();
+            $modelAdminBesKunde = new Adminbesichtigungkunde();
+            $checkMail = new EmailValidator();
+            $isAlreadyInDatabase = false;
+            if ($model->load(Yii::$app->request->post()) && $modelKunde->load(Yii::$app->request->post())) {
+                if ($modelKunde->l_plz_id == "")
+                    $modelKunde->l_plz_id = null;
+                if (empty($modelKunde->telefon) && empty($modelKunde->email)) {
+                    $message = "Bitte geben Sie entweder eine Telefonnumer oder eine Mailadresse an!";
+                    $this->message($message, 'Warnung', 1250, Growl::TYPE_WARNING);
+                    return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
+                }
+                $modelKundeExists = Kunde::find()->all();
+                $arrayOfKunde = array();
+                foreach ($modelKundeExists as $item) {
+                    array_push($arrayOfKunde, $item->vorname);
+                    array_push($arrayOfKunde, $item->nachname);
+                }
+                if (in_array($modelKunde->vorname, $arrayOfKunde) && in_array($modelKunde->nachname, $arrayOfKunde)) {
+                    $session->addFlash('info', 'Das System hat erkannt, dass Sie bereits in der Datenbank vermerkt sind. Unser Makler wird Sie auf diesen Umstand ansprechen.');
+                    $isAlreadyInDatabase = true;
+                }
+                //handle ForeignKey Immobilien_id in table besichtigungstermin
+                $immoId = Immobilien::findOne(['id' => $id])->id;
+                $model->Immobilien_id = $immoId;
+                preg_match("/(\d{4})-\d{2}-\d{2} +(\d{2}):\d{2}:\d{2}/", $model->uhrzeit, $matches);
+                $wholeString = $matches[0];
+                $year = $matches[1];
+                $hour = $matches[2];
+                if ($hour < 6 || $hour > 19) {
+                    $maklerId = $model->angelegt_von;
+                    $makler = User::findOne(['id' => $maklerId])->username;
+                    $message = "Uhrzeit ist außerhalb der Arbeitszeiten unserer Makler's Herr/Frau $makler.";
+                    $this->message($message);
+                    return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
+                }
+                /* Die Überprüfung der Strasse auf eine Hausnummer klappt mit dem pregmatchPattern
+                  $string2Array = explode(' ', $modelKunde->strasse);
+                  if (count($string2Array) < 1)
+                  $bool = false;
+                  else
+                  $bool = true;
+                  if ($bool) {
+                  $pattern = '/(\d+)[\s\-]*([a-zA-Z]*)/';
+                  foreach ($string2Array as $item) {
+                  $result = preg_match($pattern, $item, $matches);
+                  if ($result)
+                  $bool = true;
+                  else
+                  $bool = false;
+                  }
+                  }
+                  if (!$bool) {
+                  $message = "Die Strasse enthält keine vom Namen abgesonderte Hausnummer.";
+                  $this->message($message, 'Error', 1250, Growl::TYPE_DANGER);
+                  return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
+                  }
+
+                 */
                 $bool = true;
-            if ($bool) {
-                $pattern = '/(\d+)[\s\-]*([a-zA-Z]*)/';
-                foreach ($string2Array as $item) {
-                    $result = preg_match($pattern, $item, $matches);
-                    if ($result)
-                        $bool = true;
+                $model->validate();
+                if (!$model->validate()) {
+                    $arrayOfErrors[0] = '<center><h2>ModelBesichtigungstermin ist invalide</h2></center>';
+                    $bool = false;
+                }
+                $modelKunde->validate();
+                if (!$modelKunde->validate()) {
+                    if (count($arrayOfErrors) == 1)
+                        $arrayOfErrors[1] = '<center><h2>ModelKunde ist invalide</h2></center>';
                     else
-                        $bool = false;
+                        $arrayOfErrors[0] = '<center><h2>ModelKunde ist invalide</h2></center>';
+                    $bool = false;
                 }
-            }
-            if (!$bool) {
-                $message = "Die Strasse enthält keine vom Namen abgesonderte Hausnummer.";
-                $this->message($message, 'Error', 1250, Growl::TYPE_DANGER);
-                return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
-            }
-            $model->validate();
-            if (!$model->validate()) {
-                $arrayOfErrors[0] = '<center><h2>ModelBesichtigungstermin ist invalide</h2></center>';
-                $bool = false;
-            }
-            $modelKunde->validate();
-            if (!$modelKunde->validate()) {
-                if (count($arrayOfErrors) == 1)
-                    $arrayOfErrors[1] = '<center><h2>ModelKunde ist invalide</h2></center>';
-                else
-                    $arrayOfErrors[0] = '<center><h2>ModelKunde ist invalide</h2></center>';
-                $bool = false;
-            }
-            if (!$bool) {
-                print_r('<br><br>');
-                print_r('Fehler während der Validierung der Datenbankklassen. Bitte informieren Sie den Softwarehersteller unter Angabe folgender Meldungen:');
-                for ($i = 0; $i < count($arrayOfErrors); $i++) {
-                    print_r($arrayOfErrors[$i]);
+                if (!$bool) {
+                    print_r('<br><br>');
+                    print_r('Fehler während der Validierung der Datenbankklassen. Bitte informieren Sie den Softwarehersteller unter Angabe folgender Meldungen:');
+                    for ($i = 0; $i < count($arrayOfErrors); $i++) {
+                        print_r($arrayOfErrors[$i] . '<br>');
+                    }
+                    var_dump('Modelerrors:' . $model->getErrors());
+                    var_dump('Matches:' . $matches);
+                    die();
                 }
-                var_dump('Modelerrors:' . $model->getErrors());
-                var_dump('Matches' . $matches);
-                die();
-            }
-            //ToDo: Die gesamten Schreibprozesse bzgl. der Datenbank müssen eigentlich in eine Tranaction verfrachtet werden
-            $maklerSollBearbeiten = $model->angelegt_von;
-            $modelKunde->angelegt_von = $maklerSollBearbeiten;
-            $modelKunde->save();
-            $model->angelegt_von = $modelKunde->id;
-            $model->save();
-            $modelKundeImmo->kunde_id = $modelKunde->id;
-            $modelKundeImmo->immobilien_id = $immoId;
-            $modelKundeImmo->save();
-            $modelAdminBesKunde->besichtigungstermin_id = $model->id;
-            $modelAdminBesKunde->admin_id = $maklerSollBearbeiten;
-            $modelAdminBesKunde->kunde_id = $modelKunde->id;
-            $modelAdminBesKunde->save();
-            $modelBegriffe = LBegriffe::find()->all();
-            $arrayOfBegriffe = array();
-            foreach ($modelBegriffe as $item) {
-                array_push($arrayOfBegriffe, $item->data);
-            }
-            $zaehler = 0;
-            $mailIsValid = false;
-            for ($i = 0; $i < count($arrayOfBegriffe); $i++) {
-                if ($arrayOfBegriffe[$i] != "")
-                    $zaehler += 1;
-            }
-            if ($zaehler == 10) {
-                if (!$checkMail->validate($arrayOfBegriffe[7]))
-                    $arrayOfBegriffe[7] = substr($arrayOfBegriffe[7], 0, -1);
-                if (!$checkMail->validate($arrayOfBegriffe[7]))
-                    $arrayOfBegriffe[7] = substr($arrayOfBegriffe[7], 0, -1);
-                if ($checkMail->validate($arrayOfBegriffe[7])) {
-                    $mailIsValid = true;
-                    $zielAdresse = $arrayOfBegriffe[7];
+                //ToDo: Die gesamten Schreibprozesse bzgl. der Datenbank müssen eigentlich in eine Tranaction verfrachtet werden
+                $maklerSollBearbeiten = $model->angelegt_von;
+                $modelKunde->angelegt_von = $maklerSollBearbeiten;
+                $modelKunde->save();
+                $model->angelegt_von = $modelKunde->id;
+                $model->save();
+                $modelKundeImmo->kunde_id = $modelKunde->id;
+                $modelKundeImmo->immobilien_id = $immoId;
+                $modelKundeImmo->save();
+                $modelAdminBesKunde->besichtigungstermin_id = $model->id;
+                $modelAdminBesKunde->admin_id = $maklerSollBearbeiten;
+                $modelAdminBesKunde->kunde_id = $modelKunde->id;
+                $modelAdminBesKunde->save();
+                $modelBegriffe = LBegriffe::find()->all();
+                $arrayOfBegriffe = array();
+                foreach ($modelBegriffe as $item) {
+                    array_push($arrayOfBegriffe, $item->data);
                 }
-            }
-            if ($mailIsValid) {
-                $maklerId = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $model->id])->admin_id;
-                $maklerName = User::findOne(['id' => $maklerId])->username;
-                $from = $zielAdresse;
-                $betreff = 'Besichtigungstermin mit ' . $modelKunde->geschlecht0->typus . ' ' . $modelKunde->vorname . ' ' . $modelKunde->nachname;
-                $content = "Für den Makler $maklerName wurde ein Besichtigungstermin vereinbart. Bitte rufen Sie im Backend die Besichtigungstermine ab! Die Mail des Kunden von der Betreffzeile lautet $modelKunde->mail!";
-                if (!$this->SendMail($from, $zielAdresse, $betreff, $content)) {
+                $zaehler = 0;
+                $mailIsValid = false;
+                for ($i = 0; $i < count($arrayOfBegriffe); $i++) {
+                    if ($arrayOfBegriffe[$i] != "")
+                        $zaehler += 1;
+                }
+                if ($zaehler == 10) {
+                    if (!$checkMail->validate($arrayOfBegriffe[7]))
+                        $arrayOfBegriffe[7] = substr($arrayOfBegriffe[7], 0, -1);
+                    if (!$checkMail->validate($arrayOfBegriffe[7]))
+                        $arrayOfBegriffe[7] = substr($arrayOfBegriffe[7], 0, -1);
+                    if ($checkMail->validate($arrayOfBegriffe[7])) {
+                        $mailIsValid = true;
+                        $zielAdresse = $arrayOfBegriffe[7];
+                    }
+                }
+                if ($mailIsValid) {
+                    $maklerId = Adminbesichtigungkunde::findOne(['besichtigungstermin_id' => $model->id])->admin_id;
+                    $maklerName = User::findOne(['id' => $maklerId])->username;
+                    $from = $zielAdresse;
+                    $betreff = 'Besichtigungstermin mit ' . $modelKunde->geschlecht0->typus . ' ' . $modelKunde->vorname . ' ' . $modelKunde->nachname;
+                    if (!$isAlreadyInDatabase)
+                        $content = "Für den Makler $maklerName wurde ein Besichtigungstermin vereinbart. Bitte rufen Sie im Backend die Besichtigungstermine ab. Die Mail des Kunden von der Betreffzeile lautet $modelKunde->email!";
+                    else {
+                        $content = "Für den Makler $maklerName wurde ein Besichtigungstermin vereinbart. Bitte rufen Sie im Backend die Besichtigungstermine ab. Die Mail des Kunden von der Betreffzeile lautet $modelKunde->email.";
+                        $zusatz = '<br>Dieser Kunde wurde bereits registriert. Bitte erkundigen Sie sich, ob es sich um einen Fakekunden handelt, indem Sie Ihn alsbald kontaktieren!';
+                        if (!empty($modelKunde->telefon))
+                            $zusatz .= " Nehmen Sie den Termin nur wahr, wenn er telephonisch unter der Nummer $modelKunde->telefon bestätigt wird.";
+                        else
+                            $zusatz .= " Nehmen Sie den Termin nur wahr, wenn er per Mail bestätigt wird.";
+                        $content .= $zusatz;
+                    }
+                    if (!$this->SendMail($from, $zielAdresse, $betreff, $content)) {
+                        if (!empty($modelKunde->telefon))
+                            $session->addFlash('info', 'Die Bestätigungsmail konnte nicht verschickt werden. Unser Makler wird sich telefonisch bei Ihnen melden.');
+                        else
+                            $session->addFlash('info', "Die Bestätigungsmail konnte nicht verschickt werden. Da sie keine Telefonummer hinterlegt haben, können wir diesen Termin leider nicht bestätigen. Kontaktieren sie uns unter der Nummer $arrayOfBegriffe[5]");
+                    } else
+                        $session->addFlash('info', "Der Besichtigungtermin wurde per Mail an unseren Makler $maklerName weitergeleitet. Er wird sich mit Ihnen alsbald schriftlich in Verbindung setzen.");
+                } else {
                     if (!empty($modelKunde->telefon))
-                        $session->addFlash('info', 'Die Bestätigungsmail konnte nicht verschickt werden. Unser Makler wird sich telefonisch bei Ihnen melden.');
+                        $session->addFlash('info', 'Da der Admin nicht alle Firmendaten gepflegt hat, konnte die Bestätigungsmail nicht verschickt werden. Unser Makler wird sich telefonisch bei Ihnen melden.');
                     else
-                        $session->addFlash('info', "Die Bestätigungsmail konnte nicht verschickt werden. Da sie keine Telefonummer hinterlegt haben, können wir diesen Termin leider nicht bestätigen. Kontaktieren sie uns unter der Nummer $arrayOfBegriffe[5]");
-                } else
-                    $session->addFlash('info', "Der Besichtigungtermin wurde per Mail an unseren Makler $maklerName weitergeleitet. Er wird sich mit Ihnen alsbald schriftlich in Verbindung setzen.");
-            } else {
-                if (!empty($modelKunde->telefon))
-                    $session->addFlash('info', 'Da der Admin nicht alle Firmendaten gepflegt hat, konnte die Bestätigungsmail nicht verschickt werden. Unser Makler wird sich telefonisch bei Ihnen melden.');
-                else
-                    $session->addFlash('info', "Da der Admin nicht alle Firmendaten gepflegt hat, konnte die Bestätigungsmail nicht verschickt werden. Da sie keine Telefonummer hinterlegt haben, können wir diesen Termin leider nicht bestätigen. Kontaktieren sie uns unter der Nummer $arrayOfBegriffe[5]");
-            }
-            return $this->redirect(['view', 'id' => $model->id]);
+                        $session->addFlash('info', "Da der Admin nicht alle Firmendaten gepflegt hat, konnte die Bestätigungsmail nicht verschickt werden. Da sie keine Telefonummer hinterlegt haben, können wir diesen Termin leider nicht bestätigen. Kontaktieren sie uns unter der Nummer $arrayOfBegriffe[5]");
+                }
+            } else
+                return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
+        } catch (\Exception $e) {
+            print_r('Error!Error!Error!<br>');
+            print_r('Art:' . $e->getMessage() . '<br>in:' . $e->getFile() . '<br>Zeile:' . $e->getLine() . '<br>');
+            echo Html::a(Yii::t('app', 'zurück zur View'), ['/site/index'], ['class' => 'btn btn-danger']);
+            die();
         }
-        return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
+        $transaction->commit();
+        return $this->redirect(['view', 'id' => $model->id]);
     }
 
     public function actionUpdate($id) {
@@ -380,7 +431,7 @@ class TerminController extends Controller {
         $basisUrl = 'https://www.google.de/maps/dir/';
         $urlSpecific = "$startPointOrt+$startPointStr,+$startPointOrt/$endPointStr+$endPointOrt";
         $gooleUrl = $basisUrl . $urlSpecific;
-        echo Html::a("Treffpunkt-Map laden", $gooleUrl, ['class' => 'btn btn-success btn-block', 'target' => '_blank', 'title' => "Load Immo"]);
+        echo Html::a("Immobilien-Map laden", $gooleUrl, ['class' => 'btn btn-success btn-block', 'target' => '_blank', 'title' => "Load Immo"]);
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,

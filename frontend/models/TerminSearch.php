@@ -39,14 +39,20 @@ class TerminSearch extends Besichtigungstermin {
         }
         $query->andFilterWhere([
             'id' => $this->id,
-            'uhrzeit' => $this->uhrzeit,
             'Relevanz' => $this->Relevanz,
+            'uhrzeit' => $this->uhrzeit,
             'angelegt_am' => $this->angelegt_am,
             'aktualisiert_am' => $this->aktualisiert_am,
             'angelegt_von' => $this->angelegt_von,
             'aktualisiert_von' => $this->aktualisiert_von,
             'Immobilien_id' => $this->Immobilien_id,
         ]);
+        /* $now = (new \DateTime('now'))->format('Y-m-d H:i:s');
+          $query->andFilterWhere([
+          '<=',
+          $now,
+          $this->uhrzeit
+          ]); */
         return $dataProvider;
     }
 

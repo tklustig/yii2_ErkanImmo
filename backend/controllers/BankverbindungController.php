@@ -39,9 +39,9 @@ class BankverbindungController extends Controller {
         }
         $searchModel = new BankverbindungSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        /*print_r('<br><br>');
-        var_dump(Yii::$app->request->queryParams);
-        print_r('Der Parameter kunde_id muss im Searchmodel entsprechend ausgewertet werden');*/
+        /* print_r('<br><br>');
+          var_dump(Yii::$app->request->queryParams);
+          print_r('Der Parameter kunde_id muss im Searchmodel entsprechend ausgewertet werden'); */
         return $this->render('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
     }
 
@@ -60,7 +60,7 @@ class BankverbindungController extends Controller {
             if ($model->loadAll(Yii::$app->request->post())) {
                 //Sofern jquerySubmitButton gedrückt
                 if (Yii::$app->request->post('submit') != null && Yii::$app->request->post('submit') == 'submitIbanData') {
-                    if (!empty($model->iban) || !empty($model->bic)) {
+                    if (!empty($model->iban) && !empty($model->bic)) {
                         if (strlen($model->bic) != 11 || strlen($model->iban) != 22)
                             $wrongInput = true;
                     }
@@ -122,11 +122,11 @@ class BankverbindungController extends Controller {
                     ]);
                     return $this->render('create', ['model' => $model, 'id' => $id]);
                 }
-                if (substr($blz, -1) == ' ') {
+                if (substr($blz, -1) == ' ')
                     $blz = substr($blz, 0, -1);
-                } else if (substr($kontonummer, -1) == ' ') {
+                else if (substr($kontonummer, -1) == ' ')
                     $kontonummer = substr($kontonummer, 0, -1);
-                }
+
                 $iban = $this->CalcIban($laenderkennung, $blz, $kontonummer, $model, $id);
                 /* IBAN(22)=Ländernummer(2)+Prüfziffer(2)+BLZ(8)+KontoNr.(max.10)= DE92250501801911869221 =>
                   BLZ:=25050180 / KontoNr.:=1911869221 / BIC:=SPKHDE2HXXX */
@@ -136,45 +136,61 @@ class BankverbindungController extends Controller {
                     return $this->render('create', ['model' => $model, 'id' => $id,]);
                 } else
                     return $this->redirect(['conclusion', 'id' => $id, 'laenderkennung' => $laenderkennung, 'kontonummer' => $kontonummer, 'blz' => $blz, 'institut' => $institut, 'bic' => $bic, 'iban' => $iban]);
-            } else {
+            } else
                 return $this->render('create', ['model' => $model, 'id' => $id]);
-            }
         } catch (\Exception $error) {
             error_handling::error_without_id($error, BankverbindungController::RenderBackInCaseOfError);
         }
     }
 
     public function actionConclusion($id, $laenderkennung, $kontonummer, $blz, $institut, $bic, $iban) {
+        $transaction = Yii::$app->db->beginTransaction();
+        $arrayOfBank = array();
         $model = new Bankverbindung();
-        if (Yii::$app->request->post()) {
-            $model->laenderkennung = $laenderkennung;
-            $model->institut = $institut;
-            $model->blz = $blz;
-            $model->kontoNr = $kontonummer;
-            $model->iban = $iban;
-            $model->bic = $bic;
-            $model->kunde_id = $id;
-            //ToDO:Save record into database in Transaction
-            $model->save();
-            $connection = \Yii::$app->db;
-            $connection->createCommand()
-                    ->update('kunde', ['bankverbindung_id' => $model->id], ['id' => $id])
-                    ->execute();
-            $session = new Session();
-            $session->addFlash('info', "Die Bankdaten wurden Ihrem System unter der ID:$model->id neu hinzugefügt!");
-            return $this->redirect(['/site/index']);
-        } else {
-            return $this->render('_form_conclusion', [
-                        'model' => $model,
-                        'id' => $id,
-                        'laenderkennung' => $laenderkennung,
-                        'kontonummer' => $kontonummer,
-                        'blz' => $blz,
-                        'institut' => $institut,
-                        'bic' => $bic,
-                        'iban' => $iban
-            ]);
+        $modelBankExisting = Bankverbindung::find()->all();
+        foreach ($modelBankExisting as $item) {
+            array_push($arrayOfBank, $item->blz);
+            array_push($arrayOfBank, $item->kontoNr);
         }
+        try {
+            if (Yii::$app->request->post()) {
+                if (in_array($blz, $arrayOfBank) && in_array($kontonummer, $arrayOfBank)) {
+                    $session = new Session();
+                    $message = "Die Blz $blz und die Kontonummer $kontonummer wurden bereits einem anderen Kunden zugewiesen. Diese Applikation erlaubt nicht die Verwendung derselben Bankdaten für mehrere Personen.<br>Wiederholen Sie den Vorgang ggf. mit anderen Bankdaten, oder ändern Sie bestehende ab!";
+                    $session->addFlash('info', $message);
+                    return $this->redirect(['/site/index']);
+                }
+                $model->laenderkennung = $laenderkennung;
+                $model->institut = $institut;
+                $model->blz = $blz;
+                $model->kontoNr = $kontonummer;
+                $model->iban = $iban;
+                $model->bic = $bic;
+                $model->kunde_id = $id;
+                $model->save();
+                $connection = Yii::$app->db;
+                $connection->createCommand()
+                        ->update('kunde', ['bankverbindung_id' => $model->id], ['id' => $id])
+                        ->execute();
+                $session = new Session();
+                $session->addFlash('info', "Die Bankdaten wurden Ihrem System unter der ID:$model->id neu hinzugefügt!");
+            } else {
+                return $this->render('_form_conclusion', [
+                            'model' => $model,
+                            'id' => $id,
+                            'laenderkennung' => $laenderkennung,
+                            'kontonummer' => $kontonummer,
+                            'blz' => $blz,
+                            'institut' => $institut,
+                            'bic' => $bic,
+                            'iban' => $iban
+                ]);
+            }
+        } catch (\Exception $error) {
+            error_handling::error_without_id($error, BankverbindungController::RenderBackInCaseOfError);
+        }
+        $transaction->commit();
+        return $this->redirect(['/site/index']);
     }
 
     public function actionUpdate($id) {
@@ -241,18 +257,17 @@ class BankverbindungController extends Controller {
     }
 
     public function actionSelect() {
-        $modelKunde = \frontend\models\Kunde::find()->all();
+        $modelKunde = Kunde::find()->all();
         if (!empty($modelKunde)) {
             $this->layout = 'main_immo';
             $DynamicModel = new DynamicModel(['kunde']);
             $DynamicModel->addRule(['kunde'], 'integer');
             $DynamicModel->addRule(['kunde'], 'required');
 
-            if ($DynamicModel->load(Yii::$app->request->post())) {
+            if ($DynamicModel->load(Yii::$app->request->post()))
                 $this->redirect(['/bankverbindung/create', 'id' => $DynamicModel->kunde]);
-            } else {
+            else
                 return $this->render('_form_select', ['DynamicModel' => $DynamicModel]);
-            }
         } else {
             $session = new Session();
             $session->addFlash('info', 'Es exisitert noch kein Kunde in der Datenbank. Steigern Sie Ihre Kundenaqkuise!');
@@ -291,17 +306,15 @@ class BankverbindungController extends Controller {
                     $laenderkennungTranslate .= (string) strpos($alphabet, $check) + 10;
                 }
                 $laenderkennungTranslate = $laenderkennungTranslate . '00';
-                if ($laenderkennungTranslate) {
-                    $ibanRaw = $bankleitzahl . $kontonummer . $laenderkennungTranslate;
-                    if (strlen($ibanRaw) == 24) {
-                        $pruefsumme = 98 - bcmod($ibanRaw, 97);
-                        if ($pruefsumme < 10)
-                            $pruefnummer = '0' . $pruefsumme;
-                        $iban = $laenderkennung . $pruefsumme . $bankleitzahl . $kontonummer;
-                        return $iban;
-                    } else
-                        return false;
-                }
+                $ibanRaw = $bankleitzahl . $kontonummer . $laenderkennungTranslate;
+                if (strlen($ibanRaw) == 24) {
+                    $pruefsumme = 98 - bcmod($ibanRaw, 97);
+                    if ($pruefsumme < 10)
+                        $pruefnummer = '0' . $pruefsumme;
+                    $iban = $laenderkennung . $pruefsumme . $bankleitzahl . $kontonummer;
+                    return $iban;
+                } else
+                    return false;
             } else {
                 print_r('Error!Error!Error<br>Länderkennung hat das falsche Format.<br>Informieren Sie den Softwarehersteller');
                 die();
