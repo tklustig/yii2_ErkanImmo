@@ -466,69 +466,101 @@ class SiteController extends Controller {
 
     //Löscht ein bliebiges, einzelnes Theme
     public function actionDelete($id) {
-        $session = new Session();
-        $connection = \Yii::$app->db;
-        $record = $connection->createCommand("SELECT COUNT(id) FROM dateianhang WHERE bezeichnung='Impressumbilder'||bezeichnung='Frontendbilder'");
-        $countRecords = $record->queryScalar();
-        if ($countRecords == 0) {
-            $session->addFlash("warning", "Derzeit sind keinerlei Themes im System vermerkt. Laden Sie welche hoch, um sie ggf. löschen zu können!");
-            return $this->redirect(['/site/index']);
-        }
-        $dateiname = Dateianhang::findOne(['id' => $id])->dateiname;
-        $path = Yii::getAlias('@picturesBackend');
-        $pathFrom = Yii::getAlias('@uploading');
-        if (file_exists($path . DIRECTORY_SEPARATOR . $dateiname) && file_exists($pathFrom . DIRECTORY_SEPARATOR . $dateiname)) {
-            FileHelper::unlink($path . DIRECTORY_SEPARATOR . $dateiname);
-            FileHelper::unlink($pathFrom . DIRECTORY_SEPARATOR . $dateiname);
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $modelDa = Dateianhang::find()->all();
+            $userIdOfEDateiAnhang = array();
+            //Eruiere alle FK's (user_id) und verfrachte den PK der gefundenen Records in ein Array
+            $fk = EDateianhang::find()->where(['>', 'user_id', 0])->all();
+            foreach ($fk as $item) {
+                array_push($userIdOfEDateiAnhang, $item->id);
+            }
+            $fkOfDateiAnhang = array();
+            //Iteriere über dateianhang und verfrachte alle FK's(e_dateianhang_id), die mit obigem Array identisch sind in ein Array
+            foreach ($modelDa as $item) {
+                for ($i = 0; $i < count($userIdOfEDateiAnhang); $i++) {
+                    if ($item->e_dateianhang_id == $userIdOfEDateiAnhang[$i])
+                        array_push($fkOfDateiAnhang, $item->e_dateianhang_id);
+                }
+            }
+            //prüfe, ob Werte im Array doppelt vorhanden sind. Wenn ja, darf eDateiAnhang nicht gelöscht werden
+            if ($this->hasDupes($fkOfDateiAnhang))
+                $deleteEDateiAnhang = false;
+            else
+                $deleteEDateiAnhang = true;
+            $session = new Session();
+            $connection = \Yii::$app->db;
+            $record = $connection->createCommand("SELECT COUNT(id) FROM dateianhang WHERE bezeichnung='Impressumbilder'||bezeichnung='Frontendbilder'");
+            $countRecords = $record->queryScalar();
+            if ($countRecords == 0) {
+                $session->addFlash("warning", "Derzeit sind keinerlei Themes im System vermerkt. Laden Sie welche hoch, um sie ggf. löschen zu können!");
+                return $this->redirect(['/site/index']);
+            }
+            $dateiname = Dateianhang::findOne(['id' => $id])->dateiname;
+            $path = Yii::getAlias('@picturesBackend');
+            $pathFrom = Yii::getAlias('@uploading');
             $fk = Dateianhang::findOne(['id' => $id])->e_dateianhang_id;
             $model = $this->findModel_dateianhang($id)->delete();
-            $modelEDateianhang = $this->findModel_eDateianhang($fk)->delete();
-            $session->addFlash('info', "Das Theme mit der ID:$id wurde soeben sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
-        } else {
-            $session->addFlash('info', "Der Löschvorgang wurde abgebrochen, da die Themes physikalisch nicht mehr auf Ihrer Platte sind.");
+            if ($deleteEDateiAnhang)
+                $modelEDateianhang = $this->findModel_eDateianhang($fk)->delete();
+            if (file_exists($path . DIRECTORY_SEPARATOR . $dateiname) && file_exists($pathFrom . DIRECTORY_SEPARATOR . $dateiname)) {
+                FileHelper::unlink($path . DIRECTORY_SEPARATOR . $dateiname);
+                FileHelper::unlink($pathFrom . DIRECTORY_SEPARATOR . $dateiname);
+                $session->addFlash('info', "Das Theme mit der ID:$id wurde soeben sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
+            } else {
+                $session->addFlash('info', "Der Löschvorgang war unvollständig, da das Theme physikalisch nicht mehr auf Ihrer Platte ist. Es wurden nur Ihre Datenbankeinträge entfernt.");
+            }
+            $transaction->commit();
+            return $this->redirect(['/site/index']);
+        } catch (\Exception $error) {
+            error_handling::error_without_id($error, SiteController::RenderBackInCaseOfError);
         }
-        return $this->redirect(['/site/index']);
     }
 
     //Löscht alle Themes
     public function actionDeleteall() {
-        $session = new Session();
-        $eDateianhang = EDateianhang::find()->all();
-        $arrayOfFk = array();
-        $arrayOfFilenames = array();
-        //Eruiere zunächst alle Fremdschlüsseleinträge in e_dateianhang für user_id und verfachte die Treffer in ein Array
-        foreach ($eDateianhang as $item) {
-            if ($item->user_id != null)
-                array_push($arrayOfFk, $item->user_id);
-        }
-        /*  Itetriere über das Array, eruiere den PK, ermittle den Dateinamen und lösche sodann den Record aus e_dateianhang. Aufgrund der RI werden alle
-          korresponiderenden Records mitgelöscht */
-        for ($i = 0; $i < count($arrayOfFk); $i++) {
-            $pk = EDateianhang::findOne(['user_id' => $arrayOfFk[$i]])->id;
-            $modelDateianhang = Dateianhang::find()->all();
-            foreach ($modelDateianhang as $item) {
-                if ($item->e_dateianhang_id == $pk)
-                    array_push($arrayOfFilenames, $item->dateiname);
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $session = new Session();
+            $eDateianhang = EDateianhang::find()->all();
+            $arrayOfFk = array();
+            $arrayOfFilenames = array();
+            //Eruiere zunächst alle Fremdschlüsseleinträge in e_dateianhang für user_id und verfachte die Treffer in ein Array
+            foreach ($eDateianhang as $item) {
+                if ($item->user_id != null)
+                    array_push($arrayOfFk, $item->user_id);
             }
-            $this->findModel_eDateianhang($pk)->deleteWithRelated();
-        }
-        //lösche alle im Array vorhandenen Bilder anhand der Dateinamen aus backend/web/img(@picturesBackend)
-        $path = Yii::getAlias('@picturesBackend');
-        $pathFrom = Yii::getAlias('@uploading');
-        $hasBeenDeleted = false;
-        for ($i = 0; $i < count($arrayOfFilenames); $i++) {
-            if (file_exists($path . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]) && file_exists($pathFromh . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i])) {
-                FileHelper::unlink($path . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
-                FileHelper::unlink($pathFrom . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
-                $hasBeenDeleted = true;
+            /*  Itetriere über das Array, eruiere den PK, ermittle den Dateinamen und lösche sodann den Record aus e_dateianhang. Aufgrund der RI werden alle
+              korresponiderenden Records mitgelöscht */
+            for ($i = 0; $i < count($arrayOfFk); $i++) {
+                $pk = EDateianhang::findOne(['user_id' => $arrayOfFk[$i]])->id;
+                $modelDateianhang = Dateianhang::find()->all();
+                foreach ($modelDateianhang as $item) {
+                    if ($item->e_dateianhang_id == $pk)
+                        array_push($arrayOfFilenames, $item->dateiname);
+                }
+                $this->findModel_eDateianhang($pk)->deleteWithRelated();
             }
+            //lösche alle im Array vorhandenen Bilder anhand der Dateinamen aus backend/web/img(@picturesBackend)
+            $path = Yii::getAlias('@picturesBackend');
+            $pathFrom = Yii::getAlias('@uploading');
+            $hasBeenDeleted = false;
+            for ($i = 0; $i < count($arrayOfFilenames); $i++) {
+                if (file_exists($path . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]) && file_exists($pathFrom . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i])) {
+                    FileHelper::unlink($path . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+                    FileHelper::unlink($pathFrom . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i]);
+                    $hasBeenDeleted = true;
+                }
+            }
+            if ($hasBeenDeleted)
+                $session->addFlash('info', "Sämtliche Themes wurden sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
+            else
+                $session->addFlash('info', "Der Löschvorgang wurde abgebrochen, da die Themes physikalisch nicht mehr auf Ihrer Platte sind.");
+            $transaction->commit();
+            return $this->redirect(['/site/index']);
+        } catch (\Exception $error) {
+            error_handling::error_without_id($error, SiteController::RenderBackInCaseOfError);
         }
-        if ($hasBeenDeleted)
-            $session->addFlash('info', "Sämtliche Themes wurden sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
-        else
-            $session->addFlash('info', "Der Löschvorgang wurde abgebrochen, da die Themes physikalisch nicht mehr auf Ihrer Platte sind.");
-
-        return $this->redirect(['/site/index']);
     }
 
     private function findModel_user($id) {
@@ -576,6 +608,14 @@ class SiteController extends Controller {
                 throw new NotFoundHttpException(Yii::t('app', 'Die Tabelle eDateianhang konnte nicht geladen werden. Informieren Sie den Softwarehersteller'));
         } catch (\Exception $e) {
             throw new NotFoundHttpException(Yii::t('app', "$e"));
+        }
+    }
+
+    private function hasDupes($array) {
+        try {
+            return count($array) !== count(array_unique($array));
+        } catch (\Exception $error) {
+            error_handling::error_without_id($error, SiteController::RenderBackInCaseOfError);
         }
     }
 
