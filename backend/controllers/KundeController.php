@@ -281,7 +281,7 @@ class KundeController extends Controller {
         try {
             $checkbox = (array) Yii::$app->request->post('selection');
             if (empty(($checkbox)) && (isset($_POST['button_checkBoxes']))) {
-                $session->addFlash("warning", "Selektieren Sie die Bewerber, für die Mails erstellt werden sollen, über die Checkboxen");
+                $session->addFlash("warning", "Selektieren Sie die Kunden, für die Mails erstellt werden sollen, über die Checkboxen");
                 return $this->redirect(['/kunde/index']);
             } /* checkBox enthält die Id */
             foreach ($checkbox as $item) {

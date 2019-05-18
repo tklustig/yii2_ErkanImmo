@@ -28,7 +28,7 @@ $session = new Session();
 foreach ($session->getAllFlashes() as $flash) {
     foreach ($flash as $ausgabe) {
         echo Alert::widget([
-            'type' => Alert::TYPE_DANGER,
+            'type' => Alert::TYPE_WARNING,
             'title' => 'Information',
             'icon' => 'glyphicon glyphicon-exclamation-sign',
             'body' => $ausgabe,
