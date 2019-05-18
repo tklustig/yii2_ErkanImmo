@@ -5,6 +5,8 @@ namespace backend\models\base;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
+use frontend\models\EDateianhang;
+use frontend\models\Dateianhang;
 
 class Mail extends \yii\db\ActiveRecord {
 
@@ -86,6 +88,20 @@ class Mail extends \yii\db\ActiveRecord {
                 'updatedByAttribute' => 'aktualisiert_von',
             ],
         ];
+    }
+
+    public function getBild($pk) {
+        if (!empty(EDateianhang::findOne(['kunde_id' => $pk]))) {
+            $idOfEdateiA = EDateianhang::findOne(['kunde_id' => $pk])->id;
+            if (Dateianhang::findOne(['e_dateianhang_id' => $idOfEdateiA])->bezeichnung == 'Kundenbild') {
+                $pictureN = Dateianhang::findOne(['e_dateianhang_id' => $idOfEdateiA])->dateiname;
+                $path = '@web/img/';
+                $picture = $path . $pictureN;
+            } else
+                $picture = null;
+        } else
+            $picture = null;
+        return $picture;
     }
 
 }

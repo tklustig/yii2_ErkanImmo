@@ -172,7 +172,7 @@ use kartik\widgets\FileInput;
 $script = <<< JS
     $('#bez').change(function(){
         var textId=$(this).val();
-        var ausgabe='Der Textbaustein mit der Id:'+textId+' wird in die Voralge übernommen!';
+        var ausgabe='Der Textbaustein mit der Id:'+textId+' wird in die Vorlage übernommen!';
         alert(ausgabe);
         $.get('mail/baustein',{textId:textId},function(data){
             $('#IDText').val(data);      

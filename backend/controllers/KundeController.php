@@ -269,14 +269,15 @@ class KundeController extends Controller {
         $Mailadresses = array();
         $Name = array();
         $Geschlecht = array();
+        $pkA = array();
         /* Indizie für Adressen */
         $x = 0;
-        /* Indizie für den Fremdschlüssel */
-        $y = 0;
         /* Indizie für Geschlecht */
         $z = 0;
         /* Indizie für Namen */
-        $zz = 0;
+        $y = 0;
+        /* Indizie für Primärschlüssel */
+        $xyz = 0;
         try {
             $checkbox = (array) Yii::$app->request->post('selection');
             if (empty(($checkbox)) && (isset($_POST['button_checkBoxes']))) {
@@ -287,10 +288,12 @@ class KundeController extends Controller {
                 $IdAnrede = Kunde::findOne(['id' => $item])->geschlecht0->typus;
                 $VorName = Kunde::findOne(['id' => $item])->vorname;
                 $NachName = Kunde::findOne(['id' => $item])->nachname;
+                $pk = Kunde::findOne(['id' => $item])->id;
                 $name = $VorName . " " . $NachName;
 //packe die gefundenen Values in oben initialisierte Arrays
                 $Geschlecht[$z] = $IdAnrede;
-                $Name[$zz] = $name;
+                $Name[$y] = $name;
+                $pkA[$xyz] = $pk;
                 if (empty(Kunde::findOne(['id' => $item])->email)) {
                     $session->addFlash("warning", "Für diesen Kunden exisitert im system keine Mailadresse. Legen Sie welche an!");
                     return $this->redirect(['/kunde/index']);
@@ -300,8 +303,8 @@ class KundeController extends Controller {
 //packe die Adressen in ein Array
                 $y++;
                 $z++;
-                $zz++;
                 $x++;
+                $xyz++;
             }
 //übergebe die Arrays an eine Session
             $sessionPHP = Yii::$app->session;
@@ -310,11 +313,12 @@ class KundeController extends Controller {
             $sessionPHP['adressen'] = $Mailadresses;
             $sessionPHP['name'] = $Name;
             $sessionPHP['geschlecht'] = $Geschlecht;
+            $sessionPHP['pkOfKunde'] = $pkA;
             if ($sessionPHP->isActive)
                 $sessionPHP->close();
             if (count($checkbox) == 1)
 //render das StapelOneFormular. Dazu muss jeweils das erste Element der Arrays übergeben werden
-                return $this->redirect(['/mail/stapelone', 'Mailadress' => $Mailadresses[0], 'geschlecht' => $Geschlecht[0], 'name' => $Name[0]]);
+                return $this->redirect(['/mail/stapelone', 'Mailadress' => $Mailadresses[0], 'geschlecht' => $Geschlecht[0], 'name' => $Name[0], 'id' => $pkA[0]]);
             else
 //render das StapelSeveralFormular
                 return $this->redirect(['/mail/stapelseveral']);

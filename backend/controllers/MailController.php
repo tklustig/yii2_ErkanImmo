@@ -342,12 +342,23 @@ class MailController extends Controller {
         }
     }
 
-    public function actionStapelone($Mailadress, $geschlecht, $name) {
-        print_r("Hier soll eine einzelne Kundenmail verarbeitet werden. Übergeben wurden folgende Strings:<br>");
-        var_dump($Mailadress);
-        var_dump($geschlecht);
-        var_dump($name);
-        die();
+    public function actionStapelone($Mailadress, $geschlecht, $name, $id) {
+        $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
+        $model = new Mail();
+        $mailFrom = User::findOne(Yii::$app->user->identity->id)->email;
+        if ($model->loadAll(Yii::$app->request->post()) && $modelDateianhang->loadAll(Yii::$app->request->post())) {
+            
+        } else {
+            return $this->render('stapelone', [
+                        'model' => $model,
+                        'modelDateianhang' => $modelDateianhang,
+                        'Mailadress' => $Mailadress,
+                        'geschlecht' => $geschlecht,
+                        'name' => $name,
+                        'id' => $id,
+                        'mailFrom' => $mailFrom
+            ]);
+        }
     }
 
     public function actionStapelseveral() {
@@ -357,6 +368,7 @@ class MailController extends Controller {
         $mailAdresses = $sessionPHP['adressen'];
         $name = $sessionPHP['name'];
         $Geschlecht = $sessionPHP['geschlecht'];
+        $Ids=$sessionPHP['pkOfKunde'];
         if ($sessionPHP->isActive)
             $sessionPHP->close();
         print_r("Hier sollen mehrere Kundenmails verarbeiten werden. Initialisiert wurden folgende Arrays:<br>");
@@ -365,6 +377,8 @@ class MailController extends Controller {
         var_dump($name);
         print_r('<br>');
         var_dump($Geschlecht);
+         print_r('<br>');
+        var_dump($Ids);
         die();
     }
 
