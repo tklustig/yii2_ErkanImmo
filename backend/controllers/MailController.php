@@ -368,18 +368,35 @@ class MailController extends Controller {
         $mailAdresses = $sessionPHP['adressen'];
         $name = $sessionPHP['name'];
         $Geschlecht = $sessionPHP['geschlecht'];
-        $Ids=$sessionPHP['pkOfKunde'];
+        $Ids = $sessionPHP['pkOfKunde'];
         if ($sessionPHP->isActive)
             $sessionPHP->close();
-        print_r("Hier sollen mehrere Kundenmails verarbeiten werden. Initialisiert wurden folgende Arrays:<br>");
-        var_dump($mailAdresses);
-        print_r('<br>');
-        var_dump($name);
-        print_r('<br>');
-        var_dump($Geschlecht);
-         print_r('<br>');
-        var_dump($Ids);
-        die();
+        /* print_r("Hier sollen mehrere Kundenmails verarbeiten werden. Initialisiert wurden folgende Arrays:<br>");
+          var_dump($mailAdresses);
+          print_r('<br>');
+          var_dump($name);
+          print_r('<br>');
+          var_dump($Geschlecht);
+          print_r('<br>');
+          var_dump($Ids);
+          die();
+         */
+        $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
+        $model = new Mail();
+        $mailFrom = User::findOne(Yii::$app->user->identity->id)->email;
+        if ($model->loadAll(Yii::$app->request->post()) && $modelDateianhang->loadAll(Yii::$app->request->post())) {
+            
+        } else {
+            return $this->render('stapelseveral', [
+                        'model' => $model,
+                        'modelDateianhang' => $modelDateianhang,
+                        'Mailadress' => $mailAdresses,
+                        'geschlecht' => $Geschlecht,
+                        'name' => $name,
+                        'Ids' => $Ids,
+                        'mailFrom' => $mailFrom
+            ]);
+        }
     }
 
     /* Ein Update für verschickte Mails macht keinen Sinn

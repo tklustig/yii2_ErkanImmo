@@ -38,7 +38,7 @@ use kartik\widgets\FileInput;
             }
             ?>
             <div><label style='font-weight: lighter'><?= $geschlecht . ' ' ?><?= $name ?></label></div>
-            <?= $Pic2Show ?>
+            <?php if (!empty($Pic2Show)) echo $Pic2Show; ?>
             <label><font color='blue'><?= $Mailadress ?></font></label>
         </div></div>
     <div class="col-md-12"><h1></h1></div>
@@ -145,9 +145,4 @@ $script = <<< JS
 JS;
 $this->registerJS($script);
 ?>
-
-
-
-
-
 
