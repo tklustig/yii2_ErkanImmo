@@ -347,7 +347,7 @@ class MailController extends Controller {
         $model = new Mail();
         $mailFrom = User::findOne(Yii::$app->user->identity->id)->email;
         if ($model->loadAll(Yii::$app->request->post()) && $modelDateianhang->loadAll(Yii::$app->request->post())) {
-            
+            //Hier muss die Versandlogik codiert werden. Der Basiscode ist in actionCreate() bereits vorhanden   
         } else {
             return $this->render('stapelone', [
                         'model' => $model,
@@ -371,21 +371,11 @@ class MailController extends Controller {
         $Ids = $sessionPHP['pkOfKunde'];
         if ($sessionPHP->isActive)
             $sessionPHP->close();
-        /* print_r("Hier sollen mehrere Kundenmails verarbeiten werden. Initialisiert wurden folgende Arrays:<br>");
-          var_dump($mailAdresses);
-          print_r('<br>');
-          var_dump($name);
-          print_r('<br>');
-          var_dump($Geschlecht);
-          print_r('<br>');
-          var_dump($Ids);
-          die();
-         */
         $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $model = new Mail();
         $mailFrom = User::findOne(Yii::$app->user->identity->id)->email;
         if ($model->loadAll(Yii::$app->request->post()) && $modelDateianhang->loadAll(Yii::$app->request->post())) {
-            
+            //Hier muss die Versandlogik codiert werden. Der Basiscode ist in actionCreate() bereits vorhanden   
         } else {
             return $this->render('stapelseveral', [
                         'model' => $model,
