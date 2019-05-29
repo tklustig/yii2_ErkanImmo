@@ -30,6 +30,7 @@ use kartik\widgets\FileInput;
     <div class="row">
         <div class="col-md-12">
             <div class='box'>
+                <label>Angaben bzgl. des Mailempfängers:</label>
                 <?php
                 if ($model::getBild($id) != NULL) {
                     $pic = $model::getBild($id);

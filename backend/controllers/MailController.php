@@ -343,11 +343,130 @@ class MailController extends Controller {
     }
 
     public function actionStapelone($Mailadress, $geschlecht, $name, $id) {
-        $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
+        $files = array();
+        $extension = array();
+        $bezeichnung = array();
+        $FkInEDatei = array();
+        $connection = \Yii::$app->db;
+        $expression = new Expression('NOW()');
+        $now = (new \yii\db\Query)->select($expression)->scalar();
+        $BoolAnhang = false;
+        $session = new Session();
         $model = new Mail();
+        $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
+        $modelEDateianhang = EDateianhang::find()->all();
+        $modelE = new EDateianhang();
         $mailFrom = User::findOne(Yii::$app->user->identity->id)->email;
         if ($model->loadAll(Yii::$app->request->post()) && $modelDateianhang->loadAll(Yii::$app->request->post())) {
-            //Hier muss die Versandlogik codiert werden. Der Basiscode ist in actionCreate() bereits vorhanden   
+            /* Hier muss die Versandlogik codiert werden. Der Basiscode ist in actionCreate() bereits vorhanden 
+              Anfang der Modellvalidierung */
+            $model->mail_to = $Mailadress;
+            $Valid = $this->ValidateModels($model, $modelDateianhang);
+            if (is_array($Valid)) {
+                $ausgabe1 = print_r('ERROR in der Klasse ' . get_class() . '<br>');
+                $ausgabe2 = var_dump($Valid);
+                $ausgabe3 = 'Die Tabellen mail oder dateianhang  konnten nicht validiert werden. Informieren Sie den Softwarehersteller!(Fehlercode:ValMailsTZ455)';
+                $ausgabeGesamt = $ausgabe1 . '<br>' . $ausgabe2 . '<br>' . $ausgabe3;
+                var_dump($ausgabeGesamt);
+                print_r('<br>');
+                echo Html::a('back', ['/kunde/index'], ['title' => 'zurück']);
+                die();
+            }
+            // Ende der Modellvalidierung 
+            //Verarbeite Uploaddaten
+            $modelDateianhang->attachement = UploadedFile::getInstances($modelDateianhang, 'attachement');
+            if ($modelDateianhang->upload($model, true)) {
+// ersetze deutsche Umlaute im Dateinamen
+                foreach ($modelDateianhang->attachement as $uploadedFile) {
+                    $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+                    $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+                    $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
+// lege jeweils den Dateinamen und dessen Endung in zwei unterschiedliche Arrays ab
+                    array_push($files, $uploadedFile->name);
+                    array_push($extension, $uploadedFile->extension);
+                }
+                $BoolAnhang = true;
+            }
+            if ($BoolAnhang && empty($modelDateianhang->l_dateianhang_art_id)) {
+                $message = 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen. Reselektieren Sie ggf. die Anhänge!';
+                $this->Ausgabe($message, 'Warnung', 1500, Growl::TYPE_WARNING);
+                return $this->render('create', [
+                            'model' => $model,
+                            'modelDateianhang' => $modelDateianhang,
+                            'mailFrom' => $mailFrom
+                ]);
+            }
+            /* Ende der Uploadcodierung. Sofern ein Upload hochgeladen wurde, ist er in die entsprechenden Verzeichnisse integriert worden.
+              Jetzt muss noch die Datenbanklogik und das Versenden der Mail codiert werden. Dazu werden die models mail,dateianhang und
+              e_dateianhang benötigt. Alle wurden bereits instanziert.
+             */
+            //Mailversand:Anfang
+            $an = $model->mail_to;
+            $mailWurdeVerschickt = true;
+            $errorAusgabe = 'Die Mail konnte nicht verschickt werden. Überprüfen Sie zunächst, ob Sie einen Mailserver initialisiert haben. Falls ja, informieren Sie den Softwarehersteller.';
+            if (!$BoolAnhang) {
+                if ($this->SendMail($model, $Mailadress))
+                    $session->addFlash('info', "Die Mail wurde erfolgreich an $an  verschickt!");
+                else {
+                    $session->addFlash('info', $errorAusgabe);
+                    $mailWurdeVerschickt = false;
+                }
+            } else {
+                if ($this->SendMail($model, $Mailadress, null, null, $files))
+                    $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt! Sie hatte Anhänge");
+                else {
+                    $session->addFlash('info', $errorAusgabe);
+                    $mailWurdeVerschickt = false;
+                }
+            }
+//Mailversand:Ende
+            if ($mailWurdeVerschickt) {
+// Datenbanklogik Anfang: Dazu wird eine Transaction eröffnet. Erst nach dem Commit werden die Records in die Datenbank geschrieben
+                try {
+                    $transaction = \Yii::$app->db->beginTransaction();
+// Differenziere je nach Endung der Elemente im Array die in der Datenbank unten zu speichernden Werte
+                    for ($i = 0; $i < count($extension); $i++) {
+                        if ($extension[$i] == "bmp" || $extension[$i] == "tif" || $extension[$i] == "png" || $extension[$i] == "psd" || $extension[$i] == "pcx" || $extension[$i] == "gif" || $extension[$i] == "cdr" || $extension[$i] == "jpeg" || $extension[$i] == "jpg") {
+                            $bez = "Bild für eine Mail";
+                            array_push($bezeichnung, $bez);
+                        } else {
+                            $bez = "Dokumente o.ä. für eine Mail";
+                            array_push($bezeichnung, $bez);
+                        }
+                    }
+//ab jetzt ist die Mail in die Datenbank gespeichert(na ja, eigentlich erst nach dem Commit). Was folgt ist noch e_dateianhang und dateianhang
+                    $model->save();
+                    /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
+                    foreach ($modelEDateianhang as $item) {
+                        array_push($FkInEDatei, $item->mail_id);
+                    }
+                    /* falls nicht */
+                    if (!in_array($model->id, $FkInEDatei) && $BoolAnhang) {
+                        $modelE->mail_id = $model->id;
+                        $modelE->save();
+                        $fk = $modelE->id;
+                        /* falls doch */
+                    } else {
+                        $fk = EDateianhang::findOne(['mail_id' => $model->id]);
+                    }
+                    /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
+                      Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+                    for ($i = 0; $i < count($files); $i++) {
+                        $connection->createCommand()
+                                ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
+                                    [$fk, $modelDateianhang->l_dateianhang_art_id, $bezeichnung[$i], $files[$i], $now, $model->angelegt_von],
+                                ])
+                                ->execute();
+                    }
+                    $transaction->commit();
+//Datenbanklogik:Ende
+                } catch (\Exception $e) {
+                    $transaction->rollBack();
+                    error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
+                }
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else
+                return $this->redirect(['/site/index']);
         } else {
             return $this->render('stapelone', [
                         'model' => $model,
@@ -388,23 +507,6 @@ class MailController extends Controller {
             ]);
         }
     }
-
-    /* Ein Update für verschickte Mails macht keinen Sinn
-      public function actionUpdate($id) {
-      $model = $this->findModel($id);
-
-      if ($model->loadAll(Yii::$app->request->post())) {
-      $model->save();
-      return $this->redirect(['view', 'id' => $id]);
-      } else {
-      $mailFrom = User::findOne(Yii::$app->user->identity->id)->email;
-      return $this->render('create', [
-      'model' => $model,
-      'mailFrom' => $mailFrom
-      ]);
-      }
-      }
-     */
 
     public function actionDelete($id) {
         /* Zunächst muss dafür gesorgt werden, dass doppelt verwendete Dateien physikalisch nicht gelöscht werden. Dass muss vor dem Entfernen 

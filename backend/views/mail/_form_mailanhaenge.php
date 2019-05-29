@@ -88,6 +88,9 @@ $urlRoot = Yii::getAlias('@documentsMail') . DIRECTORY_SEPARATOR;
                 </div>
             <?php }
             ?>
+            <div class="col-md-12">
+                <?= Html::a('zurück', ['/mail/index'], ['title' => 'zurück']); ?>
+            </div>
         </div>
     </div>
 </div>
