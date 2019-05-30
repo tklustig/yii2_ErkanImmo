@@ -90,7 +90,7 @@ class Mail extends \yii\db\ActiveRecord {
         ];
     }
 
-    public function getBild($pk) {
+    public static function getBild($pk) {
         if (!empty(EDateianhang::findOne(['kunde_id' => $pk]))) {
             $idOfEdateiA = EDateianhang::findOne(['kunde_id' => $pk])->id;
             if (Dateianhang::findOne(['e_dateianhang_id' => $idOfEdateiA])->bezeichnung == 'Kundenbild') {
