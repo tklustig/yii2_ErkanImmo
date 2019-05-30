@@ -86,7 +86,7 @@ AssetBundle::register($this);
                                     ],
                                 ],
                                 '<li class="divider"></li>',
-                                ['label' => '+++++++Kunden++++++++(ToComplete:Mail gezielt verschicken)', 'url' => ['#'],
+                                ['label' => '+++++++Kunden++++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
                                         ['label' => 'Alle Kundendaten abrufen', 'url' => ['/kunde/index']],
@@ -97,7 +97,8 @@ AssetBundle::register($this);
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
                                         ['label' => 'Mailserver konfigurieren', 'url' => ['/mailserver/index']],
-                                        ['label' => 'Mails anzeigen/verschicken', 'url' => ['/mail/index']]
+                                        ['label' => 'Mails anzeigen/verschicken', 'url' => ['/mail/index']],
+                                         ['label' => 'Textbausteine editieren(ToComplete)', 'url' => ['/textbaustein/index']]
                                     ],
                                 ],
                                 '<li class="divider"></li>',

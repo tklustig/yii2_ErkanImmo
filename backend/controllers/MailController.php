@@ -199,13 +199,13 @@ class MailController extends Controller {
              */
 
             //Mailversand:Anfang
-            $an = $model->mail_to;
+            $mailAdressTo = $model->mail_to;
             $mailWurdeVerschickt = true;
             $errorAusgabe = 'Die Mail konnte nicht verschickt werden. Überprüfen Sie zunächst, ob Sie einen Mailserver initialisiert haben. Falls ja, informieren Sie den Softwarehersteller.';
             if (!$BoolAnhang) {
                 if (empty($model->mail_cc) && empty($model->mail_bcc)) {
                     if ($this->SendMail($model, $Zieladresse))
-                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an  verschickt!");
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $mailAdressTo  verschickt!");
                     else {
                         $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
@@ -213,7 +213,7 @@ class MailController extends Controller {
                 } else if (!empty($model->mail_cc) && empty($model->mail_bcc)) {
                     $Ccadresse = $model->mail_cc;
                     if ($this->SendMail($model, $Zieladresse, $Ccadresse))
-                        $session->addFlash('info', "Die Mail  wurde erfolgreich an $an  verschickt!Sie hat einen CC Empfänger:$Ccadresse");
+                        $session->addFlash('info', "Die Mail  wurde erfolgreich an $mailAdressTo  verschickt!Sie hat einen CC Empfänger:$Ccadresse");
                     else {
                         $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
@@ -221,7 +221,7 @@ class MailController extends Controller {
                 } else if (empty($model->mail_cc) && !empty($model->mail_bcc)) {
                     $Bccadresse = $model->mail_bcc;
                     if ($this->SendMail($model, $Zieladresse, null, $Bccadresse))
-                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an erfolgreich verschickt!Sie hat einen Bcc Empfänger:$Bccadresse");
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $mailAdressTo erfolgreich verschickt!Sie hat einen Bcc Empfänger:$Bccadresse");
                     else {
                         $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
@@ -230,7 +230,7 @@ class MailController extends Controller {
                     $Ccadresse = $model->mail_cc;
                     $Bccadresse = $model->mail_bcc;
                     if ($this->SendMail($model, $Zieladresse, $Ccadresse, $Bccadresse))
-                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt!Sie hat einen Cc Empfänger:$Ccadresse und einen Bcc Empfänger:$Bccadresse");
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $mailAdressTo verschickt!Sie hat einen Cc Empfänger:$Ccadresse und einen Bcc Empfänger:$Bccadresse");
                     else {
                         $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
@@ -239,7 +239,7 @@ class MailController extends Controller {
             } else {
                 if (empty($model->mail_cc) && empty($model->mail_bcc)) {
                     if ($this->SendMail($model, $Zieladresse, null, null, $files))
-                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt! Sie hatte Anhänge");
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $mailAdressTo verschickt! Sie hatte Anhänge");
                     else {
                         $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
@@ -247,7 +247,7 @@ class MailController extends Controller {
                 } else if (!empty($model->mail_cc) && empty($model->mail_bcc)) {
                     $Ccadresse = $model->mail_cc;
                     if ($this->SendMail($model, $Zieladresse, $Ccadresse, null, $files))
-                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt!Sie hat einen CC Empfänger:$Ccadresse und Anhänge");
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $mailAdressTo verschickt!Sie hat einen CC Empfänger:$Ccadresse und Anhänge");
                     else {
                         $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
@@ -255,7 +255,7 @@ class MailController extends Controller {
                 } else if (empty($model->mail_cc) && !empty($model->mail_bcc)) {
                     $Bccadresse = $model->mail_bcc;
                     if ($this->SendMail($model, $Zieladresse, null, $Bccadresse, $files))
-                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt!Sie hat einen Bcc Empfänger:$Bccadresse und Anhänge");
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $mailAdressTo verschickt!Sie hat einen Bcc Empfänger:$Bccadresse und Anhänge");
                     else {
                         $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
@@ -264,7 +264,7 @@ class MailController extends Controller {
                     $Ccadresse = $model->mail_cc;
                     $Bccadresse = $model->mail_bcc;
                     if ($this->SendMail($model, $Zieladresse, $Ccadresse, $Bccadresse, $files))
-                        $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt!Sie hat einen Cc Empfänger:$Ccadresse und einen Bcc Empfänger:$Bccadresse und Anhänge");
+                        $session->addFlash('info', "Die Mail wurde erfolgreich an $mailAdressTo verschickt!Sie hat einen Cc Empfänger:$Ccadresse und einen Bcc Empfänger:$Bccadresse und Anhänge");
                     else {
                         $session->addFlash('info', $errorAusgabe);
                         $mailWurdeVerschickt = false;
@@ -401,19 +401,19 @@ class MailController extends Controller {
               e_dateianhang benötigt. Alle wurden bereits instanziert.
              */
             //Mailversand:Anfang
-            $an = $model->mail_to;
+            $mailAdressTo = $model->mail_to;
             $mailWurdeVerschickt = true;
             $errorAusgabe = 'Die Mail konnte nicht verschickt werden. Überprüfen Sie zunächst, ob Sie einen Mailserver initialisiert haben. Falls ja, informieren Sie den Softwarehersteller.';
             if (!$BoolAnhang) {
                 if ($this->SendMail($model, $Mailadress))
-                    $session->addFlash('info', "Die Mail wurde erfolgreich an $an  verschickt!");
+                    $session->addFlash('info', "Die Mail wurde erfolgreich an $mailAdressTo  verschickt!");
                 else {
                     $session->addFlash('info', $errorAusgabe);
                     $mailWurdeVerschickt = false;
                 }
             } else {
                 if ($this->SendMail($model, $Mailadress, null, null, $files))
-                    $session->addFlash('info', "Die Mail wurde erfolgreich an $an verschickt! Sie hatte Anhänge");
+                    $session->addFlash('info', "Die Mail wurde erfolgreich an $mailAdressTo verschickt! Sie hatte Anhänge");
                 else {
                     $session->addFlash('info', $errorAusgabe);
                     $mailWurdeVerschickt = false;
@@ -481,6 +481,20 @@ class MailController extends Controller {
     }
 
     public function actionStapelseveral() {
+        $files = array();
+        $extension = array();
+        $bezeichnung = array();
+        $FkInEDatei = array();
+        $connection = \Yii::$app->db;
+        $expression = new Expression('NOW()');
+        $now = (new \yii\db\Query)->select($expression)->scalar();
+        $BoolAnhang = false;
+        $session = new Session();
+        $model = new Mail();
+        $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
+        $modelEDateianhang = EDateianhang::find()->all();
+        $modelE = new EDateianhang();
+        $mailFrom = User::findOne(Yii::$app->user->identity->id)->email;
         $sessionPHP = Yii::$app->session;
         if (!$sessionPHP->isActive)
             $sessionPHP->open();
@@ -490,11 +504,134 @@ class MailController extends Controller {
         $Ids = $sessionPHP['pkOfKunde'];
         if ($sessionPHP->isActive)
             $sessionPHP->close();
-        $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
-        $model = new Mail();
-        $mailFrom = User::findOne(Yii::$app->user->identity->id)->email;
         if ($model->loadAll(Yii::$app->request->post()) && $modelDateianhang->loadAll(Yii::$app->request->post())) {
-            //Hier muss die Versandlogik codiert werden. Der Basiscode ist in actionCreate() bereits vorhanden   
+            foreach ($mailAdresses as $item) {
+                $model->mail_to .= $item . ';';
+            }
+            $extractOuter = explode("'", $model->mail_to);
+            $extractInnerCc = explode(";", $extractOuter[0]);
+            array_shift($extractInnerCc);
+            if ($extractInnerCc[count($extractInnerCc) - 1] == '') {
+                array_pop($extractInnerCc);
+            }
+            $Valid = $this->ValidateModels($model, $modelDateianhang);
+            if (is_array($Valid)) {
+                $ausgabe1 = print_r('ERROR in der Klasse ' . get_class() . '<br>');
+                $ausgabe2 = var_dump($Valid);
+                $ausgabe3 = 'Die Tabellen mail oder dateianhang  konnten nicht validiert werden. Informieren Sie den Softwarehersteller!(Fehlercode:ValMailsTZ455)';
+                $ausgabeGesamt = $ausgabe1 . '<br>' . $ausgabe2 . '<br>' . $ausgabe3;
+                var_dump($ausgabeGesamt);
+                print_r('<br>');
+                echo Html::a('back', ['/kunde/index'], ['title' => 'zurück']);
+                die();
+            }
+            // Ende der Modellvalidierung 
+            //Verarbeite Uploaddaten
+            $modelDateianhang->attachement = UploadedFile::getInstances($modelDateianhang, 'attachement');
+            if ($modelDateianhang->upload($model, true)) {
+// ersetze deutsche Umlaute im Dateinamen
+                foreach ($modelDateianhang->attachement as $uploadedFile) {
+                    $umlaute = array("ä", "ö", "ü", "Ä", "Ö", "Ü", "ß");
+                    $ersetzen = array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss");
+                    $uploadedFile->name = str_replace($umlaute, $ersetzen, $uploadedFile->name);
+// lege jeweils den Dateinamen und dessen Endung in zwei unterschiedliche Arrays ab
+                    array_push($files, $uploadedFile->name);
+                    array_push($extension, $uploadedFile->extension);
+                }
+                $BoolAnhang = true;
+            }
+            if ($BoolAnhang && empty($modelDateianhang->l_dateianhang_art_id)) {
+                $message = 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen. Reselektieren Sie ggf. die Anhänge!';
+                $this->Ausgabe($message, 'Warnung', 1500, Growl::TYPE_WARNING);
+                return $this->render('stapelseveral', [
+                            'model' => $model,
+                            'modelDateianhang' => $modelDateianhang,
+                            'Mailadress' => $mailAdresses,
+                            'geschlecht' => $Geschlecht,
+                            'name' => $name,
+                            'Ids' => $Ids,
+                            'mailFrom' => $mailFrom
+                ]);
+            }
+            /* Ende der Uploadcodierung. Sofern ein Upload hochgeladen wurde, ist er in die entsprechenden Verzeichnisse integriert worden.
+              Jetzt muss noch die Datenbanklogik und das Versenden der Mail codiert werden. Dazu werden die models mail,dateianhang und
+              e_dateianhang benötigt. Alle wurden bereits instanziert.
+             */
+            //Mailversand:Anfang
+            $mailAdressTo = $mailAdresses[0];
+            $mailAdressBcc = $extractInnerCc;
+            $mailWurdeVerschickt = true;
+            $outputBcc = '';
+            for ($i = 0; $i < count($mailAdressBcc); $i++) {
+                if ($i < count($mailAdressBcc) - 1)
+                    $outputBcc .= $mailAdressBcc[$i] . ';';
+                else
+                    $outputBcc .= $mailAdressBcc[$i];
+            }
+            $errorAusgabe = 'Die Mail konnte nicht verschickt werden. Überprüfen Sie zunächst, ob Sie einen Mailserver initialisiert haben. Falls ja, informieren Sie den Softwarehersteller.';
+            if (!$BoolAnhang) {
+                if ($this->SendMail($model, $mailAdressTo, NULL, $mailAdressBcc, NULL))
+                    $session->addFlash('info', "Die Mail wurde erfolgreich an $mailAdressTo  verschickt! Außerdem wurde eine Blind Cardon Copy an $outputBcc verschickt");
+                else {
+                    $session->addFlash('info', $errorAusgabe);
+                    $mailWurdeVerschickt = false;
+                }
+            } else {
+                if ($this->SendMail($model, $mailAdressTo, NULL, $mailAdressBcc, $files))
+                    $session->addFlash('info', "Die Mail wurde erfolgreich an $mailAdressTo verschickt. Außerdem wurde eine Blind Cardon Copy an $outputBcc verschickt. Sie hatte Anhänge!");
+                else {
+                    $session->addFlash('info', $errorAusgabe);
+                    $mailWurdeVerschickt = false;
+                }
+            }
+//Mailversand:Ende
+            if ($mailWurdeVerschickt) {
+// Datenbanklogik Anfang: Dazu wird eine Transaction eröffnet. Erst nach dem Commit werden die Records in die Datenbank geschrieben
+                try {
+                    $transaction = \Yii::$app->db->beginTransaction();
+// Differenziere je nach Endung der Elemente im Array die in der Datenbank unten zu speichernden Werte
+                    for ($i = 0; $i < count($extension); $i++) {
+                        if ($extension[$i] == "bmp" || $extension[$i] == "tif" || $extension[$i] == "png" || $extension[$i] == "psd" || $extension[$i] == "pcx" || $extension[$i] == "gif" || $extension[$i] == "cdr" || $extension[$i] == "jpeg" || $extension[$i] == "jpg") {
+                            $bez = "Bild für eine Mail";
+                            array_push($bezeichnung, $bez);
+                        } else {
+                            $bez = "Dokumente o.ä. für eine Mail";
+                            array_push($bezeichnung, $bez);
+                        }
+                    }
+//ab jetzt ist die Mail in die Datenbank gespeichert(na ja, eigentlich erst nach dem Commit). Was folgt ist noch e_dateianhang und dateianhang
+                    $model->save();
+                    /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
+                    foreach ($modelEDateianhang as $item) {
+                        array_push($FkInEDatei, $item->mail_id);
+                    }
+                    /* falls nicht */
+                    if (!in_array($model->id, $FkInEDatei) && $BoolAnhang) {
+                        $modelE->mail_id = $model->id;
+                        $modelE->save();
+                        $fk = $modelE->id;
+                        /* falls doch */
+                    } else {
+                        $fk = EDateianhang::findOne(['mail_id' => $model->id]);
+                    }
+                    /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
+                      Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+                    for ($i = 0; $i < count($files); $i++) {
+                        $connection->createCommand()
+                                ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
+                                    [$fk, $modelDateianhang->l_dateianhang_art_id, $bezeichnung[$i], $files[$i], $now, $model->angelegt_von],
+                                ])
+                                ->execute();
+                    }
+                    $transaction->commit();
+//Datenbanklogik:Ende
+                } catch (\Exception $e) {
+                    $transaction->rollBack();
+                    error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
+                }
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else
+                return $this->redirect(['/site/index']);
         } else {
             return $this->render('stapelseveral', [
                         'model' => $model,
@@ -819,12 +956,12 @@ class MailController extends Controller {
         }
     }
 
-    private function SendMail($model, $zielAdresse, $Cc = NULL, $Bcc = NULL, $anhang = NULL) {
+    private function SendMail($model, $zielAdresse, $Cc = NULL, $Bcc = NULL, $attachementFiles = NULL) {
         $SendObject = $this->FetchMailServerData();
         if (!$SendObject)
             return false;
         try {
-            if (is_array($anhang))
+            if (is_array($attachementFiles))
                 $LocalDirectory = Yii::getAlias('@documentsMail') . DIRECTORY_SEPARATOR;
             /* Da es 2^3 Möglichkeiten gibt, muss es auch 2^3 Konditionen geben. Auf ein Switch/Case-Konstrukt wird hier verzichtet. Außerdem 
               wird daurauf verzichtet, eventuelle Vereinfachungen zu implementieren, damit der Code einfacher wartbar ist. Folgende boolsche
@@ -842,7 +979,7 @@ class MailController extends Controller {
 
             /* Mail hat keinen Anhang (1) bis(4) */
 //(1)
-            if ($Cc == NULL && $Bcc == NULL && $anhang == NULL) {
+            if ($Cc == NULL && $Bcc == NULL && $attachementFiles == NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
                         ->setTo($zielAdresse)
@@ -851,7 +988,7 @@ class MailController extends Controller {
                         ->setTextBody($model->bodytext)
                         ->send();
 //(2)
-            } else if ($Cc != NULL && $Bcc == NULL && $anhang == NULL) {
+            } else if ($Cc != NULL && $Bcc == NULL && $attachementFiles == NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
                         ->setTo($zielAdresse)
@@ -861,7 +998,7 @@ class MailController extends Controller {
                         ->setTextBody($model->bodytext)
                         ->send();
 //(3)
-            } else if ($Cc == NULL && $Bcc != NULL && $anhang == NULL) {
+            } else if ($Cc == NULL && $Bcc != NULL && $attachementFiles == NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
                         ->setTo($zielAdresse)
@@ -871,7 +1008,7 @@ class MailController extends Controller {
                         ->setTextBody($model->bodytext)
                         ->send();
 //(4)
-            } else if ($Cc != NULL && $Bcc != NULL && $anhang == NULL) {
+            } else if ($Cc != NULL && $Bcc != NULL && $attachementFiles == NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
                         ->setTo($zielAdresse)
@@ -883,19 +1020,19 @@ class MailController extends Controller {
                         ->send();
                 /* Mail hat Anhang(5) bis (8) */
 //(5)
-            } else if ($Cc == NULL && $Bcc == NULL && $anhang != NULL) {
+            } else if ($Cc == NULL && $Bcc == NULL && $attachementFiles != NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
                         ->setTo($zielAdresse)
                         ->setSubject($model->betreff)
                         ->setHtmlBody($model->bodytext)
                         ->setTextBody($model->bodytext);
-                foreach ($anhang as $file) {
+                foreach ($attachementFiles as $file) {
                     $SendObject->attach($LocalDirectory . $file);
                 }
                 $SendObject->send();
 //(6)
-            } else if ($Cc != NULL && $Bcc == NULL && $anhang != NULL) {
+            } else if ($Cc != NULL && $Bcc == NULL && $attachementFiles != NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
                         ->setTo($zielAdresse)
@@ -903,12 +1040,12 @@ class MailController extends Controller {
                         ->setSubject($model->betreff)
                         ->setHtmlBody($model->bodytext)
                         ->setTextBody($model->bodytext);
-                foreach ($anhang as $file) {
+                foreach ($attachementFiles as $file) {
                     $SendObject->attach($LocalDirectory . $file);
                 }
                 $SendObject->send();
 //(7)
-            } else if ($Cc == NULL && $Bcc != NULL && $anhang != NULL) {
+            } else if ($Cc == NULL && $Bcc != NULL && $attachementFiles != NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
                         ->setTo($zielAdresse)
@@ -916,12 +1053,12 @@ class MailController extends Controller {
                         ->setSubject($model->betreff)
                         ->setHtmlBody($model->bodytext)
                         ->setTextBody($model->bodytext);
-                foreach ($anhang as $file) {
+                foreach ($attachementFiles as $file) {
                     $SendObject->attach($LocalDirectory . $file);
                 }
                 $SendObject->send();
 //(8)
-            } else if ($Cc != NULL && $Bcc != NULL && $anhang != NULL) {
+            } else if ($Cc != NULL && $Bcc != NULL && $attachementFiles != NULL) {
                 $SendObject = Yii::$app->mailer->compose()
                         ->setFrom($model->mail_from)
                         ->setTo($zielAdresse)
@@ -930,7 +1067,7 @@ class MailController extends Controller {
                         ->setSubject($model->betreff)
                         ->setHtmlBody($model->bodytext)
                         ->setTextBody($model->bodytext);
-                foreach ($anhang as $file) {
+                foreach ($attachementFiles as $file) {
                     $SendObject->attach($LocalDirectory . $file);
                 }
                 $SendObject->send();
