@@ -3,7 +3,7 @@
 use yii\db\Schema;
 use yii\db\Migration;
 
-class m190421_233024_Mass extends Migration
+class m190530_125712_Mass extends Migration
 {
 
     public function init()
@@ -16,7 +16,7 @@ class m190421_233024_Mass extends Migration
     {
         $tableOptions = 'ENGINE=InnoDB';
 
-        $this->createTable('{{%adminbesichtigungkunde}}',[
+        $this->createTable('adminbesichtigungkunde',[
             'id'=> $this->primaryKey(11),
             'besichtigungstermin_id'=> $this->integer(11)->notNull(),
             'admin_id'=> $this->integer(11)->null()->defaultValue(null),
@@ -27,7 +27,7 @@ class m190421_233024_Mass extends Migration
         $this->createIndex('kunde_id','{{%adminbesichtigungkunde}}',['kunde_id'],false);
         $this->createIndex('besichtigungstermin_id','{{%adminbesichtigungkunde}}',['besichtigungstermin_id'],false);
 
-        $this->createTable('{{%bankverbindung}}',[
+        $this->createTable('bankverbindung',[
             'id'=> $this->primaryKey(11),
             'laenderkennung'=> $this->string(3)->notNull(),
             'institut'=> $this->string(255)->null()->defaultValue(null),
@@ -47,7 +47,7 @@ class m190421_233024_Mass extends Migration
         $this->createIndex('kundenId','{{%bankverbindung}}',['kunde_id'],false);
         $this->createIndex('angelegt_von','{{%bankverbindung}}',['angelegt_von'],false);
 
-        $this->createTable('{{%besichtigungstermin}}',[
+        $this->createTable('besichtigungstermin',[
             'id'=> $this->primaryKey(11),
             'uhrzeit'=> $this->datetime()->notNull(),
             'Relevanz'=> $this->tinyInteger(1)->null()->defaultValue(null),
@@ -59,10 +59,9 @@ class m190421_233024_Mass extends Migration
         ], $tableOptions);
 
         $this->createIndex('aktualisiert_von','{{%besichtigungstermin}}',['aktualisiert_von'],false);
-        $this->createIndex('angelegt_von','{{%besichtigungstermin}}',['angelegt_von'],false);
         $this->createIndex('Immobilien_id','{{%besichtigungstermin}}',['Immobilien_id'],false);
 
-        $this->createTable('{{%dateianhang}}',[
+        $this->createTable('dateianhang',[
             'id'=> $this->primaryKey(11),
             'bezeichnung'=> $this->string(255)->null()->defaultValue(null),
             'dateiname'=> $this->string(255)->notNull(),
@@ -79,7 +78,7 @@ class m190421_233024_Mass extends Migration
         $this->createIndex('l_dateianhang_art_id','{{%dateianhang}}',['l_dateianhang_art_id'],false);
         $this->createIndex('angelegt_von','{{%dateianhang}}',['angelegt_von'],false);
 
-        $this->createTable('{{%e_dateianhang}}',[
+        $this->createTable('e_dateianhang',[
             'id'=> $this->primaryKey(11),
             'immobilien_id'=> $this->integer(11)->null()->defaultValue(null),
             'user_id'=> $this->integer(11)->null()->defaultValue(null),
@@ -92,7 +91,7 @@ class m190421_233024_Mass extends Migration
         $this->createIndex('immobilien_id','{{%e_dateianhang}}',['immobilien_id'],false);
         $this->createIndex('mail_id','{{%e_dateianhang}}',['mail_id'],false);
 
-        $this->createTable('{{%firma}}',[
+        $this->createTable('firma',[
             'id'=> $this->primaryKey(11),
             'firmenname'=> $this->string(64)->notNull(),
             'l_rechtsform_id'=> $this->integer(11)->notNull(),
@@ -103,6 +102,7 @@ class m190421_233024_Mass extends Migration
             'geschaeftsfuehrer'=> $this->string(32)->null()->defaultValue(null),
             'prokurist'=> $this->string(32)->null()->defaultValue(null),
             'umsatzsteuerID'=> $this->string(64)->null()->defaultValue(null),
+            'bankdaten'=> $this->string(256)->null()->defaultValue(null),
             'anzahlMitarbeiter'=> $this->smallInteger(6)->null()->defaultValue(null),
             'angelegt_von'=> $this->integer(11)->null()->defaultValue(null),
             'aktualisiert_von'=> $this->integer(11)->null()->defaultValue(null),
@@ -115,7 +115,7 @@ class m190421_233024_Mass extends Migration
         $this->createIndex('angelegtVon','{{%firma}}',['angelegt_von'],true);
         $this->createIndex('rechtsformId','{{%firma}}',['l_rechtsform_id'],false);
 
-        $this->createTable('{{%immobilien}}',[
+        $this->createTable('immobilien',[
             'id'=> $this->primaryKey(11),
             'bezeichnung'=> $this->text()->null()->defaultValue(null),
             'sonstiges'=> $this->text()->null()->defaultValue(null),
@@ -144,7 +144,7 @@ class m190421_233024_Mass extends Migration
         $this->createIndex('l_heizungsart_id','{{%immobilien}}',['l_heizungsart_id'],false);
         $this->createIndex('l_art_id','{{%immobilien}}',['l_art_id'],false);
 
-        $this->createTable('{{%kopf}}',[
+        $this->createTable('kopf',[
             'id'=> $this->primaryKey(11),
             'data'=> $this->text()->notNull(),
             'user_id'=> $this->integer(11)->null()->defaultValue(null),
@@ -152,7 +152,7 @@ class m190421_233024_Mass extends Migration
 
         $this->createIndex('user','{{%kopf}}',['user_id'],false);
 
-        $this->createTable('{{%kunde}}',[
+        $this->createTable('kunde',[
             'id'=> $this->primaryKey(11),
             'l_plz_id'=> $this->integer(11)->notNull(),
             'geschlecht'=> $this->integer(11)->notNull(),
@@ -163,7 +163,7 @@ class m190421_233024_Mass extends Migration
             'geburtsdatum'=> $this->date()->null()->defaultValue(null),
             'solvenz'=> $this->tinyInteger(1)->null()->defaultValue(null),
             'telefon'=> $this->string(32)->null()->defaultValue(null),
-            'email'=> $this->string(64)->null()->defaultValue(null),
+            'email'=> $this->string(64)->notNull(),
             'bankverbindung_id'=> $this->integer(11)->null()->defaultValue(null),
             'angelegt_am'=> $this->datetime()->null()->defaultValue(null),
             'aktualisiert_am'=> $this->datetime()->null()->defaultValue(null),
@@ -176,7 +176,7 @@ class m190421_233024_Mass extends Migration
         $this->createIndex('plz','{{%kunde}}',['l_plz_id'],false);
         $this->createIndex('aktualisiert_von','{{%kunde}}',['aktualisiert_von'],false);
 
-        $this->createTable('{{%kundeimmobillie}}',[
+        $this->createTable('kundeimmobillie',[
             'id'=> $this->primaryKey(11),
             'kunde_id'=> $this->integer(11)->notNull(),
             'immobilien_id'=> $this->integer(11)->notNull(),
@@ -185,38 +185,38 @@ class m190421_233024_Mass extends Migration
         $this->createIndex('immobilien_id','{{%kundeimmobillie}}',['immobilien_id'],false);
         $this->createIndex('kunde_id','{{%kundeimmobillie}}',['kunde_id'],false);
 
-        $this->createTable('{{%l_art}}',[
+        $this->createTable('l_art',[
             'id'=> $this->primaryKey(11),
             'bezeichnung'=> $this->string(32)->notNull(),
         ], $tableOptions);
 
 
-        $this->createTable('{{%l_begriffe}}',[
+        $this->createTable('l_begriffe',[
             'id'=> $this->primaryKey(11),
             'typ'=> $this->string(256)->notNull(),
             'data'=> $this->string(128)->notNull(),
         ], $tableOptions);
 
 
-        $this->createTable('{{%l_dateianhang_art}}',[
+        $this->createTable('l_dateianhang_art',[
             'id'=> $this->primaryKey(11),
             'bezeichnung'=> $this->string(255)->notNull(),
         ], $tableOptions);
 
 
-        $this->createTable('{{%l_geschlecht}}',[
+        $this->createTable('l_geschlecht',[
             'id'=> $this->primaryKey(11),
             'typus'=> $this->string(16)->notNull(),
         ], $tableOptions);
 
 
-        $this->createTable('{{%l_heizungsart}}',[
+        $this->createTable('l_heizungsart',[
             'id'=> $this->primaryKey(11),
             'bezeichnung'=> $this->string(255)->notNull(),
         ], $tableOptions);
 
 
-        $this->createTable('{{%l_laenderkennung}}',[
+        $this->createTable('l_laenderkennung',[
             'code'=> $this->char(2)->notNull(),
             'en'=> $this->string(100)->notNull()->defaultValue(''),
             'de'=> $this->string(100)->notNull()->defaultValue(''),
@@ -228,13 +228,13 @@ class m190421_233024_Mass extends Migration
 
         $this->addPrimaryKey('pk_on_l_laenderkennung','{{%l_laenderkennung}}',['code']);
 
-        $this->createTable('{{%l_mwst}}',[
+        $this->createTable('l_mwst',[
             'id'=> $this->primaryKey(11),
             'satz'=> $this->float()->notNull(),
         ], $tableOptions);
 
 
-        $this->createTable('{{%l_plz}}',[
+        $this->createTable('l_plz',[
             'id'=> $this->primaryKey(11),
             'plz'=> $this->string(5)->notNull(),
             'ort'=> $this->string(255)->notNull(),
@@ -242,27 +242,27 @@ class m190421_233024_Mass extends Migration
         ], $tableOptions);
 
 
-        $this->createTable('{{%l_rechnungsart}}',[
+        $this->createTable('l_rechnungsart',[
             'id'=> $this->primaryKey(11),
             'data'=> $this->text()->notNull(),
             'art'=> $this->string(32)->notNull(),
         ], $tableOptions);
 
 
-        $this->createTable('{{%l_rechtsform}}',[
+        $this->createTable('l_rechtsform',[
             'id'=> $this->primaryKey(11),
             'typus'=> $this->string(32)->notNull(),
         ], $tableOptions);
 
 
-        $this->createTable('{{%l_textbaustein}}',[
+        $this->createTable('l_textbaustein',[
             'id'=> $this->primaryKey(11),
             'beschreibung'=> $this->string(64)->notNull(),
             'data'=> $this->text()->notNull(),
         ], $tableOptions);
 
 
-        $this->createTable('{{%mail}}',[
+        $this->createTable('mail',[
             'id'=> $this->primaryKey(11),
             'id_mailserver'=> $this->integer(11)->notNull(),
             'mail_from'=> $this->string(64)->notNull(),
@@ -285,7 +285,7 @@ class m190421_233024_Mass extends Migration
         $this->createIndex('mail_ibfk_3','{{%mail}}',['aktualisiert_von'],false);
         $this->createIndex('textbausteinId','{{%mail}}',['textbaustein_id'],false);
 
-        $this->createTable('{{%mailserver}}',[
+        $this->createTable('mailserver',[
             'id'=> $this->primaryKey(11),
             'serverURL'=> $this->string(15)->null()->defaultValue(null),
             'serverHost'=> $this->string(64)->null()->defaultValue(null),
@@ -303,14 +303,14 @@ class m190421_233024_Mass extends Migration
         $this->createIndex('angelegtVon','{{%mailserver}}',['angelegt_von'],false);
         $this->createIndex('aktualisiertVon','{{%mailserver}}',['aktualisiert_von'],false);
 
-        $this->createTable('{{%migration}}',[
+        $this->createTable('migration',[
             'version'=> $this->string(180)->notNull(),
             'apply_time'=> $this->integer(11)->null()->defaultValue(null),
         ], $tableOptions);
 
         $this->addPrimaryKey('pk_on_migration','{{%migration}}',['version']);
 
-        $this->createTable('{{%rechnung}}',[
+        $this->createTable('rechnung',[
             'id'=> $this->primaryKey(11),
             'datumerstellung'=> $this->date()->notNull(),
             'datumfaellig'=> $this->date()->notNull(),
@@ -337,7 +337,7 @@ class m190421_233024_Mass extends Migration
         $this->createIndex('angelegtVon','{{%rechnung}}',['angelegt_von'],false);
         $this->createIndex('artId','{{%rechnung}}',['rechungsart_id'],false);
 
-        $this->createTable('{{%user}}',[
+        $this->createTable('user',[
             'id'=> $this->primaryKey(11),
             'username'=> $this->string(255)->notNull(),
             'auth_key'=> $this->string(32)->notNull(),
@@ -396,12 +396,6 @@ class m190421_233024_Mass extends Migration
             'fk_besichtigungstermin_Immobilien_id',
             '{{%besichtigungstermin}}', 'Immobilien_id',
             '{{%immobilien}}', 'id',
-            'RESTRICT', 'CASCADE'
-        );
-        $this->addForeignKey(
-            'fk_besichtigungstermin_angelegt_von',
-            '{{%besichtigungstermin}}', 'angelegt_von',
-            '{{%user}}', 'id',
             'RESTRICT', 'CASCADE'
         );
         $this->addForeignKey(
@@ -632,7 +626,6 @@ class m190421_233024_Mass extends Migration
             $this->dropForeignKey('fk_bankverbindung_kunde_id', '{{%bankverbindung}}');
             $this->dropForeignKey('fk_besichtigungstermin_aktualisiert_von', '{{%besichtigungstermin}}');
             $this->dropForeignKey('fk_besichtigungstermin_Immobilien_id', '{{%besichtigungstermin}}');
-            $this->dropForeignKey('fk_besichtigungstermin_angelegt_von', '{{%besichtigungstermin}}');
             $this->dropForeignKey('fk_dateianhang_aktualisiert_von', '{{%dateianhang}}');
             $this->dropForeignKey('fk_dateianhang_e_dateianhang_id', '{{%dateianhang}}');
             $this->dropForeignKey('fk_dateianhang_l_dateianhang_art_id', '{{%dateianhang}}');
@@ -669,33 +662,33 @@ class m190421_233024_Mass extends Migration
             $this->dropForeignKey('fk_rechnung_angelegt_von', '{{%rechnung}}');
             $this->dropForeignKey('fk_rechnung_aktualisiert_von', '{{%rechnung}}');
             $this->dropForeignKey('fk_rechnung_rechungsart_id', '{{%rechnung}}');
-            $this->dropTable('{{%adminbesichtigungkunde}}');
-            $this->dropTable('{{%bankverbindung}}');
-            $this->dropTable('{{%besichtigungstermin}}');
-            $this->dropTable('{{%dateianhang}}');
-            $this->dropTable('{{%e_dateianhang}}');
-            $this->dropTable('{{%firma}}');
-            $this->dropTable('{{%immobilien}}');
-            $this->dropTable('{{%kopf}}');
-            $this->dropTable('{{%kunde}}');
-            $this->dropTable('{{%kundeimmobillie}}');
-            $this->dropTable('{{%l_art}}');
-            $this->dropTable('{{%l_begriffe}}');
-            $this->dropTable('{{%l_dateianhang_art}}');
-            $this->dropTable('{{%l_geschlecht}}');
-            $this->dropTable('{{%l_heizungsart}}');
+            $this->dropTable('adminbesichtigungkunde');
+            $this->dropTable('bankverbindung');
+            $this->dropTable('besichtigungstermin');
+            $this->dropTable('dateianhang');
+            $this->dropTable('e_dateianhang');
+            $this->dropTable('firma');
+            $this->dropTable('immobilien');
+            $this->dropTable('kopf');
+            $this->dropTable('kunde');
+            $this->dropTable('kundeimmobillie');
+            $this->dropTable('l_art');
+            $this->dropTable('l_begriffe');
+            $this->dropTable('l_dateianhang_art');
+            $this->dropTable('l_geschlecht');
+            $this->dropTable('l_heizungsart');
             $this->dropPrimaryKey('pk_on_l_laenderkennung','{{%l_laenderkennung}}');
-            $this->dropTable('{{%l_laenderkennung}}');
-            $this->dropTable('{{%l_mwst}}');
-            $this->dropTable('{{%l_plz}}');
-            $this->dropTable('{{%l_rechnungsart}}');
-            $this->dropTable('{{%l_rechtsform}}');
-            $this->dropTable('{{%l_textbaustein}}');
-            $this->dropTable('{{%mail}}');
-            $this->dropTable('{{%mailserver}}');
+            $this->dropTable('l_laenderkennung');
+            $this->dropTable('l_mwst');
+            $this->dropTable('l_plz');
+            $this->dropTable('l_rechnungsart');
+            $this->dropTable('l_rechtsform');
+            $this->dropTable('l_textbaustein');
+            $this->dropTable('mail');
+            $this->dropTable('mailserver');
             $this->dropPrimaryKey('pk_on_migration','{{%migration}}');
-            $this->dropTable('{{%migration}}');
-            $this->dropTable('{{%rechnung}}');
-            $this->dropTable('{{%user}}');
+            $this->dropTable('migration');
+            $this->dropTable('rechnung');
+            $this->dropTable('user');
     }
 }
