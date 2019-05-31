@@ -98,7 +98,7 @@ AssetBundle::register($this);
                                     'items' => [
                                         ['label' => 'Mailserver konfigurieren', 'url' => ['/mailserver/index']],
                                         ['label' => 'Mails anzeigen/verschicken', 'url' => ['/mail/index']],
-                                         ['label' => 'Textbausteine editieren(ToComplete)', 'url' => ['/textbaustein/index']]
+                                         ['label' => 'Textbausteine editieren', 'url' => ['/textbaustein/index']]
                                     ],
                                 ],
                                 '<li class="divider"></li>',

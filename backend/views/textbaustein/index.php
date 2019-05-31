@@ -1,5 +1,4 @@
 <?php
-
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\LTextbausteinSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -8,7 +7,7 @@ use yii\helpers\Html;
 use kartik\export\ExportMenu;
 use kartik\grid\GridView;
 
-$this->title = Yii::t('app', 'L Textbaustein');
+$this->title = Yii::t('app', 'Textbaustein');
 $this->params['breadcrumbs'][] = $this->title;
 $search = "$('.search-button').click(function(){
 	$('.search-form').toggle(1000);
@@ -19,21 +18,12 @@ $this->registerJs($search);
 <div class="ltextbaustein-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Create L Textbaustein'), ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-info search-button']) ?>
-    </p>
-    <div class="search-form" style="display:none">
-        <?=  $this->render('_search', ['model' => $searchModel]); ?>
-    </div>
-    <?php 
+    <?php
     $gridColumn = [
         ['class' => 'yii\grid\SerialColumn'],
         'id',
         'beschreibung',
-        'data:ntext',
+        'data:html',
         [
             'class' => 'yii\grid\ActionColumn',
             'template' => '{save-as-new} {view} {update} {delete}',
@@ -43,35 +33,37 @@ $this->registerJs($search);
                 },
             ],
         ],
-    ]; 
+    ];
     ?>
-    <?= GridView::widget([
+    <?=
+    GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'filterSelector' => '.choiceRadio',
         'columns' => $gridColumn,
         'pjax' => true,
-        'pjaxSettings' => ['options' => ['id' => 'kv-pjax-container-ltextbaustein']],
+        'pjaxSettings' => [
+            'neverTimeout' => true,
+        ],
+        'options' => [
+        //'style' => 'overflow: auto; word-wrap: break-word;'
+        ],
+        'condensed' => true,
+        'responsiveWrap' => true,
+        'hover' => true,
+        'persistResize' => true,
         'panel' => [
             'type' => GridView::TYPE_PRIMARY,
-            'heading' => '<span class="glyphicon glyphicon-book"></span>  ' . Html::encode($this->title),
+            "heading" => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i> " . $this->title . "</h3>",
+            'before' => Html::a(Yii::t('app', 'Item erstellen'), ['/textbaustein/create'], ['class' => 'btn btn-success', 'title' => 'Erstellt einen neuen Baustein']),
+            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['/textbaustein/index'], ['class' => 'btn btn-warning', 'title' => 'Setzt die GridView zurück']),
+            'toggleDataOptions' => ['minCount' => 10],
         ],
-        // your toolbar can include the additional full export menu
         'toolbar' => [
             '{export}',
-            ExportMenu::widget([
-                'dataProvider' => $dataProvider,
-                'columns' => $gridColumn,
-                'target' => ExportMenu::TARGET_BLANK,
-                'fontAwesome' => true,
-                'dropdownOptions' => [
-                    'label' => 'Full',
-                    'class' => 'btn btn-default',
-                    'itemsBefore' => [
-                        '<li class="dropdown-header">Export All Data</li>',
-                    ],
-                ],
-            ]) ,
+            '{toggleData}'
         ],
-    ]); ?>
-
+        'toggleDataOptions' => ['minCount' => 0],
+    ]);
+    ?>
 </div>
