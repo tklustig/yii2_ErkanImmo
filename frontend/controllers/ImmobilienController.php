@@ -45,25 +45,37 @@ class ImmobilienController extends Controller {
         $ArrayOfImmo = array();
         $ArrayOfE = array();
         $ArrayOfImmoAll = array();
-        $model_dateianhang = Dateianhang::find()->all();
-        $model_e = EDateianhang::find()->all();
+        $arrayOfEImmo = array();
+        $modelDateianhang = Dateianhang::find()->all();
+        $modelE = EDateianhang::find()->all();
         $modelImmobilien = Immobilien::find()->all();
-        // Eruiere die jenigen Immobilien-Ids, die kein Bild haben
-        foreach ($model_e as $id) {
+        /* Eruiere die jenigen Immobilien-Ids, die kein Bild haben: 
+          Eruiere zunächst alle FKs in e_dateianhang bzgl. immobilien_id */
+        foreach ($modelE as $id) {
             array_push($ArrayOfE, $id->immobilien_id);
         }
+        // Eruiere dann alle PKs in der Tabelle immobilien
         foreach ($modelImmobilien as $id) {
             array_push($ArrayOfImmoAll, $id->id);
         }
-        //verfrachte diese Id in ein Array
+        //verfrachte die Id der Immobilie, die kein Bild hat, in das Array ArrayOfDiffernece
         $ArrayOfDifference = array_diff($ArrayOfImmoAll, $ArrayOfE);
 
-        /* 	Eruiere alle Immobilien-Ids, die ein Bild haben und
+        //eruiere alle PK's in e_dateianhang, die einen FK bzgl. immobilien_id haben
+        foreach ($modelE as $item) {
+            if (!empty($item->immobilien_id))
+                array_push($arrayOfEImmo, $item->id);
+        }
+        /* Eruiere alle Immobilien-Ids, die ein Bild haben und
           verfrachte den Dateinamen des jeweiligen Bildes... */
-        foreach ($model_dateianhang as $filename) {
-            if (preg_match($bmp, $filename->dateiname) || preg_match($tif, $filename->dateiname) || preg_match($png, $filename->dateiname) || preg_match($psd, $filename->dateiname) || preg_match($pcx, $filename->dateiname) || preg_match($gif, $filename->dateiname) || preg_match($jpeg, $filename->dateiname) || preg_match($jpg, $filename->dateiname) || preg_match($ico, $filename->dateiname)) {
-                array_push($ArrayOfFilename, $filename->dateiname);
-                array_push($ArrayOfId, $filename->e_dateianhang_id);
+        foreach ($modelDateianhang as $item) {
+            for ($i = 0; $i < count($arrayOfEImmo); $i++) {
+                if ($item->e_dateianhang_id == $arrayOfEImmo[$i]) {
+                    if (preg_match($bmp, $item->dateiname) || preg_match($tif, $item->dateiname) || preg_match($png, $item->dateiname) || preg_match($psd, $item->dateiname) || preg_match($pcx, $item->dateiname) || preg_match($gif, $item->dateiname) || preg_match($jpeg, $item->dateiname) || preg_match($jpg, $item->dateiname) || preg_match($ico, $item->dateiname)) {
+                        array_push($ArrayOfFilename, $item->dateiname);
+                        array_push($ArrayOfId, $item->e_dateianhang_id);
+                    }
+                }
             }
         }
         //...und dessen ID in Arrays
@@ -115,7 +127,7 @@ class ImmobilienController extends Controller {
         }
         //sofern ein Suchrequest abgefeuert wurde,übergebe an das Searchmodel die Parameter...
         if ($searchPreview == 1) {
-            /* 	Hier noch prüfen, ob dataProvider nur Null-Werte(der Request wurde zwar abgefeuert, 
+            /* 	Hier noch prüfen, ob dataProvider nur Null-Werte(der Request wurde zwar abgefeuert,
               allerdings ohne Suchangaben) enthält. Wenn ja, dann 'zurück rendern' */
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams, NULL, NULL, $searchPreview);
             if ($dataProvider['plz'][0] == null && $dataProvider['Kosten'][0] == null && $dataProvider['raeume'][0] == null) {
@@ -183,7 +195,7 @@ class ImmobilienController extends Controller {
             //füge neue Arrays hinzu
             $ArrayOfObjAnh = array();
             $ArrayOfObjImmo = array();
-            /* 	bei 2^3 Suchparameter muss es folglich 2^3-1 Konditionen geben. 
+            /* 	bei 2^3 Suchparameter muss es folglich 2^3-1 Konditionen geben.
               1.Kondition:Sofern Suchrequestparameter enthält plz */
             if ($dataProvider['plz'][0] != null) {
                 $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->all();
@@ -379,14 +391,14 @@ class ImmobilienController extends Controller {
         $strasse = Immobilien::findOne(['id' => $id])->strasse;
         $plz = Immobilien::findOne(['id' => $id])->lPlz->plz;
         $ort = Immobilien::findOne(['id' => $id])->stadt;
-        //splitte den String in ein Array auf, da die einzelnen Komponenten einer Strasse mit + verbunden werden müssen. 
+        //splitte den String in ein Array auf, da die einzelnen Komponenten einer Strasse mit + verbunden werden müssen.
         $arrayOfStreet = explode(" ", $strasse);
         for ($i = 0; $i < count($arrayOfStreet); $i++) {
             $googleStreet .= $arrayOfStreet[$i] . '+';
         }
         //Entferne das letzte Pluszeichen, damit ein valider Googlestring entsteht
         $googleStreet = substr($googleStreet, 0, -1);
-        /* jetzt haben wird alle Komponenten:Strasse mit plus getrennt,Plz und Ort. Damit basteln wir uns den 
+        /* jetzt haben wird alle Komponenten:Strasse mit plus getrennt,Plz und Ort. Damit basteln wir uns den
           GoogleMap-Aufruf zusammen */
         $basisUrl = 'https://www.google.de/maps/place/';
         $urlSpecific = "$googleStreet,+$plz+$ort";

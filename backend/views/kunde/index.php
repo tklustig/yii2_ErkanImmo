@@ -25,16 +25,16 @@ $this->registerJs($js, \yii\web\View::POS_READY);
 <?php
 //Hier werden alle Flashnachrichten ausgegeben
 $session = new Session();
+$MessageArt = Alert::TYPE_WARNING;
 foreach ($session->getAllFlashes() as $flash) {
-    foreach ($flash as $ausgabe) {
-        echo Alert::widget([
-            'type' => Alert::TYPE_WARNING,
-            'title' => 'Information',
-            'icon' => 'glyphicon glyphicon-exclamation-sign',
-            'body' => $ausgabe,
-            'showSeparator' => true,
-            'delay' => false
-        ]);
+    if (count($flash) > 2) {
+        ?><?=
+        generateOutput($MessageArt, implode("<br/><hr/><br/>", $flash));
+    } else {
+        foreach ($flash as $ausgabe) {
+            ?><?=
+            generateOutput($MessageArt, $ausgabe);
+        }
     }
 }
 ?>
@@ -154,7 +154,7 @@ foreach ($session->getAllFlashes() as $flash) {
         ],
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{bankverbindung} {termin} {delpic}',
+            'template' => '{bankverbindung} {termin} {delpic} {deletion}',
             'buttons' => [
                 'bankverbindung' => function ($id, $model) {
                     if (!empty($model->bankverbindung_id)) {
@@ -177,6 +177,19 @@ foreach ($session->getAllFlashes() as $flash) {
                             $link .= '?id=' . $fk;
                             return Html::a('<span class="glyphicon glyphicon-flag"></span>', $link, ['title' => 'zum Termin im Frontend springen', 'data' => ['pjax' => '0']]);
                         }
+                    }
+                },
+                'deletion' => function ($id, $model) {
+                    $arrayOfFilenames = array();
+                    $filename = null;
+                    if (!empty(\frontend\models\EDateianhang::findOne(['kunde_id' => $model->id]))) {
+                        $pk = \frontend\models\EDateianhang::findOne(['kunde_id' => $model->id])->id;
+                        $fileNames = frontend\models\Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
+                        foreach ($fileNames as $item) {
+                            array_push($arrayOfFilenames, $item->dateiname);
+                        }
+                        if (count($arrayOfFilenames) > 0)
+                            return Html::a('<span class="glyphicon glyphicon-remove-sign"></span>', ['/kunde/deletion', 'id' => $model->id], ['title' => 'Uploads löschen', 'data' => ['pjax' => '0']]);
                     }
                 },
             ],
@@ -210,7 +223,6 @@ foreach ($session->getAllFlashes() as $flash) {
             ['content' =>
                 Html::submitButton('<span class=" fa fa-pencil-square-o">', ['', 'class' => 'btn btn-danger', 'title' => 'implementiert Mails für ausgewählte Kunden', 'name' => 'button_checkBoxes', 'data' => ['pjax' => '1']])
             ],
-            '{export}',
             '{toggleData}'
         ],
         'toggleDataOptions' => ['minCount' => 10],
@@ -220,4 +232,15 @@ foreach ($session->getAllFlashes() as $flash) {
 </div>
 <?=
 Html::endForm();
+?>
+<?php
+
+function generateOutput($type, $content) {
+    return Alert::widget(['type' => $type,
+                'title' => 'Information',
+                'icon' => 'glyphicon glyphicon-exclamation-sign',
+                'body' => $content,
+                'showSeparator' => true,
+    ]);
+}
 ?>

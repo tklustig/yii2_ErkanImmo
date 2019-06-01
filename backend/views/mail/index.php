@@ -18,6 +18,22 @@ $this->registerJs($search);
     <?php
     ActiveForm::end();
     ?>
+    <?php
+//Hier werden alle Flashnachrichten ausgegeben
+    $session = new Session();
+    $MessageArt = Alert::TYPE_WARNING;
+    foreach ($session->getAllFlashes() as $flash) {
+        if (count($flash) > 2) {
+            ?><?=
+            generateOutput($MessageArt, implode("<br/><hr/><br/>", $flash));
+        } else {
+            foreach ($flash as $ausgabe) {
+                ?><?=
+                generateOutput($MessageArt, $ausgabe);
+            }
+        }
+    }
+    ?>
     <h1><?= Html::encode($this->title) ?></h1>
     <p>
         <?= Html::a(Yii::t('app', 'Advance Search'), '#', ['class' => 'btn btn-info search-button']) ?>
@@ -121,3 +137,14 @@ $this->registerJs($search);
     ?>
 
 </div>
+<?php
+
+function generateOutput($type, $content) {
+    return Alert::widget(['type' => $type,
+                'title' => 'Information',
+                'icon' => 'glyphicon glyphicon-exclamation-sign',
+                'body' => $content,
+                'showSeparator' => true,
+    ]);
+}
+?>

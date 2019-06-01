@@ -238,6 +238,75 @@ class KundeController extends Controller {
         return $this->redirect(['/site/index']);
     }
 
+    public function actionDeletion($id) {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $session = new Session();
+            $arrayOfAnhangId = array();
+            $arrayOfAnhangFilename = array();
+            $doc = '/doc/';
+            $docx = '/docx/';
+            $txt = '/txt/';
+            $pdf = '/pdf/';
+            $odt = '/odt/';
+            $xls = '/xls/';
+            $xlsx = '/xlsx/';
+            $ppt = '/ppt/';
+            if (!empty(EDateianhang::findOne(['kunde_id' => $id]))) {
+                $pk = EDateianhang::findOne(['kunde_id' => $id])->id;
+                $fileNames = Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
+                foreach ($fileNames as $item) {
+                    array_push($arrayOfAnhangId, $item->id);
+                    array_push($arrayOfAnhangFilename, $item->dateiname);
+                }
+            }
+            if (count($arrayOfAnhangId) > 0) {
+                for ($i = 0; $i < count($arrayOfAnhangId); $i++) {
+                    $pkOfEdateiAnhang = Dateianhang::findOne(['id' => $arrayOfAnhangId[$i]])->e_dateianhang_id;
+                    $this->findModelAnhang($arrayOfAnhangId[$i])->delete();
+                    $haveRecordsDeleted = true;
+                    $session->addFlash('info', "Der Kundenanhang mit der Id:$arrayOfAnhangId[$i] wurde aus der Datenbank entfernt.");
+                }
+            } else
+                $haveRecordsDeleted = false;
+            if ($haveRecordsDeleted)
+                $this->findModelEAnhang($pkOfEdateiAnhang)->delete();
+            $transaction->commit();
+            $frontendImg = Yii::getAlias('@pictures');
+            $backendImg = Yii::getAlias('@picturesBackend');
+            $frontendDocuments = Yii::getAlias('@documentsImmoF');
+            $backendDocuments = Yii::getAlias('@documentsImmoB');
+            if (count($arrayOfAnhangFilename) > 0) {
+                for ($i = 0; $i < count($arrayOfAnhangFilename); $i++) {
+                    if (file_exists($frontendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
+                        FileHelper::unlink($frontendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
+                        $session->addFlash('info', "Der Kundenanhang $arrayOfAnhangFilename[$i] im Ordner $frontendImg wurde physikalisch gelöscht");
+                    } else
+                        $session->addFlash('info', "Der Kundenanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $frontendImg. Folglich wurde er physikalisch auch nicht gelöscht!");
+                    if (file_exists($backendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
+                        FileHelper::unlink($backendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
+                        $session->addFlash('info', "Der Kundenanhang $arrayOfAnhangFilename[$i] im Ordner $backendImg wurde physikalisch gelöscht");
+                    } else
+                        $session->addFlash('info', "Der Kundenanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $backendImg. Folglich wurde er physikalisch auch nicht gelöscht!");
+                    if (file_exists($frontendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
+                        FileHelper::unlink($frontendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
+                        $session->addFlash('info', "Der Kundenanhang $arrayOfAnhangFilename[$i] im Ordner $frontendDocuments wurde physikalisch gelöscht");
+                    } else
+                        $session->addFlash('info', "Der Kundenanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $frontendDocuments. Folglich wurde er physikalisch auch nicht gelöscht!");
+                    if (file_exists($backendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
+                        FileHelper::unlink($backendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
+                        $session->addFlash('info', "Der Kundenanhang $arrayOfAnhangFilename[$i] im Ordner $backendDocuments wurde physikalisch gelöscht");
+                    } else
+                        $session->addFlash('info', "Der Kundenanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $backendDocuments. Folglich wurde er physikalisch auch nicht gelöscht!");
+                }
+            }
+        } catch (\Exception $error) {
+            $transaction->rollBack();
+            error_handling::error_without_id($error, KundeController::RenderBackInCaseOfError);
+        }
+        $this->redirect(['/kunde/index']);
+    }
+
     public function actionPdf($id) {
         $model = $this->findModel($id);
         $content = $this->renderAjax('_pdf', [
@@ -392,6 +461,22 @@ class KundeController extends Controller {
                 ]
             ]
         ]);
+    }
+
+    protected function findModelAnhang($id) {
+        if (($model = Dateianhang::findOne(['id' => $id])) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model dateianhang konnte nicht geladen werden(Fehlercode:GII995)'));
+        }
+    }
+
+    protected function findModelEAnhang($id) {
+        if (($model = EDateianhang::findOne(['id' => $id])) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model edateianhang konnte nicht geladen werden.(Errorcode:FFT448)'));
+        }
     }
 
 }

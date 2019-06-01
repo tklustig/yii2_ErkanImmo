@@ -84,6 +84,7 @@ return [
                 'kunde_loeschen' => 'kunde/delete',
                 'kunde_bildloeschen' => 'kunde/delpic',
                 'kunde_mailSenden' => 'kunde/send',
+                'kunde_deleteupload' => 'kunde/deletion',
                 'auswahlk' => 'kunde/auswahlk',
                 'baustein' => 'kopf/baustein',
                 'rechnung' => 'rechnung/index',

@@ -212,14 +212,6 @@ $this->registerJs($search);
                     }
                 },
                 'deletion' => function ($id, $model) {
-                    $doc = '/doc/';
-                    $docx = '/docx/';
-                    $txt = '/txt/';
-                    $pdf = '/pdf/';
-                    $odt = '/odt/';
-                    $xls = '/xls/';
-                    $xlsx = '/xlsx/';
-                    $ppt = '/ppt/';
                     $arrayOfFilenames = array();
                     $filename = null;
                     if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id]))) {
@@ -402,14 +394,6 @@ $this->registerJs($search);
                     }
                 },
                 'deletion' => function ($id, $model) {
-                    $doc = '/doc/';
-                    $docx = '/docx/';
-                    $txt = '/txt/';
-                    $pdf = '/pdf/';
-                    $odt = '/odt/';
-                    $xls = '/xls/';
-                    $xlsx = '/xlsx/';
-                    $ppt = '/ppt/';
                     $arrayOfFilenames = array();
                     $filename = null;
                     if (!empty(\frontend\models\EDateianhang::findOne(['immobilien_id' => $model->id]))) {
