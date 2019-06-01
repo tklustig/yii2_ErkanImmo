@@ -18,18 +18,15 @@ $this->registerJs($search);
     <?php
 //Hier werden alle Flashnachrichten ausgegeben
     $session = new Session();
-    if (!empty($session->getAllFlashes())) {
-        foreach ($session->getAllFlashes() as $flash) {
+    $MessageArt = Alert::TYPE_WARNING;
+    foreach ($session->getAllFlashes() as $flash) {
+        if (count($flash) > 2) {
+            ?><?=
+            generateOutput($MessageArt, implode("<br/><hr/><br/>", $flash));
+        } else {
             foreach ($flash as $ausgabe) {
                 ?><?=
-                Alert::widget([
-                    'type' => Alert::TYPE_SUCCESS,
-                    'title' => 'Information',
-                    'icon' => 'glyphicon glyphicon-exclamation-sign',
-                    'body' => $ausgabe,
-                    'showSeparator' => true,
-                    'delay' => false
-                ]);
+                generateOutput($MessageArt, $ausgabe);
             }
         }
     }
@@ -231,7 +228,7 @@ $this->registerJs($search);
                             array_push($arrayOfFilenames, $item->dateiname);
                         }
                         if (count($arrayOfFilenames) > 0)
-                            return Html::a('<span class="glyphicon glyphicon-remove-sign"></span>', ['/immobilien/deletion'], ['title' => 'Uploads löschen', 'data' => ['pjax' => '0']]);
+                            return Html::a('<span class="glyphicon glyphicon-remove-sign"></span>', ['/immobilien/deletion', 'id' => $model->id], ['title' => 'Uploads löschen', 'data' => ['pjax' => '0']]);
                     }
                 },
             ],
@@ -497,4 +494,15 @@ $this->registerJs($search);
     ]);
     ?>
 </div>
+<?php
+
+function generateOutput($type, $content) {
+    return Alert::widget(['type' => $type,
+                'title' => 'Information',
+                'icon' => 'glyphicon glyphicon-exclamation-sign',
+                'body' => $content,
+                'showSeparator' => true,
+    ]);
+}
+?>
 

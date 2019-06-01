@@ -255,7 +255,7 @@ class ImmobilienController extends Controller {
                 }
                 $valid = $model->validate();
                 if ($valid) {
-                    /*  Hier muss noch der Spechervorgang für dateianhang und edateianhang vorgenommen werden. Dazu kommt derselbe 
+                    /*  Hier muss noch der Spechervorgang für dateianhang und edateianhang vorgenommen werden. Dazu kommt derselbe
                       Code wie in actionCreate() zum Einsatz */
                     $model->save();
                     if ($BoolAnhang) {
@@ -475,10 +475,68 @@ class ImmobilienController extends Controller {
         echo Html::a('zurück', ['/immobilien/index'], ['title' => 'zurück']);
     }
 
-    public function actionDeletion() {
-        print_r("Es wurde nix übergeben, da die View von Dateianhang gerendert werden soll, die das Löschen der ImmoUploads ermöglichen soll!");
-        print_r("<br>Script wurde in der Klasse " . get_class() . " angehalten");
-        die();
+    public function actionDeletion($id) {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $session = new Session();
+            $arrayOfAnhangId = array();
+            $arrayOfAnhangFilename = array();
+            $doc = '/doc/';
+            $docx = '/docx/';
+            $txt = '/txt/';
+            $pdf = '/pdf/';
+            $odt = '/odt/';
+            $xls = '/xls/';
+            $xlsx = '/xlsx/';
+            $ppt = '/ppt/';
+            if (!empty(EDateianhang::findOne(['immobilien_id' => $id]))) {
+                $pk = EDateianhang::findOne(['immobilien_id' => $id])->id;
+                $fileNames = Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
+                foreach ($fileNames as $item) {
+                    array_push($arrayOfAnhangId, $item->id);
+                    array_push($arrayOfAnhangFilename, $item->dateiname);
+                }
+            }
+            $frontendImg = Yii::getAlias('@pictures');
+            $backendImg = Yii::getAlias('@picturesBackend');
+            $frontendDocuments = Yii::getAlias('@documentsImmoF');
+            $backendDocuments = Yii::getAlias('@documentsImmoB');
+            if (count($arrayOfAnhangFilename) > 0) {
+                for ($i = 0; $i < count($arrayOfAnhangFilename); $i++) {
+                    if (file_exists($frontendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
+                        FileHelper::unlink($frontendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] im Ordner $frontendImg wurde gelöscht");
+                    } else
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $frontendImg. Folglich wurde er auch nicht gelöscht!");
+                    if (file_exists($backendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
+                        FileHelper::unlink($backendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] im Ordner $backendImg wurde gelöscht");
+                    } else
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $backendImg. Folglich wurde er auch nicht gelöscht!");
+                    if (file_exists($frontendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
+                        FileHelper::unlink($frontendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] im Ordner $frontendDocuments wurde gelöscht");
+                    } else
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $frontendDocuments. Folglich wurde er auch nicht gelöscht!");
+                    if (file_exists($backendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
+                        FileHelper::unlink($backendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] im Ordner $backendDocuments wurde gelöscht");
+                    } else
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $backendDocuments. Folglich wurde er auch nicht gelöscht!");
+                }
+            }
+            /*
+              if (count($arrayOfAnhang) > 0) {
+              for ($i = 0; $i < count($arrayOfAnhang); $i++) {
+              $this->findModelAnhang($arrayOfAnhang[$i])->deleteWithRelated();
+              $session->addFlash('info', "Der Immobilienanhang mit der Id:$arrayOfAnhang[$i] wurde gelöscht");
+              }
+              } */
+        } catch (\Exception $error) {
+            $transaction->rollBack();
+            error_handling::error_without_id($error, ImmobilienController::RenderBackInCaseOfError);
+        }
+        $this->redirect(['/immobilien/index']);
     }
 
     protected function findModel($id) {
@@ -495,24 +553,6 @@ class ImmobilienController extends Controller {
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model konnte nicht geladen werden'));
         }
-    }
-
-    private function Ausgabe($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
-        echo Growl::widget([
-            'type' => $type,
-            'title' => $typus,
-            'icon' => 'glyphicon glyphicon-exclamation-sign',
-            'body' => $message,
-            'showSeparator' => true,
-            'delay' => $delay,
-            'pluginOptions' => [
-                'showProgressbar' => true,
-                'placement' => [
-                    'from' => 'top',
-                    'align' => 'center',
-                ]
-            ]
-        ]);
     }
 
 }
