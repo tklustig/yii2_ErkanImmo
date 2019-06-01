@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 ?>
 <?php
-$iterationCounter = count($ArrayOfPlz);
+$iterationCounter = count($ArrayOfFilename);
 $search = "$('.search-button').click(function(){
 	$('.search-form').toggle(1000);
 	return false;

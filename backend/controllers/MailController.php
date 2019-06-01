@@ -332,7 +332,7 @@ class MailController extends Controller {
             if ($mailWurdeVerschickt)
                 return $this->redirect(['view', 'id' => $model->id]);
             else
-                return $this->redirect(['/site/index']);
+                return $this->redirect(['/mail/index']);
         } else {
             return $this->render('create', [
                         'model' => $model,
@@ -466,7 +466,7 @@ class MailController extends Controller {
                 }
                 return $this->redirect(['view', 'id' => $model->id]);
             } else
-                return $this->redirect(['/site/index']);
+                return $this->redirect(['/mail/index']);
         } else {
             return $this->render('stapelone', [
                         'model' => $model,
@@ -631,7 +631,7 @@ class MailController extends Controller {
                 }
                 return $this->redirect(['view', 'id' => $model->id]);
             } else
-                return $this->redirect(['/site/index']);
+                return $this->redirect(['/mail/index']);
         } else {
             return $this->render('stapelseveral', [
                         'model' => $model,
@@ -713,7 +713,7 @@ class MailController extends Controller {
             $transaction->rollBack();
             error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
         }
-        return $this->redirect(['/site/index']);
+        return $this->redirect(['/mail/index']);
     }
 
     public function actionDeleteall() {
@@ -737,6 +737,67 @@ class MailController extends Controller {
                         'dataProvider' => $dataProvider,
             ]);
         }
+    }
+
+    public function actionDeletion($id) {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $session = new Session();
+            $arrayOfAnhangId = array();
+            $arrayOfAnhangFilename = array();
+            if (!empty(EDateianhang::findOne(['mail_id' => $id]))) {
+                $pk = EDateianhang::findOne(['mail_id' => $id])->id;
+                $fileNames = Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
+                foreach ($fileNames as $item) {
+                    array_push($arrayOfAnhangId, $item->id);
+                    array_push($arrayOfAnhangFilename, $item->dateiname);
+                }
+            }
+            if (count($arrayOfAnhangId) > 0) {
+                for ($i = 0; $i < count($arrayOfAnhangId); $i++) {
+                    $pkOfEdateiAnhang = Dateianhang::findOne(['id' => $arrayOfAnhangId[$i]])->e_dateianhang_id;
+                    $this->findModelAnhang($arrayOfAnhangId[$i])->delete();
+                    $haveRecordsDeleted = true;
+                    $session->addFlash('info', "Der Mailanhang mit der Id:$arrayOfAnhangId[$i] wurde aus der Datenbank entfernt.");
+                }
+            } else
+                $haveRecordsDeleted = false;
+            if ($haveRecordsDeleted)
+                $this->findModelEAnhang($pkOfEdateiAnhang)->delete();
+            $transaction->commit();
+            $frontendImg = Yii::getAlias('@pictures');
+            $backendImg = Yii::getAlias('@picturesBackend');
+            $frontendDocuments = Yii::getAlias('@documentsImmoF');
+            $backendDocuments = Yii::getAlias('@documentsImmoB');
+            if (count($arrayOfAnhangFilename) > 0) {
+                for ($i = 0; $i < count($arrayOfAnhangFilename); $i++) {
+                    if (file_exists($frontendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
+                        FileHelper::unlink($frontendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
+                        $session->addFlash('info', "Der Mailanhang $arrayOfAnhangFilename[$i] im Ordner $frontendImg wurde physikalisch gelöscht");
+                    } else
+                        $session->addFlash('info', "Der Mailanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $frontendImg. Folglich wurde er physikalisch auch nicht gelöscht!");
+                    if (file_exists($backendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
+                        FileHelper::unlink($backendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
+                        $session->addFlash('info', "Der Mailanhang $arrayOfAnhangFilename[$i] im Ordner $backendImg wurde physikalisch gelöscht");
+                    } else
+                        $session->addFlash('info', "Der Mailanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $backendImg. Folglich wurde er physikalisch auch nicht gelöscht!");
+                    if (file_exists($frontendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
+                        FileHelper::unlink($frontendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
+                        $session->addFlash('info', "Der Mailanhang $arrayOfAnhangFilename[$i] im Ordner $frontendDocuments wurde physikalisch gelöscht");
+                    } else
+                        $session->addFlash('info', "Der Mailanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $frontendDocuments. Folglich wurde er physikalisch auch nicht gelöscht!");
+                    if (file_exists($backendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
+                        FileHelper::unlink($backendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
+                        $session->addFlash('info', "Der Mailanhang $arrayOfAnhangFilename[$i] im Ordner $backendDocuments wurde physikalisch gelöscht");
+                    } else
+                        $session->addFlash('info', "Der Mailanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $backendDocuments. Folglich wurde er physikalisch auch nicht gelöscht!");
+                }
+            }
+        } catch (\Exception $error) {
+            $transaction->rollBack();
+            error_handling::error_without_id($error, MailController::RenderBackInCaseOfError);
+        }
+        $this->redirect(['/mail/index']);
     }
 
     public function actionPdf($id) {
@@ -831,6 +892,7 @@ class MailController extends Controller {
                     copy($urlRoot . $arrayOfPics[$i], Yii::getAlias('@picturesBackend') . DIRECTORY_SEPARATOR . $arrayOfPics[$i]);
                 }
             }
+
             return $this->render('_form_mailanhaenge', [
                         'arrayOfPics' => $arrayOfPics,
                         'arrayOfBezPics' => $arrayOfBezPics,
@@ -844,7 +906,13 @@ class MailController extends Controller {
     public function actionDocument($id) {
         $filePath = Yii::getAlias('@documentsMail');
         $completePath = $filePath . DIRECTORY_SEPARATOR . $id;
-        return Yii::$app->response->sendFile($completePath, $id);
+        if (file_exists($completePath))
+            return Yii::$app->response->sendFile($completePath, $id);
+        else {
+            $session = new Session();
+            $session->addFlash('info', "Der Mailanhang ist zwar in der Datenbank registriert, befindet sich jedoch physikalisch nicht mehr auf Ihrem Webserver. Löschen Sie den Anhang über das entsprechende Icon!");
+            return $this->redirect(['/mail/index']);
+        }
     }
 
     //gekapselte Methoden
@@ -1085,12 +1153,28 @@ class MailController extends Controller {
             foreach ($arrayOfFiles as $item) {
                 if (!preg_match('/ignore/', $item)) {
                     FileHelper::unlink($item);
-                    $session->addFlash('info', "Der Mailanhang:$item wurde erfolgreich aus dem Verzecihnis entfernt");
+                    $session->addFlash('info', "Der Mailanhang:$item wurde erfolgreich aus dem Verzeichnis entfernt");
                 }
             }
             return true;
         } catch (\Exception $e) {
             return false;
+        }
+    }
+
+    protected function findModelAnhang($id) {
+        if (($model = Dateianhang::findOne(['id' => $id])) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model dateianhang konnte nicht geladen werden(Fehlercode:GII995)'));
+        }
+    }
+
+    protected function findModelEAnhang($id) {
+        if (($model = EDateianhang::findOne(['id' => $id])) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model edateianhang konnte nicht geladen werden.(Errorcode:FFT448)'));
         }
     }
 

@@ -244,14 +244,6 @@ class KundeController extends Controller {
             $session = new Session();
             $arrayOfAnhangId = array();
             $arrayOfAnhangFilename = array();
-            $doc = '/doc/';
-            $docx = '/docx/';
-            $txt = '/txt/';
-            $pdf = '/pdf/';
-            $odt = '/odt/';
-            $xls = '/xls/';
-            $xlsx = '/xlsx/';
-            $ppt = '/ppt/';
             if (!empty(EDateianhang::findOne(['kunde_id' => $id]))) {
                 $pk = EDateianhang::findOne(['kunde_id' => $id])->id;
                 $fileNames = Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();

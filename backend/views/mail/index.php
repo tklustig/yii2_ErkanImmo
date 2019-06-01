@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use kartik\form\ActiveForm;
+use yii\web\Session;
+use kartik\alert\Alert;
 
 $this->title = Yii::t('app', 'Mail');
 $this->params['breadcrumbs'][] = $this->title;
@@ -64,7 +66,7 @@ $this->registerJs($search);
         'betreff',
         [
             'class' => 'yii\grid\ActionColumn',
-            'template' => '{view} {delete}<br>{anhang}',
+            'template' => '{view} {delete}<br>{anhang}<br>{deletion}',
             'buttons' => [
                 'anhang' => function ($id, $model) {
 
@@ -95,6 +97,19 @@ $this->registerJs($search);
                             return Html::a('<span class="glyphicon glyphicon-paperclip"></span>', $url, ['target' => '_blank', 'title' => 'Anhang in neuem Tab rendern', 'data' => ['pjax' => '0']]);
                         } else if (count($arrayOfFilenames) > 1)
                             return Html::a('<span class="glyphicon glyphicon-paperclip"></span>', ['mail/anhaenge', 'id' => $fk], ['target' => '_blank', 'title' => 'Anhänge in anderer WebSite rendern', 'data' => ['pjax' => '0']]);
+                    }
+                },
+                'deletion' => function ($id, $model) {
+                    $arrayOfFilenames = array();
+                    $filename = null;
+                    if (!empty(\frontend\models\EDateianhang::findOne(['mail_id' => $model->id]))) {
+                        $pk = \frontend\models\EDateianhang::findOne(['mail_id' => $model->id])->id;
+                        $fileNames = frontend\models\Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
+                        foreach ($fileNames as $item) {
+                            array_push($arrayOfFilenames, $item->dateiname);
+                        }
+                        if (count($arrayOfFilenames) > 0)
+                            return Html::a('<span class="glyphicon glyphicon-remove-sign"></span>', ['/mail/deletion', 'id' => $model->id], ['title' => 'Anhänge löschen', 'data' => ['pjax' => '0']]);
                     }
                 },
             ],

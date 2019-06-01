@@ -481,14 +481,6 @@ class ImmobilienController extends Controller {
             $session = new Session();
             $arrayOfAnhangId = array();
             $arrayOfAnhangFilename = array();
-            $doc = '/doc/';
-            $docx = '/docx/';
-            $txt = '/txt/';
-            $pdf = '/pdf/';
-            $odt = '/odt/';
-            $xls = '/xls/';
-            $xlsx = '/xlsx/';
-            $ppt = '/ppt/';
             if (!empty(EDateianhang::findOne(['immobilien_id' => $id]))) {
                 $pk = EDateianhang::findOne(['immobilien_id' => $id])->id;
                 $fileNames = Dateianhang::find()->where(['e_dateianhang_id' => $pk])->all();
