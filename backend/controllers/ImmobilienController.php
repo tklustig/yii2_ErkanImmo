@@ -9,13 +9,13 @@ use yii\web\NotFoundHttpException;
 use yii\web\NotAcceptableHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Session;
-use yii\db\IntegrityException;
 use yii\web\UploadedFile;
 use frontend\models\LPlz;
 use yii\db\Query;
 use yii\helpers\FileHelper;
 use yii\db\Expression;
 use kartik\widgets\Growl;
+use kartik\widgets\Alert;
 use kartik\helpers\Html;
 /* Eigene Klassen */
 use backend\models\Immobilien;
@@ -98,21 +98,8 @@ class ImmobilienController extends Controller {
                 if ($ModelDateianhang->upload($ModelDateianhang))
                     $BoolAnhang = true;
                 if ($BoolAnhang && empty($ModelDateianhang->l_dateianhang_art_id)) {
-                    echo Growl::widget([
-                        'type' => Growl::TYPE_GROWL,
-                        'title' => 'Warning',
-                        'icon' => 'glyphicon glyphicon-ok-sign',
-                        'body' => 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.',
-                        'showSeparator' => true,
-                        'delay' => 1500,
-                        'pluginOptions' => [
-                            'showProgressbar' => true,
-                            'placement' => [
-                                'from' => 'top',
-                                'align' => 'center',
-                            ]
-                        ]
-                    ]);
+                    $message = 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.';
+                    $this->Ausgabe($message);
                     if ($id == 1) {
                         return $this->render('_form_vermieten', [
                                     'model' => $model,
@@ -147,6 +134,7 @@ class ImmobilienController extends Controller {
                 $valid = $model->validate();
                 $IsValid = $ModelDateianhang->validate() && $valid;
                 if ($IsValid) {
+                    $model->angelegt_von = Yii::$app->user->identity->id;
                     $model->save();
                     if ($BoolAnhang) {
                         /* Prüfen, ob in EDateianhang bereits ein Eintrag ist */
@@ -233,21 +221,8 @@ class ImmobilienController extends Controller {
                 if ($ModelDateianhang->upload($ModelDateianhang))
                     $BoolAnhang = true;
                 if ($BoolAnhang && empty($ModelDateianhang->l_dateianhang_art_id)) {
-                    echo Growl::widget([
-                        'type' => Growl::TYPE_GROWL,
-                        'title' => 'Warning',
-                        'icon' => 'glyphicon glyphicon-ok-sign',
-                        'body' => 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.',
-                        'showSeparator' => true,
-                        'delay' => 1500,
-                        'pluginOptions' => [
-                            'showProgressbar' => true,
-                            'placement' => [
-                                'from' => 'top',
-                                'align' => 'center',
-                            ]
-                        ]
-                    ]);
+                    $message = 'Wenn Sie einen Anhang hochladen, müssen Sie die DropDown-Box Dateianhangsart mit einem Wert belegen.';
+                    $this->Ausgabe($message);
                     if ($FormId == 1) {
                         return $this->render('_form_vermieten', [
                                     'model' => $model,
@@ -417,8 +392,14 @@ class ImmobilienController extends Controller {
     }
 
     public function actionShow($filename) {
+        $session = new Session();
         $CompletePath = Yii::getAlias('@documentsImmoB' . '/' . $filename);
-        return Yii::$app->response->sendFile($CompletePath, $filename);
+        if (file_exists($CompletePath))
+            return Yii::$app->response->sendFile($CompletePath, $filename);
+        else {
+            $session->addFlash('info', "Die Datei $filename existiert nicht (mehr) auf dem Webserver. Löschen Sie die Uploads über das letzte Icon!");
+        }
+        $this->redirect(['/immobilien/index']);
     }
 
     public function actionPdf($id) {
@@ -493,10 +474,10 @@ class ImmobilienController extends Controller {
         print_r('Script wurde in der Klasse ' . get_class() . ' regulär gestoppt!<br>');
         echo Html::a('zurück', ['/immobilien/index'], ['title' => 'zurück']);
     }
-    
-    public function actionDeletion(){
+
+    public function actionDeletion() {
         print_r("Es wurde nix übergeben, da die View von Dateianhang gerendert werden soll, die das Löschen der ImmoUploads ermöglichen soll!");
-        print_r("<br>Script wurde in der Klasse ".get_class()." angehalten");
+        print_r("<br>Script wurde in der Klasse " . get_class() . " angehalten");
         die();
     }
 
@@ -514,6 +495,24 @@ class ImmobilienController extends Controller {
         } else {
             throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model konnte nicht geladen werden'));
         }
+    }
+
+    private function Ausgabe($message, $typus = 'Warnung', $delay = 1000, $type = Growl::TYPE_GROWL) {
+        echo Growl::widget([
+            'type' => $type,
+            'title' => $typus,
+            'icon' => 'glyphicon glyphicon-exclamation-sign',
+            'body' => $message,
+            'showSeparator' => true,
+            'delay' => $delay,
+            'pluginOptions' => [
+                'showProgressbar' => true,
+                'placement' => [
+                    'from' => 'top',
+                    'align' => 'center',
+                ]
+            ]
+        ]);
     }
 
 }

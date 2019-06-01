@@ -24,7 +24,7 @@ class Dateianhang extends \yii\db\ActiveRecord {
 
     public function rules() {
         return [
-            [['angelegt_am', 'aktualisert_am'], 'safe'],
+            [['angelegt_am', 'aktualisiert_am'], 'safe'],
             [['angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'integer'],
             [['bezeichnung', 'dateiname'], 'string'],
             [['dateiname', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'required', 'except' => 'create_Dateianhang'],
@@ -42,7 +42,7 @@ class Dateianhang extends \yii\db\ActiveRecord {
             'bezeichnung' => Yii::t('app', 'Bezeichnung'),
             'dateiname' => Yii::t('app', 'Dateiname'),
             'angelegt_am' => Yii::t('app', 'angelegt am'),
-            'aktualisert_am' => Yii::t('app', 'aktualisert am'),
+            'aktualisiert_am' => Yii::t('app', 'aktualisiert am'),
             'angelegt_von' => Yii::t('app', 'angelegt von'),
             'aktualisiert_von' => Yii::t('app', 'aktualisiert von'),
             'l_dateianhang_art_id' => Yii::t('app', 'Dateianhangsart'),

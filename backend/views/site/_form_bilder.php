@@ -14,7 +14,7 @@ $form = ActiveForm::begin([
 <?= $form->errorSummary($model); ?>
 <?php
 if ($model->isNewRecord) {
-    $this->title = Yii::t('app', 'Frontendbilder hochladen');
+    $this->title = Yii::t('app', 'Bilder hochladen');
 } else {
     $this->title = Yii::t('app', 'Aktualisiere {modelClass}: ', [
                 'modelClass' => 'Bilder',
@@ -78,8 +78,8 @@ $max = frontend\models\base\LDateianhangArt::find()->max('id');
         <div class="col-md-6">
 
             <?=
-            $form->field($model, 'aktualisert_am', ['addon' => [
-                    'prepend' => ['content' => 'aktualisert am']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+            $form->field($model, 'aktualisiert_am', ['addon' => [
+                    'prepend' => ['content' => 'aktualisiert am']]])->widget(\kartik\datecontrol\DateControl::classname(), [
                 'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
                 'saveFormat' => 'php:Y-m-d H:i:s',
                 'ajaxConversion' => true,
@@ -88,8 +88,8 @@ $max = frontend\models\base\LDateianhangArt::find()->max('id');
         </div>
         <div class="col-md-6">
             <?=
-            $form->field($model, 'aktualisert_von', ['addon' => [
-                    'prepend' => ['content' => 'aktualisert von']]])->widget(\kartik\widgets\Select2::classname(), [
+            $form->field($model, 'aktualisiert_von', ['addon' => [
+                    'prepend' => ['content' => 'aktualisiert von']]])->widget(\kartik\widgets\Select2::classname(), [
                 'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'username'),
                 'id' => 'id_X'
             ]);

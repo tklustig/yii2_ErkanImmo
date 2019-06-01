@@ -66,7 +66,7 @@ class m190530_125712_Mass extends Migration
             'bezeichnung'=> $this->string(255)->null()->defaultValue(null),
             'dateiname'=> $this->string(255)->notNull(),
             'angelegt_am'=> $this->datetime()->null()->defaultValue(null),
-            'aktualisert_am'=> $this->datetime()->null()->defaultValue(null),
+            'aktualisiert_am'=> $this->datetime()->null()->defaultValue(null),
             'angelegt_von'=> $this->integer(11)->null()->defaultValue(null),
             'aktualisiert_von'=> $this->integer(11)->null()->defaultValue(null),
             'l_dateianhang_art_id'=> $this->integer(11)->notNull(),
@@ -111,7 +111,7 @@ class m190530_125712_Mass extends Migration
         ], $tableOptions);
 
         $this->createIndex('plzId','{{%firma}}',['l_plz_id'],true);
-        $this->createIndex('aktualisertVon','{{%firma}}',['aktualisiert_von'],true);
+        $this->createIndex('aktualisiertVon','{{%firma}}',['aktualisiert_von'],true);
         $this->createIndex('angelegtVon','{{%firma}}',['angelegt_von'],true);
         $this->createIndex('rechtsformId','{{%firma}}',['l_rechtsform_id'],false);
 

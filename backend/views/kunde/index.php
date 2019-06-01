@@ -93,7 +93,7 @@ foreach ($session->getAllFlashes() as $flash) {
                             $url = '@web/img/' . $bild->dateiname;
                         }
                     }
-                    return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:50px;height:50px']);
+                    return Html::img($url, ['alt' => 'Kundenbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:50px;height:50px']);
                 } catch (Exception $e) {
                     return;
                 }

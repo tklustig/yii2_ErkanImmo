@@ -94,8 +94,8 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                                     <div class="col-md-6">
 
                                         <?=
-                                        $form->field($ModelDateianhang, 'aktualisert_am', ['addon' => [
-                                                'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                                        $form->field($ModelDateianhang, 'aktualisiert_am', ['addon' => [
+                                                'prepend' => ['content' => 'aktualisiert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
                                             'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
                                             'disabled' => true,
                                             'saveFormat' => 'php:Y-m-d H:i:s',
@@ -277,7 +277,7 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
 
                             <?=
                             $form->field($model, 'aktualisiert_von', ['addon' => [
-                                    'prepend' => ['content' => 'aktualisert von'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\widgets\Select2::classname(), [
+                                    'prepend' => ['content' => 'aktualisiert von'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\widgets\Select2::classname(), [
                                 'data' => \yii\helpers\ArrayHelper::map(common\models\User::find()->orderBy('id')->asArray()->all(), 'id', 'id'),
                                 'options' => ['placeholder' => Yii::t('app', 'Choose User')],
                                 'disabled' => true,
@@ -287,7 +287,7 @@ use raoul2000\widget\twbsmaxlength\TwbsMaxlength;
                         <div class="col-md-4">
                             <?=
                             $form->field($model, 'aktualisiert_am', ['addon' => [
-                                    'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                                    'prepend' => ['content' => 'aktualisiert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
                                 'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
                                 'disabled' => true,
                                 'saveFormat' => 'php:Y-m-d H:i:s',

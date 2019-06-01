@@ -73,8 +73,8 @@ use kartik\widgets\FileInput;
             <div class="col-md-6">
 
                 <?=
-                $form->field($modelDateianhang, 'aktualisert_am', ['addon' => [
-                        'prepend' => ['content' => 'aktualisert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
+                $form->field($modelDateianhang, 'aktualisiert_am', ['addon' => [
+                        'prepend' => ['content' => 'aktualisiert_am'], 'append' => ['content' => 'Diese Option übernimmt die Applikation']]])->widget(\kartik\datecontrol\DateControl::classname(), [
                     'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
                     'disabled' => true,
                     'saveFormat' => 'php:Y-m-d H:i:s',

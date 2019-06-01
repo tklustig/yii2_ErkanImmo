@@ -9,7 +9,7 @@ class Dateianhang extends BaseDateianhang {
 
     public function rules() {
         return array_replace_recursive(parent::rules(), [
-            [['angelegt_am', 'aktualisert_am'], 'safe'],
+            [['angelegt_am', 'aktualisiert_am'], 'safe'],
             [['angelegt_von', 'aktualisiert_von', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'integer'],
             [['dateiname', 'l_dateianhang_art_id', 'e_dateianhang_id'], 'required', 'except' => 'create_Dateianhang'],
             [['bezeichnung', 'dateiname'], 'string'],

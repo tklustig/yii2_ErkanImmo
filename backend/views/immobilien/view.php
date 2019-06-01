@@ -59,11 +59,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'angelegt_am',
                 'aktualisiert_am',
                 [
-                    'attribute' => 'angelegtVon.id',
+                    'attribute' => 'angelegtVon.username',
                     'label' => Yii::t('app', 'Angelegt Von'),
                 ],
                 [
-                    'attribute' => 'aktualisiertVon.id',
+                    'attribute' => 'aktualisiertVon.username',
                     'label' => Yii::t('app', 'Aktualisiert Von'),
                 ],
             ];
@@ -85,7 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'angelegt_am',
                     'aktualisiert_am',
                     [
-                        'attribute' => 'angelegtVon.id',
+                        'attribute' => 'angelegt_von',
                         'label' => Yii::t('app', 'Angelegt Von')
                     ],
                 ];

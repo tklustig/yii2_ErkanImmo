@@ -115,7 +115,7 @@ CREATE TABLE `dateianhang` (
   `bezeichnung` varchar(255) DEFAULT NULL,
   `dateiname` varchar(255) NOT NULL,
   `angelegt_am` datetime DEFAULT NULL,
-  `aktualisert_am` datetime DEFAULT NULL,
+  `aktualisiert_am` datetime DEFAULT NULL,
   `angelegt_von` int(11) DEFAULT NULL,
   `aktualisiert_von` int(11) DEFAULT NULL,
   `l_dateianhang_art_id` int(11) NOT NULL,
@@ -126,7 +126,7 @@ CREATE TABLE `dateianhang` (
 -- Daten für Tabelle `dateianhang`
 --
 
-INSERT INTO `dateianhang` (`id`, `bezeichnung`, `dateiname`, `angelegt_am`, `aktualisert_am`, `angelegt_von`, `aktualisiert_von`, `l_dateianhang_art_id`, `e_dateianhang_id`) VALUES
+INSERT INTO `dateianhang` (`id`, `bezeichnung`, `dateiname`, `angelegt_am`, `aktualisiert_am`, `angelegt_von`, `aktualisiert_von`, `l_dateianhang_art_id`, `e_dateianhang_id`) VALUES
 (1, 'Bild für eine Immobilie', 'haus1.jpg', '2019-02-16 09:00:21', NULL, 4, NULL, 4, 1),
 (2, 'Bild für eine Immobilie', 'villa1.jpg', '2019-02-16 09:04:21', NULL, 4, NULL, 4, 2),
 (3, 'Bild für eine Immobilie', 'immo4.jpg', '2019-02-16 09:11:40', NULL, 3, NULL, 3, 3),
@@ -15991,7 +15991,7 @@ ALTER TABLE `e_dateianhang`
 ALTER TABLE `firma`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `plzId` (`l_plz_id`),
-  ADD UNIQUE KEY `aktualisertVon` (`aktualisiert_von`),
+  ADD UNIQUE KEY `aktualisiertVon` (`aktualisiert_von`),
   ADD UNIQUE KEY `angelegtVon` (`angelegt_von`),
   ADD KEY `rechtsformId` (`l_rechtsform_id`) USING BTREE;
 

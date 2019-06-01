@@ -84,7 +84,7 @@ $this->registerJs($search);
                             $url = '@web/img/' . $bild->dateiname;
                         }
                     }
-                    return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
+                    return Html::img($url, ['alt' => 'Immobild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
                 } catch (Exception $e) {
                     return;
                 }
