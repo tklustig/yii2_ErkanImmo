@@ -497,6 +497,19 @@ class ImmobilienController extends Controller {
                     array_push($arrayOfAnhangFilename, $item->dateiname);
                 }
             }
+
+            if (count($arrayOfAnhangId) > 0) {
+                for ($i = 0; $i < count($arrayOfAnhangId); $i++) {
+                    $pkOfEdateiAnhang = Dateianhang::findOne(['id' => $arrayOfAnhangId[$i]])->e_dateianhang_id;
+                    $this->findModelAnhang($arrayOfAnhangId[$i])->delete();
+                    $haveRecordsDeleted = true;
+                    $session->addFlash('info', "Der Immobilienanhang mit der Id:$arrayOfAnhangId[$i] wurde aus der Datenbank entfernt.");
+                }
+            } else
+                $haveRecordsDeleted = false;
+            if ($haveRecordsDeleted)
+                $this->findModelEAnhang($pkOfEdateiAnhang)->delete();
+            $transaction->commit();
             $frontendImg = Yii::getAlias('@pictures');
             $backendImg = Yii::getAlias('@picturesBackend');
             $frontendDocuments = Yii::getAlias('@documentsImmoF');
@@ -505,33 +518,26 @@ class ImmobilienController extends Controller {
                 for ($i = 0; $i < count($arrayOfAnhangFilename); $i++) {
                     if (file_exists($frontendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
                         FileHelper::unlink($frontendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
-                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] im Ordner $frontendImg wurde gelöscht");
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] im Ordner $frontendImg wurde physikalisch gelöscht");
                     } else
-                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $frontendImg. Folglich wurde er auch nicht gelöscht!");
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $frontendImg. Folglich wurde er physikalisch auch nicht gelöscht!");
                     if (file_exists($backendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
                         FileHelper::unlink($backendImg . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
-                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] im Ordner $backendImg wurde gelöscht");
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] im Ordner $backendImg wurde physikalisch gelöscht");
                     } else
-                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $backendImg. Folglich wurde er auch nicht gelöscht!");
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $backendImg. Folglich wurde er physikalisch auch nicht gelöscht!");
                     if (file_exists($frontendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
                         FileHelper::unlink($frontendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
-                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] im Ordner $frontendDocuments wurde gelöscht");
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] im Ordner $frontendDocuments wurde physikalisch gelöscht");
                     } else
-                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $frontendDocuments. Folglich wurde er auch nicht gelöscht!");
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $frontendDocuments. Folglich wurde er physikalisch auch nicht gelöscht!");
                     if (file_exists($backendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i])) {
                         FileHelper::unlink($backendDocuments . DIRECTORY_SEPARATOR . $arrayOfAnhangFilename[$i]);
-                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] im Ordner $backendDocuments wurde gelöscht");
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] im Ordner $backendDocuments wurde physikalisch gelöscht");
                     } else
-                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $backendDocuments. Folglich wurde er auch nicht gelöscht!");
+                        $session->addFlash('info', "Der Immobilienanhang $arrayOfAnhangFilename[$i] existiert nicht (mehr) im Ordner $backendDocuments. Folglich wurde er physikalisch auch nicht gelöscht!");
                 }
             }
-            /*
-              if (count($arrayOfAnhang) > 0) {
-              for ($i = 0; $i < count($arrayOfAnhang); $i++) {
-              $this->findModelAnhang($arrayOfAnhang[$i])->deleteWithRelated();
-              $session->addFlash('info', "Der Immobilienanhang mit der Id:$arrayOfAnhang[$i] wurde gelöscht");
-              }
-              } */
         } catch (\Exception $error) {
             $transaction->rollBack();
             error_handling::error_without_id($error, ImmobilienController::RenderBackInCaseOfError);
@@ -543,7 +549,7 @@ class ImmobilienController extends Controller {
         if (($model = Immobilien::findOne(['id' => $id])) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model konnte nicht geladen werden'));
+            throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model immobilien konnte nicht geladen werden:(Fehlercode:QQW117)'));
         }
     }
 
@@ -551,7 +557,15 @@ class ImmobilienController extends Controller {
         if (($model = Dateianhang::findOne(['id' => $id])) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model konnte nicht geladen werden'));
+            throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model dateianhang konnte nicht geladen werden(Fehlercode:GII995)'));
+        }
+    }
+
+    protected function findModelEAnhang($id) {
+        if (($model = EDateianhang::findOne(['id' => $id])) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('app', 'Das angeforderte Model edateianhang konnte nicht geladen werden.(Errorcode:FFT448)'));
         }
     }
 

@@ -55,6 +55,7 @@ $this->registerJs($search);
             'headerOptions' => ['class' => 'kartik-sheet-style'],
             'expandOneOnly' => true
         ],
+        'id',
         [
             /*
               Hier wird das Immobild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBild(model),welche
@@ -248,12 +249,11 @@ $this->registerJs($search);
             'headerOptions' => ['class' => 'kartik-sheet-style'],
             'expandOneOnly' => true
         ],
+        'id',
         [
             /*
-              Hier wird das Bewerberbild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBewerberBild(model),welche
-              drei JOINs und eine dynamische WHERE-Klausel enthält,die auf den FK id_person von bewerber prüft. Das Bild liegt physikalisch auf dem Webspace,
-              dessen Zugriffspfade in der Datenbank in einer ganz bestimmten Reihenfolge hinterlegt sein müssen!
-             */
+              Hier wird das Immobild in einer eigenen Spalte implementiert.Das jeweilige Bild liefert die Methode GetBild(model),welche
+              zwei JOINs und eine dynamische WHERE-Klausel enthält,die auf den FK immobilien_id von e_dateianhang prüft. */
             'attribute' => $dummy,
             'label' => Yii::t('app', ''),
             'format' => 'html', // sorgt dafür,dass das HTML im return gerendert wird
@@ -275,7 +275,7 @@ $this->registerJs($search);
                             $url = '@web/img/' . $bild->dateiname;
                         }
                     }
-                    return Html::img($url, ['alt' => 'Bewerberbild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
+                    return Html::img($url, ['alt' => 'Immobild nicht vorhanden', 'class' => 'img-circle', 'style' => 'width:225px;height:225px']);
                 } catch (Exception $e) {
                     return;
                 }
@@ -375,8 +375,8 @@ $this->registerJs($search);
                 'save-as-new' => function ($url) {
                     return Html::a('<span class="glyphicon glyphicon-copy"></span>', $url, ['title' => 'Duplizieren']);
                 },
-                'deleted' => function ($model, $id) {
-                    return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/immobilien/deleted', 'id' => $id->id], ['title' => 'Ohne Rückfrage löschen']);
+                'deleted' => function ($id, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-remove"></span>', ['/immobilien/deleted', 'id' => $model->id], ['title' => 'Ohne Rückfrage löschen']);
                 },
                 'showDocument' => function ($id, $model) {
                     $doc = '/doc/';
@@ -419,7 +419,7 @@ $this->registerJs($search);
                             array_push($arrayOfFilenames, $item->dateiname);
                         }
                         if (count($arrayOfFilenames) > 0)
-                            return Html::a('<span class="glyphicon glyphicon-remove-sign"></span>', ['/immobilien/deletion'], ['title' => 'Uploads löschen', 'data' => ['pjax' => '0']]);
+                            return Html::a('<span class="glyphicon glyphicon-remove-sign"></span>', ['/immobilien/deletion', 'id' => $model->id], ['title' => 'Uploads löschen', 'data' => ['pjax' => '0']]);
                     }
                 },
             ],
