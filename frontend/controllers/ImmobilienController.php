@@ -225,6 +225,7 @@ class ImmobilienController extends Controller {
             if ($dataProvider['Kosten'][0] != null && $dataProvider['raeume'][0] != null && $dataProvider['plz'][0] != null) {
                 $model_I = Immobilien::find()->where(['l_plz_id' => $dataProvider['plz'][0]])->andWhere(["$operator", 'geldbetrag', $dataProvider['Kosten'][0]])->andWhere([">=", 'raeume', $dataProvider['raeume'][0]])->all();
             }
+
             if (!empty($model_I)) {
                 foreach ($model_I as $value) {
                     array_push($ArrayOfImmo, $value->id);
@@ -233,8 +234,21 @@ class ImmobilienController extends Controller {
                 $ArrayOfDifference = array_diff($ArrayOfImmo, $ArrayOfE);
                 $count += count($ArrayOfDifference);
             }
-            //Bringt die Immobiliben in die korrekte Reihenfolge
-            rsort($ArrayOfImmo);
+            /* 	Bringt die Immobilien in die korrekte Reihenfolge
+              Zusätzliches Array, um die Indizie zu korrigieren */
+            $arrayofdifference = array();
+            foreach ($ArrayOfDifference as $item) {
+                array_push($arrayofdifference, $item);
+            }
+            //Iteriere über die beiden Arrays, um die Zuordnung von Bild zur Immobilie zu korrigieren bzw. in die korrekte Reihenfolge zu bringen
+            for ($i = 0; $i < count($arrayofdifference); $i++) {
+                for ($k = 0; $k < count($ArrayOfImmo); $k++) {
+                    if ($arrayofdifference[$i] == $ArrayOfImmo[$k]) {
+                        unset($ArrayOfImmo[$k]);
+                        $ArrayOfImmo = array_values($ArrayOfImmo);
+                    }
+                }
+            }
             if (!empty($ArrayOfImmo)) {
                 for ($i = 0; $i < count($ArrayOfImmo); $i++) {
                     if (!empty(EDateianhang::findOne(['immobilien_id' => $ArrayOfImmo[$i]]))) {
@@ -250,7 +264,7 @@ class ImmobilienController extends Controller {
                             array_push($ArrayOfFilename, $value->dateiname);
                         }
                     }
-                }               
+                }
                 for ($i = 0; $i < count($ArrayOfImmo); $i++) {
                     array_push($ArrayOfObjImmo, Immobilien::find()->where(['id' => $ArrayOfImmo[$i]])->all());
                 }
