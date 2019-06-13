@@ -228,7 +228,6 @@ class ImmobilienController extends Controller {
             if (!empty($model_I)) {
                 foreach ($model_I as $value) {
                     array_push($ArrayOfImmo, $value->id);
-                    var_dump($value->id);
                 }
                 $count = count($ArrayOfImmo);
                 $ArrayOfDifference = array_diff($ArrayOfImmo, $ArrayOfE);
