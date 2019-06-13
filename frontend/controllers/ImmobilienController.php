@@ -228,11 +228,14 @@ class ImmobilienController extends Controller {
             if (!empty($model_I)) {
                 foreach ($model_I as $value) {
                     array_push($ArrayOfImmo, $value->id);
+                    var_dump($value->id);
                 }
                 $count = count($ArrayOfImmo);
                 $ArrayOfDifference = array_diff($ArrayOfImmo, $ArrayOfE);
                 $count += count($ArrayOfDifference);
             }
+            //Bringt die Immobiliben in die korrekte Reihenfolge
+            rsort($ArrayOfImmo);
             if (!empty($ArrayOfImmo)) {
                 for ($i = 0; $i < count($ArrayOfImmo); $i++) {
                     if (!empty(EDateianhang::findOne(['immobilien_id' => $ArrayOfImmo[$i]]))) {
@@ -248,7 +251,7 @@ class ImmobilienController extends Controller {
                             array_push($ArrayOfFilename, $value->dateiname);
                         }
                     }
-                }
+                }               
                 for ($i = 0; $i < count($ArrayOfImmo); $i++) {
                     array_push($ArrayOfObjImmo, Immobilien::find()->where(['id' => $ArrayOfImmo[$i]])->all());
                 }
