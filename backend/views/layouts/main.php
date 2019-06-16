@@ -50,7 +50,6 @@ AssetBundle::register($this);
                                         ['label' => 'Theme löschen', 'url' => ['/site/deletion']],
                                     ],
                                 ],
-                                '<li class="divider"></li>',
                                 ['label' => '+++++++Impressum initialiseren+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
@@ -58,7 +57,6 @@ AssetBundle::register($this);
                                         ['label' => 'Theme initialisieren', 'url' => ['/site/initialize']],
                                     ],
                                 ],
-                                '<li class="divider"></li>',
                                 ['label' => '+++++++Rechnungen+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
@@ -68,7 +66,6 @@ AssetBundle::register($this);
                                         ['label' => 'Rechnungsart bearbeiten', 'url' => ['/rechnungsart/index']],
                                     ],
                                 ],
-                                '<li class="divider"></li>',
                                 ['label' => '+++++++Immobilien+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
@@ -76,7 +73,6 @@ AssetBundle::register($this);
                                         ['label' => 'Immobilien aufrufen', 'url' => ['/immobilien/index']],
                                     ],
                                 ],
-                                '<li class="divider"></li>',
                                 ['label' => '+++++++Bankverbindungen+++++++',
                                     'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
@@ -85,7 +81,6 @@ AssetBundle::register($this);
                                         ['label' => 'Bankdaten anlegen', 'url' => ['/bankverbindung/select']],
                                     ],
                                 ],
-                                '<li class="divider"></li>',
                                 ['label' => '+++++++Kunden++++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
@@ -101,7 +96,6 @@ AssetBundle::register($this);
                                          ['label' => 'Textbausteine editieren', 'url' => ['/textbaustein/index']]
                                     ],
                                 ],
-                                '<li class="divider"></li>',
                                 ['label' => '+++++++Termine+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
@@ -109,7 +103,6 @@ AssetBundle::register($this);
                                         ['label' => 'Besichtigungstermine nach/je Makler abrufen', 'url' => $link_],
                                     ],
                                 ],
-                                '<li class="divider"></li>',
                                 ['label' => '++++ User und Firmendaten ++++',
                                     'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
