@@ -303,12 +303,12 @@ class m190530_125712_Mass extends Migration
         $this->createIndex('angelegtVon','{{%mailserver}}',['angelegt_von'],false);
         $this->createIndex('aktualisiertVon','{{%mailserver}}',['aktualisiert_von'],false);
 
-        $this->createTable('migration',[
+        /*$this->createTable('migration',[
             'version'=> $this->string(180)->notNull(),
             'apply_time'=> $this->integer(11)->null()->defaultValue(null),
         ], $tableOptions);
 
-        $this->addPrimaryKey('pk_on_migration','{{%migration}}',['version']);
+        $this->addPrimaryKey('pk_on_migration','{{%migration}}',['version']);*/
 
         $this->createTable('rechnung',[
             'id'=> $this->primaryKey(11),
@@ -325,8 +325,8 @@ class m190530_125712_Mass extends Migration
             'rechnungPlain'=> $this->text()->notNull(),
             'aktualisiert_von'=> $this->integer(11)->null()->defaultValue(null),
             'angelegt_von'=> $this->integer(11)->null()->defaultValue(null),
-            'aktualisiert_am'=> $this->timestamp()->notNull()->defaultExpression("CURRENT_TIMESTAMP"),
-            'angelegt_am'=> $this->timestamp()->notNull()->defaultValue('0000-00-00 00:00:00'),
+            'aktualisiert_am'=> $this->timestamp()->notNull()->defaultValue(null),
+            'angelegt_am'=> $this->timestamp()->notNull()->defaultValue(null),
         ], $tableOptions);
 
         $this->createIndex('mwst','{{%rechnung}}',['mwst_id'],false);
@@ -686,8 +686,8 @@ class m190530_125712_Mass extends Migration
             $this->dropTable('l_textbaustein');
             $this->dropTable('mail');
             $this->dropTable('mailserver');
-            $this->dropPrimaryKey('pk_on_migration','{{%migration}}');
-            $this->dropTable('migration');
+            //$this->dropPrimaryKey('pk_on_migration','{{%migration}}');
+            //$this->dropTable('migration');
             $this->dropTable('rechnung');
             $this->dropTable('user');
     }
