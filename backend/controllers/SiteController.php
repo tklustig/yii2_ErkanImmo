@@ -229,7 +229,7 @@ class SiteController extends Controller {
                 try {
                     $this->findModel_user($DynamicModel->id_user)->delete();
                 } catch (IntegrityException $er) {
-                    $message = "Der Benutzer kann nicht gelöscht werden, da das gegen die referentielle Integrität verstößt. Löschen Sie zunächst die korrespondierenden Rechnungsrumpfdaten!";
+                    $message = "Der Benutzer kann nicht gelöscht werden, da das gegen die referentielle Integrität verstößt. Löschen Sie zunächst die korrespondierenden Rechnungsrumpfdaten und, sofern vorhanden, alle hochgeladenen Themes!";
                     $this->Ausgabe($message, 'Error', 1500, Growl::TYPE_DANGER);
                     return $this->render('index');
                 }

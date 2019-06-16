@@ -67,7 +67,7 @@ $this->title = 'My Yii Application';
 
 <div class="slider single-item">
     <div><p><?= Html::img('@web/img/punk.jpg', ['alt' => 'some', 'class' => 'jumbotron']); ?></p></div>
-    <div><p><?= Html::img('@web/img/punk2.jpg', ['alt' => 'some', 'class' => 'jumbotron']); ?></p></div>
+    <div><p><?= Html::img('@web/img/Punk2.jpg', ['alt' => 'some', 'class' => 'jumbotron']); ?></p></div>
     <div><p><?= Html::img('@web/img/anarcho.jpg', ['alt' => 'some', 'class' => 'jumbotron']); ?></p></div>
     <div><p><?= Html::img('@web/img/kom2.jpg', ['alt' => 'some', 'class' => 'jumbotron']); ?></p></div>
     <div><p><?= Html::img('@web/img/kom3.jpg', ['alt' => 'some', 'class' => 'jumbotron']); ?></p></div>
