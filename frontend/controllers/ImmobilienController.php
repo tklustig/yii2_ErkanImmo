@@ -230,9 +230,7 @@ class ImmobilienController extends Controller {
                 foreach ($model_I as $value) {
                     array_push($ArrayOfImmo, $value->id);
                 }
-                $count = count($ArrayOfImmo);
                 $ArrayOfDifference = array_diff($ArrayOfImmo, $ArrayOfE);
-                $count += count($ArrayOfDifference);
             }
             /* 	Bringt die Immobilien in die korrekte Reihenfolge
               Zusätzliches Array, um die Indizie zu korrigieren */
@@ -304,7 +302,7 @@ class ImmobilienController extends Controller {
                     }
                 }
                 if (!empty($ArrayOfObjImmo))
-                    $count = count($ArrayOfObjImmo);
+                    $count = count($ArrayOfObjImmo)+count($ArrayOfDifference);
             }
             if (empty($ArrayOfImmo)) {
                 $count = 0;
