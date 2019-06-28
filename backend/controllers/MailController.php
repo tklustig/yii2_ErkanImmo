@@ -695,11 +695,16 @@ class MailController extends Controller {
             }
             $transaction->commit();
             //...dann die Dateien physikalisch entfernen. Hier muss überprüft werden, ob Dateien doppelt genutzt werden(s.o.)
+            $path_ = Yii::getAlias('@picturesBackend');
             if (!empty($arrayOfFilenames)) {
                 for ($i = 0; $i < count($arrayOfFilenames); $i++) {
                     $file2BeDeleted = $path . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i];
+                    $file2BeDeleted_ = $path_ . DIRECTORY_SEPARATOR . $arrayOfFilenames[$i];
                     if (!file_exists($file2BeDeleted)) {
-                        $session->addFlash('info', "Der physikalische Mailanhang:$arrayOfFilenames[$i] wurde nicht gelöscht, da er nicht mehr exisitert!");
+                        $session->addFlash('info', "Der physikalische Mailanhang:$arrayOfFilenames[$i] wird nicht gelöscht, da er nicht mehr exisitert!");
+                    }
+                    if (!file_exists($file2BeDeleted_)) {
+                        $session->addFlash('info', "Der physikalische Mailanhang:$arrayOfFilenames[$i] wird aus Ihrem Webverzeichnis nicht gelöscht, da er entweder keine Bilddatei ist oder nicht mehr exisitert!");
                     }
                     if (file_exists($file2BeDeleted) && !in_array($file2BeDeleted, $arrayOfDifWithPath)) {
                         FileHelper::unlink($file2BeDeleted);
@@ -707,8 +712,15 @@ class MailController extends Controller {
                     } else {
                         $session->addFlash('info', "Der physikalische Mailanhang:$arrayOfFilenames[$i] wurde nicht gelöscht, da er in doppelter Verwendung war oder ist.");
                     }
+                    if (file_exists($file2BeDeleted_) && !in_array($file2BeDeleted_, $arrayOfDifWithPath)) {
+                        FileHelper::unlink($file2BeDeleted_);
+                        $session->addFlash('info', "Der physikalische Mailanhang:$arrayOfFilenames[$i] wurde erfolgreich aus Ihrem Webverzeichnis gelöscht.");
+                    } else {
+                        $session->addFlash('info', "Der physikalische Mailanhang:$arrayOfFilenames[$i] wurde nicht aus Ihrem Webverzeichnis gelöscht, da er entweder keine Bilddatei oder aber in doppelter Verwendung ist.");
+                    }
                 }
             }
+            $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollBack();
             error_handling::error_without_id($e, MailController::RenderBackInCaseOfError);
