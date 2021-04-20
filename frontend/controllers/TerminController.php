@@ -12,6 +12,7 @@ use yii\filters\VerbFilter;
 use yii\base\DynamicModel;
 use yii\db\Query;
 use kartik\growl\Growl;
+use kartik\widgets\Alert;
 use yii\web\Session;
 use yii\helpers\Html;
 use yii\validators\EmailValidator;
@@ -147,6 +148,18 @@ class TerminController extends Controller {
             $checkMail = new EmailValidator();
             $isAlreadyInDatabase = false;
             if ($model->load(Yii::$app->request->post()) && $modelKunde->load(Yii::$app->request->post())) {
+                if (PHP_OS != "WINNT") {
+                    $message = 'In der Demoversion können keine Termine vereinbart werden. Bitte besorgen Sie sich eine Lizenz!';
+                    echo Alert::widget([
+                        'type' => Alert::TYPE_INFO,
+                        'title' => 'Importan Message',
+                        'icon' => 'fas fa-info-circle',
+                        'body' => $message,
+                        'showSeparator' => true,
+                        'delay' => false
+                    ]);
+                    return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
+                }
                 if ($modelKunde->l_plz_id == "")
                     $modelKunde->l_plz_id = null;
                 if (empty($modelKunde->telefon) && empty($modelKunde->email)) {
@@ -178,6 +191,7 @@ class TerminController extends Controller {
                     $this->message($message);
                     return $this->render('create', ['model' => $model, 'modelKunde' => $modelKunde, 'id' => $id]);
                 }
+
                 /* Die Überprüfung der Strasse auf eine Hausnummer klappt mit dem pregmatchPattern
                   $string2Array = explode(' ', $modelKunde->strasse);
                   if (count($string2Array) < 1)
@@ -201,6 +215,7 @@ class TerminController extends Controller {
                   }
 
                  */
+
                 $bool = true;
                 $model->validate();
                 if (!$model->validate()) {

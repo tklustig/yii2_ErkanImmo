@@ -1,8 +1,7 @@
 <?php
 
 return [
-    'adminEmail' => 't.kipp@eisvogel-online-software.de',
-    //'adminEmail' => 'tklustig.thomas@gmail.com',
-    'supportEmail' => 'tklustig.thomas@gmail.com',
+    'adminEmail' => 'kipp.thomas@tklustig.de',
+    'supportEmail' => 'kipp.thomas@tklustig.de',
     'user.passwordResetTokenExpire' => 3600,
 ];

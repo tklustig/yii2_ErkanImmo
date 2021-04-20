@@ -1,17 +1,21 @@
 
 <?php
 
-if (PHP_OS == "WINNT") {
-    $dsn = 'mysql:host=localhost;dbname=mysql';
+define('prefix', 'k158364_');
+define('OPS', 'WINNT');
+if (PHP_OS == OPS) {
     $username = 'root';
+    $server = 'localhost';
     $password = '';
-    DatenbankErzeugen($dsn, $username, $password);
+    $database = prefix . 'yii2KanatImmo';
+    //DatenbankErzeugen($dsn, $username, $password);
     //dieser else-Zweig kann dekommentiert werden, sofern auch für LINUX eine Datenbank angelegt werden soll. Dazu werden allerdings die Parameter benötigt
 } else {
-    $dsn = 'mysql:host=localhost;dbname=mysql';
-    $username = "phpmyadmin"; //für LINUX muss hier der Benutzer...
-    $password = "1918rott"; //und hier das Passwort angegegeben werden
-    DatenbankErzeugen($dsn, $username, $password);
+    $username = "k158364_kipp"; //für LINUX muss hier der Benutzer...
+    $server = 'mysql2efb.netcup.net';
+    $password = "1918Rott$"; //und hier das Passwort angegegeben werden
+    $database = prefix . 'tklustig';
+    //DatenbankErzeugen($dsn, $username, $password);
 }
 return [
     'aliases' =>
@@ -50,21 +54,21 @@ return [
             'class' => 'yii\swiftmailer\Mailer',
             'viewPath' => '@common/mail',
             'useFileTransport' => false, //set this property to false to send mails to real email addresses
-            //comment the following array to send mail using php's mail function
-            'transport' => [
-                'class' => 'Swift_SmtpTransport',
-            /*   'host' => 'smtp.strato.de',
-              'username' => 't.kipp@eisvogel-online-software.de',
-              'password' => 'Hannover96',
-              'port' => '587',
-              'encryption' => 'tls', */
-            ],
+        /* comment the following array to send mail using php's mail function
+          'transport' => [
+          'class' => 'Swift_SmtpTransport',
+          'host' => 'mx2efc.netcup.net',
+          'username' => 'kipp.thomas@tklustig.de',
+          'password' => '1918Rott$',
+          'port' => '465',
+          'encryption' => 'ssl',
+          ], */
         ],
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=yii2_kanatimmo',
-            'username' => 'root',
-            'password' => '',
+            'dsn' => "mysql:host=$server;dbname=" . $database,
+            'username' => $username,
+            'password' => $password,
             'charset' => 'utf8',
         ],
     ],
@@ -79,6 +83,7 @@ function DatenbankErzeugen($dsn, $username, $password) {
         return;
     } catch (\Exception $error) { //fange den schweren MySQL-Fehler ab
         echo "<center><font size='5'>Connection failed:Change parameters in /common/config/main-local.php</font></center><br>Mindestens einer der folgenden Parameter verhindert ein Verbindungsaufbau zur Datenbank:<br>User:$username<br>";
+        print_r('at line ' . $error->getLine() . 'in file ' . $error->getFile());
         if (empty($password))
             echo"Passwort: Kein Passwort vorhanden";
         else

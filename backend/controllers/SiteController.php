@@ -125,6 +125,8 @@ class SiteController extends Controller {
             $this->redirect(['site/index']);
         } else {
             $model->password = '';
+            $message='Bitte erwerben Sie die Zugangsdaten über den Entwickler!';
+            $this->Ausgabe($message, 'Info', 1500, Growl::TYPE_GROWL);
             return $this->render('login', [
                         'model' => $model,
             ]);

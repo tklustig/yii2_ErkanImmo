@@ -31,7 +31,7 @@ $this->registerJs($search);
                 <?=
                 Html::a(
                         Html::img(
-                                "@web/img/$ArrayOfFilename[$i]", ['alt' => 'PicNotFound', 'class' => 'img-circle', 'style' => 'width:125px;height:125px']
+                                "@web/img/$ArrayOfFilename[$i]", ['alt' => 'PicNotFount', 'class' => 'img-circle', 'style' => 'width:125px;height:125px']
                         ), ['/immobilien/index', 'id' => $ArrayOfImmo[$i]], ['title' => 'Immobiliendaten abrufen', 'data' => ['pjax' => '0']]
                 )
                 ?>

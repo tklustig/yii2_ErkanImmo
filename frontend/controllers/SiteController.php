@@ -2,8 +2,8 @@
 
 /*
   Gemäß dem MCV-Prinzip für die Logik der Applikation zuständig
-  Klasse erstellt durch Gii
-  Methoden: ©by Thomas Kipp, Klein - Buchholzer - Kirchweg 25, 30659 Hannover, http://tklustig.ddns.net:1025, tklustig.thomas@gmail.com
+  Klasse erstellt durch Gii und modifizieert durch den Entwickler(s.u.)
+  Methoden: ©by Thomas Kipp, Debberoder Sztr.61, 30559 Hannover, http://tklustig.de, kipp.thomas@tklustig.de
  */
 
 namespace frontend\controllers;
@@ -12,12 +12,13 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use yii\web\Session;
 use frontend\models\ContactForm;
 use kartik\widgets\Alert;
 use backend\models\LBegriffe;
 
 class SiteController extends Controller {
+
+    const OPS = "WINNT";
 
     public function behaviors() {
         return [
@@ -83,34 +84,19 @@ class SiteController extends Controller {
                 $zaehler += 1;
         }
         if ($zaehler < 10) {
-            $session = new Session();
-            $session->addFlash('info', 'Es exisitieren keine oder zu wenige Firmenbegriffe in der Datenbank. Erst, wenn der Admin alle erforderlichen Firmenbegriffe eingepflegt hat, lässt sich dieses Feature aufrufen.');
+            Yii::$app->session->setFlash('error', 'Es exisitieren keine oder zu wenige Firmenbegriffe in der Datenbank. Erst, wenn der Admin alle erforderlichen Firmenbegriffe eingepflegt hat, lässt sich dieses Feature aufrufen.');
             return $this->redirect(['/site/index']);
         }
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post())) {
-?><?=
-
-            Alert::widget([
-                'type' => Alert::TYPE_DANGER,
-                'title' => 'Konfigurationsfehler',
-                'icon' => 'glyphicon glyphicon-remove-sign',
-                'body' => 'Auf meinem Pi läuft PHP 5.6! Damit der Mailversand funktioniert, muss allerdings PHP 7.X installiert sein. Sobald die Applikation auf Strato gehostet wird, dürfte der Mailversand keine Probleme mehr bereiten...',
-                'showSeparator' => true,
-                'delay' => false
-            ]);
-            return $this->render('contact', [
-                        'model' => $model,
-                        'arrayOfBegriffe' => $arrayOfBegriffe
-            ]);
-            /*
-              if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-              $session->addFlash("warning", "Ihre Nachricht wurde weitergeleitet. Wir werden Sie schnellstmöglichst unter Ihrer Mailadresse $model->email kontaktieren!<br> Mit freundlichen Grüßen<br> Kanat Immobilien");
-              } else {
-              $session->addFlash("warning", "Ihre Nachricht konnte nicht weitergeleitet werden. Versuchen Sie es erneut!");
-              }
-              $this->redirect(["/site/index"]);
-             */
+            if (PHP_OS !== SiteController::OPS) {
+                $model->email;
+                if ($model->sendEmail($model->email))
+                    Yii::$app->session->setFlash('info', "Ihre Nachricht wurde weitergeleitet. Wir werden Sie schnellstmöglichst unter Ihrer Mailadresse $model->email kontaktieren!<br> Mit freundlichen Grüßen   Kanat Immobilien");
+                else
+                    Yii::$app->session->setFlash('error', '(Ihre Nachricht konnte nicht weitergeleitet werden. Versuchen Sie es erneut!');
+            }
+            $this->redirect(["/site/index"]);
         } else {
             return $this->render('contact', [
                         'model' => $model,
@@ -134,8 +120,7 @@ class SiteController extends Controller {
                 $zaehler += 1;
         }
         if ($zaehler < 10) {
-            $session = new Session();
-            $session->addFlash('info', 'Es exisitieren keine oder zu wenige Impressumbegriffe in der Datenbank. Erst, wenn der Admin alle 10 Begriffe eingepflegt hat, lässt sich dieses Feature aufrufen.');
+            Yii::$app->session->setFlash('error', 'Es exisitieren keine oder zu wenige Impressumbegriffe in der Datenbank. Erst, wenn der Admin alle 10 Begriffe eingepflegt hat, lässt sich dieses Feature aufrufen.');
             return $this->redirect(['/site/index']);
         }
         return $this->render('about', [

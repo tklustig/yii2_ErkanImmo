@@ -176,6 +176,7 @@ use common\models\User;
                                 <div class="col-md-4">
                                     <?=
                                     $form->field($modelKunde, 'stadt', ['addon' => [
+                                            'disabled' => true,
                                             'prepend' => ['content' => 'Stadt']]])->textInput(['maxlength' => true, 'placeholder' => 'Applikation füllt die Stadt gemäß der Postleitzahl', 'readonly' => true])
                                     ?>
 

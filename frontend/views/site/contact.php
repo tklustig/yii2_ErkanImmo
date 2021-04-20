@@ -66,11 +66,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                                                 $form->field($model, 'inhalt')->textarea(['style' => ['width' => '558px'], 'rows' => 10]);
                                                                 ?>
                                                             </span>
-                                                            <?=
-                                                            $form->field($model, 'verifyCode')->widget(Captcha::className(), [
-                                                                'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-6">{input}</div></div>',
-                                                            ])
-                                                            ?>
+                                                            <?php /*
+                                                              echo
+                                                              $form->field($model, 'verifyCode')->widget(Captcha::className(), [
+                                                              'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-6">{input}</div></div>',
+                                                              ]);
+                                                             */ ?> 
                                                             <?= Html::submitButton('Absenden', ['class' => 'absenden', 'name' => 'contact-button']) ?>
                                                         </div>
                                                     </div>

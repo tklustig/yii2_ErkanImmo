@@ -56,11 +56,10 @@ class TextbausteinController extends Controller {
     }
 
     public function actionUpdate($id) {
-        if (Yii::$app->request->post('_asnew') == '1') {
+        if (Yii::$app->request->post('_asnew') == '1')
             $model = new LTextbaustein();
-        } else {
+        else
             $model = $this->findModel($id);
-        }
 
         if ($model->loadAll(Yii::$app->request->post())) {
             $model->data = html_entity_decode($model->data);
@@ -126,11 +125,10 @@ class TextbausteinController extends Controller {
     }
 
     protected function findModel($id) {
-        if (($model = LTextbaustein::findOne($id)) !== null) {
+        if (($model = LTextbaustein::findOne($id)) !== null)
             return $model;
-        } else {
+        else
             throw new NotFoundHttpException(Yii::t('app', 'Die Tabelle lTextbaustein konnte nicht geladen werden. Informieren Sie den Softwarehersteller! (Fehlercode:XtZ22570)'));
-        }
     }
 
     public function actionAddMail() {

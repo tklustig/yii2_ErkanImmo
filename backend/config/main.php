@@ -134,7 +134,7 @@ return [
         ],
         'urlManagerFrontend' => [
             'class' => 'yii\web\UrlManager',
-            'baseUrl' => '/yii2_ErkanImmo/frontend/web/index.php',
+            'baseUrl' => '/Yii2_ErkanImmo/frontend/web/index.php',
         ],
     ],
     'params' => $params,

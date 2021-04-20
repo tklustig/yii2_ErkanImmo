@@ -55,14 +55,15 @@ $fieldOptions2 = [
         <?php
         ActiveForm::end();
         ?>
-        <div class="social-auth-links text-center">
-            <p>- OR -</p>
-            <a href="https://de-de.facebook.com/login/" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in
-                using Facebook</a>
-            <a href="https://accounts.google.com/signin/v2/identifier?hl=de&flowName=GlifWebSignIn&flowEntry=ServiceLogin" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-google-plus"></i> Sign
-                in using Google+</a>
-
-        </div>
+        <!--        <div class="social-auth-links text-center">
+                   <p>- OR -</p>
+                   <a href="https://de-de.facebook.com/login/" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in
+                       using Facebook</a>
+                   <a href="https://accounts.google.com/signin/v2/identifier?hl=de&flowName=GlifWebSignIn&flowEntry=ServiceLogin" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-google-plus"></i> Sign
+                       in using Google+</a>
+       
+               </div> -->
+        <br>
         <?= Html::a('I forgot my password respectively username', ['site/request-password-reset'], ['class' => 'btn btn-block btn-danger']) ?>
     </div>
 </div>
