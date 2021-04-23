@@ -46,7 +46,7 @@ class ContactForm extends Model {
             $heute = getdate();
             $heute = $tage[$heute['wday']] . ', den ' . $heute['mday'] . '.' . $month[$heute['mon'] - 1] . ' ' . $heute['year'];
             $to = Yii::$app->params['adminEmail'];
-            $subject = 'Kontaktanfrage von ' . $email . ':' . $this->betreff;
+            $subject = 'yii2-Message von ' . $email . '::' . $this->betreff;
             $nachricht = "eine neue Message vom $heute:<br>$this->inhalt";
             $header = 'MIME-Version: 1.0' . "\r\n";
             $header .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";

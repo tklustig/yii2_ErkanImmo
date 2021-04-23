@@ -379,7 +379,7 @@ class ImmobilienController extends Controller {
 
     public function actionShow($filename) {
         $completePath = Yii::getAlias('@documentsImmoF' . '/' . $filename);
-        return Yii::$app->response->sendFile($completePath, $filename);
+        return Yii::$app->response->xSendFile($completePath,$filename,['application/octet-stream']);
     }
 
     public function actionAuswahl($q = null, $id = null) {
