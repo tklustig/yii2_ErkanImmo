@@ -76,7 +76,7 @@ class SiteController extends Controller {
 
     public function actionIndex($message = NULL) {
         if ($message != null) {
-            $session = new Session();
+            $session = Yii::$app->session;
             $session->addFlash('info', $message);
         }
         if (Yii::$app->user->isGuest) {
@@ -144,7 +144,7 @@ class SiteController extends Controller {
         foreach ($ModelUser as $user) {
             $telefon = $user->telefon;
         }
-        $session = new Session();
+        $session = Yii::$app->session;
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
             if ($user = $model->signup()) {
@@ -168,7 +168,7 @@ class SiteController extends Controller {
 
     public function actionRequestPasswordReset() {
         $this->layout = "reset_main";
-        $session = new Session();
+        $session = Yii::$app->session;
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
@@ -193,7 +193,7 @@ class SiteController extends Controller {
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
-            Yii::$app->session->setFlash('success', 'New password saved.');
+            Yii::$app->session->addFlash('success', 'New password saved.');
 
             return $this->goHome();
         }
@@ -213,7 +213,7 @@ class SiteController extends Controller {
 
     public function actionDeluser() {
         try {
-            $session = new Session();
+            $session = Yii::$app->session;
             $connection = \Yii::$app->db;
             $record = $connection->createCommand('SELECT COUNT(id) FROM user');
             $UserCount = $record->queryScalar();
@@ -221,7 +221,7 @@ class SiteController extends Controller {
                 $session->addFlash("warning", "Sie würden sich ausperren, da nur ein User im System registriert ist. Legen Sie einen neuen Benuzer an, bevor Sie dieses Feature aufrufen!");
                 return $this->redirect(['/site/index']);
             }
-            $session = new Session();
+            $session = Yii::$app->session;
             $DynamicModel = new DynamicModel(['id_user']);
             $DynamicModel->addRule(['id_user'], 'integer');
             $DynamicModel->addRule(['id_user'], 'required');
@@ -259,7 +259,7 @@ class SiteController extends Controller {
     public function actionCreate() {
         $model = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $modelE = new EDateianhang();
-        $session = new Session();
+        $session = Yii::$app->session;
         $FkInEDatei = array();
         $files = array();
         $connection = \Yii::$app->db;
@@ -339,7 +339,7 @@ class SiteController extends Controller {
         }
         $arrayOfFileNames = array();
         $arrayOfBez = array();
-        $session = new Session();
+        $session = Yii::$app->session;
         $DynamicModel = new DynamicModel(['file']);
         $DynamicModel->addRule('file', 'string');
         $DynamicModel->addRule('file', 'required');
@@ -355,7 +355,7 @@ class SiteController extends Controller {
             }
         }
         if (!$hasPics) {
-            $session = new Session();
+            $session = Yii::$app->session;
             $session->addFlash('warning', "Solange keine Themes für das Frontend hochgeladen wurden, können diese nicht initialisert werden. Laden Sie welche hoch!");
             return $this->render('index');
         }
@@ -399,7 +399,7 @@ class SiteController extends Controller {
         }
         $arrayOfFileNames = array();
         $arrayOfBez = array();
-        $session = new Session();
+        $session = Yii::$app->session;
         $DynamicModel = new DynamicModel(['bez', 'file', 'art']);
         $DynamicModel->addRule('file', 'string');
         $DynamicModel->addRule('file', 'required');
@@ -416,7 +416,7 @@ class SiteController extends Controller {
             }
         }
         if (!$hasPics) {
-            $session = new Session();
+            $session = Yii::$app->session;
             $session->addFlash('warning', "Solange keine Themes für das Impressum hochgeladen wurden, können diese nicht initialisert werden. Laden Sie welche hoch!");
             return $this->render('index');
         }
@@ -450,7 +450,7 @@ class SiteController extends Controller {
 
     //Stellt das Löschformular aller Themes dar
     public function actionDeletion() {
-        $session = new Session();
+        $session = Yii::$app->session;
         $connection = \Yii::$app->db;
         $record = $connection->createCommand("SELECT COUNT(id) FROM dateianhang WHERE bezeichnung='Impressumbilder'||bezeichnung='Frontendbilder'");
         $countRecords = $record->queryScalar();
@@ -490,7 +490,7 @@ class SiteController extends Controller {
                 $deleteEDateiAnhang = false;
             else
                 $deleteEDateiAnhang = true;
-            $session = new Session();
+            $session = Yii::$app->session;
             $connection = \Yii::$app->db;
             $record = $connection->createCommand("SELECT COUNT(id) FROM dateianhang WHERE bezeichnung='Impressumbilder'||bezeichnung='Frontendbilder'");
             $countRecords = $record->queryScalar();
@@ -523,7 +523,7 @@ class SiteController extends Controller {
     public function actionDeleteall() {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $session = new Session();
+            $session = Yii::$app->session;
             $eDateianhang = EDateianhang::find()->all();
             $arrayOfFk = array();
             $arrayOfFilenames = array();

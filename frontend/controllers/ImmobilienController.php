@@ -358,7 +358,7 @@ class ImmobilienController extends Controller {
     public function actionIndex($id) {
         $countImmo = Immobilien::find()->count('id');
         if ($countImmo == 0) {
-            $session = new Session();
+            $session = Yii::$app->session;
             $session->addFlash('info', 'Es exisitieren noch keine Immobilien in der Datenbank. Erst, wenn der Admin welche eingepflegt hat, lässt sich dieses Feature aufrufen.');
             return $this->redirect(['/site/index']);
         }

@@ -39,7 +39,7 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => true,
-            'enableStrictParsing' => false,
+            'enableStrictParsing' => true,
             'class' => 'yii\web\UrlManager',
             'rules' => [
                 'home' => 'site/index',

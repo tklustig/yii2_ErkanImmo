@@ -30,7 +30,7 @@ class RechnungController extends Controller {
     public function actionIndex() {
         $countRechnung = Rechnung::find()->count('id');
         if ($countRechnung == 0) {
-            $session = new Session();
+            $session = Yii::$app->session;
             $session->addFlash('info', 'Es exisitieren noch keine Rechnungen in der Datenbank. Steigern Sie Ihre Kundenaqkuise oder hinterlegen Sie deren Rechnungen!');
             return $this->redirect(['/site/index']);
         }
@@ -53,7 +53,7 @@ class RechnungController extends Controller {
     public function actionCreate() {
         $countKunde = Kunde::find()->count('id');
         if ($countKunde == 0) {
-            $session = new Session();
+            $session = Yii::$app->session;
             $session->addFlash('info', 'Es exisitieren noch keine Kunden in der Datenbank, denen Sie Rechnungen schicken könnten. Steigern Sie Ihre Kundenaqkuise!');
             return $this->redirect(['/site/index']);
         }

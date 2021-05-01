@@ -33,7 +33,7 @@ class BankverbindungController extends Controller {
     public function actionIndex() {
         $countBankverbindung = Bankverbindung::find()->count('id');
         if ($countBankverbindung == 0) {
-            $session = new Session();
+            $session = Yii::$app->session;
             $session->addFlash('info', 'Es exisitieren noch keine Bankverbindungen in der Datenbank. Steigern Sie Ihre Kundenaqkuise oder hinterlegen Sie deren Bankdaten!');
             return $this->redirect(['/site/index']);
         }
@@ -147,6 +147,7 @@ class BankverbindungController extends Controller {
         $transaction = Yii::$app->db->beginTransaction();
         $arrayOfBank = array();
         $model = new Bankverbindung();
+        $session = Yii::$app->session;
         $modelBankExisting = Bankverbindung::find()->all();
         foreach ($modelBankExisting as $item) {
             array_push($arrayOfBank, $item->blz);
@@ -154,8 +155,7 @@ class BankverbindungController extends Controller {
         }
         try {
             if (Yii::$app->request->post()) {
-                if (in_array($blz, $arrayOfBank) && in_array($kontonummer, $arrayOfBank)) {
-                    $session = new Session();
+                if (in_array($blz, $arrayOfBank) && in_array($kontonummer, $arrayOfBank)) {                  
                     $message = "Die Blz $blz und die Kontonummer $kontonummer wurden bereits einem anderen Kunden zugewiesen. Diese Applikation erlaubt nicht die Verwendung derselben Bankdaten für mehrere Personen.<br>Wiederholen Sie den Vorgang ggf. mit anderen Bankdaten, oder ändern Sie bestehende ab!";
                     $session->addFlash('info', $message);
                     return $this->redirect(['/site/index']);
@@ -172,7 +172,6 @@ class BankverbindungController extends Controller {
                 $connection->createCommand()
                         ->update('kunde', ['bankverbindung_id' => $model->id], ['id' => $id])
                         ->execute();
-                $session = new Session();
                 $session->addFlash('info', "Die Bankdaten wurden Ihrem System unter der ID:$model->id neu hinzugefügt!");
             } else {
                 return $this->render('_form_conclusion', [
@@ -209,7 +208,7 @@ class BankverbindungController extends Controller {
     }
 
     public function actionDelete($id) {
-        $session = new Session();
+        $session = Yii::$app->session;
         $this->findModel($id)->delete();
         $session->addFlash('info', "Die Bankdaten der ID:$id wurden aus Ihrem System entfernt!");
         return $this->redirect(['/site/index']);
@@ -269,7 +268,7 @@ class BankverbindungController extends Controller {
             else
                 return $this->render('_form_select', ['DynamicModel' => $DynamicModel]);
         } else {
-            $session = new Session();
+            $session = Yii::$app->session;
             $session->addFlash('info', 'Es exisitert noch kein Kunde in der Datenbank. Steigern Sie Ihre Kundenaqkuise!');
             return $this->redirect(['site/index']);
         }

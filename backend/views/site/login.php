@@ -5,7 +5,7 @@ use yii\bootstrap\ActiveForm;
 use yii\web\Session;
 
 //Hier werden alle Flashnachrichten ausgegeben
-$session = new Session();
+$session = Yii::$app->session;
 $link = \Yii::$app->urlManagerFrontend->baseUrl . '/home';
 if (!empty($session->getAllFlashes())) {
     foreach ($session->getAllFlashes() as $flash) {

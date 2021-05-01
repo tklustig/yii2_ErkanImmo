@@ -138,7 +138,7 @@ class TerminController extends Controller {
     public function actionCreate($id) {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $session = new Session();
+            $session = Yii::$app->session;
             $arrayOfErrors = array();
             $this->layout = "main_immo";
             $model = new Besichtigungstermin();
@@ -361,7 +361,7 @@ class TerminController extends Controller {
             $startStrasse = Firma::findOne(['id' => $idFirma])->strasse;
             //sofern kein Record hinterlegt wurde...
         } else {
-            $session = new Session();
+            $session = Yii::$app->session;
             $session->addFlash('info', 'Da Sie ihre Firmendaten noch nicht hinterlegt bzw. eingespeist haben, kann die Googlemap Funtion nicht aufgerufen werden!');
             return $this->redirect(['/site/index']);
         }
@@ -420,7 +420,7 @@ class TerminController extends Controller {
             $startPunkt = Firma::findOne(['id' => $idFirma])->ort;
             $startStrasse = Firma::findOne(['id' => $idFirma])->strasse;
         } else {
-            $session = new Session();
+            $session = Yii::$app->session;
             $session->addFlash('info', 'Da Sie ihre Firmendaten noch nicht hinterlegt bzw. eingespeist haben, kann die Googlemap Funtion nicht aufgerufen werden!');
             return $this->redirect(['/site/index']);
         }

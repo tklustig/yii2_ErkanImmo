@@ -38,7 +38,7 @@ AssetBundle::register($this);
                     ]);
                     $link = \Yii::$app->urlManagerFrontend->baseUrl . '/termin_anzeigen';
                     $link_ = \Yii::$app->urlManagerFrontend->baseUrl . '/termin_selektieren';
-                    $menuItems = [
+                    $admin_I = [
                         [
                             'label' => 'Admin',
                             'items' => [
@@ -93,9 +93,10 @@ AssetBundle::register($this);
                                     'items' => [
                                         ['label' => 'Mailserver konfigurieren', 'url' => ['/mailserver/index']],
                                         ['label' => 'Mails anzeigen/verschicken', 'url' => ['/mail/index']],
-                                         ['label' => 'Textbausteine editieren', 'url' => ['/textbaustein/index']]
+                                        ['label' => 'Textbausteine editieren', 'url' => ['/textbaustein/index']]
                                     ],
                                 ],
+                                '<li class="divider"></li>',
                                 ['label' => '+++++++Termine+++++++', 'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
                                     'items' => [
@@ -103,6 +104,23 @@ AssetBundle::register($this);
                                         ['label' => 'Besichtigungstermine nach/je Makler abrufen', 'url' => $link_],
                                     ],
                                 ],
+                            ],
+                        ],
+                    ];
+
+                    $Interna = [
+                        [
+                            'label' => 'Programmiertools',
+                            'items' => [
+                                ['label' => 'Basis-Url im Backend/Adminbereich', 'url' => ['/site/index']],
+                                '<li class="divider"></li>',                      
+                            ],
+                        ],
+                    ];
+                    $admin_II = [
+                        [
+                            'label' => 'Userdaten',
+                            'items' => [
                                 ['label' => '++++ User und Firmendaten ++++',
                                     'url' => ['#'],
                                     'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
@@ -117,26 +135,10 @@ AssetBundle::register($this);
                         ],
                     ];
 
-                    $Interna = [
-                        [
-                            'label' => 'Programmiertools',
-                            'items' => [
-                                ['label' => 'Basis-Url im Backend/Adminbereich', 'url' => ['/site/index']],
-                                '<li class="divider"></li>',
-                                ['label' => 'Tools', 'url' => ['#'],
-                                    'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
-                                    'items' => [
-                                        ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ];
-
                     if (Yii::$app->user->isGuest) {
-                        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+                        $admin_I[] = ['label' => 'Login', 'url' => ['/site/login']];
                     } else {
-                        $menuItems[] = '<li>'
+                        $admin_I[] = '<li>'
                                 . Html::beginForm(['/site/logout'], 'post')
                                 . Html::submitButton(
                                         'Logout (' . Yii::$app->user->identity->username . ')', ['class' => 'btn btn-link logout']
@@ -144,13 +146,23 @@ AssetBundle::register($this);
                                 . Html::endForm()
                                 . '</li>';
                     }
-                    echo Nav::widget([
-                        'options' => ['class' => 'navbar-nav navbar-right'],
-                        'items' => $menuItems
-                    ]);
-                    echo Nav::widget([
+                    ?>
+                    <?=
+                    Nav::widget([
                         'options' => ['class' => 'navbar-nav navbar-left'],
                         'items' => $Interna
+                    ]);
+                    ?>
+                    <?=
+                    Nav::widget([
+                        'options' => ['class' => 'navbar-nav navbar-right'],
+                        'items' => $admin_I
+                    ]);
+                    ?>                
+                    <?=
+                    Nav::widget([
+                        'options' => ['class' => 'navbar-nav navbar-right'],
+                        'items' => $admin_II
                     ]);
                     NavBar::end();
                     ?>

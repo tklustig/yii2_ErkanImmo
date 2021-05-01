@@ -39,7 +39,7 @@ class KundeController extends Controller {
     public function actionIndex() {
         $countKunde = Kunde::find()->count('id');
         if ($countKunde == 0) {
-            $session = new Session();
+            $session = Yii::$app->session;
             $session->addFlash('info', 'Es exisitert noch kein Kunde in der Datenbank. Steigern Sie Ihre Kundenaqkuise!');
             return $this->redirect(['/site/index']);
         }
@@ -194,7 +194,7 @@ class KundeController extends Controller {
     }
 
     public function actionDelpic($id) {
-        $session = new Session();
+        $session = Yii::$app->session;
         try {
             $transaction = Yii::$app->db->beginTransaction();
             $path = Yii::getAlias('@picturesBackend');
@@ -219,7 +219,7 @@ class KundeController extends Controller {
     public function actionDelete($id) {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $session = new Session();
+            $session = Yii::$app->session;
             $pkOfKundeImmo = Kundeimmobillie::findOne(['kunde_id' => $id])->id;
             $this->findModelKundeImmo($pkOfKundeImmo)->delete();
             $this->findModel($id)->delete();
@@ -241,7 +241,7 @@ class KundeController extends Controller {
     public function actionDeletion($id) {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $session = new Session();
+            $session = Yii::$app->session;
             $arrayOfAnhangId = array();
             $arrayOfAnhangFilename = array();
             if (!empty(EDateianhang::findOne(['kunde_id' => $id]))) {
@@ -326,7 +326,7 @@ class KundeController extends Controller {
     public function actionSend() {
         /* Die Methode redirect() akzeptiert weder Arrays noch Objekte als Übergabeparameter. Demzufolge werden diese Parameter einer Session
           übergeben, die dann vom jeweiligen Controller aufgerufen wird */
-        $session = new Session();
+        $session = Yii::$app->session;
         $Mailadresses = array();
         $Name = array();
         $Geschlecht = array();

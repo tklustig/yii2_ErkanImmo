@@ -22,7 +22,7 @@ $this->registerJs($search);
     ?>
     <?php
 //Hier werden alle Flashnachrichten ausgegeben
-    $session = new Session();
+    $session = Yii::$app->session;
     $MessageArt = Alert::TYPE_WARNING;
     foreach ($session->getAllFlashes() as $flash) {
         if (count($flash) > 2) {
@@ -156,7 +156,7 @@ $this->registerJs($search);
 
 function generateOutput($type, $content) {
     return Alert::widget(['type' => $type,
-                'title' => 'Information',
+                'title' => 'Mitteilung',
                 'icon' => 'glyphicon glyphicon-exclamation-sign',
                 'body' => $content,
                 'showSeparator' => true,

@@ -24,7 +24,7 @@ $this->registerJs($js, \yii\web\View::POS_READY);
 ?>
 <?php
 //Hier werden alle Flashnachrichten ausgegeben
-$session = new Session();
+$session = Yii::$app->session;
 $MessageArt = Alert::TYPE_WARNING;
 foreach ($session->getAllFlashes() as $flash) {
     if (count($flash) > 2) {

@@ -9,7 +9,7 @@ use yii\web\Session;
   $alert = new Alert();
   $alert->run();
  */
-$session = new Session();
+$session = Yii::$app->session;
 $MessageArt = Alert::TYPE_DANGER;
 foreach ($session->getAllFlashes() as $flash) {
     if (count($flash) > 2) {

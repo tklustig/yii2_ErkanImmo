@@ -48,7 +48,7 @@ class Firma extends \yii\db\ActiveRecord {
             'ort' => Yii::t('app', 'Ort'),
             'geschaeftsfuehrer' => Yii::t('app', 'Geschaeftsfuehrer'),
             'prokurist' => Yii::t('app', 'Prokurist'),
-            'umsatzsteuerID' => Yii::t('app', 'Umsatzsteuer ID'),
+            'umsatzsteuerID' => Yii::t('app', 'Umsatzsteuer(%)'),
             'bankdaten' => Yii::t('app', 'Bankdaten'),
             'anzahlMitarbeiter' => Yii::t('app', 'Anzahl Mitarbeiter'),
             'angelegt_von' => Yii::t('app', 'Angelegt Von'),

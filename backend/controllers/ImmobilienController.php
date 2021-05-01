@@ -86,7 +86,7 @@ class ImmobilienController extends Controller {
         $now = (new \yii\db\Query)->select($expression)->scalar();
         $EDateianhang = EDateianhang::find()->all();
         $BoolAnhang = false;
-        $session = new Session();
+        $session = Yii::$app->session;
         try {
             if (Yii::$app->request->post()) {
                 $data = Yii::$app->request->post();
@@ -209,7 +209,7 @@ class ImmobilienController extends Controller {
         $now = (new \yii\db\Query)->select($expression)->scalar();
         $EDateianhang = EDateianhang::find()->all();
         $BoolAnhang = false;
-        $session = new Session();
+        $session = Yii::$app->session;
         try {
             if (Yii::$app->request->post()) {
                 $data = Yii::$app->request->post();
@@ -323,7 +323,7 @@ class ImmobilienController extends Controller {
         $x = 0;
         $AllFiles = array();
         $FilesSeveral = array();
-        $session = new Session();
+        $session = Yii::$app->session;
         $ArrayOfAnhangName = array();
         $ArrayOfIdAnhang = array();
         try {
@@ -392,7 +392,7 @@ class ImmobilienController extends Controller {
     }
 
     public function actionShow($filename) {
-        $session = new Session();
+        $session = Yii::$app->session;
         $CompletePath = Yii::getAlias('@documentsImmoB' . '/' . $filename);
         if (file_exists($CompletePath))
             return Yii::$app->response->sendFile($CompletePath, $filename);
@@ -478,7 +478,7 @@ class ImmobilienController extends Controller {
     public function actionDeletion($id) {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $session = new Session();
+            $session = Yii::$app->session;
             $arrayOfAnhangId = array();
             $arrayOfAnhangFilename = array();
             if (!empty(EDateianhang::findOne(['immobilien_id' => $id]))) {

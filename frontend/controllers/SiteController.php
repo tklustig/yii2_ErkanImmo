@@ -84,7 +84,7 @@ class SiteController extends Controller {
                 $zaehler += 1;
         }
         if ($zaehler < 10) {
-            Yii::$app->session->setFlash('error', 'Es exisitieren keine oder zu wenige Firmenbegriffe in der Datenbank. Erst, wenn der Admin alle erforderlichen Firmenbegriffe eingepflegt hat, lässt sich dieses Feature aufrufen.');
+            Yii::$app->session->addFlash('error', 'Es exisitieren keine oder zu wenige Firmenbegriffe in der Datenbank. Erst, wenn der Admin alle erforderlichen Firmenbegriffe eingepflegt hat, lässt sich dieses Feature aufrufen.');
             return $this->redirect(['/site/index']);
         }
         $model = new ContactForm();
@@ -92,9 +92,9 @@ class SiteController extends Controller {
             if (PHP_OS !== SiteController::OPS) {
                 $model->email;
                 if ($model->sendEmail($model->email))
-                    Yii::$app->session->setFlash('info', "Ihre Nachricht wurde weitergeleitet. Wir werden Sie schnellstmöglichst unter Ihrer Mailadresse $model->email kontaktieren!<br> Mit freundlichen Grüßen   Kanat Immobilien");
+                    Yii::$app->session->addFlash('info', "Ihre Nachricht wurde weitergeleitet. Wir werden Sie schnellstmöglichst unter Ihrer Mailadresse $model->email kontaktieren!<br> Mit freundlichen Grüßen   Kanat Immobilien");
                 else
-                    Yii::$app->session->setFlash('error', '(Ihre Nachricht konnte nicht weitergeleitet werden. Versuchen Sie es erneut!');
+                    Yii::$app->session->addFlash('error', '(Ihre Nachricht konnte nicht weitergeleitet werden. Versuchen Sie es erneut!');
             }
             $this->redirect(["/site/index"]);
         } else {
@@ -120,7 +120,7 @@ class SiteController extends Controller {
                 $zaehler += 1;
         }
         if ($zaehler < 10) {
-            Yii::$app->session->setFlash('error', 'Es exisitieren keine oder zu wenige Impressumbegriffe in der Datenbank. Erst, wenn der Admin alle 10 Begriffe eingepflegt hat, lässt sich dieses Feature aufrufen.');
+            Yii::$app->session->addFlash('error', 'Es exisitieren keine oder zu wenige Impressumbegriffe in der Datenbank. Erst, wenn der Admin alle 10 Begriffe eingepflegt hat, lässt sich dieses Feature aufrufen.');
             return $this->redirect(['/site/index']);
         }
         return $this->render('about', [

@@ -55,6 +55,7 @@ class MailController extends Controller {
     }
 
     public function actionCreate() {
+        $session = Yii::$app->session;
         $Zieladresse = "";
         $Ccadresse = "";
         $Bccadresse = "";
@@ -66,7 +67,6 @@ class MailController extends Controller {
         $expression = new Expression('NOW()');
         $now = (new \yii\db\Query)->select($expression)->scalar();
         $BoolAnhang = false;
-        $session = new Session();
         $model = new Mail();
         $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $modelEDateianhang = EDateianhang::find()->all();
@@ -207,7 +207,7 @@ class MailController extends Controller {
                     if ($this->SendMail($model, $Zieladresse))
                         $session->addFlash('info', "Die Mail wurde erfolgreich an $mailAdressTo  verschickt!");
                     else {
-                        $session->addFlash('info', $errorAusgabe);
+                        $session->addFlash('error', $errorAusgabe);
                         $mailWurdeVerschickt = false;
                     }
                 } else if (!empty($model->mail_cc) && empty($model->mail_bcc)) {
@@ -351,7 +351,6 @@ class MailController extends Controller {
         $expression = new Expression('NOW()');
         $now = (new \yii\db\Query)->select($expression)->scalar();
         $BoolAnhang = false;
-        $session = new Session();
         $model = new Mail();
         $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $modelEDateianhang = EDateianhang::find()->all();
@@ -489,7 +488,7 @@ class MailController extends Controller {
         $expression = new Expression('NOW()');
         $now = (new \yii\db\Query)->select($expression)->scalar();
         $BoolAnhang = false;
-        $session = new Session();
+        $session = Yii::$app->session;
         $model = new Mail();
         $modelDateianhang = new Dateianhang(['scenario' => 'create_Dateianhang']);
         $modelEDateianhang = EDateianhang::find()->all();
@@ -667,7 +666,7 @@ class MailController extends Controller {
             $mailHasBeenDeleted = false;
             $arrayOfFilenames = array();
             $arrayOfPkForDateiA = array();
-            $session = new Session();
+            $session = Yii::$app->session;
             //zuerst die die Datenbankeinträge...
             if (!empty(EDateianhang::findOne(['mail_id' => $id]))) {
                 $pk = EDateianhang::findOne(['mail_id' => $id])->id;
@@ -754,7 +753,7 @@ class MailController extends Controller {
     public function actionDeletion($id) {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $session = new Session();
+            $session = Yii::$app->session;
             $arrayOfAnhangId = array();
             $arrayOfAnhangFilename = array();
             if (!empty(EDateianhang::findOne(['mail_id' => $id]))) {
@@ -921,7 +920,7 @@ class MailController extends Controller {
         if (file_exists($completePath))
             return Yii::$app->response->sendFile($completePath, $id);
         else {
-            $session = new Session();
+            $session = Yii::$app->session;
             $session->addFlash('info', "Der Mailanhang ist zwar in der Datenbank registriert, befindet sich jedoch physikalisch nicht mehr auf Ihrem Webserver. Löschen Sie den Anhang über das entsprechende Icon!");
             return $this->redirect(['/mail/index']);
         }
@@ -1160,7 +1159,7 @@ class MailController extends Controller {
 
     private function DeleteFilesFromfolder($folder) {
         try {
-            $session = new Session();
+            $session = Yii::$app->session;
             $arrayOfFiles = FileHelper::findFiles($folder);
             foreach ($arrayOfFiles as $item) {
                 if (!preg_match('/ignore/', $item)) {
