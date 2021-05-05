@@ -87,7 +87,7 @@ class KundeController extends Controller {
             $hasBankConnection = true;
         else
             $hasBankConnection = false;
-        var_dump($hasBankConnection);
+        //var_dump($hasBankConnection);
         if ($model->loadAll(Yii::$app->request->post()) && $modelDateianhang->loadAll(Yii::$app->request->post())) {
             //den Plzstring in die Id zurück verwandeln
             $plzID = LPlz::findOne(['plz' => $model->lPlz->plz])->id;
