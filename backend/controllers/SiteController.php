@@ -37,7 +37,7 @@ class SiteController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout','index'],
+                'only' => ['logout', 'index'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
@@ -45,7 +45,7 @@ class SiteController extends Controller {
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout','index'],
+                        'actions' => ['logout', 'index'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -125,7 +125,7 @@ class SiteController extends Controller {
             $this->redirect(['site/index']);
         } else {
             $model->password = '';
-            $message='Bitte erwerben Sie die Zugangsdaten über den Entwickler!';
+            $message = 'Bitte erwerben Sie die Zugangsdaten über den Entwickler!';
             $this->Ausgabe($message, 'Info', 1500, Growl::TYPE_GROWL);
             return $this->render('login', [
                         'model' => $model,
@@ -154,7 +154,9 @@ class SiteController extends Controller {
                     $modelKopf->data = $data;
                     $modelKopf->user_id = $fk;
                     $modelKopf->save();
-                    return $this->goHome();
+                    //return $this->goHome();
+                    $this->layout='main';
+                    return $this->render('index');
                 }
             }
         }
@@ -173,7 +175,7 @@ class SiteController extends Controller {
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
                 $session->addFlash('success', "Überprüfen Sie ihren Maileingang mit einem Mailclient. Die neuen Zugangsdaten sind dort vermerkt");
-                return $this->redirect('site/login');
+                return $this->redirect(['site/login']);
             } else {
                 $session->addFlash('error', "Sorry, we are unable to reset password for the provided email address.");
             }

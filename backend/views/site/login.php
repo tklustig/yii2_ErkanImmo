@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\web\Session;
+use kartik\alert\Alert;
 
 //Hier werden alle Flashnachrichten ausgegeben
 $session = Yii::$app->session;
@@ -49,7 +50,7 @@ $fieldOptions2 = [
 
         <div class="row">
             <div class="col-xs-12">
-                <?= Html::submitButton('Sign in', ['class' => 'btn btn-primary btn-block btn-flat', 'name' => 'login-button']) ?>
+<?= Html::submitButton('Sign in', ['class' => 'btn btn-primary btn-block btn-flat', 'name' => 'login-button']) ?>
             </div>
         </div>
         <?php
@@ -64,6 +65,6 @@ $fieldOptions2 = [
        
                </div> -->
         <br>
-        <?= Html::a('I forgot my password respectively username', ['site/request-password-reset'], ['class' => 'btn btn-block btn-danger']) ?>
+<?= Html::a('I forgot my password respectively username', ['site/request-password-reset'], ['class' => 'btn btn-block btn-danger']) ?>
     </div>
 </div>

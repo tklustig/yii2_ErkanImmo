@@ -55,7 +55,7 @@ $this->registerJs($search);
                         myWidth = window.innerWidth;
                     }
                     if (myWidth >= 1000) {
-                        //je größer abstand, desto mehr Abstände zwischen den einzelnen Bildern. Inelegant, aber effektiv.
+                        //je größer der Abstand, desto mehr Abstände zwischen den einzelnen Bildern. Inelegant, aber effektiv.
                         for (var i = 0; i < abstand; i++) {
                             document.write("<br>");
                         }
