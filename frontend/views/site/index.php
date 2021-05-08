@@ -65,7 +65,7 @@ if (!empty($session)) {
 <?php
 $url = Yii::getAlias('@web') . '/img/';
 ?>
-<div style="background:url(<?= $url ?>Theme.jpg);  background-repeat: no-repeat;  background-size: 100% 100%;">
+<div style="background:url(<?= $url ?>Theme.jpg);  background-repeat: repeat-y;  background-size: 100% 100%;">
     <div class="section_wrapper mcb-section-inner">
         <div class="wrap mcb-wrap one  valign-top clearfix" style="">
             <div class="column mcb-column one column_column  column-margin-">
