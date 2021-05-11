@@ -174,7 +174,7 @@ $script = <<< JS
         var textId=$(this).val();
         var ausgabe='Der Textbaustein mit der Id:'+textId+' wird in die Vorlage übernommen!';
         alert(ausgabe);
-        $.get('mail/baustein',{textId:textId},function(data){
+        $.get('baustein',{textId:textId},function(data){
             $('#IDText').val(data);      
         });
     });
