@@ -1153,6 +1153,8 @@ class MailController extends Controller {
             }
             return true;
         } catch (\Exception $e) {
+            $session = Yii::$app->session;
+            $session->addFlash('Error: ', $e->getMessage() . ' in file ' . $e->getFile() . ' at line ' . $e->getLine());
             return false;
         }
     }

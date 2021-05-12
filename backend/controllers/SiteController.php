@@ -155,7 +155,7 @@ class SiteController extends Controller {
                     $modelKopf->user_id = $fk;
                     $modelKopf->save();
                     //return $this->goHome();
-                    $this->layout='main';
+                    $this->layout = 'main';
                     return $this->render('index');
                 }
             }
@@ -169,20 +169,22 @@ class SiteController extends Controller {
     /* Regelt die Logik der Passwortrücksetzung- T1 */
 
     public function actionRequestPasswordReset() {
-        $this->layout = "reset_main";
         $session = Yii::$app->session;
-        $model = new PasswordResetRequestForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail()) {
-                $session->addFlash('success', "Überprüfen Sie ihren Maileingang mit einem Mailclient. Die neuen Zugangsdaten sind dort vermerkt");
-                return $this->redirect(['site/login']);
-            } else {
-                $session->addFlash('error', "Sorry, we are unable to reset password for the provided email address.");
+        try {
+            $this->layout = "reset_main";
+            $model = new PasswordResetRequestForm();
+            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                if ($model->sendEmail()) {
+                    $session->addFlash('success', "Überprüfen Sie ihren Maileingang mit einem Mailclient. Die neuen Zugangsdaten sind dort vermerkt");
+                    return $this->redirect(['site/login']);
+                } else {
+                    $session->addFlash('error', "Sorry, we are unable to reset password for the provided email address.");
+                }
             }
+        } catch (Exception $e) {
+            $session->addFlash('error', 'Error: ', $e->getMessage() . ' in file ' . $e->getFile() . ' at line ' . $e->getLine());
         }
-        return $this->render('requestPasswordResetToken', [
-                    'model' => $model,
-        ]);
+        return $this->render('requestPasswordResetToken', ['model' => $model]);
     }
 
     /* Regelt die Logik der Passwortrücksetzung- T2 */
