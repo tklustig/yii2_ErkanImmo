@@ -45,6 +45,7 @@ return [
                 'home' => 'site/index',
                 'login' => 'site/login',
                 'reset' => 'site/request-password-reset',
+                'resetus'=>'site/reset-password',
                 'logout' => 'site/logout',
                 'signup' => 'site/signup',
                 'delete_user' => 'site/deluser',

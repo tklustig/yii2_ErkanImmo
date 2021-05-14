@@ -1,5 +1,5 @@
 {
-    "name": "ErkanImmo",
+    "name": "yiisoft/yii2-erkanimmo",
     "description": "ErkanImmo ist eine Applikation, die für den Makler Erkan Kanat geschrieben wurde.",
     "keywords": ["ErkanImmo", "Makler-Software", "Software Immobilienangebote", "Online Software Immobilien", "Online Software Masklerangebote"],
     "homepage": "http://erkan-immo.de",
@@ -14,8 +14,8 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.4.0",
-        "yiisoft/yii2": "~2.0.12",
+        "php": ">=5.6.0",
+        "yiisoft/yii2": "~2.0.14",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "kartik-v/yii2-krajee-base": "*",
@@ -44,8 +44,12 @@
         "yiisoft/yii2-debug": "~2.0.0",
         "yiisoft/yii2-gii": "~2.0.0",
         "yiisoft/yii2-faker": "~2.0.0",
-        "codeception/base": "^2.2.3",
-        "codeception/verify": "~0.3.1"
+        "codeception/codeception": "^4.0",
+        "codeception/module-asserts": "^1.0",
+        "codeception/module-yii2": "^1.0",
+        "codeception/module-filesystem": "^1.0",
+        "codeception/verify": "~0.5.0 || ~1.1.0",
+        "symfony/browser-kit": ">=2.7 <=4.2.4"
     },
     "config": {
         "process-timeout": 1800,

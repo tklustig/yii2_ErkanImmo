@@ -55,14 +55,14 @@ return [
             'viewPath' => '@common/mail',
             'useFileTransport' => false, //set this property to false to send mails to real email addresses
             //comment the following array to send mail using php's mail function
-            /*'transport' => [
+            'transport' => [
                 'class' => 'Swift_SmtpTransport',
                 'host' => 'mx2efc.netcup.net',
                 'username' => 'kipp.thomas@tklustig.de',
                 'password' => '1918Rott$',
                 'port' => '465',
                 'encryption' => 'ssl',
-            ],*/
+            ],
         ],
         'db' => [
             'class' => 'yii\db\Connection',
