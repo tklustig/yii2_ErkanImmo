@@ -198,8 +198,7 @@ class SiteController extends Controller {
 
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
             Yii::$app->session->addFlash('success', 'New password saved.');
-
-            return $this->goHome();
+            return $this->redirect(['/site/index']);
         }
         return $this->render('resetPassword', [
                     'model' => $model,
