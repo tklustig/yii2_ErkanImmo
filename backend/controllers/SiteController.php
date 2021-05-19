@@ -190,6 +190,7 @@ class SiteController extends Controller {
     /* Regelt die Logik der Passwortrücksetzung- T2 */
 
     public function actionResetPassword($token) {
+        $this->layout = "main_login";
         try {
             $model = new ResetPasswordForm($token);
         } catch (InvalidParamException $e) {
