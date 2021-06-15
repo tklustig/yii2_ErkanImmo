@@ -11,6 +11,7 @@ $link = \Yii::$app->urlManagerBackend->baseUrl . '/login';
 //Hier werden alle Flashnachrichten ausgegeben
 $session = Yii::$app->session;
 $session->getAllFlashes();
+$this->title = Yii::t('app', 'Angebote');
 if (!empty($session)) {
     foreach ($session->getAllFlashes() as $flash) {
         foreach ($flash as $ausgabe) {

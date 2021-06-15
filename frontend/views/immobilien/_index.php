@@ -9,6 +9,7 @@ $search = "$('.search-button').click(function(){
 	return false;
 });";
 $this->registerJs($search);
+$this->title = Yii::t('app', 'Immosuche');
 ?>
 <div class="container-fluid">
     <br>
