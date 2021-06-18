@@ -5,23 +5,23 @@ use kartik\alert\Alert;
 use yii\web\Session;
 ?>
 <?php
-/* Hier werden alle Flashnachrichten ausgegeben
-  $alert = new Alert();
-  $alert->run();
- */
 $session = Yii::$app->session;
 $MessageArt = Alert::TYPE_DANGER;
-foreach ($session->getAllFlashes() as $flash) {
-    if (count($flash) > 2) {
-        ?><?=
-        generateOutput($MessageArt, implode("<br/><hr/><br/>", $flash));
-    } else {
-        foreach ($flash as $ausgabe) {
+if (is_array($session->getAllFlashes())) {
+    foreach ($session->getAllFlashes() as $flash) {
+        if (count($flash) > 2) {
             ?><?=
-            generateOutput($MessageArt, $ausgabe);
+            generateOutput($MessageArt, implode("<br/><hr/><br/>", $flash));
+        } else {
+            foreach ($flash as $ausgabe) {
+                ?><?=
+                generateOutput($MessageArt, $ausgabe);
+            }
         }
     }
-}
+} else
+    generateOutput($MessageArt, $session->getAllFlashes());
+
 $session->removeAllFlashes();
 $session->destroy();
 ?>
