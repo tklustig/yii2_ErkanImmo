@@ -525,8 +525,8 @@ class SiteController extends Controller {
 
     //Löscht alle Themes
     public function actionDeleteall() {
-        $transaction = Yii::$app->db->beginTransaction();
         try {
+            $transaction = Yii::$app->db->beginTransaction();
             $session = Yii::$app->session;
             $eDateianhang = EDateianhang::find()->all();
             $arrayOfFk = array();
@@ -562,6 +562,9 @@ class SiteController extends Controller {
                 $session->addFlash('info', "Sämtliche Themes wurden sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
             else
                 $session->addFlash('info', "Der Löschvorgang wurde abgebrochen, da die Themes physikalisch nicht mehr auf Ihrer Platte sind.");
+            
+            var_dump($transaction);
+            die();
             $transaction->commit();
             return $this->redirect(['/site/index']);
         } catch (\Exception $error) {
