@@ -37,24 +37,22 @@ class SiteController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'index'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
+                        'actions' => ['login', 'error', 'request-password-reset','reset-password'],
                         'allow' => true,
-                        'roles' => ['?'],
+                        'roles' => ['?'] //? := Nicht authentifizierte User
                     ],
                     [
-                        'actions' => ['logout', 'index'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['@'], //@:= authentifizierte User
                     ],
                 ],
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'logout' => ['post'],
+                //'logout' => ['post'],
                 ],
             ],
         ];
@@ -196,14 +194,14 @@ class SiteController extends Controller {
         } catch (InvalidParamException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
             Yii::$app->session->addFlash('success', 'New password saved.');
-            return $this->redirect(['/site/index']);
+            return $this->render(['login']);
+        } else {
+            return $this->render('resetPassword', [
+                        'model' => $model,
+            ]);
         }
-        return $this->render('resetPassword', [
-                    'model' => $model,
-        ]);
     }
 
     /* Regelt das Ausloggen, indem es zum Frontend zurück rendert */
@@ -562,7 +560,7 @@ class SiteController extends Controller {
                 $session->addFlash('info', "Sämtliche Themes wurden sowohl aus der Datenbank als auch aus dem Imageverzeichnis gelöscht");
             else
                 $session->addFlash('info', "Der Löschvorgang wurde abgebrochen, da die Themes physikalisch nicht mehr auf Ihrer Platte sind.");
-            
+
             var_dump($transaction);
             die();
             $transaction->commit();
