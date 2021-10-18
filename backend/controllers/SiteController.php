@@ -70,8 +70,6 @@ class SiteController extends Controller {
         ];
     }
 
-    /* Displays homepage. */
-
     public function actionIndex($message = NULL) {
         if ($message != null) {
             $session = Yii::$app->session;

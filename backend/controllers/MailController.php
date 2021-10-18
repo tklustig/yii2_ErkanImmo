@@ -449,7 +449,7 @@ class MailController extends Controller {
                         $fk = EDateianhang::findOne(['mail_id' => $model->id]);
                     }
                     /* Speichere Records, abhängig von dem Array($files) in die Datenbank.
-                      Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
+         d             Da mitunter mehrere Records zu speichern sind, funktioniert das $model-save() nicht. Stattdessen wird batchInsert() verwendet */
                     for ($i = 0; $i < count($files); $i++) {
                         $connection->createCommand()
                                 ->batchInsert('dateianhang', ['e_dateianhang_id', 'l_dateianhang_art_id', 'bezeichnung', 'dateiname', 'angelegt_am', 'angelegt_von'], [
