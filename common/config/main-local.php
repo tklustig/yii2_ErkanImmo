@@ -1,6 +1,6 @@
 
 <?php
-
+//ToDo: Das Passwort verschlüsseln und entkommentieren
 define('prefix', 'k158364_');
 define('OPS', 'WINNT');
 if (PHP_OS == OPS) {
@@ -13,7 +13,7 @@ if (PHP_OS == OPS) {
 } else {
     $username = "k158364_kipp"; //für LINUX muss hier der Benutzer...
     $server = 'mysql2efb.netcup.net';
-    $password = "1918Rott$"; //und hier das Passwort angegegeben werden
+    $password ='TopSecret'; //und hier das Passwort angegegeben werden
     $database = prefix . 'tklustig';
     //DatenbankErzeugen($dsn, $username, $password);
 }
@@ -59,7 +59,7 @@ return [
                 'class' => 'Swift_SmtpTransport',
                 'host' => 'mx2efc.netcup.net',
                 'username' => 'kipp.thomas@tklustig.de',
-                'password' => '1918Rott$',
+                'password' => 'TopSecret',
                 'port' => '465',
                 'encryption' => 'ssl',
             ],
